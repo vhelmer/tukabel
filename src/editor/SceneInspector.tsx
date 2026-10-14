@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { AnimationPanel } from './AnimationPanel';
 import type {
+  AnimationDefinition,
   GameContent,
   Hotspot,
   SceneDefinition,
@@ -22,6 +24,7 @@ export function SceneInspector({
   onScene,
   onHotspot,
   onDelete,
+  onAnimationCommit,
 }: {
   scene: SceneDefinition;
   hotspot?: Hotspot;
@@ -31,6 +34,10 @@ export function SceneInspector({
   onScene: (scene: SceneDefinition) => void;
   onHotspot: (hotspot: Hotspot) => void;
   onDelete: () => void;
+  onAnimationCommit: (
+    animations: readonly AnimationDefinition[],
+    hotspot: Hotspot,
+  ) => void;
 }) {
   const [verb, setVerb] = useState<Verb>(hotspot?.defaultVerb ?? 'look');
   const [useItem, setUseItem] = useState(content.items[0]?.id ?? '');
@@ -112,6 +119,17 @@ export function SceneInspector({
               onHotspot({ ...hotspot, image: image || undefined })
             }
           />
+          {hotspot.image && (
+            <AnimationPanel
+              key={hotspot.image}
+              hotspot={hotspot}
+              content={content}
+              assets={assets}
+              onAssets={onAssets}
+              onHotspot={onHotspot}
+              onCommit={onAnimationCommit}
+            />
+          )}
           <ConditionField
             label="Viditeľnosť objektu"
             content={content}

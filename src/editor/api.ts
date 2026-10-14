@@ -35,3 +35,29 @@ export async function importAsset(file: File) {
     data: btoa(binary),
   });
 }
+
+export const animationServiceInfo = () =>
+  request<import('./animationTypes').AnimationServiceInfo>('animations/info');
+export const animationSourceInfo = (id: string) =>
+  request<import('./animationTypes').SourceInfo>(
+    `animations/source?id=${encodeURIComponent(id)}`,
+  );
+export const animationJobs = () =>
+  request<import('./animationTypes').AnimationJob[]>('animations/jobs');
+export const startAnimationJob = (
+  input: import('./animationTypes').GenerationRequest,
+) =>
+  request<import('./animationTypes').AnimationJob>(
+    'animations/jobs',
+    'POST',
+    input,
+  );
+export const readAnimationJob = (id: string) =>
+  request<{ job: import('./animationTypes').AnimationJob; assets: string[] }>(
+    `animations/jobs/${id}`,
+  );
+export const cancelAnimationJob = (id: string) =>
+  request<import('./animationTypes').AnimationJob>(
+    `animations/jobs/${id}`,
+    'DELETE',
+  );

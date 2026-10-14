@@ -82,4 +82,7 @@ save/load v localStorage. Herní okno s drag/drop inventářem, dotykem i HTML k
 Dev Mode upravuje lokace, hotspoty, assety, předměty, pravidla, dialogy a kombinace;
 mapa logiky ukazuje podmínky a efekty. Ukládá se do zdrojového JSON v Gitu. Krátká
 kompletní technická hádanka bez skutečného příběhu a finálních assetů.
-Podrobnosti formátu a průchod jsou v README. Pohyb postavy a zvuk zatím chybí.
+Animace: maskované AI snímky, náhled/regenerace/import v inspektoru, náhodné mrkání,
+mluvení během dialogu a procedurální idle pohyb. PNG i metadata se ukládají do Gitu;
+živé generování vyžaduje serverový OPENAI_API_KEY. Podrobnosti formátu a průchod
+jsou v README. Chůze postavy a zvuk zatím chybí.

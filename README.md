@@ -88,12 +88,13 @@ se zachováním poměru stran, včetně hotspotů. Letterbox okraje nejsou inter
 Ukázkový průchod: správce → dotaz na opravu → vyžádat pásku → ukončit rozhovor →
 sebrat kabel u židle → přetáhnout pásku na kabel → opravený kabel na router → dveře
 do dvora → tabule. Lze se vrátit; vyřešený stav zůstává. Jde o technickou hádanku
-se dvěma lokacemi, bez finálního příběhu a assetů. Pohyb postavy a zvuk zatím chybí.
+se dvěma lokacemi, bez finálního příběhu a assetů. Chůze postavy a zvuk zatím chybí;
+mrkání, dialogové snímky a jemné idle pohyby lze přiřadit v editoru.
 
 ## Obsah a architektura
 
 - `src/game/content/project.json` — **jediný zdroj autorského obsahu**: lokace,
-  objekty, předměty, dialogy, příznaky a kombinace. Jeden soubor zjednodušuje atomický
+  objekty, předměty, dialogy, příznaky, kombinace a animace. Jeden soubor zjednodušuje atomický
   zápis a kontrolu konfliktů; nevznikají rozporné částečné zápisy několika souborů.
 - `src/game/content/index.ts` — validované načtení JSON.
 - `src/game/assets.ts` — mapa stabilních ID assetů na Vite URL pro runtime.
@@ -103,9 +104,12 @@ se dvěma lokacemi, bez finálního příběhu a assetů. Pohyb postavy a zvuk z
 - `src/game/state.ts` — původní čistý reducer; stejná pravidla v náhledu i produkci.
 - `src/game/storage.ts` — save/load postupu; nikdy neukládá definice obsahu.
 - `src/game/createScene.ts` — Pixi pozadí, sprity, hotspoty a stavové indikátory.
+- `src/game/animation.ts` — vizuální hodiny, náhodné mrkání a priorita klipů.
 - `src/ui/` — herní okno, životní cyklus canvasu, dialogy, inventář a pointer drag/drop.
 - `src/editor/` — pouze vývojový editor, SVG autorování oblastí, formuláře a graf.
 - `dev/editorPlugin.ts` — lokální Vite middleware pro načtení/zápis a import assetů.
+- `dev/animationService.ts`, `animationImages.ts`, `imageEdit.ts` — vývojové AI úlohy,
+  maskování/skládání přes Sharp a serverový adaptér Images API. Bez runtime závislosti.
 - `tests/` — pravidla, průchody hry, izolované testy editoru a produkčního buildu.
 
 React vlastní obsah návrhu, herní stav a UI. Pixi vykresluje a obsluhuje kliky
@@ -125,7 +129,7 @@ obrazového formátu a povolených přípon. Produkční hosting nic z toho nepo
 ### Datový kontrakt
 
 JSON obsahuje `id`, `startScene`, `initialMessage`, `flags`, `scenes`, `items`,
-`dialogues`, `combinations`. Nový obsah lze vytvořit editorem nebo přímo úpravou
+`dialogues`, `combinations` a volitelné `animations`. Nový obsah lze vytvořit editorem nebo přímo úpravou
 JSON; žádné callbacky ani kód do obsahu nepatří. Texty pro hráče jsou slovensky,
 ID a kód anglicky. Definice se nemutují. Stav hráče obsahuje jen ID lokace, inventář,
 boolean příznaky, aktivní dialogový uzel a poslední zprávu. Výběry UI se neukládají.
@@ -175,10 +179,41 @@ importují obrázek, vytvářejí dialogy, kontrolují JSON na disku, reload, ko
 a odmítnutí neplatného zápisu. Reálný projekt ani produkci nemění. Produkční test
 ověřuje nepřítomnost editoru i zápisového API. Screenshoty/trace jsou v ignorovaném
 `test-results/`, náhledy editoru a grafu také při úspěšném průchodu.
+Animační testy kreslí masku, ukládají skutečné PNG, kontrolují chráněné pixely,
+náhled, regeneraci snímku, reload a mrkání/mluvení v Pixi i ve statickém buildu
+dočasné hry. Používají výslovně testovací obrazový zdroj, nikoli placené AI volání.
 
 Instrukce pro agenty jsou v [AGENTS.md](AGENTS.md).
 
-## Animace postav: datový a vývojový základ
+## Animace postav v Dev Mode
+
+1. V **Lokácie** vyber hotspot postavy a přiřaď její statický PNG/WebP obrázek
+   (podporován je také SVG zdroj). Otevři **Animácie postavy · AI** v inspektoru.
+2. Ponech typ **Mrkanie**, napiš například „Vytvoř mrknutí na 5 snímků“ a zvol
+   kvalitu. Počet snímků se převezme z promptu, lze ho změnit i ručně (3–12).
+3. V režimu **Iba označená oblasť** táhni obdélník kolem očí. Přidej malý okraj;
+   oblast může zahrnout obě oči. Souřadnice lze doladit číselně. Pro pohyb celé
+   postavy lze vybrat **Kompletný snímok**, pak zkontroluj konzistenci celého výstupu.
+4. **Vygenerovať / regenerovať animáciu** spustí skutečné placené API úpravy.
+   Panel ukazuje počet unikátních AI obrázků a průběh; úlohu můžeš zrušit.
+   Zrušení nezaručuje vrácení ceny již odeslaného požadavku. Návrat z Game Mode
+   naváže na poslední úlohu tohoto zdroje, dokud běží stejný vývojový server.
+5. Přehraj náhled, proklikej snímky, nastav název a fps. Obrázky lze nahradit
+   importem, snímky přidat, odebrat nebo posunout. Po přidání definice do návrhu
+   lze **Regenerovať túto snímku**; celý klip regeneruje hlavní tlačítko jako nový výsledek.
+6. **Priradiť postave** přidá definici a nastaví automatické mrkání; dolaď náhodný
+   interval. Pro typ **Rozprávanie** označ ústa a přiřaď dialog. Výraz/idle se
+   přiřadí jako základní animace, s opakováním nebo podržením posledního snímku.
+   **Pohyb bez AI** přidá jemné dýchání/kývání bez nových obrázků.
+7. **Game Mode** okamžitě testuje návrh. **Uložiť do projektu** zapíše konfiguraci
+   do JSON. PNG a `generation.json` jsou na disku už po úspěšném generování.
+   Commitni JSON i nové adresáře v `src/assets/animations/`. Nepoužité výstupy
+   můžeš ručně smazat, až nebudou odkazované. Odstranění definice soubory nemaže.
+
+Bez API klíče fungují stejné náhledy a přehrávání přes **Nová ručná animácia**
+a import snímků. Ruční klip je v panelu takto označený; nenahrazuje AI generování.
+
+### Formát a přehrávání
 
 Projekt má volitelný registr `animations`. Klip obsahuje `id`, `label`, `source`
 (ID původního assetu), `kind` (`blink/talk/expression/idle`), `frames` (ID lokálních

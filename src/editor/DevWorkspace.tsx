@@ -390,6 +390,22 @@ export default function DevWorkspace({
                     onAssets={setAssets}
                     onScene={updateScene}
                     onHotspot={updateHotspot}
+                    onAnimationCommit={(animations, hotspot) =>
+                      change({
+                        ...document,
+                        animations,
+                        scenes: document.scenes.map((entry) =>
+                          entry.id === scene.id
+                            ? {
+                                ...entry,
+                                hotspots: entry.hotspots.map((object) =>
+                                  object.id === hotspot.id ? hotspot : object,
+                                ),
+                              }
+                            : entry,
+                        ),
+                      })
+                    }
                     onDelete={() =>
                       updateScene({
                         ...scene,

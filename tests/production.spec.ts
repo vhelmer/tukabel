@@ -31,15 +31,31 @@ test('production serves a static game without editor code or write endpoints', a
       data: { content: JSON.parse(source), revision: 'unused' },
     });
     expect(write.status()).toBe(404);
+    const animationEndpoint = new URL('__tukabel/editor/animations/jobs', url)
+      .href;
+    const animationWrite = await page.request.post(animationEndpoint, {
+      headers: { Origin: new URL(url).origin, 'X-Tukabel-Editor': '1' },
+      data: { prompt: 'Blink' },
+    });
+    expect(animationWrite.status()).toBe(404);
+    const info = await page.request.get(
+      new URL('__tukabel/editor/animations/info', url).href,
+    );
+    expect(info.headers()['content-type']).not.toContain('application/json');
     expect(await readFile('src/game/content/project.json', 'utf8')).toBe(
       source,
     );
     for (const file of await readdir('dist/assets')) {
       expect(file).not.toContain('DevWorkspace');
-      if (file.endsWith('.js'))
-        expect(
-          await readFile(path.join('dist/assets', file), 'utf8'),
-        ).not.toContain('__tukabel/editor');
+      if (file.endsWith('.js')) {
+        const bundle = await readFile(path.join('dist/assets', file), 'utf8');
+        for (const serverOnly of [
+          '__tukabel/editor',
+          'OPENAI_API_KEY',
+          'api.openai.com/v1/images',
+        ])
+          expect(bundle).not.toContain(serverOnly);
+      }
     }
   } finally {
     await new Promise<void>((resolve, reject) =>
