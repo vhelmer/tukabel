@@ -122,6 +122,7 @@ export function validateProject(
       'items',
       'dialogues',
       'combinations',
+      'animations',
     ])
   )
     return errors;
@@ -157,6 +158,7 @@ export function validateProject(
           'uses',
           'image',
           'tintWhen',
+          'animation',
         ])
       )
         return;
@@ -167,6 +169,48 @@ export function validateProject(
       )
         for (const field of ['x', 'y', 'width', 'height'])
           number(hotspot.bounds[field], `${key}.${field}`);
+      if (
+        hotspot.animation !== undefined &&
+        object(hotspot.animation, `${key}.animation`, [
+          'idle',
+          'idleLoop',
+          'blink',
+          'blinkIntervalMs',
+          'talk',
+          'dialogueId',
+          'motion',
+        ])
+      ) {
+        const binding = hotspot.animation;
+        for (const field of ['idle', 'blink', 'talk', 'dialogueId'])
+          optionalString(binding, field, `${key}.animation`);
+        if (
+          binding.idleLoop !== undefined &&
+          typeof binding.idleLoop !== 'boolean'
+        )
+          errors.push(`${key}: idleLoop must be boolean`);
+        if (
+          binding.motion !== undefined &&
+          !['breath', 'sway'].includes(String(binding.motion))
+        )
+          errors.push(`${key}: invalid motion`);
+        if (binding.blinkIntervalMs !== undefined) {
+          const interval = binding.blinkIntervalMs;
+          if (
+            !Array.isArray(interval) ||
+            interval.length !== 2 ||
+            !interval.every(
+              (entry) => typeof entry === 'number' && Number.isFinite(entry),
+            ) ||
+            interval[0] < 100 ||
+            interval[1] < interval[0] ||
+            interval[1] > 120000
+          )
+            errors.push(
+              `${key}: blink interval must be [min, max] in 100–120000 ms`,
+            );
+        }
+      }
       condition(hotspot.visibleWhen, `${key}.visibleWhen`);
       condition(hotspot.tintWhen, `${key}.tintWhen`);
       asset(hotspot.image, `${key}.image`, true);
@@ -184,6 +228,83 @@ export function validateProject(
         errors.push(`${key}.uses: expected object`);
     });
   });
+  if (value.animations !== undefined)
+    list(value.animations, 'animations', (animation, path) => {
+      if (
+        !object(animation, path, [
+          'id',
+          'label',
+          'source',
+          'kind',
+          'frames',
+          'fps',
+          'generation',
+        ])
+      )
+        return;
+      string(animation.id, `${path}.id`);
+      string(animation.label, `${path}.label`);
+      asset(animation.source, `${path}.source`);
+      if (
+        !['blink', 'talk', 'expression', 'idle'].includes(
+          String(animation.kind),
+        )
+      )
+        errors.push(`${path}: invalid animation kind`);
+      list(animation.frames, `${path}.frames`, (frame, key) =>
+        asset(frame, key),
+      );
+      number(animation.fps, `${path}.fps`);
+      if (
+        animation.generation !== undefined &&
+        object(animation.generation, `${path}.generation`, [
+          'prompt',
+          'model',
+          'quality',
+          'mode',
+          'region',
+          'sourceHash',
+        ])
+      ) {
+        const generation = animation.generation;
+        string(generation.prompt, `${path}.prompt`);
+        string(generation.model, `${path}.model`);
+        if (!['low', 'medium', 'high'].includes(String(generation.quality)))
+          errors.push(`${path}: invalid quality`);
+        if (!['region', 'full'].includes(String(generation.mode)))
+          errors.push(`${path}: invalid edit mode`);
+        if (
+          typeof generation.sourceHash !== 'string' ||
+          !/^[a-f0-9]{64}$/.test(generation.sourceHash)
+        )
+          errors.push(`${path}: invalid source hash`);
+        if (generation.mode === 'region' && generation.region === undefined)
+          errors.push(`${path}: local edit requires region`);
+        if (
+          generation.region !== undefined &&
+          object(generation.region, `${path}.region`, [
+            'x',
+            'y',
+            'width',
+            'height',
+          ])
+        ) {
+          for (const key of ['x', 'y', 'width', 'height'])
+            number(generation.region[key], `${path}.region.${key}`);
+          if (
+            !Object.values(generation.region).every(
+              (entry) =>
+                typeof entry === 'number' &&
+                Number.isInteger(entry) &&
+                entry >= 0,
+            ) ||
+            Number(generation.region.width) < 1 ||
+            Number(generation.region.height) < 1
+          )
+            errors.push(`${path}: invalid pixel region`);
+        }
+      }
+    });
   list(value.items, 'items', (item, path) => {
     if (!object(item, path, ['id', 'label', 'description', 'icon', 'image']))
       return;
@@ -233,6 +354,7 @@ export function validateProject(
   for (const id of [
     content.id,
     ...content.flags,
+    ...(content.animations ?? []).map((animation) => animation.id),
     ...content.items.map((item) => item.id),
     ...content.scenes.flatMap((scene) => [
       scene.id,

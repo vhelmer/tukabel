@@ -2,16 +2,24 @@ import { useEffect, useRef, useState } from 'react';
 import { Application, Assets } from 'pixi.js';
 import type { Texture } from 'pixi.js';
 import { createScene } from '../game/createScene';
-import type { GameState, SceneCallbacks, SceneDefinition } from '../game/types';
+import type {
+  AnimationDefinition,
+  GameState,
+  SceneCallbacks,
+  SceneDefinition,
+} from '../game/types';
 
 interface GameCanvasProps extends SceneCallbacks {
   scene: SceneDefinition;
   state: GameState;
+  animations?: readonly AnimationDefinition[];
   blocked?: boolean;
   hoveredId: string | null;
   selectedId: string | null;
   showHotspots: boolean;
 }
+
+const noAnimations: readonly AnimationDefinition[] = [];
 
 export function GameCanvas(props: GameCanvasProps) {
   return <MountedCanvas key={props.scene.id} {...props} />;
@@ -20,6 +28,7 @@ export function GameCanvas(props: GameCanvasProps) {
 function MountedCanvas({
   scene,
   state,
+  animations = noAnimations,
   blocked = false,
   hoveredId,
   selectedId,
@@ -31,6 +40,7 @@ function MountedCanvas({
   useEffect(() => {
     callbacks.current = { onHover, onInteract };
   }, [onHover, onInteract]);
+  const playbackRef = useRef<(() => void) | null>(null);
   const hostRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<ReturnType<typeof createScene> | null>(null);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>(
@@ -45,9 +55,11 @@ function MountedCanvas({
     let initialized = false;
     let destroyed = false;
     let observer: ResizeObserver | undefined;
+    let stopPlayback: (() => void) | undefined;
 
     const destroy = () => {
       observer?.disconnect();
+      stopPlayback?.();
       if (initialized && !destroyed) {
         destroyed = true;
         // Assets owns cached textures; destroying one here would break remounts.
@@ -73,6 +85,17 @@ function MountedCanvas({
         const urls = [
           ...new Set([
             scene.background,
+            ...animations
+              .filter((animation) =>
+                scene.hotspots.some((hotspot) =>
+                  [
+                    hotspot.animation?.idle,
+                    hotspot.animation?.blink,
+                    hotspot.animation?.talk,
+                  ].includes(animation.id),
+                ),
+              )
+              .flatMap((animation) => animation.frames),
             ...scene.hotspots.flatMap((hotspot) =>
               hotspot.image ? [hotspot.image] : [],
             ),
@@ -95,9 +118,35 @@ function MountedCanvas({
           },
           () => app.render(),
           textures,
+          animations,
         );
         sceneRef.current = mountedScene;
         app.stage.addChild(mountedScene.root);
+        const reducedMotion = window.matchMedia(
+          '(prefers-reduced-motion: reduce)',
+        );
+        app.ticker.maxFPS = 30;
+        app.ticker.add((ticker) =>
+          mountedScene.animate(Math.min(100, ticker.deltaMS)),
+        );
+        const syncPlayback = () => {
+          if (
+            reducedMotion.matches ||
+            document.hidden ||
+            !mountedScene.hasActiveAnimations
+          )
+            app.stop();
+          else app.start();
+          if (reducedMotion.matches) mountedScene.resetMotion();
+        };
+        playbackRef.current = syncPlayback;
+        reducedMotion.addEventListener('change', syncPlayback);
+        document.addEventListener('visibilitychange', syncPlayback);
+        stopPlayback = () => {
+          reducedMotion.removeEventListener('change', syncPlayback);
+          document.removeEventListener('visibilitychange', syncPlayback);
+          playbackRef.current = null;
+        };
         app.canvas.setAttribute('aria-hidden', 'true');
         host.appendChild(app.canvas);
 
@@ -126,12 +175,13 @@ function MountedCanvas({
       sceneRef.current = null;
       destroy();
     };
-  }, [scene]);
+  }, [scene, animations]);
 
   useEffect(() => {
     if (status === 'ready') {
       sceneRef.current?.update(state, blocked);
       sceneRef.current?.highlight(hoveredId, selectedId, showHotspots);
+      playbackRef.current?.();
     }
   }, [hoveredId, selectedId, showHotspots, status, state, blocked]);
 

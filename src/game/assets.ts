@@ -33,6 +33,11 @@ export function resolveAssets(content: GameContent): GameContent {
         image: hotspot.image ? assetUrl(hotspot.image) : undefined,
       })),
     })),
+    animations: content.animations?.map((animation) => ({
+      ...animation,
+      source: assetUrl(animation.source),
+      frames: animation.frames.map(assetUrl),
+    })),
     items: content.items.map((item) => ({
       ...item,
       image: item.image ? assetUrl(item.image) : undefined,

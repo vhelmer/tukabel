@@ -10,7 +10,11 @@ import {
 } from 'node:fs/promises';
 import path from 'node:path';
 import type { IncomingMessage, ServerResponse } from 'node:http';
+import { loadEnv } from 'vite';
 import type { Plugin } from 'vite';
+import { createAnimationService, AnimationError } from './animationService.ts';
+import { openAIImageEditor } from './imageEdit.ts';
+import type { ImageEditor } from './imageEdit.ts';
 import { format, resolveConfig } from 'prettier';
 import { validateProject } from '../src/game/validateProject.ts';
 
@@ -46,7 +50,9 @@ async function listAssets(directory: string, prefix = ''): Promise<string[]> {
   return nested.flat().sort();
 }
 
-export function editorPlugin(): Plugin {
+export function editorPlugin(
+  options: { imageEditor?: ImageEditor; disableAI?: boolean } = {},
+): Plugin {
   return {
     name: 'tukabel-local-editor',
     apply: 'serve',
@@ -59,6 +65,27 @@ export function editorPlugin(): Plugin {
         'src/game/content/project.json',
       );
       const assetsRoot = path.resolve(server.config.root, 'src/assets');
+      const key =
+        process.env.OPENAI_API_KEY ||
+        loadEnv(server.config.mode, server.config.envDir, 'OPENAI_')
+          .OPENAI_API_KEY;
+      const animationService = createAnimationService(
+        assetsRoot,
+        options.disableAI
+          ? undefined
+          : (options.imageEditor ?? (key ? openAIImageEditor(key) : undefined)),
+        () => {
+          // Renaming a complete folder may not produce individual add events.
+          // Refresh the glob on the next page load without resetting the draft.
+          const modules =
+            server.environments.client.moduleGraph.getModulesByFile(
+              path.resolve(server.config.root, 'src/game/assets.ts'),
+            );
+          for (const module of modules ?? [])
+            server.environments.client.moduleGraph.invalidateModule(module);
+        },
+      );
+      server.httpServer?.once('close', () => animationService.dispose());
       let queue = Promise.resolve();
       server.middlewares.use((req, res, next) => {
         if (!req.url?.startsWith(API)) {
@@ -91,7 +118,43 @@ export function editorPlugin(): Plugin {
             respond(403, { error: 'Same-origin editor request required.' });
             return;
           }
-          const endpoint = req.url!.split('?')[0];
+          const parsedUrl = new URL(req.url!, host);
+          const endpoint = parsedUrl.pathname;
+          if (endpoint === `${API}/animations/info` && req.method === 'GET') {
+            respond(200, animationService.info);
+            return;
+          }
+          if (endpoint === `${API}/animations/source` && req.method === 'GET') {
+            respond(
+              200,
+              await animationService.sourceInfo(
+                parsedUrl.searchParams.get('id') ?? '',
+              ),
+            );
+            return;
+          }
+          if (endpoint === `${API}/animations/jobs` && req.method === 'GET') {
+            respond(200, animationService.list());
+            return;
+          }
+          if (endpoint === `${API}/animations/jobs` && req.method === 'POST') {
+            respond(202, await animationService.start(await readJson(req)));
+            return;
+          }
+          const jobEndpoint = new RegExp(
+            `^${API}/animations/jobs/([a-f0-9-]+)$`,
+          ).exec(endpoint);
+          if (jobEndpoint && req.method === 'GET') {
+            respond(200, {
+              job: animationService.get(jobEndpoint[1]!),
+              assets: await listAssets(assetsRoot),
+            });
+            return;
+          }
+          if (jobEndpoint && req.method === 'DELETE') {
+            respond(200, animationService.cancel(jobEndpoint[1]!));
+            return;
+          }
           if (endpoint === `${API}/project` && req.method === 'GET') {
             const raw = await readFile(source, 'utf8');
             respond(200, {
@@ -189,7 +252,7 @@ export function editorPlugin(): Plugin {
         // Serialize writes and reads so two tabs cannot both overwrite the same revision.
         queue = queue.then(run).catch((error: unknown) => {
           if (!(res as ServerResponse).headersSent)
-            respond(400, {
+            respond(error instanceof AnimationError ? error.status : 400, {
               error:
                 error instanceof Error
                   ? error.message
@@ -206,7 +269,8 @@ export function editorPlugin(): Plugin {
         if (
           context.file.endsWith('/src/game/content/project.json') ||
           (context.type === 'create' &&
-            context.file.includes('/src/assets/imported/'))
+            (context.file.includes('/src/assets/imported/') ||
+              context.file.includes('/src/assets/animations/')))
         )
           return [];
       },

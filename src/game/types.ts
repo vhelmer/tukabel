@@ -1,3 +1,37 @@
+export type AnimationKind = 'blink' | 'talk' | 'expression' | 'idle';
+export interface ImageRegion {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+export interface AnimationGeneration {
+  readonly prompt: string;
+  readonly model: string;
+  readonly quality: 'low' | 'medium' | 'high';
+  readonly mode: 'region' | 'full';
+  readonly region?: ImageRegion;
+  readonly sourceHash: string;
+}
+export interface AnimationDefinition {
+  readonly id: string;
+  readonly label: string;
+  readonly source: string;
+  readonly kind: AnimationKind;
+  readonly frames: readonly string[];
+  readonly fps: number;
+  readonly generation?: AnimationGeneration;
+}
+export interface CharacterAnimation {
+  readonly idle?: string;
+  readonly idleLoop?: boolean;
+  readonly blink?: string;
+  readonly blinkIntervalMs?: readonly [number, number];
+  readonly talk?: string;
+  readonly dialogueId?: string;
+  readonly motion?: 'breath' | 'sway';
+}
+
 export type Verb = 'look' | 'take' | 'talk' | 'use';
 
 export type Condition =
@@ -29,6 +63,7 @@ export interface Hotspot {
   readonly uses?: Readonly<Record<string, readonly Rule[]>>;
   // Optional local sprite, hidden together with the hotspot (e.g. a pickup).
   readonly image?: string;
+  readonly animation?: CharacterAnimation;
   readonly tintWhen?: Condition;
 }
 
@@ -77,6 +112,7 @@ export interface GameContent {
   readonly scenes: readonly SceneDefinition[];
   readonly items: readonly ItemDefinition[];
   readonly dialogues: readonly DialogueDefinition[];
+  readonly animations?: readonly AnimationDefinition[];
   readonly combinations: readonly {
     items: readonly [string, string];
     rules: readonly Rule[];

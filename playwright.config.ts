@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests',
-  testIgnore: 'rules.spec.ts',
+  testIgnore: ['rules.spec.ts', 'animation-rules.spec.ts'],
   fullyParallel: true,
   workers: 4,
   reporter: 'list',

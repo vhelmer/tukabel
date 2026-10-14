@@ -177,3 +177,50 @@ ověřuje nepřítomnost editoru i zápisového API. Screenshoty/trace jsou v ig
 `test-results/`, náhledy editoru a grafu také při úspěšném průchodu.
 
 Instrukce pro agenty jsou v [AGENTS.md](AGENTS.md).
+
+## Animace postav: datový a vývojový základ
+
+Projekt má volitelný registr `animations`. Klip obsahuje `id`, `label`, `source`
+(ID původního assetu), `kind` (`blink/talk/expression/idle`), `frames` (ID lokálních
+obrázků) a `fps` (1–30). Opakované ID snímku je v pořádku. Hotspot s `image` může
+mít `animation`: `idle`, `idleLoop`, `blink`, `blinkIntervalMs: [min, max]`, `talk`,
+`dialogueId` a `motion: "breath" | "sway"`. Zdroj klipu musí odpovídat obrázku postavy.
+Přehrávání má prioritu talk → blink → idle / originál; náhodné čekání mrknutí je
+ve výchozím nastavení 3–7 sekund. Mluvení běží při aktivním přiřazeném dialogu;
+bez explicitního `dialogueId` se odvodí z efektů akcí `talk`. Nejde o audio lipsync.
+Pohyby i snímky jsou vizuální stav, nikoli součást uloženého postupu. Pixi ticker
+se spouští jen pro viditelné animované postavy, pauzuje v menu/skryté záložce a
+respektuje reduced motion. Statické scény nadále zůstávají bez trvalého loopu.
+
+Lokální generátor používá OpenAI `gpt-image-2` přes Images API a jeden obrázek na
+unikátní pózu. Pětisnímkové mrknutí používá dvě AI pózy a originál v pořadí
+originál / přivřené / zavřené / přivřené / originál. Pro lokální úpravu server vytvoří
+kontextový výřez a PNG masku; po návratu změní pouze označený obdélník a zachová
+původní alfu. Maska samotná je u modelu jen vodítko, zbytek chrání přesné skládání
+pixelů. Výstupy mají původní rozměry a ukládají se do `src/assets/animations/` s
+`generation.json` (model, prompt, hash zdroje, maska a pořadí snímků).
+Režim celých snímků tuto záruku nemá a vyžaduje vizuální kontrolu.
+
+Nastavení skutečného generování:
+
+```sh
+cp .env.example .env.local
+# Do .env.local nastav OPENAI_API_KEY a potom spusť / restartuj npm run dev.
+```
+
+Klíč vytvoř v [OpenAI platformě](https://platform.openai.com/api-keys) a povol
+účtu obrázkový model / API kredit. Nikdy nepoužívej prefix `VITE_`. Klíč čte pouze
+lokální server, nepíše se do JSON, metadat, odpovědí ani produkčního bundlu.
+Bez klíče API vrátí 503 a nic nefinguje. Nemění se běh produkce ani herní save/load.
+Generování běží jako úloha s průběhem a zrušením; jediná aktivní úloha omezuje
+souběžné placené požadavky. Chyby se automaticky neopakují. Úspěšné PNG a metadata
+se zveřejní společným přejmenováním adresáře; neúspěšná/zrušená úloha nezanechá snímky.
+Zdroj se kontroluje hashem, statický PNG/WebP/SVG je omezen na 2048 × 2048 px / 6 MB;
+SVG se nejprve převede na PNG. Výběr masky je v pixelech tohoto zdroje.
+
+Výchozí kvalita medium: dva 1024×1024 výstupy mají orientační cenu 0,106 USD **plus
+vstupní tokeny**; výsledná cena závisí na modelu, kvalitě a vstupu. Viz
+[oficiální přehled generování a cen](https://developers.openai.com/api/docs/guides/image-generation)
+a [Images edits API](https://developers.openai.com/api/reference/resources/images/methods/edit).
+Živé generování vyžaduje vlastní klíč. Automatické testy jej nepoužívají: ověřují
+HTTP adaptér a skládání s kontrolovanými odpověďmi, nikoli kvalitu skutečného modelu.

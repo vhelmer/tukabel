@@ -61,6 +61,19 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
 - Editorové E2E zapisují do dočasných kopií projektu, nikdy do pracovních zdrojů.
   Při změně ukládání ověř reálný soubor, reload, konflikt i odmítnutí neplatných dat.
 
+## Animace postav
+
+- Registr `animations` je volitelnou součástí JSON projektu. Klipy odkazují na
+  lokální snímky a původní `source`; vazba hotspotu musí používat stejný obrázek.
+- Přehrávání je čistě vizuální: talk má přednost před blink a idle. Ticker zapínej
+  jen pro aktivní postavy, uklízej listenery a respektuj pauzu / reduced motion.
+- AI pipeline je pouze v `dev/`. Klíč `OPENAI_API_KEY` patří do prostředí serveru
+  nebo ignorovaného `.env.local`, nikdy do `VITE_`, klienta nebo autorského JSON.
+- Lokální AI úprava musí zaručit shodu pixelů mimo masku a zachovat původní alfu.
+  Prompt a maska samotné nestačí. Snímky a provenance jsou v `src/assets/animations/`.
+- Testy nesmějí účtovat živé API požadavky. Používej kontrolované odpovědi modelu
+  a dočasné assety; bez skutečného klíče netvrď, že byla ověřena kvalita generování.
+
 ## Aktuální rozsah
 
 Dvě zkušební lokace: kontextové akce i explicitní slovesa, inventář a kombinace,

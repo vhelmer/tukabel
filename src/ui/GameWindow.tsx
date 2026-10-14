@@ -285,6 +285,7 @@ export function GameWindow({
         <GameCanvas
           scene={scene}
           state={state}
+          animations={content.animations}
           hoveredId={currentHover?.id ?? null}
           selectedId={null}
           showHotspots={showHotspots}

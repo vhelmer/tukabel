@@ -25,6 +25,10 @@ export function validateContent(content: GameContent): string[] {
     content.dialogues.map((entry) => entry.id),
     'dialogues',
   );
+  const animations = collect(
+    (content.animations ?? []).map((animation) => animation.id),
+    'animations',
+  );
   const reference = (set: Set<string>, id: string, path: string) => {
     if (!set.has(id)) errors.push(`${path}: unknown reference "${id}"`);
   };
@@ -87,6 +91,30 @@ export function validateContent(content: GameContent): string[] {
         errors.push(`${path}: bounds outside scene`);
       if (!hotspot.actions[hotspot.defaultVerb]?.length)
         errors.push(`${path}: missing default action`);
+      if (hotspot.animation) {
+        if (!hotspot.image)
+          errors.push(`${path}: animated character needs an image`);
+        for (const key of ['idle', 'blink', 'talk'] as const) {
+          const id = hotspot.animation[key];
+          if (!id) continue;
+          reference(animations, id, `${path}/${key}`);
+          const definition = content.animations?.find(
+            (animation) => animation.id === id,
+          );
+          if (definition && definition.source !== hotspot.image)
+            errors.push(
+              `${path}/${key}: animation source must match character image`,
+            );
+          if (definition && key !== 'idle' && definition.kind !== key)
+            errors.push(`${path}/${key}: expected ${key} clip`);
+        }
+        if (hotspot.animation.dialogueId)
+          reference(
+            dialogues,
+            hotspot.animation.dialogueId,
+            `${path}/dialogue`,
+          );
+      }
       condition(hotspot.visibleWhen, path);
       condition(hotspot.tintWhen, path);
       Object.entries(hotspot.actions).forEach(([verb, values]) =>
@@ -97,6 +125,16 @@ export function validateContent(content: GameContent): string[] {
         rules(values, `${path}/use/${item}`);
       });
     }
+  }
+  for (const animation of content.animations ?? []) {
+    if (!animation.frames.length || animation.frames.length > 24)
+      errors.push(`${animation.id}: expected 1–24 animation frames`);
+    if (
+      !Number.isFinite(animation.fps) ||
+      animation.fps < 1 ||
+      animation.fps > 30
+    )
+      errors.push(`${animation.id}: fps must be 1–30`);
   }
   for (const dialogue of content.dialogues) {
     const nodes = collect(
