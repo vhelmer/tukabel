@@ -22,7 +22,7 @@ export function DialoguePanel({
   }, []);
   useEffect(() => {
     panel.current?.querySelector('button')?.focus();
-  }, [node?.id]);
+  }, [state.dialogue?.id, node?.id]);
   if (!node) return null;
   return (
     <div

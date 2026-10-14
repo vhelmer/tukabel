@@ -28,7 +28,7 @@ async function getTape(page: Page) {
 test('complete adventure uses canvas, dialogue, combinations, dynamic world, transitions and save/load', async ({
   page,
   isMobile,
-}) => {
+}, testInfo) => {
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
   page.on('console', (message) => {
@@ -37,6 +37,11 @@ test('complete adventure uses canvas, dialogue, combinations, dynamic world, tra
   await page.goto('/');
   await ready(page);
   const canvas = page.locator('.canvas-host canvas');
+  const originalCanvas = await canvas.elementHandle();
+  await page.screenshot({
+    path: testInfo.outputPath('workshop.png'),
+    fullPage: true,
+  });
   const activate = async (x: number, y: number) => {
     const point = await pointInScene(canvas, x, y);
     if (isMobile) await page.touchscreen.tap(point.x, point.y);
@@ -108,12 +113,25 @@ test('complete adventure uses canvas, dialogue, combinations, dynamic world, tra
   await activate(440, 480);
   await expect(reaction(page)).toContainText('Zapojené!');
   await expect(fixed).toHaveCount(0);
+  expect(await originalCanvas!.evaluate((element) => element.isConnected)).toBe(
+    true,
+  );
   expect((await canvas.screenshot()).equals(unpowered)).toBe(false);
+  await page.getByRole('button', { name: 'Správca', exact: true }).click();
+  await page.getByRole('button', { name: 'Router už svieti.' }).click();
+  await expect(page.getByRole('dialog')).toContainText(
+    'Dvere do dvora sú odomknuté.',
+  );
+  await page.getByRole('button', { name: 'Vďaka, idem sa pozrieť.' }).click();
   await activate(1220, 440);
   await ready(page);
   await expect(page.locator('.scene-toolbar')).toContainText('Skúšobný dvor');
   await activate(820, 320);
   await expect(reaction(page)).toContainText('Ukážka dokončená!');
+  await page.screenshot({
+    path: testInfo.outputPath('courtyard.png'),
+    fullPage: true,
+  });
   await page.getByRole('button', { name: 'Uložiť hru', exact: true }).click();
   await expect(page.getByRole('status', { name: 'Ukladanie' })).toContainText(
     'Hra je uložená',
@@ -256,4 +274,55 @@ test('an unavailable background shows a recoverable loading error', async ({
   await page.getByRole('button', { name: 'Obnoviť stránku' }).click();
   await ready(page);
   await expect(page.getByRole('alert')).toHaveCount(0);
+});
+
+test('leaving a scene while its assets load disposes the old Pixi application', async ({
+  page,
+}) => {
+  const errors: string[] = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  let releaseBackground!: () => void;
+  const backgroundGate = new Promise<void>((resolve) => {
+    releaseBackground = resolve;
+  });
+  await page.route('**/demo-room.svg', async (route) => {
+    await backgroundGate;
+    await route.continue();
+  });
+  const request = page.waitForRequest('**/demo-room.svg');
+  await page.goto('/');
+  await request;
+  await expect(page.locator('.scene-notice')).toContainText(
+    'Pripravujem lokáciu',
+  );
+  // HTML controls remain usable even while the canvas is still loading.
+  await getTape(page);
+  await page
+    .getByRole('button', { name: 'Kábel pri stoličke', exact: true })
+    .click();
+  await page
+    .getByRole('button', { name: 'Poškodený kábel', exact: true })
+    .click();
+  await page
+    .getByRole('button', { name: 'Izolačná páska', exact: true })
+    .click();
+  await page
+    .getByRole('button', { name: 'Opravený kábel', exact: true })
+    .click();
+  await page.getByRole('button', { name: 'Router', exact: true }).click();
+  await page
+    .getByRole('button', { name: 'Dvere do dvora', exact: true })
+    .click();
+  await ready(page);
+  await expect(page.locator('.scene-toolbar')).toContainText('Skúšobný dvor');
+  const response = page.waitForResponse('**/demo-room.svg');
+  releaseBackground();
+  await response;
+  await page
+    .getByRole('button', { name: 'Späť do skúšobne', exact: true })
+    .click();
+  await ready(page);
+  await page.getByRole('button', { name: 'Router', exact: true }).click();
+  await expect(reaction(page)).toContainText('Router svieti.');
+  expect(errors).toEqual([]);
 });

@@ -140,7 +140,8 @@ Nebo nastav `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/google-chrome`.
 Testy spustí vlastní Vite server a nemají přístup k produkci. Desktop a dotykový
 profil ověřují kompletní hádanku, změnu velikosti canvasu, chybné použití,
 opakovaný dialog, přechody tam/zpět, save/load po reloadu, klávesnici, poškozené
-úložiště a obnovu po chybě assetu. Při selhání uloží screenshot/trace do
+úložiště, obnovu po chybě assetu a přechod během pomalého načítání. Průchod také
+ukládá náhledy obou lokací. Při selhání uloží screenshot/trace do
 ignorovaného `test-results/`.
 
 Instrukce pro agenty jsou v [AGENTS.md](AGENTS.md).
