@@ -1,6 +1,7 @@
 import { Container, Graphics, Rectangle, Sprite } from 'pixi.js';
 import type { Texture } from 'pixi.js';
-import type { SceneCallbacks, SceneDefinition } from './types';
+import type { GameState, SceneCallbacks, SceneDefinition } from './types';
+import { matches } from './state';
 
 // A background and a few interactive regions, rather than a general game engine.
 export function createScene(
@@ -8,6 +9,7 @@ export function createScene(
   texture: Texture,
   callbacks: SceneCallbacks,
   render: () => void,
+  textures: ReadonlyMap<string, Texture>,
 ) {
   const root = new Container();
   const background = new Sprite(texture);
@@ -17,6 +19,8 @@ export function createScene(
   root.addChild(background);
 
   const outlines = new Map<string, Graphics>();
+  const regions = new Map<string, Container>();
+  const indicators = new Map<string, Graphics>();
   for (const hotspot of definition.hotspots) {
     const { x, y, width, height } = hotspot.bounds;
     const region = new Container();
@@ -25,6 +29,22 @@ export function createScene(
     region.cursor = 'pointer';
     region.hitArea = new Rectangle(0, 0, width, height);
 
+    if (hotspot.image) {
+      const sprite = new Sprite(textures.get(hotspot.image));
+      sprite.width = width;
+      sprite.height = height;
+      sprite.eventMode = 'none';
+      region.addChild(sprite);
+    }
+    if (hotspot.tintWhen) {
+      const indicator = new Graphics()
+        .roundRect(0, height - 18, width, 16, 6)
+        .fill(0xb6e582);
+      indicator.eventMode = 'none';
+      indicator.visible = false;
+      indicators.set(hotspot.id, indicator);
+      region.addChild(indicator);
+    }
     const outline = new Graphics()
       .roundRect(0, 0, width, height, 18)
       .fill({ color: 0xffd16e, alpha: 0.13 })
@@ -38,11 +58,22 @@ export function createScene(
       if (event.button === 0) callbacks.onInteract(hotspot);
     });
     outlines.set(hotspot.id, outline);
+    regions.set(hotspot.id, region);
     root.addChild(region);
   }
 
   return {
     root,
+    update(state: GameState) {
+      for (const hotspot of definition.hotspots) {
+        const region = regions.get(hotspot.id)!;
+        region.visible = matches(state, hotspot.visibleWhen);
+        region.eventMode = state.dialogue ? 'none' : 'static';
+        const indicator = indicators.get(hotspot.id);
+        if (indicator) indicator.visible = matches(state, hotspot.tintWhen);
+      }
+      render();
+    },
     resize(width: number, height: number) {
       const scale = Math.min(
         width / definition.width,

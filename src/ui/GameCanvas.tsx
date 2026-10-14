@@ -2,10 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import { Application, Assets } from 'pixi.js';
 import type { Texture } from 'pixi.js';
 import { createScene } from '../game/createScene';
-import type { SceneCallbacks, SceneDefinition } from '../game/types';
+import type { GameState, SceneCallbacks, SceneDefinition } from '../game/types';
 
 interface GameCanvasProps extends SceneCallbacks {
   scene: SceneDefinition;
+  state: GameState;
   hoveredId: string | null;
   selectedId: string | null;
   showHotspots: boolean;
@@ -17,12 +18,17 @@ export function GameCanvas(props: GameCanvasProps) {
 
 function MountedCanvas({
   scene,
+  state,
   hoveredId,
   selectedId,
   showHotspots,
   onHover,
   onInteract,
 }: GameCanvasProps) {
+  const callbacks = useRef({ onHover, onInteract });
+  useEffect(() => {
+    callbacks.current = { onHover, onInteract };
+  }, [onHover, onInteract]);
   const hostRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<ReturnType<typeof createScene> | null>(null);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>(
@@ -62,13 +68,31 @@ function MountedCanvas({
           destroy();
           return;
         }
-        const texture = await Assets.load<Texture>(scene.background);
+        const urls = [
+          ...new Set([
+            scene.background,
+            ...scene.hotspots.flatMap((hotspot) =>
+              hotspot.image ? [hotspot.image] : [],
+            ),
+          ]),
+        ];
+        const loaded = await Promise.all(
+          urls.map(
+            async (url) => [url, await Assets.load<Texture>(url)] as const,
+          ),
+        );
+        const textures = new Map(loaded);
+        const texture = textures.get(scene.background)!;
         if (disposed) return;
         const mountedScene = createScene(
           scene,
           texture,
-          { onHover, onInteract },
+          {
+            onHover: (hotspot) => callbacks.current.onHover(hotspot),
+            onInteract: (hotspot) => callbacks.current.onInteract(hotspot),
+          },
           () => app.render(),
+          textures,
         );
         sceneRef.current = mountedScene;
         app.stage.addChild(mountedScene.root);
@@ -100,19 +124,21 @@ function MountedCanvas({
       sceneRef.current = null;
       destroy();
     };
-  }, [scene, onHover, onInteract]);
+  }, [scene]);
 
   useEffect(() => {
-    if (status === 'ready')
+    if (status === 'ready') {
+      sceneRef.current?.update(state);
       sceneRef.current?.highlight(hoveredId, selectedId, showHotspots);
-  }, [hoveredId, selectedId, showHotspots, status]);
+    }
+  }, [hoveredId, selectedId, showHotspots, status, state]);
 
   return (
     <div className="scene-frame" aria-label={`Lokácia: ${scene.title}`}>
       <div className="canvas-host" ref={hostRef} />
       {status === 'loading' && (
         <div className="scene-notice" role="status">
-          Pripravujem skúšobňu…
+          Pripravujem lokáciu…
         </div>
       )}
       {status === 'error' && (

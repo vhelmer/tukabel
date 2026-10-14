@@ -307,3 +307,178 @@ h1 em {
     gap: 7px;
   }
 }
+
+.world-controls {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.verb-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 24px 16px;
+}
+.verb-controls button,
+.item-actions button,
+.save-controls button,
+.dialogue-panel button {
+  background: #ffffff09;
+  border: 1px solid #ffffff30;
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 13px;
+}
+button[aria-pressed='true'] {
+  color: var(--yellow);
+  border-color: var(--yellow);
+  background: #ffd16e12;
+}
+button:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+fieldset:disabled {
+  opacity: 0.55;
+}
+.inventory {
+  border: 0;
+  border-top: 1px solid #ffffff20;
+  margin: 0;
+  padding: 16px 24px 20px;
+  min-width: 0;
+}
+.inventory legend {
+  padding: 0 8px;
+  font-size: 13px;
+  color: var(--yellow);
+}
+.inventory legend span,
+.muted {
+  color: var(--muted);
+}
+.inventory-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.inventory-item {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: #172823;
+  border: 1px solid #ffffff30;
+  border-radius: 8px;
+  font-size: 13px;
+}
+.inventory-item > span {
+  font-size: 30px;
+  color: var(--yellow);
+}
+.muted {
+  font-size: 13px;
+}
+.item-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+  font-size: 12px;
+}
+.item-actions > span {
+  flex: 1 1 250px;
+}
+.dialogue-panel {
+  border: 1px solid #ffd16e50;
+  border-radius: 8px;
+  margin: 0 24px 22px;
+  padding: 22px;
+  background: #172823;
+  animation: appear 0.18s ease-out;
+}
+.dialogue-panel > p {
+  line-height: 1.6;
+}
+.dialogue-choices {
+  display: grid;
+  gap: 8px;
+}
+.dialogue-choices button {
+  text-align: left;
+}
+.dialogue-choices button:hover {
+  border-color: var(--yellow);
+}
+.dialogue-panel .text-button {
+  border: 0;
+  color: var(--muted);
+  margin-top: 10px;
+}
+.save-controls {
+  padding: 16px 24px;
+  border-top: 1px solid #ffffff20;
+  background: #17282355;
+}
+.save-controls > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.save-controls p {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 0;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.message {
+  animation: appear 0.18s ease-out;
+}
+.canvas-host {
+  animation: appear 0.25s ease-out;
+}
+@keyframes appear {
+  from {
+    opacity: 0.25;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+@media (max-width: 760px) {
+  .verb-controls {
+    padding: 0 14px 14px;
+  }
+  .inventory,
+  .save-controls {
+    padding: 16px 14px;
+  }
+  .dialogue-panel {
+    margin: 0 14px 18px;
+    padding: 16px;
+  }
+  .inventory-item {
+    flex: 1 1 130px;
+  }
+}

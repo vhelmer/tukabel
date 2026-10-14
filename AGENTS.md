@@ -33,8 +33,23 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
   na kontext předchozí session. Skills přidej až pro prokázaný opakovaný workflow,
   nikoli pro běžné přidání hotspotu nebo spuštění npm příkazů.
 
+## Herní obsah a stav
+
+- Autorský obsah piš jako readonly TypeScriptová data bez callbacků: lokace v
+  `src/game/scenes/`, předměty/dialogy/registr v `src/game/content/`. Vše v Gitu.
+- Pravidla akcí vybírají první vyhovující podmínku; bezpodmínečný fallback patří
+  poslední. Podmínky a efekty jsou společné pro akce, kombinace i dialogy.
+- Nové příznaky registruj v `content.flags`. ID drž stabilní; při nekompatibilní
+  změně obsahu změň `content.id`. Definice nemutuj, postup mění pouze čistý reducer.
+- Sebratelné objekty kresli samostatným `image` a skrývej přes `visibleWhen`,
+  nikoli jako součást trvalého pozadí. UI výběr nepatří do uložené pozice.
+- `npm run check` zahrnuje i validaci skutečného obsahu a testy pravidel.
+  Řešitelnost nové hádanky ověř průchodem v `tests/scene.spec.ts`.
+
 ## Aktuální rozsah
 
-Technické demo jedné lokace, hover/tap/klik, vizuální odezva a HTML ovládání
-klávesnicí. Příběh, inventář, dialogový systém, ukládání ani hádanky zatím nejsou
-implementované. Další funkce přidávej postupně podle zadání.
+Dvě zkušební lokace: kontextové akce i explicitní slovesa, inventář a kombinace,
+podmíněné dialogy, stav hádanky, dynamické hotspoty, přechody a verzovaný ruční
+save/load v localStorage. Ovládání canvasem, dotykem i HTML klávesnicí. Krátká
+kompletní technická hádanka bez skutečného příběhu a finálních assetů.
+Podrobnosti formátu a průchod jsou v README. Pohyb postavy a zvuk zatím chybí.

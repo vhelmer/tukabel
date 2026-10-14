@@ -91,6 +91,10 @@
     <path d="m1072 168-12 34 60 4-5-36" fill="#c47f57"/>
     <path d="M1080 169v-50q0-14 11-12t9 15v19q0 7 9 6t7-21q0-13 10-11t6 24q-2 25-30 23v10Z" fill="#8c9f6c" stroke-width="5"/>
     <path d="m1086 130 1 3m10-2 1 3m-11 13 9 0" stroke-width="3"/>
+    <!-- Test exit: the label remains visible beside the socket. -->
+    <path d="M1177 345h94v200h-94Z" fill="#6f8270" stroke-width="5"/>
+    <circle cx="1194" cy="450" r="5" fill="#f1d282" stroke="none"/>
+    <text x="1224" y="385" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#f5e3b7" stroke="none">DVOR →</text>
     <!-- Floor clutter is decoration, not an implied inventory puzzle. -->
     <path d="m966 584 104 11-13 68-66-8Z" fill="#a6a692"/>
     <path d="m974 602 82 7m-61 8 3 25m18-24 0 26m19-24-3 25" fill="none" stroke-width="3"/>
