@@ -45,7 +45,7 @@ export function EditorStage({
     mode: Gesture['mode'],
     hotspot?: Hotspot,
   ) {
-    if (event.button !== 0) return;
+    if (event.button !== 0 || gesture.current) return;
     const start = point(event);
     if (!start) return;
     event.stopPropagation();

@@ -423,4 +423,27 @@ test('write API rejects foreign origins, malformed data, missing assets and stal
   await expect(
     page.getByRole('button', { name: 'Game Mode', exact: true }),
   ).toBeDisabled();
+  await page.getByLabel('Šírka lokácie', { exact: true }).fill('1280');
+  await page.getByRole('button', { name: '+ Lokácia', exact: true }).click();
+  await page.getByLabel('Šírka lokácie', { exact: true }).fill('64');
+  await page.getByLabel('Výška lokácie', { exact: true }).fill('48');
+  await page.getByRole('button', { name: '+ Objekt', exact: true }).click();
+  await expect(page.getByRole('alert')).toHaveCount(0);
+  const x = Number(
+    await page.getByLabel('Oblasť x', { exact: true }).inputValue(),
+  );
+  const y = Number(
+    await page.getByLabel('Oblasť y', { exact: true }).inputValue(),
+  );
+  const width = Number(
+    await page.getByLabel('Oblasť width', { exact: true }).inputValue(),
+  );
+  const height = Number(
+    await page.getByLabel('Oblasť height', { exact: true }).inputValue(),
+  );
+  expect(x + width).toBeLessThanOrEqual(64);
+  expect(y + height).toBeLessThanOrEqual(48);
+  await expect(
+    page.getByRole('button', { name: 'Game Mode', exact: true }),
+  ).toBeEnabled();
 });

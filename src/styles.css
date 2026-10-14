@@ -187,7 +187,9 @@ button[aria-pressed='true'] {
   font-size: clamp(11px, 1.2vw, 14px);
   box-shadow: 0 5px 20px #0004;
   pointer-events: none;
-  white-space: nowrap;
+  max-width: min(280px, calc(100% - 20px));
+  width: max-content;
+  text-align: center;
   z-index: 2;
 }
 .reaction {

@@ -60,6 +60,21 @@ export function GameWindow({
   >(null);
   const suppressClick = useRef(false);
   const viewport = useRef<HTMLDivElement>(null);
+  const menuButton = useRef<HTMLButtonElement>(null);
+  const [areaSize, setAreaSize] = useState({ width: 0, height: 0 });
+  useEffect(() => {
+    const element = viewport.current;
+    if (!element) return;
+    const observer = new ResizeObserver(([entry]) => {
+      if (entry)
+        setAreaSize({
+          width: entry.contentRect.width,
+          height: entry.contentRect.height,
+        });
+    });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
   const scene = content.scenes.find((entry) => entry.id === state.sceneId)!;
   const hotspots = scene.hotspots.filter((hotspot) =>
     matches(state, hotspot.visibleWhen),
@@ -90,9 +105,10 @@ export function GameWindow({
   );
   const finishDrag = useCallback(() => {
     const current = dragRef.current;
+    dragRef.current = null;
+    if (current?.active) suppressClick.current = true;
     if (current?.element.hasPointerCapture(current.pointerId))
       current.element.releasePointerCapture(current.pointerId);
-    dragRef.current = null;
     setDrag(null);
   }, []);
   useEffect(() => {
@@ -100,6 +116,7 @@ export function GameWindow({
       if (event.key === 'Escape') {
         if (menu) {
           setMenu(false);
+          menuButton.current?.focus();
           return;
         }
         finishDrag();
@@ -185,21 +202,22 @@ export function GameWindow({
       }
       finishDrag();
     };
-    const cancel = () => {
-      if (dragRef.current?.active) suppressClick.current = true;
-      finishDrag();
+    const cancel = (event: PointerEvent) => {
+      if (dragRef.current?.pointerId === event.pointerId) finishDrag();
     };
     window.addEventListener('pointermove', move, { passive: false });
     window.addEventListener('pointerup', up);
     window.addEventListener('pointercancel', cancel);
+    window.addEventListener('lostpointercapture', cancel);
     return () => {
       window.removeEventListener('pointermove', move);
       window.removeEventListener('pointerup', up);
       window.removeEventListener('pointercancel', cancel);
+      window.removeEventListener('lostpointercapture', cancel);
     };
   }, [scene, hotspots, state.dialogue, dispatch, menu, finishDrag]);
   function startDrag(event: ReactPointerEvent<HTMLButtonElement>, id: string) {
-    if (event.button !== 0 || state.dialogue || menu) return;
+    if (event.button !== 0 || state.dialogue || menu || dragRef.current) return;
     suppressClick.current = false;
     event.currentTarget.setPointerCapture(event.pointerId);
     dragRef.current = {
@@ -229,6 +247,14 @@ export function GameWindow({
     setObjectsOpen(false);
   }
 
+  const sceneScale = Math.min(
+    areaSize.width / scene.width,
+    areaSize.height / scene.height,
+  );
+  const sceneLeft = (areaSize.width - scene.width * sceneScale) / 2;
+  const sceneTop = (areaSize.height - scene.height * sceneScale) / 2;
+  const labelPadding = Math.min(150, areaSize.width / 2);
+
   return (
     <section className="game-window" aria-label="Herné okno">
       <header className="game-topbar">
@@ -244,6 +270,7 @@ export function GameWindow({
             {showHotspots ? 'Skryť predmety' : 'Ukázať predmety'}
           </button>
           <button
+            ref={menuButton}
             aria-expanded={menu}
             onClick={() => {
               finishDrag();
@@ -269,8 +296,16 @@ export function GameWindow({
           <div
             className="scene-label"
             style={{
-              left: `${Math.min(80, Math.max(20, ((currentHover.bounds.x + currentHover.bounds.width / 2) / scene.width) * 100))}%`,
-              top: `${Math.min(67, Math.max(12, (currentHover.bounds.y / scene.height) * 100))}%`,
+              left: Math.max(
+                labelPadding,
+                Math.min(
+                  areaSize.width - labelPadding,
+                  sceneLeft +
+                    (currentHover.bounds.x + currentHover.bounds.width / 2) *
+                      sceneScale,
+                ),
+              ),
+              top: Math.max(56, sceneTop + currentHover.bounds.y * sceneScale),
             }}
           >
             {(dragItem?.label ?? item?.label)
@@ -316,9 +351,27 @@ export function GameWindow({
               className="game-menu"
               role="dialog"
               aria-label="Herné menu"
+              aria-modal="true"
+              onKeyDown={(event) => {
+                if (event.key !== 'Tab') return;
+                const controls =
+                  event.currentTarget.querySelectorAll<HTMLButtonElement>(
+                    'button:not(:disabled)',
+                  );
+                const first = controls[0];
+                const last = controls[controls.length - 1];
+                if (event.shiftKey && document.activeElement === first) {
+                  event.preventDefault();
+                  last?.focus();
+                } else if (!event.shiftKey && document.activeElement === last) {
+                  event.preventDefault();
+                  first?.focus();
+                }
+              }}
             >
               <h2>Pauza na kávu</h2>
               <button
+                autoFocus
                 onClick={() => {
                   const result = saveGame(content, state);
                   setStorageMessage(
@@ -352,6 +405,7 @@ export function GameWindow({
                     'Nová hra. Ručne uložená pozícia ostáva dostupná.',
                   );
                   setMenu(false);
+                  menuButton.current?.focus();
                 }}
               >
                 Nová hra
@@ -359,7 +413,14 @@ export function GameWindow({
               <p role="status" aria-label="Ukladanie">
                 {storageMessage}
               </p>
-              <button onClick={() => setMenu(false)}>Pokračovať v hre</button>
+              <button
+                onClick={() => {
+                  setMenu(false);
+                  menuButton.current?.focus();
+                }}
+              >
+                Pokračovať v hre
+              </button>
             </section>
           </div>
         )}

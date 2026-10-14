@@ -250,3 +250,65 @@ test('missing background is recoverable and late loads cannot recreate an abando
   await (await object(page, 'Router')).click();
   await expect(reaction(page)).toContainText('Router svieti');
 });
+
+test('canceling drags never selects an item and menu keyboard focus stays contained', async ({
+  page,
+  isMobile,
+}) => {
+  await page.goto('/');
+  await ready(page);
+  await activate(page, 150, 620, isMobile);
+  const cable = page.getByRole('button', {
+    name: 'Poškodený kábel',
+    exact: true,
+  });
+  const box = (await cable.boundingBox())!;
+  const start = { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+  if (isMobile) {
+    const session = await page.context().newCDPSession(page);
+    await session.send('Input.dispatchTouchEvent', {
+      type: 'touchStart',
+      touchPoints: [{ ...start, id: 1 }],
+    });
+    await session.send('Input.dispatchTouchEvent', {
+      type: 'touchMove',
+      touchPoints: [{ x: start.x + 14, y: start.y, id: 1 }],
+    });
+    await expect(page.locator('.drag-ghost')).toBeVisible();
+    await session.send('Input.dispatchTouchEvent', {
+      type: 'touchCancel',
+      touchPoints: [],
+    });
+    await expect(page.locator('.drag-ghost')).toHaveCount(0);
+    await session.detach();
+  } else {
+    await page.mouse.move(start.x, start.y);
+    await page.mouse.down();
+    await page.mouse.move(start.x + 14, start.y, { steps: 3 });
+    await expect(page.locator('.drag-ghost')).toBeVisible();
+    await page.keyboard.press('Escape');
+    await page.mouse.up();
+    await expect(page.locator('.drag-ghost')).toHaveCount(0);
+  }
+  await expect(cable).toHaveAttribute('aria-pressed', 'false');
+  await cable.focus();
+  await page.keyboard.press('Enter');
+  await expect(cable).toHaveAttribute('aria-pressed', 'true');
+  await page.getByRole('button', { name: 'Menu', exact: true }).click();
+  await expect(
+    page.getByRole('button', { name: 'Uložiť hru', exact: true }),
+  ).toBeFocused();
+  await page.keyboard.press('Shift+Tab');
+  await expect(
+    page.getByRole('button', { name: 'Pokračovať v hre', exact: true }),
+  ).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(
+    page.getByRole('button', { name: 'Uložiť hru', exact: true }),
+  ).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(
+    page.getByRole('button', { name: 'Menu', exact: true }),
+  ).toBeFocused();
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+});

@@ -357,14 +357,16 @@ export default function DevWorkspace({
                       </select>
                     </Field>
                     <button
-                      onClick={() =>
+                      onClick={() => {
+                        const x = Math.min(100, Math.floor(scene.width / 4));
+                        const y = Math.min(100, Math.floor(scene.height / 4));
                         createHotspot({
-                          x: 100,
-                          y: 100,
-                          width: Math.min(160, scene.width - 100),
-                          height: Math.min(100, scene.height - 100),
-                        })
-                      }
+                          x,
+                          y,
+                          width: Math.max(1, Math.min(160, scene.width - x)),
+                          height: Math.max(1, Math.min(100, scene.height - y)),
+                        });
+                      }}
                     >
                       + Objekt
                     </button>
