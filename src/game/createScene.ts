@@ -64,11 +64,11 @@ export function createScene(
 
   return {
     root,
-    update(state: GameState) {
+    update(state: GameState, blocked = false) {
       for (const hotspot of definition.hotspots) {
         const region = regions.get(hotspot.id)!;
         region.visible = matches(state, hotspot.visibleWhen);
-        region.eventMode = state.dialogue ? 'none' : 'static';
+        region.eventMode = state.dialogue || blocked ? 'none' : 'static';
         const indicator = indicators.get(hotspot.id);
         if (indicator) indicator.visible = matches(state, hotspot.tintWhen);
       }

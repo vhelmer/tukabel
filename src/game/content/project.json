@@ -1,0 +1,409 @@
+{
+  "id": "tukabel-demo-1",
+  "startScene": "workshop",
+  "initialMessage": "Oživ router a otvor dvere do dvora. Správca ti poradí. Toto je krátka skúška herných systémov.",
+  "flags": ["tapeGiven", "cableTaken", "powered", "completed"],
+  "scenes": [
+    {
+      "id": "workshop",
+      "title": "Skúšobňa",
+      "width": 1280,
+      "height": 720,
+      "background": "demo-room.svg",
+      "hotspots": [
+        {
+          "id": "router",
+          "label": "Router",
+          "bounds": {
+            "x": 300,
+            "y": 340,
+            "width": 285,
+            "height": 180
+          },
+          "defaultVerb": "look",
+          "tintWhen": {
+            "flag": "powered"
+          },
+          "actions": {
+            "look": [
+              {
+                "when": {
+                  "flag": "powered"
+                },
+                "message": "Router svieti. Dvere do dvora sú odomknuté."
+              },
+              {
+                "message": "Dve antény. Tri kontrolky. Chýba mu opravený kábel."
+              }
+            ],
+            "use": [
+              {
+                "message": "Najprv vyber opravený kábel v inventári, potom klikni na router."
+              }
+            ]
+          },
+          "uses": {
+            "cable": [
+              {
+                "message": "Poškodený kábel nezapojím. Najprv ho opravím páskou."
+              }
+            ],
+            "fixedCable": [
+              {
+                "when": {
+                  "not": {
+                    "flag": "powered"
+                  }
+                },
+                "message": "Zapojené! Router ožil a dvere do dvora cvakli.",
+                "effects": [
+                  {
+                    "type": "removeItem",
+                    "id": "fixedCable"
+                  },
+                  {
+                    "type": "flag",
+                    "id": "powered",
+                    "value": true
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "mug",
+          "label": "Hrnček",
+          "bounds": {
+            "x": 665,
+            "y": 415,
+            "width": 160,
+            "height": 135
+          },
+          "defaultVerb": "look",
+          "actions": {
+            "look": [
+              {
+                "message": "Káva už vychladla. Technický problém ostáva horúci."
+              }
+            ],
+            "take": [
+              {
+                "message": "Hrnček patrí správcovi. Ten má na kávu autorské práva."
+              }
+            ]
+          }
+        },
+        {
+          "id": "socket",
+          "label": "Zásuvka",
+          "bounds": {
+            "x": 1030,
+            "y": 300,
+            "width": 125,
+            "height": 160
+          },
+          "defaultVerb": "look",
+          "actions": {
+            "look": [
+              {
+                "message": "Zásuvka je len kulisa. Skúšobný router má vlastný bezpečný zdroj."
+              }
+            ]
+          }
+        },
+        {
+          "id": "cable",
+          "label": "Kábel pri stoličke",
+          "bounds": {
+            "x": 70,
+            "y": 580,
+            "width": 180,
+            "height": 95
+          },
+          "image": "cable.svg",
+          "visibleWhen": {
+            "not": {
+              "flag": "cableTaken"
+            }
+          },
+          "defaultVerb": "take",
+          "actions": {
+            "look": [
+              {
+                "message": "Poškodený kábel. Páska by mu vrátila pracovné sebavedomie."
+              }
+            ],
+            "take": [
+              {
+                "message": "Zdvihol si poškodený kábel.",
+                "effects": [
+                  {
+                    "type": "addItem",
+                    "id": "cable"
+                  },
+                  {
+                    "type": "flag",
+                    "id": "cableTaken",
+                    "value": true
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "caretaker",
+          "label": "Správca",
+          "bounds": {
+            "x": 830,
+            "y": 270,
+            "width": 180,
+            "height": 290
+          },
+          "image": "caretaker.svg",
+          "defaultVerb": "talk",
+          "actions": {
+            "look": [
+              {
+                "message": "Skúšobný správca. Zatiaľ má viac odpovedí než animácií."
+              }
+            ],
+            "talk": [
+              {
+                "message": "Začal si rozhovor so správcom.",
+                "effects": [
+                  {
+                    "type": "dialogue",
+                    "id": "caretaker"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "exit",
+          "label": "Dvere do dvora",
+          "bounds": {
+            "x": 1170,
+            "y": 340,
+            "width": 105,
+            "height": 210
+          },
+          "defaultVerb": "use",
+          "actions": {
+            "look": [
+              {
+                "message": "Elektrický zámok je prepojený s routerom. Architektúru radšej nesúď."
+              }
+            ],
+            "use": [
+              {
+                "when": {
+                  "flag": "powered"
+                },
+                "message": "Vyšiel si do skúšobného dvora.",
+                "effects": [
+                  {
+                    "type": "scene",
+                    "id": "courtyard"
+                  },
+                  {
+                    "type": "flag",
+                    "id": "completed",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "message": "Zamknuté. Správca možno vie, ako oživiť router."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "courtyard",
+      "title": "Skúšobný dvor",
+      "width": 1280,
+      "height": 720,
+      "background": "courtyard.svg",
+      "hotspots": [
+        {
+          "id": "return",
+          "label": "Späť do skúšobne",
+          "bounds": {
+            "x": 60,
+            "y": 160,
+            "width": 245,
+            "height": 410
+          },
+          "defaultVerb": "use",
+          "actions": {
+            "use": [
+              {
+                "message": "Späť v skúšobni. Router stále funguje.",
+                "effects": [
+                  {
+                    "type": "scene",
+                    "id": "workshop"
+                  }
+                ]
+              }
+            ],
+            "look": [
+              {
+                "message": "Dvere ostali otvorené. Technický pokrok."
+              }
+            ]
+          }
+        },
+        {
+          "id": "sign",
+          "label": "Skúšobná tabuľa",
+          "bounds": {
+            "x": 580,
+            "y": 220,
+            "width": 500,
+            "height": 240
+          },
+          "defaultVerb": "look",
+          "actions": {
+            "look": [
+              {
+                "message": "Ukážka dokončená! Rozhovor, inventár, kombinovanie, hádanka aj prechod fungujú. Skutočný príbeh príde neskôr."
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "cable",
+      "label": "Poškodený kábel",
+      "description": "Prerušená izolácia. Pred zapojením ho treba opraviť páskou.",
+      "icon": "〰"
+    },
+    {
+      "id": "tape",
+      "label": "Izolačná páska",
+      "description": "Univerzálna odpoveď údržby. Skús ju spojiť s káblom.",
+      "icon": "◉"
+    },
+    {
+      "id": "fixedCable",
+      "label": "Opravený kábel",
+      "description": "Izolácia drží. Kábel môže ísť do skúšobného routera.",
+      "icon": "⌁"
+    }
+  ],
+  "dialogues": [
+    {
+      "id": "caretaker",
+      "start": "greeting",
+      "nodes": [
+        {
+          "id": "greeting",
+          "speaker": "Skúšobný správca",
+          "text": "Vitaj v testovacej prevádzke. Dvere fungujú, keď funguje router. Tak sme to objednali.",
+          "choices": [
+            {
+              "id": "askRepair",
+              "text": "Ako opravím router?",
+              "next": "repair"
+            },
+            {
+              "id": "report",
+              "text": "Router už svieti.",
+              "when": {
+                "flag": "powered"
+              },
+              "next": "done"
+            },
+            {
+              "id": "bye",
+              "text": "Zatiaľ sa rozhliadnem."
+            }
+          ]
+        },
+        {
+          "id": "repair",
+          "speaker": "Skúšobný správca",
+          "text": "Kábel leží pri stoličke. Oprav ho izolačnou páskou a použi na router. Zásuvku nechaj na pokoji, toto je len bezpečná maketa.",
+          "choices": [
+            {
+              "id": "getTape",
+              "text": "Môžem si vziať pásku?",
+              "when": {
+                "not": {
+                  "flag": "tapeGiven"
+                }
+              },
+              "effects": [
+                {
+                  "type": "flag",
+                  "id": "tapeGiven",
+                  "value": true
+                },
+                {
+                  "type": "addItem",
+                  "id": "tape"
+                }
+              ],
+              "message": "Správca ti podal izolačnú pásku.",
+              "next": "greeting"
+            },
+            {
+              "id": "back",
+              "text": "Rozumiem. Ešte niečo…",
+              "next": "greeting"
+            },
+            {
+              "id": "leave",
+              "text": "Idem na to."
+            }
+          ]
+        },
+        {
+          "id": "done",
+          "speaker": "Skúšobný správca",
+          "text": "Výborne. Dvere do dvora sú odomknuté. Tam už na teba čaká len koniec ukážky.",
+          "choices": [
+            {
+              "id": "finish",
+              "text": "Vďaka, idem sa pozrieť."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "combinations": [
+    {
+      "items": ["cable", "tape"],
+      "rules": [
+        {
+          "message": "Páska drží. Máš opravený kábel.",
+          "effects": [
+            {
+              "type": "removeItem",
+              "id": "cable"
+            },
+            {
+              "type": "removeItem",
+              "id": "tape"
+            },
+            {
+              "type": "addItem",
+              "id": "fixedCable"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

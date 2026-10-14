@@ -46,6 +46,7 @@ export interface ItemDefinition {
   readonly label: string;
   readonly description: string;
   readonly icon: string;
+  readonly image?: string;
 }
 
 export interface DialogueNode {

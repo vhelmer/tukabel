@@ -1,0 +1,215 @@
+import { createHash, randomUUID } from 'node:crypto';
+import {
+  lstat,
+  mkdir,
+  readFile,
+  readdir,
+  rename,
+  unlink,
+  writeFile,
+} from 'node:fs/promises';
+import path from 'node:path';
+import type { IncomingMessage, ServerResponse } from 'node:http';
+import type { Plugin } from 'vite';
+import { format, resolveConfig } from 'prettier';
+import { validateProject } from '../src/game/validateProject.ts';
+
+const API = '/__tukabel/editor';
+const hash = (text: string) => createHash('sha256').update(text).digest('hex');
+const loopback = (host: string) =>
+  ['localhost', '127.0.0.1', '[::1]'].includes(host);
+const imagePattern = /^[a-zA-Z0-9_/-]+\.(svg|png|jpe?g|webp|avif)$/;
+
+async function readJson(req: IncomingMessage): Promise<unknown> {
+  if (!req.headers['content-type']?.startsWith('application/json'))
+    throw new Error('Expected application/json');
+  const chunks: Buffer[] = [];
+  let size = 0;
+  for await (const chunk of req) {
+    size += chunk.length;
+    if (size > 9 * 1024 * 1024)
+      throw new Error('Request is too large (max 9 MB)');
+    chunks.push(Buffer.from(chunk));
+  }
+  return JSON.parse(Buffer.concat(chunks).toString('utf8'));
+}
+async function listAssets(directory: string, prefix = ''): Promise<string[]> {
+  const entries = await readdir(directory, { withFileTypes: true });
+  const nested = await Promise.all(
+    entries.map(async (entry) => {
+      const id = `${prefix}${entry.name}`;
+      if (entry.isDirectory())
+        return listAssets(path.join(directory, entry.name), `${id}/`);
+      return entry.isFile() && imagePattern.test(id) ? [id] : [];
+    }),
+  );
+  return nested.flat().sort();
+}
+
+export function editorPlugin(): Plugin {
+  return {
+    name: 'tukabel-local-editor',
+    apply: 'serve',
+    configureServer(server) {
+      // configureServer never runs in build or preview. A middleware-only Vite
+      // loader (content validation) does not need an editor API either.
+      if (server.config.server.middlewareMode) return;
+      const source = path.resolve(
+        server.config.root,
+        'src/game/content/project.json',
+      );
+      const assetsRoot = path.resolve(server.config.root, 'src/assets');
+      let queue = Promise.resolve();
+      server.middlewares.use((req, res, next) => {
+        if (!req.url?.startsWith(API)) {
+          next();
+          return;
+        }
+        const respond = (status: number, value: unknown) => {
+          res.writeHead(status, {
+            'Content-Type': 'application/json',
+            'Cache-Control': 'no-store',
+            'X-Content-Type-Options': 'nosniff',
+          });
+          res.end(JSON.stringify(value));
+        };
+        const run = async () => {
+          const host = new URL(`http://${req.headers.host ?? 'invalid'}`);
+          const remote = req.socket.remoteAddress;
+          if (
+            !loopback(host.hostname) ||
+            !['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(remote ?? '')
+          ) {
+            respond(403, { error: 'Editor is available on loopback only.' });
+            return;
+          }
+          if (
+            req.method !== 'GET' &&
+            (req.headers.origin !== host.origin ||
+              req.headers['x-tukabel-editor'] !== '1')
+          ) {
+            respond(403, { error: 'Same-origin editor request required.' });
+            return;
+          }
+          const endpoint = req.url!.split('?')[0];
+          if (endpoint === `${API}/project` && req.method === 'GET') {
+            const raw = await readFile(source, 'utf8');
+            respond(200, {
+              content: JSON.parse(raw),
+              revision: hash(raw),
+              assets: await listAssets(assetsRoot),
+            });
+          } else if (endpoint === `${API}/project` && req.method === 'PUT') {
+            const body = (await readJson(req)) as {
+              content?: unknown;
+              revision?: unknown;
+            } | null;
+            const errors = validateProject(
+              body?.content,
+              await listAssets(assetsRoot),
+            );
+            if (errors.length) {
+              respond(422, { error: 'Invalid project', errors });
+              return;
+            }
+            const stat = await lstat(source);
+            if (!stat.isFile() || stat.isSymbolicLink())
+              throw new Error('Project must be a regular source file.');
+            const raw = await readFile(source, 'utf8');
+            if (body?.revision !== hash(raw)) {
+              respond(409, {
+                error:
+                  'Súbor sa medzitým zmenil. Načítaj ho znovu; tvoje zmeny neboli prepísané.',
+              });
+              return;
+            }
+            const formatted = await format(JSON.stringify(body.content), {
+              ...(await resolveConfig(source)),
+              filepath: source,
+            });
+            const temporary = `${source}.${randomUUID()}.tmp`;
+            try {
+              await writeFile(temporary, formatted, {
+                flag: 'wx',
+                mode: stat.mode,
+              });
+              // Recheck after formatting and staging to protect edits made outside the editor.
+              if (hash(await readFile(source, 'utf8')) !== body.revision) {
+                respond(409, {
+                  error: 'Súbor sa medzitým zmenil. Načítaj ho znovu.',
+                });
+                return;
+              }
+              await rename(temporary, source);
+              respond(200, { revision: hash(formatted) });
+            } finally {
+              await unlink(temporary).catch(() => {});
+            }
+          } else if (endpoint === `${API}/assets` && req.method === 'POST') {
+            const body = (await readJson(req)) as {
+              name?: unknown;
+              data?: unknown;
+            } | null;
+            if (
+              typeof body?.name !== 'string' ||
+              typeof body.data !== 'string' ||
+              body.data.length > 8 * 1024 * 1024
+            )
+              throw new Error('Invalid image upload (max 6 MB)');
+            const extension = path.extname(body.name).toLowerCase();
+            const bytes = Buffer.from(body.data, 'base64');
+            const valid =
+              extension === '.png'
+                ? bytes
+                    .subarray(0, 8)
+                    .equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))
+                : ['.jpg', '.jpeg'].includes(extension)
+                  ? bytes[0] === 255 && bytes[1] === 216
+                  : extension === '.webp' &&
+                    bytes.toString('ascii', 0, 4) === 'RIFF' &&
+                    bytes.toString('ascii', 8, 12) === 'WEBP';
+            if (!valid || !bytes.length || bytes.length > 6 * 1024 * 1024)
+              throw new Error(
+                'Only PNG, JPEG and WebP images up to 6 MB are supported.',
+              );
+            const folder = path.join(assetsRoot, 'imported');
+            await mkdir(folder, { recursive: true });
+            if ((await lstat(folder)).isSymbolicLink())
+              throw new Error('Asset folder must not be a symbolic link.');
+            const stem =
+              path
+                .basename(body.name, extension)
+                .replace(/[^a-zA-Z0-9_-]/g, '-')
+                .slice(0, 48) || 'image';
+            const id = `imported/${stem}-${randomUUID().slice(0, 8)}${extension}`;
+            await writeFile(path.join(assetsRoot, id), bytes, { flag: 'wx' });
+            respond(201, { id, assets: await listAssets(assetsRoot) });
+          } else respond(404, { error: 'Unknown editor endpoint or method.' });
+        };
+        // Serialize writes and reads so two tabs cannot both overwrite the same revision.
+        queue = queue.then(run).catch((error: unknown) => {
+          if (!(res as ServerResponse).headersSent)
+            respond(400, {
+              error:
+                error instanceof Error
+                  ? error.message
+                  : 'Editor request failed.',
+            });
+        });
+      });
+    },
+    hotUpdate: {
+      order: 'post',
+      handler(context) {
+        // Suppress glob-triggered reloads when importing a new asset as well as
+        // project saves. Vite still invalidates modules for the next page load.
+        if (
+          context.file.endsWith('/src/game/content/project.json') ||
+          (context.type === 'create' &&
+            context.file.includes('/src/assets/imported/'))
+        )
+          return [];
+      },
+    },
+  };
+}

@@ -1,147 +1,179 @@
 # TUKABEL: Záhada strateného kábla
 
-Základ komediální 2D point-and-click adventury pro třídenní AI hackathon.
-TypeScript + React + Vite, scény v PixiJS 8. Kompletně v prohlížeči,
-bez backendu a externích služeb za běhu. Obsah i lokální assety žijí v Gitu.
+Prohlížečová point-and-click adventura a lokální vizuální editor pro třídenní
+AI hackathon. TypeScript + React + Vite + PixiJS 8. Herní obsah i assety jsou v Gitu.
+Produkční hra je statická aplikace bez backendu; editor zapisuje pouze při lokálním vývoji.
 
 ## Spuštění a kontrola
 
-Node.js **20.19+ nebo 22.12+** a npm.
+Node.js **20.19+ nebo 22.12+** a npm:
 
 ```sh
 npm ci
 npm run dev
-npm run check             # lint, formát, obsah, pravidla, typy a produkční build
-npm run validate:content  # odkazy a konzistence skutečných herních definic
-npm run test:rules        # reducer, validátor a save/load bez prohlížeče
-npm run preview          # lokální náhled již vytvořeného dist/
+npm run check             # lint, formát, validace JSON/odkazů, pravidla, typy, build
+npm run validate:content  # skutečný projekt včetně dostupnosti assetů
+npm run test:rules        # reducer, validátor, save/load a souřadnice bez prohlížeče
+npm run preview          # produkční hra z dist/, bez editoru a zápisového API
 ```
 
-Vite standardně vypíše `http://localhost:5173`. `dist/` lze vystavit na statickém
-hostingu, i v podadresáři. `file://` není podporované; použij HTTP server.
+Vite standardně vypíše `http://localhost:5173`. Pro editor používej lokální HTTP
+adresu `localhost` nebo `127.0.0.1`, nikoli síťovou IP. `dist/` funguje na statickém
+hostingu i v podadresáři. `file://` není podporované.
 
-## Hratelná ukázka
+## Dev Mode: tvorba → test → Git
 
-Dvě zkušební lokace demonstrují rozhovor, podmíněné odpovědi, inventář,
-kombinování, použití předmětu, změnu prostředí, přechod a ruční save/load.
-Jde o technickou hádanku s dočasným obsahem, nikoli skutečný příběh.
+1. V lokální aplikaci přepni **Dev Mode**. Editor načte aktuální zdroj a jeho revizi.
+2. V **Lokácie** vyber nebo vytvoř lokaci. Přiřaď pozadí a původní rozměry.
+   **Nakresliť hotspot** vytvoří obdélník tažením v obrázku. Klik oblast vybere,
+   tažení ji posune, dolní pravý roh mění velikost. Souřadnice lze zadat i číselně.
+   Editor ukazuje i podmíněně skryté objekty; editace nespouští herní akce.
+3. V inspektoru nastav jméno, obrázek, viditelnost, kontextové sloveso a pravidla
+   `look/take/talk/use`. Podmínky i efekty mají formuláře a výběr existujících ID.
+   Pravidla a efekty lze přidávat, odstraňovat a přesouvat nahoru.
+   Sekce použití inventáře nastavuje reakce na konkrétní předmět.
+4. V **Predmety** vytvoř inventární položky, popisy a symboly/obrázky.
+   **Dialógy** spravují rozhovory, uzly, odpovědi, další uzly, podmínky a efekty.
+   **Hádanky** obsahují herní příznaky, kombinace, úvodní zprávu a výchozí lokaci.
+5. **Mapa logiky** zobrazuje podmínky → konkrétní akce/odpovědi → efekty včetně
+   inventáře, příznaků, lokací a pokračování dialogů. Filtruj podle ID/textu,
+   klikem otevři definici. Zelená hodnotí podmínky vůči poslednímu hernímu náhledu;
+   graf nenahrazuje kontrolu pořadí pravidel ani důkaz řešitelnosti hádanky.
+6. **Game Mode** nebo **Otestovať odtiaľto** spustí aktuální návrh od začátku
+   vybrané lokace, s prázdným inventářem a nenastavenými příznaky. Zápis na disk
+   není potřeba. Návrat do Dev Mode zachová rozpracovaný obsah. Chybná data
+   blokují test i uložení a editor zobrazí konkrétní chyby.
+7. **Uložiť do projektu** skutečně zapíše `src/game/content/project.json`.
+   Zdroj se ukládá jako formátovaný JSON atomickým přejmenováním dočasného souboru.
+   Uložení neobnovuje stránku a zachová pracovní návrh. **Späť / Znova** drží
+   posledních 50 úprav v paměti; jeden dokončený tah hotspotu je jedna úprava.
+8. Prohlédni `git diff` a commitni JSON a případné nové assety. Editor Git příkazy
+   nespouští. Neuložený návrh se při obnovení stránky ztratí.
 
-Průchod: promluv se správcem → zeptej se na opravu → požádej o pásku → ukonči
-rozhovor → seber kabel u židle → spoj kabel s páskou v inventáři → vyber opravený
-kabel a klikni na router → použij dveře do dvora → prozkoumej tabuli.
-Lze se vrátit do první místnosti; vyřešený stav zůstává zachovaný.
+Změní-li soubor jiná záložka nebo coding agent, server vrátí konflikt a novější
+soubor nepřepíše. **Zahodiť zmeny a načítať** explicitně převezme zdroj z disku;
+předchozí návrh ještě lze vrátit přes Späť. Automatické slučování změn není implementované.
+ID nových objektů jsou automatická a stabilní. Při mazání používaného předmětu,
+příznaku nebo dialogu oprav i související odkazy, případně operaci vrať.
 
-- Klik/tap provede kontextovou akci objektu. Lišta dovoluje explicitně vybrat
-  prozkoumání, sebrání, rozhovor nebo použití.
-- Klik na inventář vybere předmět. Další klik ve scéně jej použije; klik na jiný
-  předmět v inventáři zkusí kombinaci v libovolném pořadí. Chybný pokus nic nespotřebuje.
-  Vybraný předmět lze samostatně prozkoumat. Escape nebo druhý klik výběr zruší.
-- Zvýraznění funguje při hoveru, při zaměření HTML tlačítka a přepínačem všech
-  hotspotů. Všechny akce mají HTML ovládání přes Tab/Enter, včetně dialogů.
-  Rozhovor blokuje interakce se světem; Escape jej ukončí.
-- Sebraný kabel zmizí i z canvasu, opravený router dostane zelený indikátor.
-  Přechody a reakce mají krátké prolínání respektující omezení pohybu systému.
-- **Uložit hru** přepíše jeden lokální slot; **Načíst hru** obnoví i rozmluvený
-  dialog. Po reloadu začíná nová hra a uloženou lze načíst tlačítkem. **Nová hra**
-  slot nemaže. Není automatické ukládání. Slot patří konkrétnímu prohlížeči a originu.
-  Nepřístupné úložiště, cizí verze nebo poškozená data zobrazí zprávu a zachovají hru.
+Existující obrázky se vybírají ze `src/assets/`. PNG/JPEG/WebP do 6 MB lze importovat
+přímo z formuláře; import ihned vytvoří nový soubor v `src/assets/imported/` a přiřadí
+jej. Nový soubor má jedinečné jméno, nic nepřepisuje. Importované soubory zůstávají
+na disku i při vrácení úpravy; nepoužité případně ručně odstraň. SVG a AVIF lze přidat
+přímo do repozitáře. Názvy assetů používej bez mezer a diakritiky (`a-z`, číslice,
+`_`, `-`, podadresáře). Assety se při buildu importují přes Vite; žádné CDN.
 
-## Mapa projektu a architektura
+## Game Mode
 
-- `src/game/types.ts` — datové typy obsahu, podmínek, efektů, stavu a příkazů.
-- `src/game/content/` — seznam předmětů, dialogy a registr obsahu s kombinacemi.
-- `src/game/scenes/` — definice lokací, hotspotů a reakcí.
-- `src/game/state.ts` — čistý reducer, vyhodnocení podmínek a aplikace efektů.
-- `src/game/validateContent.ts` — kontrola ID, odkazů, rozměrů a pořadí pravidel.
-- `src/game/storage.ts` — verzovaná JSON obálka, validace a lokální save/load.
-- `src/game/createScene.ts` — Pixi pozadí, lokální sprity, hotspoty a stavové indikátory.
-- `src/ui/` — životní cyklus Pixi canvasu, inventář a dialogové UI.
-- `src/App.tsx` — React reducer a dočasný stav ovládání (sloveso, výběr, hover).
-- `src/assets/` — lokální SVG; pozadí lze nahradit PNG/WebP přes Vite import.
-- `tests/` — testy pravidel a skutečné průchody v Chromium.
+Herní okno se vejde do viewportu: nahoře je název lokace a menu, uprostřed scéna
+s popisky, reakcemi a dialogy, dole lišta sloves a inventář. Herní prvky nejsou pod
+canvasem mimo hlavní okno. Na úzkém displeji mají lišty vlastní horizontální posun;
+na nízkém displeji se inventář a akce skládají vedle sebe. Celá scéna se škáluje
+se zachováním poměru stran, včetně hotspotů. Letterbox okraje nejsou interaktivní.
 
-React vlastní veškerý stav. Pixi dostává definici a stav k vykreslení, vrací pouze
-hover/klik. Celá scéna se škáluje ve společných souřadnicích 1280×720. Změna stavu
-aktualizuje existující canvas, přechod lokace jej bezpečně vymění. Asynchronní init
-je odolný vůči unmountu a StrictMode; observer, aplikace a listenery se uklízejí.
-Textury sdílí cache Assets. Statické scény nepotřebují trvalý render loop.
+- Klik/tap provede kontextovou akci; sloveso lze zvolit explicitně.
+- Inventární předmět **přetáhni na druhý předmět** pro kombinaci nebo **do scény**
+  pro použití. Pointer capture funguje myší i dotykem. Náhled taženého předmětu,
+  zvýraznění cíle a reakce potvrzují výsledek. Neplatný/cancelovaný drop nic nespotřebuje.
+- Alternativa bez přetahování: vyber předmět a klikni na cíl. Tab/Enter ovládá
+  skutečná HTML tlačítka; **Objekty** otevře seznam objektů uvnitř scény.
+  Vybranou položku lze prozkoumat tlačítkem nebo dvojklikem.
+- Escape ruší výběr/tah, zavírá menu nebo rozhovor. Dialog blokuje akce světa.
+  **Ukázať predmety** zvýrazní hotspoty. Krátké přechody respektují reduced motion.
+- **Menu** obsahuje ruční **Uložiť hru**, **Načítať hru** a **Nová hra**. Postup
+  zůstává v jednom verzovaném localStorage slotu daného originu, oddělený od obsahu.
+  Načítá se až na požádání a obnovuje i rozmluvený dialog. Nová hra slot nemaže.
+  Poškozené, nekompatibilní či nedostupné úložiště nepřepíše aktuální postup.
 
-Není zde ECS, event bus, backend ani skriptovací jazyk. Herní příkaz reducer
-zpracuje atomicky. Událost je konkrétní seznam efektů; stav hádanky vyjadřují
-pojmenované boolean příznaky a vlastnictví předmětů. Pohyb postavy, dabing, zvuk,
-více slotů, migrace starších pozic a rozsáhlé animace zatím implementované nejsou.
+Ukázkový průchod: správce → dotaz na opravu → vyžádat pásku → ukončit rozhovor →
+sebrat kabel u židle → přetáhnout pásku na kabel → opravený kabel na router → dveře
+do dvora → tabule. Lze se vrátit; vyřešený stav zůstává. Jde o technickou hádanku
+se dvěma lokacemi, bez finálního příběhu a assetů. Pohyb postavy a zvuk zatím chybí.
 
-## Tvorba obsahu
+## Obsah a architektura
 
-Obsah zapisuj jako typované **TypeScriptové datové objekty**, bez callbacků a
-vedlejších účinků. Je to čitelná alternativa JSON s komentáři, kontrolou typů a
-přímými Vite importy assetů; změna obsahu nevyžaduje změnu reduceru ani UI.
-Novou lokaci přidej do `src/game/scenes/` a registru `content.scenes`. Postavy jsou
-hotspoty s akcí `talk`; jejich texty patří do `content/dialogues.ts`. Položky
-inventáře přidej do `content/items.ts`. Hráčské texty piš slovensky.
+- `src/game/content/project.json` — **jediný zdroj autorského obsahu**: lokace,
+  objekty, předměty, dialogy, příznaky a kombinace. Jeden soubor zjednodušuje atomický
+  zápis a kontrolu konfliktů; nevznikají rozporné částečné zápisy několika souborů.
+- `src/game/content/index.ts` — validované načtení JSON.
+- `src/game/assets.ts` — mapa stabilních ID assetů na Vite URL pro runtime.
+- `src/game/types.ts` — smlouva obsahu, podmínek, efektů, příkazů a hráčského stavu.
+- `src/game/validateProject.ts` — runtime kontrola struktury JSON a lokálních assetů.
+- `src/game/validateContent.ts` — ID, odkazy, rozměry, pořadí pravidel, duplicity.
+- `src/game/state.ts` — původní čistý reducer; stejná pravidla v náhledu i produkci.
+- `src/game/storage.ts` — save/load postupu; nikdy neukládá definice obsahu.
+- `src/game/createScene.ts` — Pixi pozadí, sprity, hotspoty a stavové indikátory.
+- `src/ui/` — herní okno, životní cyklus canvasu, dialogy, inventář a pointer drag/drop.
+- `src/editor/` — pouze vývojový editor, SVG autorování oblastí, formuláře a graf.
+- `dev/editorPlugin.ts` — lokální Vite middleware pro načtení/zápis a import assetů.
+- `tests/` — pravidla, průchody hry, izolované testy editoru a produkčního buildu.
 
-Každá lokace/předmět/dialog má stabilní globální ID. Hotspoty jsou unikátní v lokaci,
-uzly v dialogu a odpovědi v uzlu. Příznaky předem registruj v `content.flags`;
-nepřítomný příznak má hodnotu `false`. Definice jsou readonly, hráčský stav obsahuje
-jen ID lokace, seznam předmětů, příznaky, aktivní dialogový uzel a poslední zprávu.
+React vlastní obsah návrhu, herní stav a UI. Pixi vykresluje a obsluhuje kliky
+herní scény; editor pro své geometrické nástroje používá SVG nad stejnými souřadnicemi.
+Při hraní se změny postupu promítají do existujícího canvasu. Přechod/remount
+bezpečně uklízí observer, listenery a asynchronní Pixi aplikaci ve StrictMode.
+Statické scény nemají trvalý render loop. Není zde ECS, event bus ani obecný engine.
 
-Podmínky: `{ flag: 'powered' }`, `{ flag: 'powered', value: false }`,
-`{ item: 'tape' }`, `{ not: condition }`, `{ all: [condition, ...] }`.
-Nepřítomná podmínka vždy platí. Stejné podmínky používají `visibleWhen`,
-`tintWhen`, pravidla akcí i dialogové odpovědi.
+Editor se načítá přes podmínku `import.meta.env.DEV`; jeho JS/CSS ani API klient
+se do produkčního bundlu nedostanou. Middleware používá pouze `configureServer`,
+nikoli preview. Přijímá jen loopback Host a spojení; zápisy navíc vyžadují shodný
+Origin a vlastní hlavičku editoru. Cílový JSON má pevnou cestu, klient neposílá
+libovolné cesty k zápisu. Server validuje celý projekt znovu, porovnává SHA-256
+revizi zdroje a serializuje souběžné požadavky. Import má limit velikosti, kontrolu
+obrazového formátu a povolených přípon. Produkční hosting nic z toho nepotřebuje.
 
-Akce `look/take/talk/use` mají seřazená pravidla `{ when?, message, effects? }`.
-**První vyhovující pravidlo vyhrává**; bezpodmínečnou reakci dej poslední.
-`defaultVerb` určuje kontextový klik. `uses` mapuje ID předmětu na pravidla jeho
-použití. Nedefinovaná akce/kombinace má bezpečnou výchozí reakci. Pravidla kombinací
-jsou v registru a jsou symetrická; spotřebu ingrediencí zapiš explicitně efekty.
+### Datový kontrakt
 
-Efekty (v uvedeném pořadí):
+JSON obsahuje `id`, `startScene`, `initialMessage`, `flags`, `scenes`, `items`,
+`dialogues`, `combinations`. Nový obsah lze vytvořit editorem nebo přímo úpravou
+JSON; žádné callbacky ani kód do obsahu nepatří. Texty pro hráče jsou slovensky,
+ID a kód anglicky. Definice se nemutují. Stav hráče obsahuje jen ID lokace, inventář,
+boolean příznaky, aktivní dialogový uzel a poslední zprávu. Výběry UI se neukládají.
 
-```ts
-[
-  { type: 'removeItem', id: 'fixedCable' },
-  { type: 'flag', id: 'powered', value: true },
-  { type: 'addItem', id: 'tape' },
-  { type: 'scene', id: 'courtyard' },
-  { type: 'dialogue', id: 'caretaker' },
-];
-```
+Podmínky: `{ "flag": "powered" }`, `{ "flag": "powered", "value": false }`,
+`{ "item": "tape" }`, `{ "not": condition }`, `{ "all": [condition, ...] }`.
+Bez podmínky pravidlo platí vždy. Nepřítomný příznak je false. Podmínky používají
+pravidla, dialogové odpovědi, `visibleWhen` i `tintWhen`.
 
-Používej jen efekty potřebné pro danou akci. `addItem` nevytvoří duplicitní předmět.
-Jednorázový pickup schovej přes příznak `visibleWhen`; jeho `image` je samostatný
-lokální sprite, takže se schová spolu s hotspotem. Věc, která má zmizet, nekresli do
-trvalého pozadí. Rozměry sprite odpovídají bounds hotspotu. `tintWhen` rozsvítí
-jednoduchý zelený indikátor (pro složitější změnu použij podmíněné hotspoty/sprity).
+Pravidlo má `when?`, `message`, `effects?`. **První vyhovující vyhrává**, takže
+bezpodmínečná reakce patří poslední. `defaultVerb` určuje kontextový klik;
+`uses` mapuje ID inventárních položek na pravidla použití. Kombinace jsou symetrické.
+Efekty v pořadí mění příznak (`flag`, `id`, `value`), přidají/odeberou položku
+(`addItem`/`removeItem`, `id`), přepnou lokaci (`scene`, `id`) nebo otevřou dialog
+(`dialogue`, `id`). Spotřebu ingrediencí zapisuj explicitně efekty; duplicitní
+inventární položky nevznikají. Chybějící akce má bezpečnou obecnou reakci.
 
-Dialog má `start` a uzly `{ id, speaker, text, choices }`. Odpověď má `id`, `text`,
-volitelnou podmínku, efekty, zprávu a `next` (ID uzlu stejného dialogu). Bez `next`
-rozhovor skončí; efekty mohou otevřít jiný dialog. V každém uzlu ponech dostupný
-odchod; UI navíc vždy dovolí rozhovor ukončit bez efektu. Hlášení výsledku akce
-patří do `message`, promluva postavy do `text`.
+Sebratelné věci mají samostatný `image` a `visibleWhen`, nejsou zapečené do pozadí.
+Obrázek objektu sdílí jeho `bounds`. Inventární `image` je volitelný. `tintWhen`
+rozsvítí jednoduchý zelený indikátor. ID obrázků jsou cesty relativně k `src/assets/`.
+Dialog má `start` a uzly `id/speaker/text/choices`; odpověď má `id/text`, případně
+`when/effects/message/next`. Bez `next` rozhovor skončí. UI navíc vždy dovolí odchod.
 
-`npm run validate:content` přes Vite načte skutečné definice a odmítne chybné
-odkazy v podmínkách/efektech, chybějící dialogové uzly, duplicity ID i kombinací,
-chybějící kontextové akce, zastíněná pravidla a hotspoty mimo scénu. Běží v `check`
-a obsah se kontroluje také při startu hry. TypeScript hlídá tvar autorských dat.
-Validátor nedokazuje řešitelnost hádanek; tu ověřuj automatickým průchodem.
-Při nekompatibilní změně obsahu změň `content.id`; při změně struktury save zvyš
-verzi obálky a klíč v `storage.ts`. Zatím se staré pozice odmítají bez migrace.
+Validátor kontroluje tvar JSON, neznámá pole, lokální assety, stabilní/duplicitní ID,
+neexistující odkazy, výchozí akce, dialogové uzly, kombinace, zastíněná pravidla
+a hotspoty mimo scénu. Řešitelnost se ověřuje průchodem. Při nekompatibilní změně
+obsahu změň `id` projektu; strukturu uložených pozic verzuj v `storage.ts`.
+Starší nekompatibilní pozice se odmítají, migrace zatím nejsou implementované.
 
-## Ověření v prohlížeči
+## Prohlížečové testy
 
 ```sh
 npx playwright install chromium
-npm run test:e2e
+npm run test:e2e          # nejprve vytvoří čerstvý produkční build
 ```
 
-Na minimálním Linuxu lze použít `npx playwright install --with-deps chromium`.
-Nebo nastav `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/google-chrome`.
-Testy spustí vlastní Vite server a nemají přístup k produkci. Desktop a dotykový
-profil ověřují kompletní hádanku, změnu velikosti canvasu, chybné použití,
-opakovaný dialog, přechody tam/zpět, save/load po reloadu, klávesnici, poškozené
-úložiště, obnovu po chybě assetu a přechod během pomalého načítání. Průchod také
-ukládá náhledy obou lokací. Při selhání uloží screenshot/trace do
-ignorovaného `test-results/`.
+Na minimálním Linuxu případně `npx playwright install --with-deps chromium`, nebo:
+
+```sh
+PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/google-chrome npm run test:e2e
+```
+
+Testy samy spustí servery. Desktop i dotykový profil ověřují kompletní průchod,
+skutečný drag/drop, použití ve scéně, klávesnici, změnu rozměrů, save/load a chyby
+assetů. Editorové testy používají **dočasné kopie zdrojů**: kreslí, přesouvají,
+importují obrázek, vytvářejí dialogy, kontrolují JSON na disku, reload, konflikt
+a odmítnutí neplatného zápisu. Reálný projekt ani produkci nemění. Produkční test
+ověřuje nepřítomnost editoru i zápisového API. Screenshoty/trace jsou v ignorovaném
+`test-results/`, náhledy editoru a grafu také při úspěšném průchodu.
 
 Instrukce pro agenty jsou v [AGENTS.md](AGENTS.md).

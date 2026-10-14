@@ -1,66 +1,65 @@
-import type { GameAction, GameContent, GameState } from '../game/types';
+import type { PointerEvent } from 'react';
+import type { GameContent, GameState } from '../game/types';
 
 export function Inventory({
   content,
   state,
+  blocked,
   selectedItem,
+  draggingItem,
+  dropItem,
   onSelect,
-  dispatch,
+  onPointerDown,
+  onInspect,
 }: {
   content: GameContent;
   state: GameState;
+  blocked: boolean;
   selectedItem: string | null;
-  onSelect: (id: string | null) => void;
-  dispatch: (action: GameAction) => void;
+  draggingItem: string | null;
+  dropItem: string | null;
+  onSelect: (id: string, pointer: boolean) => void;
+  onPointerDown: (event: PointerEvent<HTMLButtonElement>, id: string) => void;
+  onInspect: (id: string) => void;
 }) {
-  const item = content.items.find((entry) => entry.id === selectedItem);
   return (
-    <fieldset className="inventory" disabled={Boolean(state.dialogue)}>
-      <legend>
-        Inventár <span>· {state.inventory.length}</span>
-      </legend>
+    <fieldset
+      className="inventory"
+      disabled={Boolean(state.dialogue) || blocked}
+    >
+      <legend className="sr-only">Inventár</legend>
+      <div className="inventory-heading">
+        <span className="eyebrow">INVENTÁR</span>
+        <small>Potiahni predmet na predmet alebo do scény</small>
+      </div>
       <div className="inventory-items">
-        {state.inventory.length === 0 && (
-          <p className="muted">Zatiaľ iba vrecká plné nádeje.</p>
+        {!state.inventory.length && (
+          <p className="empty-inventory">Prázdne vrecká. Zatiaľ.</p>
         )}
         {state.inventory.map((id) => {
-          const entry = content.items.find((value) => value.id === id)!;
+          const item = content.items.find((entry) => entry.id === id)!;
           return (
             <button
               key={id}
-              className="inventory-item"
-              aria-pressed={id === selectedItem}
-              onClick={() => {
-                if (selectedItem && selectedItem !== id) {
-                  dispatch({
-                    type: 'combine',
-                    first: selectedItem,
-                    second: id,
-                  });
-                  onSelect(null);
-                } else onSelect(id === selectedItem ? null : id);
-              }}
+              data-inventory-id={id}
+              className={`inventory-item ${draggingItem === id ? 'drag-source' : ''} ${dropItem === id ? 'drop-target' : ''}`}
+              aria-pressed={selectedItem === id}
+              onPointerDown={(event) => onPointerDown(event, id)}
+              onClick={(event) => onSelect(id, event.detail > 0)}
+              onDoubleClick={() => onInspect(id)}
             >
-              <span aria-hidden="true">{entry.icon}</span>
-              {entry.label}
+              {item.image ? (
+                <img src={item.image} alt="" draggable={false} />
+              ) : (
+                <span className="item-icon" aria-hidden="true">
+                  {item.icon}
+                </span>
+              )}
+              <span>{item.label}</span>
             </button>
           );
         })}
       </div>
-      {item && (
-        <div className="item-actions">
-          <span>
-            Použiť: <strong>{item.label}</strong> → predmet v scéne alebo v
-            inventári
-          </span>
-          <button
-            onClick={() => dispatch({ type: 'inspectItem', itemId: item.id })}
-          >
-            Preskúmať predmet
-          </button>
-          <button onClick={() => onSelect(null)}>Zrušiť výber</button>
-        </div>
-      )}
     </fieldset>
   );
 }

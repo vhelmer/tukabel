@@ -9,8 +9,9 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
 - TypeScript strict, React + Vite, PixiJS 8. Používej npm a commitovaný lockfile.
 - React vlastní UI a stav; Pixi vlastní canvas, vykreslování a pointer interakce.
   Nevytvářej obecný engine, ECS, event bus ani backend bez konkrétní potřeby.
-- Definice lokací patří do `src/game/scenes/`, typy do `src/game/types.ts`,
-  propojení Pixi do `src/game/createScene.ts`, React UI do `src/ui/`.
+- Autorský obsah je v `src/game/content/project.json` (včetně lokací), typy
+  v `src/game/types.ts`, Pixi v `src/game/createScene.ts`, React UI v `src/ui/`.
+  Editor patří do `src/editor/`, lokální zápisová vrstva do `dev/editorPlugin.ts`.
 - Pozadí a hotspoty sdílejí souřadnice definované velikostí lokace (demo 1280×720).
   Škáluj celou scénu, nikoli jednotlivé hotspoty podle velikosti obrazovky.
 - Assety drž lokálně v `src/assets/` a importuj přes Vite. SVG jde upravovat kódem;
@@ -35,21 +36,37 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
 
 ## Herní obsah a stav
 
-- Autorský obsah piš jako readonly TypeScriptová data bez callbacků: lokace v
-  `src/game/scenes/`, předměty/dialogy/registr v `src/game/content/`. Vše v Gitu.
+- Autorský obsah piš jako čitelný JSON bez callbacků do jediného
+  `src/game/content/project.json`. Nedrž paralelní TypeScriptové definice obsahu.
+  Stabilní ID assetů jsou cesty relativní k `src/assets/`, nikoli URL.
 - Pravidla akcí vybírají první vyhovující podmínku; bezpodmínečný fallback patří
   poslední. Podmínky a efekty jsou společné pro akce, kombinace i dialogy.
-- Nové příznaky registruj v `content.flags`. ID drž stabilní; při nekompatibilní
-  změně obsahu změň `content.id`. Definice nemutuj, postup mění pouze čistý reducer.
+- Nové příznaky registruj v `flags` projektu. ID drž stabilní; při nekompatibilní
+  změně obsahu změň ID projektu. Definice nemutuj, postup mění pouze čistý reducer.
 - Sebratelné objekty kresli samostatným `image` a skrývej přes `visibleWhen`,
   nikoli jako součást trvalého pozadí. UI výběr nepatří do uložené pozice.
 - `npm run check` zahrnuje i validaci skutečného obsahu a testy pravidel.
   Řešitelnost nové hádanky ověř průchodem v `tests/scene.spec.ts`.
 
+## Editor a herní UI
+
+- Game Mode drží veškeré hraní uvnitř jednoho okna: scéna, reakce, dialog,
+  inventář, slovesa, seznam objektů i save/load menu. Drag/drop musí fungovat
+  myší i dotykem; zachovej také klikací a klávesnicovou alternativu.
+- SVG editor upravuje stejné souřadnice jako Pixi scéna. Úpravy návrhu jsou
+  oddělené od hráčského postupu; náhled používá původní reducer bez zvláštních pravidel.
+- Zápisy povol pouze v lokálním vývojovém Vite middleware: pevné cílové cesty,
+  validace JSON i odkazů/assetů, kontrola revize a atomický zápis. Produkce a
+  preview nesmějí mít editorové API ani editorový bundle.
+- Editorové E2E zapisují do dočasných kopií projektu, nikdy do pracovních zdrojů.
+  Při změně ukládání ověř reálný soubor, reload, konflikt i odmítnutí neplatných dat.
+
 ## Aktuální rozsah
 
 Dvě zkušební lokace: kontextové akce i explicitní slovesa, inventář a kombinace,
 podmíněné dialogy, stav hádanky, dynamické hotspoty, přechody a verzovaný ruční
-save/load v localStorage. Ovládání canvasem, dotykem i HTML klávesnicí. Krátká
+save/load v localStorage. Herní okno s drag/drop inventářem, dotykem i HTML klávesnicí.
+Dev Mode upravuje lokace, hotspoty, assety, předměty, pravidla, dialogy a kombinace;
+mapa logiky ukazuje podmínky a efekty. Ukládá se do zdrojového JSON v Gitu. Krátká
 kompletní technická hádanka bez skutečného příběhu a finálních assetů.
 Podrobnosti formátu a průchod jsou v README. Pohyb postavy a zvuk zatím chybí.

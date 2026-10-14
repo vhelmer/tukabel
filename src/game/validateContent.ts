@@ -1,4 +1,4 @@
-import type { Condition, Effect, GameContent, Rule } from './types';
+import type { Condition, Effect, GameContent, Rule } from './types.ts';
 
 // TypeScript checks data shape; this pass checks references and authoring mistakes.
 export function validateContent(content: GameContent): string[] {

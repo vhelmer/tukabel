@@ -228,3 +228,87 @@ test('saves round trip a dialogue and reject corrupt, incompatible and unknown s
     }).ok,
   ).toBe(false);
 });
+
+test('JSON boundary rejects malformed shapes, unknown fields, remote assets and excessive nesting', async () => {
+  const { validateProject } = await import('../src/game/validateProject');
+  const { readFile } = await import('node:fs/promises');
+  const project = JSON.parse(
+    await readFile('src/game/content/project.json', 'utf8'),
+  ) as GameContent;
+  expect(
+    validateProject(project, [
+      'demo-room.svg',
+      'cable.svg',
+      'caretaker.svg',
+      'courtyard.svg',
+      'favicon.svg',
+    ]),
+  ).toEqual([]);
+  for (const invalid of [
+    null,
+    [],
+    { ...project, scenes: null },
+    { ...project, typo: true },
+    { ...project, flags: [42] },
+    {
+      ...project,
+      items: [
+        {
+          id: 'a',
+          label: 'a',
+          icon: '',
+          description: '',
+          image: 'https://remote.example/image.png',
+        },
+      ],
+    },
+    { ...project, combinations: [{ items: ['cable'], rules: null }] },
+    {
+      ...project,
+      scenes: [
+        {
+          ...project.scenes[0],
+          hotspots: [
+            {
+              id: 'bad',
+              label: 'Bad',
+              bounds: null,
+              actions: {},
+              defaultVerb: 'fly',
+            },
+          ],
+        },
+      ],
+    },
+  ])
+    expect(validateProject(invalid).length).toBeGreaterThan(0);
+  let deep: import('../src/game/types').Condition = { flag: 'powered' };
+  for (let index = 0; index < 20; index++) deep = { not: deep };
+  const malformed = {
+    ...project,
+    combinations: [
+      {
+        items: ['cable', 'tape'],
+        rules: [
+          {
+            message: '',
+            when: deep,
+            effects: [{ type: 'flag', id: 'powered', value: 'yes' }],
+          },
+        ],
+      },
+    ],
+  };
+  expect(validateProject(malformed).join('\n')).toContain('too deep');
+  expect(validateProject(malformed).join('\n')).toContain('effect value');
+  expect(validateProject(project, []).join('\n')).toContain('missing asset');
+});
+
+test('pointer coordinates account for letterboxing and reject scene margins', async () => {
+  const { scenePoint } = await import('../src/game/coordinates');
+  const rect = { left: 10, top: 20, width: 640, height: 720 };
+  const scene = { width: 1280, height: 720 };
+  expect(scenePoint(rect, scene, 330, 380)).toEqual({ x: 640, y: 360 });
+  expect(scenePoint(rect, scene, 20, 25)).toBeNull();
+  expect(scenePoint({ ...rect, width: 0 }, scene, 10, 20)).toBeNull();
+});

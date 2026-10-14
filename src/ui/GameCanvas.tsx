@@ -7,6 +7,7 @@ import type { GameState, SceneCallbacks, SceneDefinition } from '../game/types';
 interface GameCanvasProps extends SceneCallbacks {
   scene: SceneDefinition;
   state: GameState;
+  blocked?: boolean;
   hoveredId: string | null;
   selectedId: string | null;
   showHotspots: boolean;
@@ -19,6 +20,7 @@ export function GameCanvas(props: GameCanvasProps) {
 function MountedCanvas({
   scene,
   state,
+  blocked = false,
   hoveredId,
   selectedId,
   showHotspots,
@@ -128,10 +130,10 @@ function MountedCanvas({
 
   useEffect(() => {
     if (status === 'ready') {
-      sceneRef.current?.update(state);
+      sceneRef.current?.update(state, blocked);
       sceneRef.current?.highlight(hoveredId, selectedId, showHotspots);
     }
-  }, [hoveredId, selectedId, showHotspots, status, state]);
+  }, [hoveredId, selectedId, showHotspots, status, state, blocked]);
 
   return (
     <div className="scene-frame" aria-label={`Lokácia: ${scene.title}`}>
