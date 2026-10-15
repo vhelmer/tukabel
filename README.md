@@ -302,3 +302,33 @@ Metadata `generation` u nových klipů obsahují `provider: "fal"`, `model`, `pr
 `trimStart` a `trimEnd`. Validator kontroluje i dostupnost MP4. Přehrávač potřebuje
 jen snímky a fps; archiv videa se během hry nestahuje. Žádné masky, inpainting,
 projekce původního alfa kanálu ani záruka pixelové shody se zde nepoužívají.
+
+### Izolovaný experiment: programové mrknutí `woman.png`
+
+`experiments/woman-blink/` je samostatný experiment, bez zapojení do hry nebo
+editoru. Python 3 + Pillow 10.2.0; z kořene projektu spusť:
+
+```sh
+python3 experiments/woman-blink/generate.py --self-test
+python3 experiments/woman-blink/generate.py --verify-only --self-test
+```
+
+Skript překresluje pouze obě oči původního `src/assets/woman.png`. Bézierovy
+křivky víček jsou přizpůsobené konkrétní kresbě; horní víčko překrývá původní
+zornici a bělmo, žádná část oka se neškáluje. Pro jinou postavu je potřeba upravit
+souřadnice a barvy v `EYES` / `draw_lid`. Nejde o obecný generátor animací.
+
+V `output/` jsou `frame-01.png` až `frame-05.png` (1086 × 1448, původní alfa),
+PixiJS atlas `spritesheet.png` + `spritesheet.json` (3 × 2 polí, 3258 × 2896),
+opakující se `preview.gif` s celou postavou i detailem a statický `contact.png`.
+GIF je kontrolní náhled na šedém pozadí, protože neumí původní částečnou průhlednost.
+Snímky 1/5 jsou přesné kopie zdrojového PNG, snímky 2/4 jsou shodné. Časování
+1800/60/90/80/700 ms je v `frames.*.duration`; při použití Pixi `AnimatedSprite`
+předej textury jako `{ texture, time: duration }`, samotné `sheet.animations.blink`
+obsahuje pouze textury bez časování.
+
+`eye-regions.png` vymezuje povolené oblasti úprav. `validation.json` zaznamenává
+SHA-256 i počty změněných pixelů; kontrola porovnává všechny RGBA kanály včetně
+RGB průhledných pixelů, celý alfa kanál a jednotlivá pole atlasu. Ověří také pět
+snímků GIFu a časování. `--self-test` navíc záměrně poškodí dočasné kopie mimo oko
+a v alfa kanálu a ověří jejich odmítnutí. Žádné API ani klíče nejsou potřeba.

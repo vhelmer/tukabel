@@ -1,0 +1,55 @@
+{
+  "source": "src/assets/woman.png",
+  "sourceSha256": "70ce25a5dbf8bf1be42fdaa65294e69add29762da9e8796b75c89649218eace4",
+  "size": [
+    1086,
+    1448
+  ],
+  "allowedEyePixels": 2258,
+  "frames": [
+    {
+      "frame": "frame-01.png",
+      "changedPixels": 0,
+      "changedOutsideEyes": 0,
+      "alphaIdentical": true,
+      "sha256": "70ce25a5dbf8bf1be42fdaa65294e69add29762da9e8796b75c89649218eace4"
+    },
+    {
+      "frame": "frame-02.png",
+      "changedPixels": 1024,
+      "changedOutsideEyes": 0,
+      "alphaIdentical": true,
+      "sha256": "f0baeade192f252c03e054f4d4a34baba52e441cc96ed18d350a80f5ecb36188"
+    },
+    {
+      "frame": "frame-03.png",
+      "changedPixels": 2092,
+      "changedOutsideEyes": 0,
+      "alphaIdentical": true,
+      "sha256": "c30b71cea8561027b3a6c0bad2be734439cf222d0fc781536c6f77c38ab43321"
+    },
+    {
+      "frame": "frame-04.png",
+      "changedPixels": 1024,
+      "changedOutsideEyes": 0,
+      "alphaIdentical": true,
+      "sha256": "f0baeade192f252c03e054f4d4a34baba52e441cc96ed18d350a80f5ecb36188"
+    },
+    {
+      "frame": "frame-05.png",
+      "changedPixels": 0,
+      "changedOutsideEyes": 0,
+      "alphaIdentical": true,
+      "sha256": "70ce25a5dbf8bf1be42fdaa65294e69add29762da9e8796b75c89649218eace4"
+    }
+  ],
+  "spritesheetTilesIdentical": true,
+  "gifFrames": 5,
+  "durationMs": [
+    1800,
+    60,
+    90,
+    80,
+    700
+  ]
+}
