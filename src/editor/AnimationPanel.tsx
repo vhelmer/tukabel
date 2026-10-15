@@ -2,43 +2,28 @@ import { useEffect, useRef, useState } from 'react';
 import type {
   AnimationDefinition,
   AnimationKind,
+  CharacterAnimation,
   GameContent,
   Hotspot,
+  Verb,
 } from '../game/types';
-import type {
-  AnimationJob,
-  AnimationServiceInfo,
-  SourceInfo,
-  AnimationBackground,
-} from './animationTypes';
-import {
-  animationJobs,
-  animationServiceInfo,
-  animationSourceInfo,
-  cancelAnimationJob,
-  readAnimationJob,
-  startAnimationJob,
-  saveAnimationVideo,
-} from './api';
+import { importAnimationFiles } from './api';
 import { AssetField, Field, SelectId } from './fields';
-import { nextId, replaceAt } from './model';
 import { AnimationPreview } from './AnimationPreview';
-import { assetUrl } from '../game/assets';
 
-const kindLabels: Record<AnimationKind, string> = {
+const kinds: Record<AnimationKind, string> = {
   blink: 'Mrkanie',
   talk: 'Rozprávanie',
-  expression: 'Výraz',
-  idle: 'Idle pohyb',
+  idle: 'Idle',
+  expression: 'Výraz / reakcia',
 };
-const prompts: Record<AnimationKind, string> = {
-  blink:
-    'The character blinks once naturally, then returns to the original pose. Very subtle movement.',
-  idle: 'The character breathes gently in place, with a subtle relaxed idle movement. Seamless resting pose.',
-  talk: 'The character speaks calmly with small mouth movements and minimal head motion, then returns to rest.',
-  expression:
-    'The character briefly smiles, keeping the original pose and appearance.',
+const verbs: Record<Verb, string> = {
+  look: 'Preskúmať',
+  take: 'Vziať',
+  talk: 'Hovoriť',
+  use: 'Použiť',
 };
+
 export function AnimationPanel({
   hotspot,
   content,
@@ -50,7 +35,7 @@ export function AnimationPanel({
   hotspot: Hotspot;
   content: GameContent;
   assets: readonly string[];
-  onAssets: (assets: string[]) => void;
+  onAssets: (ids: string[]) => void;
   onHotspot: (hotspot: Hotspot) => void;
   onCommit: (
     animations: readonly AnimationDefinition[],
@@ -59,220 +44,77 @@ export function AnimationPanel({
 }) {
   const source = hotspot.image!;
   const compatible = (content.animations ?? []).filter(
-    (entry) => entry.source === source,
+    (clip) => clip.source === source,
   );
-  const initial =
-    compatible.find((entry) => entry.id === hotspot.animation?.blink) ??
-    compatible[0];
   const [candidate, setCandidate] = useState<AnimationDefinition | null>(
-    initial ?? null,
+    compatible.find((clip) => clip.id === hotspot.animation?.blink) ??
+      compatible[0] ??
+      null,
   );
-  const contentRef = useRef(content);
-  useEffect(() => {
-    contentRef.current = content;
-  }, [content]);
-  const [service, setService] = useState<AnimationServiceInfo>();
-  const [info, setInfo] = useState<SourceInfo>();
-  const [kind, setKind] = useState<AnimationKind>(initial?.kind ?? 'blink');
-  const [prompt, setPrompt] = useState(
-    initial?.generation?.prompt ?? prompts.blink,
-  );
-  const [duration, setDuration] = useState<2 | 3 | 5>(2);
-  const [background, setBackground] = useState<AnimationBackground>(
-    initial?.generation?.background ?? 'magenta',
-  );
-  const [trimStart, setTrimStart] = useState(0);
-  const [trimEnd, setTrimEnd] = useState(2);
-  const [fps, setFps] = useState(12);
-  const [keySimilarity, setKeySimilarity] = useState(0.2);
-  const [jobId, setJobId] = useState('');
-  const [job, setJob] = useState<AnimationJob>();
+  const [kind, setKind] = useState<AnimationKind>('blink');
+  const [label, setLabel] = useState('Mrknutie');
+  const [files, setFiles] = useState<File[]>([]);
+  const [atlas, setAtlas] = useState<unknown>();
+  const [animationName, setAnimationName] = useState('');
+  const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [saving, setSaving] = useState(false);
+  const mounted = useRef(false);
   useEffect(() => {
-    let disposed = false;
-    void Promise.all([
-      animationServiceInfo(),
-      animationSourceInfo(source),
-      animationJobs(),
-    ])
-      .then(([service, info, jobs]) => {
-        if (disposed) return;
-        setService(service);
-        setInfo(info);
-        const recent = [...jobs]
-          .reverse()
-          .find(
-            (entry) =>
-              entry.request.source === source &&
-              ['running', 'completed'].includes(entry.status),
-          );
-        if (recent) setJobId(recent.id);
-      })
-      .catch((error: unknown) => {
-        if (!disposed)
-          setMessage(
-            error instanceof Error
-              ? error.message
-              : 'Zdroj sa nepodarilo načítať.',
-          );
-      });
+    mounted.current = true;
     return () => {
-      disposed = true;
+      mounted.current = false;
     };
-  }, [source]);
-  useEffect(() => {
-    if (!jobId) return;
-    let disposed = false,
-      busy = false,
-      finished = false;
-    const poll = async () => {
-      if (busy || finished) return;
-      busy = true;
-      try {
-        const response = await readAnimationJob(jobId);
-        if (disposed) return;
-        setJob(response.job);
-        if (response.job.status !== 'running') {
-          finished = true;
-          setSubmitting(false);
-          if (response.job.video) {
-            onAssets(response.assets);
-            setTrimStart(0);
-            setTrimEnd(response.job.request.duration);
-            if (response.job.result)
-              setCandidate(
-                contentRef.current.animations?.find(
-                  (entry) => entry.id === response.job.result!.id,
-                ) ?? response.job.result,
-              );
-            setMessage(
-              'Pôvodné MP4 je uložené. Pozri video, vyber úsek a ulož herné snímky.',
-            );
-          } else
-            setMessage(response.job.error ?? 'Generovanie skončilo bez videa.');
-        }
-      } catch (error) {
-        if (!disposed) {
-          setMessage(
-            error instanceof Error
-              ? error.message
-              : 'Čítanie generovania zlyhalo.',
-          );
-          finished = true;
-          setSubmitting(false);
-        }
-      } finally {
-        busy = false;
-      }
-    };
-    void poll();
-    const timer = window.setInterval(() => void poll(), 900);
-    return () => {
-      disposed = true;
-      window.clearInterval(timer);
-    };
-  }, [jobId, onAssets]);
-  const running = submitting || job?.status === 'running';
-  const video = job?.video ?? candidate?.generation?.video;
-  const canGenerate =
-    service?.configured &&
-    service.processorAvailable &&
-    info &&
-    prompt.trim().length >= 3 &&
-    !running &&
-    !saving;
-  const canProcess =
-    job?.video &&
-    service?.processorAvailable &&
-    !running &&
-    !saving &&
-    Number.isFinite(trimStart) &&
-    Number.isFinite(trimEnd) &&
-    trimStart >= 0 &&
-    trimEnd > trimStart &&
-    trimEnd <= job.request.duration + 0.05 &&
-    trimEnd - trimStart >= 0.08 &&
-    Number.isInteger(fps) &&
-    fps >= 1 &&
-    fps <= 24 &&
-    Math.ceil((trimEnd - trimStart) * fps) <= 120 &&
-    keySimilarity >= 0.05 &&
-    keySimilarity <= 0.5;
-  async function generate() {
-    if (!info) return;
-    setSubmitting(true);
-    setMessage('Odosielam celý asset…');
+  }, []);
+  const animationNames =
+    atlas &&
+    typeof atlas === 'object' &&
+    'animations' in atlas &&
+    atlas.animations &&
+    typeof atlas.animations === 'object'
+      ? Object.keys(atlas.animations)
+      : [];
+  const current = candidate ? Math.min(index, candidate.frames.length - 1) : 0;
+  function select(id: string) {
+    setCandidate(compatible.find((clip) => clip.id === id) ?? null);
+    setIndex(0);
+    setPlaying(false);
+    setMessage('');
+  }
+  async function importFiles() {
+    setBusy(true);
+    setMessage('Kontrolujem a ukladám snímky…');
     setPlaying(false);
     try {
-      const next = await startAnimationJob({
+      const result = await importAnimationFiles({
         source,
-        sourceRevision: info.revision,
-        prompt,
+        label,
         kind,
-        duration,
-        background,
+        fps: 14,
+        files,
+        atlas,
+        animationName,
       });
-      setCandidate(null);
-      setJob(next);
-      setJobId(next.id);
-    } catch (error) {
-      setSubmitting(false);
-      setMessage(
-        error instanceof Error ? error.message : 'Generovanie zlyhalo.',
-      );
-    }
-  }
-  async function saveFrames() {
-    if (!job) return;
-    setSaving(true);
-    setMessage('FFmpeg spracúva video a ukladá PNG snímky…');
-    try {
-      const result = await saveAnimationVideo(job.id, {
-        trimStart,
-        trimEnd,
-        fps,
-        keySimilarity,
-      });
+      if (!mounted.current) return;
       onAssets(result.assets);
       setCandidate(result.animation);
       setIndex(0);
-      setPlaying(false);
-      setJob({ ...job, result: result.animation });
       setMessage(
-        'Video aj herné snímky sú na disku. Priraď animáciu postave a ulož projekt.',
+        'Snímky sú uložené v src/assets/animations/. Priraď animáciu a použi Uložiť do projektu.',
       );
     } catch (error) {
-      setMessage(
-        error instanceof Error ? error.message : 'Spracovanie videa zlyhalo.',
-      );
+      if (mounted.current)
+        setMessage(error instanceof Error ? error.message : 'Import zlyhal.');
     } finally {
-      setSaving(false);
-    }
-  }
-  function select(id: string) {
-    const selected = compatible.find((entry) => entry.id === id);
-    setCandidate(selected ?? null);
-    setIndex(0);
-    setPlaying(false);
-    setJob(undefined);
-    setJobId('');
-    if (selected) {
-      setKind(selected.kind);
-      setPrompt(selected.generation?.prompt ?? prompts[selected.kind]);
-      setBackground(selected.generation?.background ?? 'magenta');
+      if (mounted.current) setBusy(false);
     }
   }
   function commit(assign: boolean) {
     if (!candidate) return;
     const definitions = content.animations ?? [];
-    const animations = definitions.some((entry) => entry.id === candidate.id)
-      ? definitions.map((entry) =>
-          entry.id === candidate.id ? candidate : entry,
-        )
+    const next = definitions.some((clip) => clip.id === candidate.id)
+      ? definitions.map((clip) => (clip.id === candidate.id ? candidate : clip))
       : [...definitions, candidate];
     const key =
       candidate.kind === 'blink'
@@ -281,7 +123,7 @@ export function AnimationPanel({
           ? 'talk'
           : 'idle';
     onCommit(
-      animations,
+      next,
       assign
         ? {
             ...hotspot,
@@ -290,16 +132,73 @@ export function AnimationPanel({
         : hotspot,
     );
     setMessage(
-      'Animácia je v pracovnom projekte. Uložiť do projektu zapíše konfiguráciu do JSON.',
+      'Animácia je v návrhu. Uložiť do projektu zapíše konfiguráciu do JSON.',
     );
   }
-  const current = candidate ? Math.min(index, candidate.frames.length - 1) : 0;
+  function removeDefinition() {
+    if (!candidate) return;
+    const references = (binding?: CharacterAnimation) => [
+      binding?.blink,
+      binding?.idle,
+      binding?.talk,
+      ...Object.values(binding?.onInteract ?? {}),
+    ];
+    if (
+      content.scenes.some((scene) =>
+        scene.hotspots.some(
+          (actor) =>
+            actor !== hotspot &&
+            references(actor.animation).includes(candidate.id),
+        ),
+      )
+    ) {
+      setMessage(
+        'Animáciu používa iná postava. Najprv odstráň jej priradenie.',
+      );
+      return;
+    }
+    const binding = { ...hotspot.animation };
+    for (const key of ['idle', 'blink', 'talk'] as const)
+      if (binding[key] === candidate.id) delete binding[key];
+    binding.onInteract = Object.fromEntries(
+      Object.entries(binding.onInteract ?? {}).filter(
+        ([, id]) => id !== candidate.id,
+      ),
+    );
+    onCommit(
+      (content.animations ?? []).filter((clip) => clip.id !== candidate.id),
+      { ...hotspot, animation: binding },
+    );
+    setCandidate(null);
+    setPlaying(false);
+  }
+  function reorder(direction: number) {
+    if (!candidate) return;
+    const destination = current + direction;
+    if (destination < 0 || destination >= candidate.frames.length) return;
+    const frames = [...candidate.frames];
+    [frames[current], frames[destination]] = [
+      frames[destination]!,
+      frames[current]!,
+    ];
+    const durationsMs = candidate.durationsMs
+      ? [...candidate.durationsMs]
+      : undefined;
+    if (durationsMs)
+      [durationsMs[current], durationsMs[destination]] = [
+        durationsMs[destination]!,
+        durationsMs[current]!,
+      ];
+    setCandidate({ ...candidate, frames, durationsMs });
+    setIndex(destination);
+    setPlaying(false);
+  }
   return (
     <details className="animation-panel">
-      <summary>Animácie postavy · fal.ai</summary>
+      <summary>Animácie postavy · sprite import</summary>
       <p className="field-note">
-        Zdroj: {source}. Do fal.ai sa odošle celý asset. Produkcia prehráva iba
-        lokálne PNG snímky.
+        Zdroj: {source}. Snímky musia mať rovnaké plátno a zarovnanie ako
+        pôvodný asset. Import nič automaticky neškáluje.
       </p>
       <h3>Prehrávanie postavy</h3>
       {(['blink', 'talk', 'idle'] as const).map((key) => (
@@ -375,22 +274,30 @@ export function AnimationPanel({
       />
       <Field label="Opakovanie základnej animácie">
         <select
-          value={String(hotspot.animation?.idleLoop ?? true)}
+          value={
+            hotspot.animation?.idleLoop === undefined
+              ? ''
+              : String(hotspot.animation.idleLoop)
+          }
           onChange={(event) =>
             onHotspot({
               ...hotspot,
               animation: {
                 ...hotspot.animation,
-                idleLoop: event.target.value === 'true',
+                idleLoop:
+                  event.target.value === ''
+                    ? undefined
+                    : event.target.value === 'true',
               },
             })
           }
         >
+          <option value="">Podľa klipu</option>
           <option value="true">Smyčka</option>
           <option value="false">Raz, držať poslednú snímku</option>
         </select>
       </Field>
-      <Field label="Pohyb bez AI">
+      <Field label="Procedurálny pohyb">
         <select
           value={hotspot.animation?.motion ?? ''}
           onChange={(event) =>
@@ -410,219 +317,150 @@ export function AnimationPanel({
           <option value="sway">Jemné kývanie</option>
         </select>
       </Field>
-      <h3>Vytvoriť / upraviť animáciu</h3>
-      <SelectId
-        label="Animácia na úpravu"
-        value={candidate?.id ?? ''}
-        values={compatible}
-        empty="Nový výsledok"
-        onChange={select}
-      />
-      <fieldset className="animation-authoring" disabled={running || saving}>
-        <legend className="sr-only">fal.ai zadanie</legend>
-        <Field label="Typ animácie">
+      <details>
+        <summary>Animácia pri interakcii</summary>
+        {(Object.keys(verbs) as Verb[]).map((verb) => (
+          <SelectId
+            key={verb}
+            label={`Pri akcii: ${verbs[verb]}`}
+            value={hotspot.animation?.onInteract?.[verb] ?? ''}
+            values={compatible}
+            empty="Žiadna"
+            onChange={(id) =>
+              onHotspot({
+                ...hotspot,
+                animation: {
+                  ...hotspot.animation,
+                  onInteract: {
+                    ...hotspot.animation?.onInteract,
+                    [verb]: id || undefined,
+                  },
+                },
+              })
+            }
+          />
+        ))}
+        <p className="field-note">
+          Reakcia sa prehrá raz, potom sa postava vráti k základnej animácii.
+          Dialógové rozprávanie má prednosť.
+        </p>
+      </details>
+      <h3>Import hotovej animácie</h3>
+      <fieldset className="animation-authoring" disabled={busy}>
+        <Field label="Typ importovanej animácie">
           <select
             value={kind}
             onChange={(event) => {
               const next = event.target.value as AnimationKind;
               setKind(next);
-              setPrompt(prompts[next]);
+              setLabel(kinds[next]);
             }}
           >
-            {Object.entries(kindLabels).map(([id, label]) => (
-              <option key={id} value={id}>
-                {label}
+            {Object.entries(kinds).map(([id, text]) => (
+              <option value={id} key={id}>
+                {text}
               </option>
             ))}
           </select>
         </Field>
-        <Field label="Prompt animácie">
-          <textarea
-            value={prompt}
-            maxLength={2000}
-            onChange={(event) => setPrompt(event.target.value)}
+        <Field label="Názov importovanej animácie">
+          <input
+            value={label}
+            onChange={(event) => setLabel(event.target.value)}
           />
         </Field>
-        <Field label="Dĺžka AI videa">
-          <select
-            value={duration}
+        <Field label="PNG snímky alebo atlas">
+          <input
+            type="file"
+            multiple
+            accept="image/png,.png"
             onChange={(event) =>
-              setDuration(Number(event.target.value) as 2 | 3 | 5)
-            }
-          >
-            <option value={2}>2 sekundy</option>
-            <option value={3}>3 sekundy</option>
-            <option value={5}>5 sekúnd</option>
-          </select>
-        </Field>
-        <Field label="Pozadie videa">
-          <select
-            value={background}
-            onChange={(event) =>
-              setBackground(event.target.value as AnimationBackground)
-            }
-          >
-            <option value="magenta">Magenta → priehľadné snímky</option>
-            <option value="green">Zelené → priehľadné snímky</option>
-            <option value="keep">Ponechať pozadie (nepriehľadné)</option>
-          </select>
-        </Field>
-        <p className="field-note">
-          Pre PNG/WebP s priehľadnosťou zvoľ farbu, ktorú postava nepoužíva.
-          Nepriehľadné pozadie sa automaticky neodstráni. Každé generovanie je
-          jedno platené video; časový výber a extrakcia sú lokálne.
-        </p>
-        <p className="field-note">
-          Model: {service?.model ?? 'fal.ai Wan 2.2 5B'}. Bez záruky rovnakej
-          podoby alebo uzavretej slučky — skontroluj video a snímky.
-        </p>
-        {!service?.configured && (
-          <p className="ai-unavailable">
-            Nastav FAL_KEY v .env.local a reštartuj npm run dev. OpenAI kľúč sa
-            na animácie nepoužíva. Ručný import a náhľad fungujú aj bez fal.ai.
-          </p>
-        )}
-        {service && !service.processorAvailable && (
-          <p className="ai-unavailable">
-            FFmpeg chýba. Spusti npm ci alebo nastav absolútnu FFMPEG_PATH a
-            reštartuj server.
-          </p>
-        )}
-        <button
-          className="primary-button"
-          disabled={!canGenerate}
-          onClick={() => void generate()}
-        >
-          Vygenerovať / regenerovať video
-        </button>
-        <button
-          onClick={() => {
-            setCandidate({
-              id: nextId(
-                'animation',
-                (content.animations ?? []).map((entry) => entry.id),
-              ),
-              label: 'Ručná animácia',
-              source,
-              kind,
-              frames: [source],
-              fps: 12,
-            });
-            setIndex(0);
-            setPlaying(false);
-          }}
-        >
-          Nová ručná animácia
-        </button>
-      </fieldset>
-      {job?.status === 'running' && (
-        <div className="generation-progress" role="status">
-          {job.phase}
-          <button
-            onClick={() =>
-              void cancelAnimationJob(job.id).catch((error: unknown) =>
-                setMessage(
-                  error instanceof Error ? error.message : 'Zrušenie zlyhalo.',
+              setFiles(
+                Array.from(event.target.files ?? []).sort((a, b) =>
+                  a.name.localeCompare(b.name, 'en', { numeric: true }),
                 ),
               )
             }
-          >
-            Zrušiť generovanie
-          </button>
-        </div>
-      )}
-      {message && (
-        <p className="field-note" role="status" aria-label="Stav animácie">
-          {message}
-        </p>
-      )}
-      {video && (
-        <div className="video-processing">
-          <h3>Video → herné snímky</h3>
-          <video
-            key={video}
-            className="animation-video"
-            aria-label="Náhľad fal.ai videa"
-            src={assetUrl(video)}
-            controls
-            playsInline
-            preload="metadata"
           />
-          <a className="field-note" href={assetUrl(video)} download>
-            Stiahnuť pôvodné MP4
-          </a>
-          {job?.video && (
-            <fieldset
-              className="animation-authoring"
-              disabled={saving || running}
+        </Field>
+        <p className="field-note">
+          PNG sekvencia: poradie podľa názvov (frame-01, frame-02…). Atlas:
+          vyber jeden PNG a jeho JSON. Najviac 120 snímkov / 32 MB.
+        </p>
+        {files.length > 0 && (
+          <p className="field-note">
+            {files.map((file) => file.name).join(' → ')}
+          </p>
+        )}
+        <Field label="Spritesheet metadáta (JSON, voliteľné)">
+          <input
+            type="file"
+            accept="application/json,.json"
+            onChange={async (event) => {
+              const file = event.target.files?.[0];
+              setAtlas(undefined);
+              setAnimationName('');
+              if (!file) return;
+              try {
+                if (file.size > 1024 * 1024)
+                  throw new Error('JSON môže mať najviac 1 MB.');
+                const data: unknown = JSON.parse(await file.text());
+                if (mounted.current) {
+                  setAtlas(data);
+                  setMessage('Metadáta atlasu načítané.');
+                }
+              } catch (error) {
+                if (mounted.current)
+                  setMessage(
+                    error instanceof Error ? error.message : 'Neplatný JSON.',
+                  );
+              }
+            }}
+          />
+        </Field>
+        {atlas !== undefined && (
+          <button
+            onClick={() => {
+              setAtlas(undefined);
+              setAnimationName('');
+            }}
+          >
+            Použiť PNG sekvenciu bez metadát
+          </button>
+        )}
+        {animationNames.length > 0 && (
+          <Field label="Sekvencia v atlase">
+            <select
+              value={animationName || animationNames[0]}
+              onChange={(event) => setAnimationName(event.target.value)}
             >
-              <legend className="sr-only">Spracovanie celého videa</legend>
-              <div className="field-row">
-                <Field label="Začiatok úseku (s)">
-                  <input
-                    type="number"
-                    min={0}
-                    step={0.05}
-                    value={trimStart}
-                    onChange={(event) =>
-                      setTrimStart(Number(event.target.value))
-                    }
-                  />
-                </Field>
-                <Field label="Koniec úseku (s)">
-                  <input
-                    type="number"
-                    min={0.1}
-                    max={job.request.duration}
-                    step={0.05}
-                    value={trimEnd}
-                    onChange={(event) => setTrimEnd(Number(event.target.value))}
-                  />
-                </Field>
-              </div>
-              <Field label="Extrakcia snímkov (fps)">
-                <input
-                  type="number"
-                  min={1}
-                  max={24}
-                  value={fps}
-                  onChange={(event) => setFps(Number(event.target.value))}
-                />
-              </Field>
-              {job.request.background !== 'keep' && (
-                <Field label="Sila odstránenia pozadia">
-                  <input
-                    type="number"
-                    min={0.05}
-                    max={0.5}
-                    step={0.01}
-                    value={keySimilarity}
-                    onChange={(event) =>
-                      setKeySimilarity(Number(event.target.value))
-                    }
-                  />
-                </Field>
-              )}
-              <p className="field-note">
-                Výber: približne{' '}
-                {Math.max(0, Math.ceil((trimEnd - trimStart) * fps))} snímkov,
-                max. 120. Dlhšia strana do 512 px. Kľúčovanie sa týka celého
-                snímku. Farba v oblečení sa môže tiež odstrániť.
-              </p>
-              <button
-                className="primary-button"
-                disabled={!canProcess}
-                onClick={() => void saveFrames()}
-              >
-                {saving ? 'Spracúvam video…' : 'Uložiť herné snímky'}
-              </button>
-            </fieldset>
-          )}
-        </div>
-      )}
+              {animationNames.map((name) => (
+                <option key={name}>{name}</option>
+              ))}
+            </select>
+          </Field>
+        )}
+        <button
+          className="primary-button"
+          disabled={!files.length || !label.trim()}
+          onClick={() => void importFiles()}
+        >
+          Importovať animáciu
+        </button>
+      </fieldset>
+      <p role="status" aria-label="Stav animácie">
+        {message}
+      </p>
+      <h3>Úprava a náhľad</h3>
+      <SelectId
+        label="Animácia na úpravu"
+        value={candidate?.id ?? ''}
+        values={compatible}
+        empty="Nový import / návrh"
+        onChange={select}
+      />
       {candidate && (
-        <fieldset className="animation-authoring" disabled={running || saving}>
-          <legend className="sr-only">Výsledok animácie</legend>
+        <fieldset className="animation-authoring" disabled={busy}>
           <Field label="Názov animácie">
             <input
               value={candidate.label}
@@ -631,17 +469,60 @@ export function AnimationPanel({
               }
             />
           </Field>
+          <Field label="Typ animácie">
+            <select
+              value={candidate.kind}
+              onChange={(event) =>
+                setCandidate({
+                  ...candidate,
+                  kind: event.target.value as AnimationKind,
+                })
+              }
+            >
+              {Object.entries(kinds).map(([id, text]) => (
+                <option value={id} key={id}>
+                  {text}
+                </option>
+              ))}
+            </select>
+          </Field>
+          <Field label="Rýchlosť prehrávania (×)">
+            <input
+              type="number"
+              min={0.1}
+              max={4}
+              step={0.1}
+              value={candidate.speed ?? 1}
+              onChange={(event) =>
+                setCandidate({
+                  ...candidate,
+                  speed: Number(event.target.value),
+                })
+              }
+            />
+          </Field>
           <Field label="Rýchlosť animácie (fps)">
             <input
               type="number"
               min={1}
               max={30}
+              disabled={Boolean(candidate.durationsMs)}
               value={candidate.fps}
               onChange={(event) =>
                 setCandidate({ ...candidate, fps: Number(event.target.value) })
               }
             />
           </Field>
+          <label className="editor-toggle">
+            <input
+              type="checkbox"
+              checked={candidate.loop ?? true}
+              onChange={(event) =>
+                setCandidate({ ...candidate, loop: event.target.checked })
+              }
+            />
+            Opakovať klip
+          </label>
           <AnimationPreview
             animation={candidate}
             index={current}
@@ -649,19 +530,45 @@ export function AnimationPanel({
             playing={playing}
             onPlaying={setPlaying}
           />
+          <Field label="Trvanie aktuálnej snímky (ms)">
+            <input
+              type="number"
+              min={10}
+              max={60000}
+              value={
+                candidate.durationsMs?.[current] ??
+                Math.round(1000 / candidate.fps)
+              }
+              onChange={(event) => {
+                const durationsMs = candidate.frames.map(
+                  (_, i) => candidate.durationsMs?.[i] ?? 1000 / candidate.fps,
+                );
+                durationsMs[current] = Number(event.target.value);
+                setCandidate({ ...candidate, durationsMs });
+              }}
+            />
+          </Field>
+          {candidate.durationsMs && (
+            <button
+              onClick={() =>
+                setCandidate({ ...candidate, durationsMs: undefined })
+              }
+            >
+              Rovnomerné časovanie podľa fps
+            </button>
+          )}
           <AssetField
             label="Obrázok aktuálnej snímky"
             value={candidate.frames[current] ?? source}
             assets={assets}
             onAssets={onAssets}
             onChange={(frame) =>
-              setCandidate(
-                (previous) =>
-                  previous && {
-                    ...previous,
-                    frames: replaceAt(previous.frames, current, frame),
-                  },
-              )
+              setCandidate({
+                ...candidate,
+                frames: candidate.frames.map((id, i) =>
+                  i === current ? frame : id,
+                ),
+              })
             }
           />
           <div className="row-actions">
@@ -670,10 +577,13 @@ export function AnimationPanel({
               onClick={() =>
                 setCandidate({
                   ...candidate,
-                  frames: [
-                    ...candidate.frames,
-                    candidate.frames[current] ?? source,
-                  ],
+                  frames: [...candidate.frames, candidate.frames[current]!],
+                  durationsMs: candidate.durationsMs
+                    ? [
+                        ...candidate.durationsMs,
+                        candidate.durationsMs[current]!,
+                      ]
+                    : undefined,
                 })
               }
             >
@@ -684,8 +594,9 @@ export function AnimationPanel({
               onClick={() => {
                 setCandidate({
                   ...candidate,
-                  frames: candidate.frames.filter(
-                    (_, position) => position !== current,
+                  frames: candidate.frames.filter((_, i) => i !== current),
+                  durationsMs: candidate.durationsMs?.filter(
+                    (_, i) => i !== current,
                   ),
                 });
                 setIndex(Math.max(0, current - 1));
@@ -693,19 +604,14 @@ export function AnimationPanel({
             >
               Odobrať snímku
             </button>
-            <button
-              disabled={current === 0}
-              onClick={() => {
-                const frames = [...candidate.frames];
-                [frames[current - 1], frames[current]] = [
-                  frames[current]!,
-                  frames[current - 1]!,
-                ];
-                setCandidate({ ...candidate, frames });
-                setIndex(current - 1);
-              }}
-            >
+            <button disabled={current === 0} onClick={() => reorder(-1)}>
               ← Snímka
+            </button>
+            <button
+              disabled={current === candidate.frames.length - 1}
+              onClick={() => reorder(1)}
+            >
+              Snímka →
             </button>
           </div>
           <div className="row-actions">
@@ -716,30 +622,22 @@ export function AnimationPanel({
               Priradiť postave
             </button>
             <button
-              className="danger-button"
               disabled={
-                !content.animations?.some((entry) => entry.id === candidate.id)
+                !content.animations?.some((clip) => clip.id === candidate.id)
               }
-              onClick={() => {
-                onCommit(
-                  (content.animations ?? []).filter(
-                    (entry) => entry.id !== candidate.id,
-                  ),
-                  hotspot,
-                );
-                setCandidate(null);
-              }}
+              onClick={removeDefinition}
             >
               Odstrániť definíciu
             </button>
           </div>
           <p className="field-note">
-            Priradenie upraví návrh. Potom Uložiť do projektu zapisuje
-            konfiguráciu. Pri odstránení oprav odkazy; súbory sa automaticky
-            nemažú.
+            Úpravy klipu potvrď tlačidlom Pridať / aktualizovať alebo Priradiť
+            postave. Potom Uložiť do projektu. Mrkanie a reakcie sa vždy
+            prehrajú raz; loop platí pre náhľad, idle a rozprávanie. Súbory sa
+            pri odobratí definície nemažú.
           </p>
         </fieldset>
-      )}{' '}
+      )}
     </details>
   );
 }

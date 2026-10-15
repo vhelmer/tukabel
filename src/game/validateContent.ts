@@ -97,8 +97,17 @@ export function validateContent(content: GameContent): string[] {
       if (hotspot.animation) {
         if (!hotspot.image)
           errors.push(`${path}: animated character needs an image`);
-        for (const key of ['idle', 'blink', 'talk'] as const) {
-          const id = hotspot.animation[key];
+        const bindings = {
+          idle: hotspot.animation.idle,
+          blink: hotspot.animation.blink,
+          talk: hotspot.animation.talk,
+          ...Object.fromEntries(
+            Object.entries(hotspot.animation.onInteract ?? {}).map(
+              ([verb, id]) => [`onInteract/${verb}`, id],
+            ),
+          ),
+        };
+        for (const [key, id] of Object.entries(bindings)) {
           if (!id) continue;
           reference(animations, id, `${path}/${key}`);
           const definition = content.animations?.find(
@@ -108,7 +117,11 @@ export function validateContent(content: GameContent): string[] {
             errors.push(
               `${path}/${key}: animation source must match character image`,
             );
-          if (definition && key !== 'idle' && definition.kind !== key)
+          if (
+            definition &&
+            ['blink', 'talk'].includes(key) &&
+            definition.kind !== key
+          )
             errors.push(`${path}/${key}: expected ${key} clip`);
         }
         if (hotspot.animation.dialogueId)
@@ -130,6 +143,24 @@ export function validateContent(content: GameContent): string[] {
     }
   }
   for (const animation of content.animations ?? []) {
+    if (
+      animation.durationsMs &&
+      (animation.durationsMs.length !== animation.frames.length ||
+        !animation.durationsMs.every(
+          (value) => Number.isFinite(value) && value >= 10 && value <= 60000,
+        ))
+    )
+      errors.push(
+        `${animation.id}: durationsMs must match frames, each 10–60000 ms`,
+      );
+    if (
+      animation.speed !== undefined &&
+      (!Number.isFinite(animation.speed) ||
+        animation.speed < 0.1 ||
+        animation.speed > 4)
+    )
+      errors.push(`${animation.id}: speed must be 0.1–4`);
+
     if (!animation.frames.length || animation.frames.length > 120)
       errors.push(`${animation.id}: expected 1–120 animation frames`);
     if (

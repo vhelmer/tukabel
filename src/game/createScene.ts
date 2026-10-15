@@ -6,6 +6,7 @@ import type {
   Hotspot,
   SceneCallbacks,
   SceneDefinition,
+  Verb,
 } from './types';
 import { matches } from './state';
 import { createAnimationPlayer, isCharacterSpeaking } from './animation';
@@ -74,6 +75,7 @@ export function createScene(
           hotspot.animation.blink,
           hotspot.animation.talk,
           hotspot.animation.motion,
+          ...Object.values(hotspot.animation.onInteract ?? {}),
         ].some(Boolean)
       )
         actors.push({
@@ -119,6 +121,14 @@ export function createScene(
         actors.some((actor) => regions.get(actor.hotspot.id)?.visible)
       );
     },
+    trigger(hotspotId: string, verb: Verb) {
+      if (paused || !state || state.dialogue) return;
+      const actor = actors.find(
+        (entry) =>
+          entry.hotspot.id === hotspotId && regions.get(hotspotId)?.visible,
+      );
+      actor?.player.trigger(verb);
+    },
     animate(deltaMs: number) {
       if (!state || paused) return;
       for (const actor of actors) {
@@ -129,7 +139,14 @@ export function createScene(
         );
         const frame = sample.frame ?? actor.hotspot.image!;
         if (frame !== actor.lastFrame) {
-          actor.sprite.texture = textures.get(frame)!;
+          const next = textures.get(frame);
+          const base = textures.get(actor.hotspot.image!)!;
+          actor.sprite.texture =
+            next &&
+            next.orig.width === base.orig.width &&
+            next.orig.height === base.orig.height
+              ? next
+              : base;
           actor.sprite.width = actor.placement.width;
           actor.sprite.height = actor.placement.height;
           actor.lastFrame = frame;

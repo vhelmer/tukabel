@@ -15,7 +15,11 @@ try {
     server: { middlewareMode: true, hmr: false, ws: false, watch: null },
     appType: 'custom',
   });
-  await server.ssrLoadModule('/src/game/content/index.ts');
+  const { content } = await server.ssrLoadModule('/src/game/content/index.ts');
+  const { validateAnimationAssets } = await server.ssrLoadModule(
+    '/dev/animationImport.ts',
+  );
+  await validateAnimationAssets(path.resolve('src/assets'), content);
   process.stdout.write('Game content references are valid.\n');
 } finally {
   await server?.close();

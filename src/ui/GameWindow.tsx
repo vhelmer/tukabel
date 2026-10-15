@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { PointerEvent as ReactPointerEvent } from 'react';
 import type {
   GameAction,
+  AnimationTrigger,
   GameContent,
   GameState,
   Hotspot,
@@ -35,7 +36,7 @@ interface Drag {
 export function GameWindow({
   content,
   state,
-  dispatch,
+  dispatch: dispatchGame,
   restore,
   reset,
 }: {
@@ -45,6 +46,8 @@ export function GameWindow({
   restore: (state: GameState) => void;
   reset: () => void;
 }) {
+  const [animationTrigger, setAnimationTrigger] =
+    useState<AnimationTrigger | null>(null);
   const [hovered, setHovered] = useState<Hotspot | null>(null);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [verb, setVerb] = useState<Verb | 'auto'>('auto');
@@ -89,6 +92,27 @@ export function GameWindow({
     (entry) =>
       entry.id ===
       (drag?.target?.type === 'hotspot' ? drag.target.id : hovered?.id),
+  );
+  const dispatch = useCallback(
+    (action: GameAction) => {
+      if (action.type === 'interact' && !state.dialogue) {
+        const scene = content.scenes.find(
+          (entry) => entry.id === state.sceneId,
+        )!;
+        const actor = scene.hotspots.find(
+          (h) => h.id === action.hotspotId && matches(state, h.visibleWhen),
+        );
+        if (actor)
+          setAnimationTrigger((previous) => ({
+            sceneId: scene.id,
+            hotspotId: actor.id,
+            verb: action.itemId ? 'use' : (action.verb ?? actor.defaultVerb),
+            nonce: (previous?.nonce ?? 0) + 1,
+          }));
+      }
+      dispatchGame(action);
+    },
+    [dispatchGame, content.scenes, state],
   );
   const act = useCallback(
     (hotspot: Hotspot) => {
@@ -281,6 +305,7 @@ export function GameWindow({
           scene={scene}
           state={state}
           animations={content.animations}
+          animationTrigger={animationTrigger}
           hoveredId={currentHover?.id ?? null}
           selectedId={null}
           showHotspots={showHotspots}

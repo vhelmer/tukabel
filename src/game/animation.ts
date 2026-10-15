@@ -5,17 +5,29 @@ import type {
   GameState,
 } from './types';
 
+export function frameDuration(
+  clip: AnimationDefinition,
+  index: number,
+): number {
+  return (clip.durationsMs?.[index] ?? 1000 / clip.fps) / (clip.speed ?? 1);
+}
+export function clipDuration(clip: AnimationDefinition): number {
+  return clip.frames.reduce((sum, _, i) => sum + frameDuration(clip, i), 0);
+}
 export function frameAt(
   clip: AnimationDefinition,
   elapsedMs: number,
-  loop = true,
+  loop = clip.loop ?? true,
 ): string {
-  const position = Math.floor((Math.max(0, elapsedMs) * clip.fps) / 1000);
-  return clip.frames[
-    loop
-      ? position % clip.frames.length
-      : Math.min(position, clip.frames.length - 1)
-  ]!;
+  const duration = clipDuration(clip);
+  let time = Math.max(0, elapsedMs);
+  if (loop) time %= duration;
+  else if (time >= duration) return clip.frames.at(-1)!;
+  for (let i = 0; i < clip.frames.length; i++) {
+    time -= frameDuration(clip, i);
+    if (time < 0) return clip.frames[i]!;
+  }
+  return clip.frames.at(-1)!;
 }
 
 export function isCharacterSpeaking(
@@ -52,17 +64,27 @@ export function createAnimationPlayer(
   let blinkTime: number | null = null;
   let untilBlink = delay();
   let wasSpeaking = false;
+  let interaction: { clip: AnimationDefinition; time: number } | null = null;
   return {
+    trigger(verb: import('./types').Verb) {
+      const clip = find(binding.onInteract?.[verb]);
+      if (clip) {
+        interaction = { clip, time: 0 };
+        blinkTime = null;
+        untilBlink = delay();
+      }
+    },
     tick(
       deltaMs: number,
       speaking: boolean,
     ): {
       frame?: string;
-      priority: 'base' | 'idle' | 'blink' | 'talk';
+      priority: 'base' | 'idle' | 'blink' | 'talk' | 'interaction';
       elapsedMs: number;
     } {
       idleTime += deltaMs;
       if (speaking && talk) {
+        interaction = null;
         talkTime = wasSpeaking ? talkTime + deltaMs : 0;
         wasSpeaking = true;
         blinkTime = null;
@@ -76,9 +98,20 @@ export function createAnimationPlayer(
         wasSpeaking = false;
         untilBlink = delay();
       }
+      if (interaction) {
+        interaction.time += deltaMs;
+        if (interaction.time < clipDuration(interaction.clip))
+          return {
+            frame: frameAt(interaction.clip, interaction.time, false),
+            priority: 'interaction',
+            elapsedMs: idleTime,
+          };
+        interaction = null;
+        untilBlink = delay();
+      }
       if (blinkTime !== null && blink) {
         blinkTime += deltaMs;
-        if (blinkTime >= (blink.frames.length * 1000) / blink.fps) {
+        if (blinkTime >= clipDuration(blink)) {
           blinkTime = null;
           untilBlink = delay();
         }
@@ -94,7 +127,7 @@ export function createAnimationPlayer(
         };
       return {
         frame: idle
-          ? frameAt(idle, idleTime, binding.idleLoop ?? true)
+          ? frameAt(idle, idleTime, binding.idleLoop ?? idle.loop ?? true)
           : undefined,
         priority: idle ? 'idle' : 'base',
         elapsedMs: idleTime,

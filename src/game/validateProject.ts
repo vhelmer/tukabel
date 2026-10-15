@@ -191,9 +191,20 @@ export function validateProject(
           'talk',
           'dialogueId',
           'motion',
+          'onInteract',
         ])
       ) {
         const binding = hotspot.animation;
+        if (
+          binding.onInteract !== undefined &&
+          object(binding.onInteract, `${key}.onInteract`, verbs)
+        )
+          Object.entries(binding.onInteract).forEach(([verb, id]) =>
+            id === undefined
+              ? undefined
+              : string(id, `${key}/onInteract/${verb}`),
+          );
+
         for (const field of ['idle', 'blink', 'talk', 'dialogueId'])
           optionalString(binding, field, `${key}.animation`);
         if (
@@ -250,7 +261,9 @@ export function validateProject(
           'kind',
           'frames',
           'fps',
-          'generation',
+          'durationsMs',
+          'speed',
+          'loop',
         ])
       )
         return;
@@ -267,51 +280,12 @@ export function validateProject(
         asset(frame, key),
       );
       number(animation.fps, `${path}.fps`);
-      if (
-        animation.generation !== undefined &&
-        object(animation.generation, `${path}.generation`, [
-          'provider',
-          'model',
-          'prompt',
-          'sourceHash',
-          'requestId',
-          'video',
-          'duration',
-          'background',
-          'trimStart',
-          'trimEnd',
-        ])
-      ) {
-        const g = animation.generation;
-        for (const key of ['model', 'prompt', 'requestId'])
-          string(g[key], `${path}.generation.${key}`);
-        if (g.provider !== 'fal') errors.push(`${path}: expected fal provider`);
-        if (
-          typeof g.sourceHash !== 'string' ||
-          !/^[a-f0-9]{64}$/.test(g.sourceHash)
-        )
-          errors.push(`${path}: invalid source hash`);
-        if (
-          typeof g.video !== 'string' ||
-          !/^[a-zA-Z0-9_/-]+\.mp4$/.test(g.video) ||
-          g.video.includes('..')
-        )
-          errors.push(`${path}: expected local MP4 asset ID`);
-        else if (assets && !assets.includes(g.video))
-          errors.push(`${path}: missing video asset "${g.video}"`);
-        if (!['magenta', 'green', 'keep'].includes(String(g.background)))
-          errors.push(`${path}: invalid video background`);
-        for (const key of ['duration', 'trimStart', 'trimEnd'])
-          number(g[key], `${path}.generation.${key}`);
-        if (
-          Number(g.duration) <= 0 ||
-          Number(g.duration) > 6 ||
-          Number(g.trimStart) < 0 ||
-          Number(g.trimEnd) <= Number(g.trimStart) ||
-          Number(g.trimEnd) > Number(g.duration) + 0.05
-        )
-          errors.push(`${path}: invalid video trim`);
-      }
+      if (animation.durationsMs !== undefined)
+        list(animation.durationsMs, `${path}.durationsMs`, number);
+      if (animation.speed !== undefined)
+        number(animation.speed, `${path}.speed`);
+      if (animation.loop !== undefined && typeof animation.loop !== 'boolean')
+        errors.push(`${path}.loop: expected boolean`);
     });
   list(value.items, 'items', (item, path) => {
     if (!object(item, path, ['id', 'label', 'description', 'icon', 'image']))

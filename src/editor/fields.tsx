@@ -92,9 +92,7 @@ export function AssetField({
       <SelectId
         label={label}
         value={value}
-        values={assets
-          .filter((id) => !id.endsWith('.mp4'))
-          .map((id) => ({ id }))}
+        values={assets.map((id) => ({ id }))}
         onChange={onChange}
         empty={optional ? 'Bez obrázka' : undefined}
       />

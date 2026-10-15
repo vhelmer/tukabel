@@ -34,7 +34,6 @@
     "eslint": "^10.12.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.7",
-    "ffmpeg-static": "^5.3.0",
     "globals": "^17.13.0",
     "prettier": "^3.9.10",
     "sharp": "^0.35.5",

@@ -1,16 +1,4 @@
 export type AnimationKind = 'blink' | 'talk' | 'expression' | 'idle';
-export interface AnimationGeneration {
-  readonly provider: 'fal';
-  readonly prompt: string;
-  readonly model: string;
-  readonly sourceHash: string;
-  readonly requestId: string;
-  readonly video: string;
-  readonly duration: number;
-  readonly background: 'magenta' | 'green' | 'keep';
-  readonly trimStart: number;
-  readonly trimEnd: number;
-}
 export interface AnimationDefinition {
   readonly id: string;
   readonly label: string;
@@ -18,7 +6,9 @@ export interface AnimationDefinition {
   readonly kind: AnimationKind;
   readonly frames: readonly string[];
   readonly fps: number;
-  readonly generation?: AnimationGeneration;
+  readonly durationsMs?: readonly number[];
+  readonly speed?: number;
+  readonly loop?: boolean;
 }
 export interface CharacterAnimation {
   readonly idle?: string;
@@ -28,6 +18,7 @@ export interface CharacterAnimation {
   readonly talk?: string;
   readonly dialogueId?: string;
   readonly motion?: 'breath' | 'sway';
+  readonly onInteract?: Partial<Readonly<Record<Verb, string>>>;
 }
 
 export type Verb = 'look' | 'take' | 'talk' | 'use';
@@ -140,4 +131,12 @@ export type GameAction =
 export interface SceneCallbacks {
   onHover: (hotspot: Hotspot | null) => void;
   onInteract: (hotspot: Hotspot) => void;
+}
+
+// Ephemeral visual request; never included in a saved player position.
+export interface AnimationTrigger {
+  readonly sceneId: string;
+  readonly hotspotId: string;
+  readonly verb: Verb;
+  readonly nonce: number;
 }

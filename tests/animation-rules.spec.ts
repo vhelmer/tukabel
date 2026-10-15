@@ -1,24 +1,27 @@
 import { expect, test } from '@playwright/test';
-import { mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
+import {
+  mkdtemp,
+  readFile,
+  readdir,
+  rm,
+  writeFile,
+  symlink,
+} from 'node:fs/promises';
 import path from 'node:path';
 import { tmpdir } from 'node:os';
 import sharp from 'sharp';
 import {
   createAnimationPlayer,
   frameAt,
-  isCharacterSpeaking,
+  clipDuration,
 } from '../src/game/animation';
+import { isCharacterSpeaking } from '../src/game/animation';
 import { validateProject } from '../src/game/validateProject';
-import type { AnimationDefinition, GameContent } from '../src/game/types';
 import {
-  normalizeSource,
-  validateGenerationRequest,
-  validateProcessing,
-} from '../dev/animationVideo';
-import { createAnimationService } from '../dev/animationService';
-import { falVideoGenerator } from '../dev/falVideo';
-import { fixtureVideo } from './videoFixture';
-import type { GenerationRequest } from '../src/editor/animationTypes';
+  importAnimation,
+  validateAnimationAssets,
+} from '../dev/animationImport';
+import type { AnimationDefinition, GameContent } from '../src/game/types';
 
 const clip = (
   id: string,
@@ -31,14 +34,6 @@ const clip = (
   kind,
   frames,
   fps: 10,
-});
-const request = (revision: string): GenerationRequest => ({
-  source: 'actor.png',
-  sourceRevision: revision,
-  kind: 'blink',
-  prompt: 'Vytvor mrknutie na 5 snímkov.',
-  duration: 2,
-  background: 'magenta',
 });
 test('visual clocks prioritize speech, schedule finite blinks and hold once-only expressions', () => {
   const blink = clip('blink', 'blink', [
@@ -97,518 +92,255 @@ test('visual clocks prioritize speech, schedule finite blinks and hold once-only
   ).toBe(true);
 });
 
-test('video animation validation checks local MP4, metadata, refs and timing', async () => {
+test('per-frame timing, speed, one-shots and priority share one visual clock', () => {
+  const timed = {
+    ...clip('timed', 'expression', ['open', 'half', 'closed']),
+    durationsMs: [40, 60, 100],
+    speed: 2,
+    loop: false,
+  };
+  expect(clipDuration(timed)).toBe(100);
+  expect(frameAt(timed, 19)).toBe('open');
+  expect(frameAt(timed, 20)).toBe('half');
+  expect(frameAt(timed, 50)).toBe('closed');
+  expect(frameAt(timed, 100)).toBe('closed');
+  expect(frameAt(timed, 100, true)).toBe('open');
+  const talking = clip('talk', 'talk', ['mouth1', 'mouth2']);
+  const player = createAnimationPlayer(
+    { onInteract: { look: 'timed' }, talk: 'talk' },
+    [timed, talking],
+  );
+  player.trigger('look');
+  expect(player.tick(0, false)).toMatchObject({
+    priority: 'interaction',
+    frame: 'open',
+  });
+  expect(player.tick(20, false).frame).toBe('half');
+  expect(player.tick(80, false).priority).toBe('base');
+  player.trigger('look');
+  expect(player.tick(0, true).priority).toBe('talk');
+  expect(player.tick(0, false).priority).toBe('base');
+});
+
+test('content validation rejects invalid frame timing and missing interaction clips', async () => {
   const project = JSON.parse(
     await readFile('src/game/content/project.json', 'utf8'),
   ) as GameContent;
-  const source = project.scenes[0]!.hotspots.find((h) => h.image)!.image!;
+  const source = 'woman.png';
   const animation = {
     ...clip('blink', 'blink', [source, source]),
     source,
-    generation: {
-      provider: 'fal',
-      model: 'test-provider',
-      prompt: 'Blink',
-      sourceHash: 'a'.repeat(64),
-      requestId: 'test-id',
-      video: 'animations/video/original.mp4',
-      duration: 2,
-      background: 'magenta',
-      trimStart: 0,
-      trimEnd: 2,
-    },
+    durationsMs: [50, 70],
   };
-  const valid = { ...project, animations: [animation] };
+  const valid: GameContent = {
+    ...project,
+    animations: [animation],
+    scenes: project.scenes.map((scene) => ({
+      ...scene,
+      hotspots: scene.hotspots.map((h) => ({ ...h, animation: undefined })),
+    })),
+  };
   expect(validateProject(valid)).toEqual([]);
   for (const patch of [
-    { video: 'https://evil.example/a.mp4' },
-    { video: '../private.mp4' },
-    { trimEnd: 3 },
-    { provider: 'openai' },
-    { sourceHash: 'bad' },
-  ])
+    { durationsMs: [10] },
+    { durationsMs: [0, 50] },
+    { durationsMs: [50, Infinity] },
+    { speed: 0 },
+    { speed: 5 },
+    { loop: 'yes' },
+    { generation: { provider: 'obsolete' } },
+  ]) {
     expect(
-      validateProject({
-        ...valid,
-        animations: [
-          { ...animation, generation: { ...animation.generation, ...patch } },
-        ],
-      }).length,
+      validateProject({ ...valid, animations: [{ ...animation, ...patch }] })
+        .length,
     ).toBeGreaterThan(0);
-  expect(validateProject(valid, []).join('\n')).toContain(
-    'missing video asset',
-  );
-  expect(
-    validateProject({
-      ...valid,
-      animations: [{ ...animation, frames: Array(121).fill(source) }],
-    }).join('\n'),
-  ).toContain('1–120');
-});
-
-test('generation accepts full assets and explicitly rejects old edit payloads and unbounded processing', () => {
-  const valid = request('a'.repeat(64));
-  expect(validateGenerationRequest(valid)).toBe(true);
-  for (const patch of [
-    { region: { x: 0, y: 0, width: 10, height: 10 } },
-    { mode: 'full' },
-    { quality: 'high' },
-    { frameIndex: 0 },
-    { duration: 60 },
-    { source: '../actor.png' },
-    { apiKey: 'secret' },
-    { background: 'none' },
-  ])
-    expect(validateGenerationRequest({ ...valid, ...patch })).toBe(false);
-  expect(
-    validateProcessing({
-      trimStart: 0,
-      trimEnd: 2,
-      fps: 12,
-      keySimilarity: 0.2,
-    }),
-  ).toBe(true);
-  for (const patch of [
-    { trimStart: -1 },
-    { trimEnd: 0 },
-    { fps: 120 },
-    { keySimilarity: 2 },
-    { trimEnd: NaN },
-  ])
-    expect(
-      validateProcessing({
-        trimStart: 0,
-        trimEnd: 2,
-        fps: 12,
-        keySimilarity: 0.2,
-        ...patch,
-      }),
-    ).toBe(false);
-});
-
-test('fal adapter submits the entire PNG once, polls, downloads without credentials and cancels remotely', async () => {
-  const png = await sharp('src/assets/caretaker.svg').png().toBuffer();
-  const video = await fixtureVideo();
-  const calls: { url: string; options?: RequestInit }[] = [];
-  const base = 'https://queue.fal.run/fal-ai/wan/requests/test-id';
-  let polls = 0;
-  const provider = falVideoGenerator(
-    'server-only-key',
-    async (url, options) => {
-      calls.push({ url: String(url), options });
-      if (options?.method === 'POST') {
-        const input = JSON.parse(options.body as string);
-        expect(input.image_url).toBe(
-          `data:image/png;base64,${png.toString('base64')}`,
-        );
-        expect(input.num_frames).toBe(49);
-        expect(input.aspect_ratio).toBe('1:1');
-        expect(input.mask).toBeUndefined();
-        expect(options.headers).toMatchObject({
-          Authorization: 'Key server-only-key',
-        });
-        return Response.json({
-          request_id: 'test-id',
-          status_url: base + '/status',
-          response_url: base,
-          cancel_url: base + '/cancel',
-        });
-      }
-      if (String(url).endsWith('/status'))
-        return Response.json({
-          status: ++polls === 1 ? 'IN_PROGRESS' : 'COMPLETED',
-        });
-      if (String(url) === base)
-        return Response.json({
-          video: { url: 'https://v3.fal.media/files/output.mp4' },
-        });
-      expect(options?.headers).toBeUndefined();
-      return new Response(new Uint8Array(video));
-    },
-    1,
-  );
-  const progress: string[] = [];
-  const generated = await provider.generate({
-    image: png,
-    prompt: 'Blink',
-    duration: 2,
-    signal: new AbortController().signal,
-    onProgress: (phase) => progress.push(phase),
-  });
-  expect(generated.video.equals(video)).toBe(true);
-  expect(calls.filter((c) => c.options?.method === 'POST')).toHaveLength(1);
-  expect(progress.some((p) => p.includes('generuje'))).toBe(true);
-  const controller = new AbortController();
-  let cancelled = false;
-  const cancellable = falVideoGenerator(
-    'secret',
-    async (_url, options) => {
-      if (options?.method === 'POST')
-        return Response.json({
-          request_id: 'test-id',
-          status_url: base + '/status',
-          response_url: base,
-          cancel_url: base + '/cancel',
-        });
-      if (options?.method === 'PUT') {
-        cancelled = true;
-        return new Response(null, { status: 202 });
-      }
-      controller.abort();
-      return Response.json({ status: 'IN_QUEUE' });
-    },
-    1,
-  );
-  await expect(
-    cancellable.generate({
-      image: png,
-      prompt: 'Blink',
-      duration: 2,
-      signal: controller.signal,
-      onProgress: () => {},
-    }),
-  ).rejects.toThrow();
-  expect(cancelled).toBe(true);
-  let deniedCalls = 0;
-  const denied = falVideoGenerator('never-expose', async () => {
-    deniedCalls++;
-    return new Response('private provider body', { status: 401 });
-  });
-  await expect(
-    denied.generate({
-      image: png,
-      prompt: 'Blink',
-      duration: 2,
-      signal: new AbortController().signal,
-      onProgress: () => {},
-    }),
-  ).rejects.toThrow('FAL_KEY');
-  expect(deniedCalls).toBe(1);
-});
-
-test('real MP4 pipeline archives video, extracts full frames, keys backgrounds and resamples without AI', async () => {
-  const root = await mkdtemp(path.join(tmpdir(), 'tukabel-animation-unit-'));
-  try {
-    await writeFile(
-      path.join(root, 'actor.png'),
-      await sharp('src/assets/caretaker.svg').png().toBuffer(),
-    );
-    let calls = 0;
-    const service = createAnimationService(root, {
-      model: 'controlled-video-provider',
-      generate: async ({ image }) => {
-        calls++;
-        const meta = await sharp(image).metadata();
-        expect(meta.width).toBe(290);
-        expect(meta.height).toBe(290);
-        return { video: await fixtureVideo(), requestId: 'test-id' };
-      },
-    });
-    const info = await service.sourceInfo('actor.png');
-    const input = request(info.revision);
-    await expect(createAnimationService(root).start(input)).rejects.toThrow(
-      'FAL_KEY',
-    );
-    await expect(
-      service.start({ ...input, sourceRevision: 'b'.repeat(64) }),
-    ).rejects.toThrow('zmenil');
-    const job = await service.start(input);
-    await expect.poll(() => service.get(job.id).status).toBe('completed');
-    expect(job.result).toBeUndefined();
-    expect(
-      (await readFile(path.join(root, job.video!))).toString('ascii', 4, 8),
-    ).toBe('ftyp');
-    const result = await service.save(job.id, {
-      trimStart: 0,
-      trimEnd: 2,
-      fps: 12,
-      keySimilarity: 0.2,
-    });
-    expect(result.frames).toHaveLength(24);
-    const a = await sharp(await readFile(path.join(root, result.frames[0]!)))
-      .raw()
-      .ensureAlpha()
-      .toBuffer();
-    const b = await sharp(await readFile(path.join(root, result.frames[12]!)))
-      .raw()
-      .ensureAlpha()
-      .toBuffer();
-    expect(a.equals(b)).toBe(false);
-    expect(a[3]).toBe(0); // video background removed, not a copied source alpha mask
-    expect(a[(150 * 180 + 90) * 4 + 3]).toBe(255); // body retained
-    const again = await service.save(job.id, {
-      trimStart: 0.5,
-      trimEnd: 1.5,
-      fps: 6,
-      keySimilarity: 0.18,
-    });
-    expect(again.frames).toHaveLength(6);
-    expect(calls).toBe(1);
-    const manifest = JSON.parse(
-      await readFile(
-        path.join(root, path.dirname(again.frames[0]!), 'generation.json'),
-        'utf8',
+  }
+  const broken = {
+    ...valid,
+    scenes: valid.scenes.map((scene, sceneIndex) => ({
+      ...scene,
+      hotspots: scene.hotspots.map((hotspot, index) =>
+        sceneIndex === 0 && index === 0
+          ? { ...hotspot, animation: { onInteract: { look: 'missing' } } }
+          : hotspot,
       ),
+    })),
+  };
+  expect(validateProject(broken).join('\n')).toContain('unknown reference');
+});
+
+async function fixture() {
+  const root = await mkdtemp(path.join(tmpdir(), 'tukabel-sprite-unit-'));
+  const original = await sharp({
+    create: {
+      width: 16,
+      height: 24,
+      channels: 4,
+      background: { r: 80, g: 100, b: 150, alpha: 0.7 },
+    },
+  })
+    .png()
+    .toBuffer();
+  await writeFile(path.join(root, 'actor.png'), original);
+  const upload = (name: string, bytes: Buffer) => ({
+    name,
+    data: bytes.toString('base64'),
+  });
+  const input = {
+    source: 'actor.png',
+    label: 'Blink',
+    kind: 'blink',
+    fps: 14,
+    files: [upload('frame-01.png', original), upload('frame-02.png', original)],
+  };
+  return { root, original, upload, input };
+}
+
+test('sequence import copies original bytes atomically and rejects bad canvases/traversal without publishing', async () => {
+  const { root, original, input, upload } = await fixture();
+  try {
+    const result = await importAnimation(root, input);
+    expect(result.frames).toHaveLength(2);
+    expect(await readFile(path.join(root, result.frames[0]!))).toEqual(
+      original,
     );
-    expect(manifest.processing.trimStart).toBe(0.5);
-    expect(manifest.generation.video).toBe(job.video);
+    const folders = await readdir(path.join(root, 'animations'));
+    for (const patch of [
+      { source: '../actor.png' },
+      { files: [upload('bad.png', Buffer.from('invalid'))] },
+      { files: [] },
+      { fps: 120 },
+      {
+        files: [
+          upload(
+            'small.png',
+            await sharp({
+              create: { width: 2, height: 2, channels: 4, background: 'red' },
+            })
+              .png()
+              .toBuffer(),
+          ),
+        ],
+      },
+    ]) {
+      await expect(
+        importAnimation(root, { ...input, ...patch }),
+      ).rejects.toThrow();
+      expect(await readdir(path.join(root, 'animations'))).toEqual(folders);
+    }
+    await symlink(path.join(root, 'actor.png'), path.join(root, 'alias.png'));
+    await expect(
+      importAnimation(root, { ...input, source: 'alias.png' }),
+    ).rejects.toThrow('symbolické');
+    const project = { animations: [result] };
+    await validateAnimationAssets(root, project);
     await writeFile(
-      path.join(root, 'actor.png'),
+      path.join(root, result.frames[0]!),
       await sharp({
-        create: { width: 32, height: 32, channels: 4, background: '#000' },
+        create: { width: 2, height: 2, channels: 4, background: 'red' },
       })
         .png()
         .toBuffer(),
     );
-    await expect(
-      service.save(job.id, {
-        trimStart: 0,
-        trimEnd: 1,
-        fps: 12,
-        keySimilarity: 0.2,
-      }),
-    ).rejects.toThrow('zmenil');
-    service.dispose();
-    expect(
-      (await readdir(path.join(root, 'animations'))).filter((n) =>
-        n.startsWith('.'),
-      ),
-    ).toEqual([]);
+    await expect(validateAnimationAssets(root, project)).rejects.toThrow(
+      'plátno',
+    );
   } finally {
     await rm(root, { recursive: true, force: true });
   }
 });
 
-test('fal rejects untrusted queue/media destinations without forwarding credentials or retrying submissions', async () => {
-  const base = 'https://queue.fal.run/fal-ai/wan/requests/test-id';
-  for (const attack of ['queue', 'media']) {
-    const calls: string[] = [];
-    const provider = falVideoGenerator(
-      'server-secret',
-      async (url, options) => {
-        calls.push(String(url));
-        if (options?.method === 'PUT')
-          return new Response(null, { status: 202 });
-        if (options?.method === 'POST')
-          return Response.json({
-            request_id: 'test-id',
-            cancel_url: base + '/cancel',
-            response_url: base,
-            status_url:
-              attack === 'queue'
-                ? 'https://attacker.example/status'
-                : base + '/status',
-          });
-        if (String(url).endsWith('/status'))
-          return Response.json({ status: 'COMPLETED' });
-        return Response.json({
-          video: { url: 'http://127.0.0.1/private.mp4' },
-        });
-      },
-      1,
-    );
-    await expect(
-      provider.generate({
-        image: Buffer.from('reference'),
-        prompt: 'Blink',
-        duration: 2,
-        signal: new AbortController().signal,
-        onProgress: () => {},
-      }),
-    ).rejects.toThrow(/URL|adresu/);
-    expect(calls.every((url) => url.startsWith('https://queue.fal.run/'))).toBe(
-      true,
-    );
-    expect(
-      calls.filter(
-        (url) =>
-          url === 'https://queue.fal.run/fal-ai/wan/v2.2-5b/image-to-video',
-      ),
-    ).toHaveLength(1);
-  }
-});
-
-test('failed decoding keeps the original archive; stale generation and cancellation publish no assets', async () => {
-  const root = await mkdtemp(path.join(tmpdir(), 'tukabel-video-failures-'));
+test('trimmed atlas restores a fixed canvas and preserves declared order and durations', async () => {
+  const { root, input, upload } = await fixture();
   try {
-    const sourceFile = path.join(root, 'actor.png');
-    await writeFile(
-      sourceFile,
-      await sharp('src/assets/caretaker.svg').png().toBuffer(),
-    );
-    const broken = createAnimationService(root, {
-      model: 'broken-test-provider',
-      generate: async () => ({
-        video: Buffer.from('0000ftypnot-a-valid-mp4'),
-        requestId: 'broken-test-id',
-      }),
-    });
-    const input = request((await broken.sourceInfo('actor.png')).revision);
-    const job = await broken.start(input);
-    await expect.poll(() => job.status).toBe('completed');
-    await expect(
-      broken.save(job.id, {
-        trimStart: 0,
-        trimEnd: 2,
-        fps: 12,
-        keySimilarity: 0.2,
-      }),
-    ).rejects.toThrow('FFmpeg');
-    expect(job.result).toBeUndefined();
-    expect(await readdir(path.join(root, 'animations'))).toEqual([job.id]);
-    expect(await readFile(path.join(root, job.video!))).toEqual(
-      Buffer.from('0000ftypnot-a-valid-mp4'),
-    );
-    const changed = createAnimationService(root, {
-      model: 'changing-source-test-provider',
-      generate: async () => {
-        await writeFile(
-          sourceFile,
-          await sharp({
-            create: {
-              width: 30,
-              height: 30,
-              channels: 4,
-              background: '#123456',
-            },
-          })
-            .png()
-            .toBuffer(),
-        );
-        return { video: await fixtureVideo(), requestId: 'changed-test-id' };
-      },
-    });
-    const stale = await changed.start(input);
-    await expect.poll(() => stale.status).toBe('failed');
-    expect(stale.error).toContain('zmenil');
-    expect(await readdir(path.join(root, 'animations'))).toEqual([job.id]);
-    const cancel = createAnimationService(root, {
-      model: 'cancel-test-provider',
-      generate: async ({ signal }) =>
-        new Promise((_resolve, reject) => {
-          signal.throwIfAborted();
-          signal.addEventListener(
-            'abort',
-            () => reject(new DOMException('Abort', 'AbortError')),
-            { once: true },
-          );
-        }),
-    });
-    const cancelled = await cancel.start(
-      request((await cancel.sourceInfo('actor.png')).revision),
-    );
-    await expect(
-      cancel.start(request((await cancel.sourceInfo('actor.png')).revision)),
-    ).rejects.toThrow('Už beží');
-    cancel.cancel(cancelled.id);
-    await expect.poll(() => cancelled.status).toBe('cancelled');
-    expect(await readdir(path.join(root, 'animations'))).toEqual([job.id]);
-    broken.dispose();
-    changed.dispose();
-    cancel.dispose();
-  } finally {
-    await rm(root, { recursive: true, force: true });
-  }
-});
-
-test('portrait and landscape assets keep all source pixels when padded to a supported square canvas', async () => {
-  for (const [width, height] of [
-    [5, 8],
-    [8, 5],
-    [7, 7],
-  ]) {
-    const source = await sharp({
-      create: {
-        width: width!,
-        height: height!,
-        channels: 4,
-        background: '#1765aa',
-      },
+    const pixels = await sharp({
+      create: { width: 6, height: 8, channels: 4, background: 'red' },
     })
       .png()
       .toBuffer();
-    const normalized = await normalizeSource(source, 'magenta');
-    const meta = await sharp(normalized.png).metadata();
-    expect(meta.width).toBe(Math.max(width!, height!));
-    expect(meta.height).toBe(meta.width);
-    const restored = await sharp(normalized.png)
-      .extract({
-        left: normalized.framing.x,
-        top: normalized.framing.y,
-        width: width!,
-        height: height!,
-      })
+    const entry = {
+      frame: { x: 0, y: 0, w: 6, h: 8 },
+      trimmed: true,
+      spriteSourceSize: { x: 3, y: 5, w: 6, h: 8 },
+      sourceSize: { w: 16, h: 24 },
+      duration: 60,
+    };
+    const atlas = {
+      frames: { a: entry, b: { ...entry, duration: 90 } },
+      animations: { blink: ['b', 'a', 'b'] },
+    };
+    const result = await importAnimation(root, {
+      ...input,
+      files: [upload('sheet.png', pixels)],
+      atlas,
+    });
+    expect(result.durationsMs).toEqual([90, 60, 90]);
+    const { data, info } = await sharp(path.join(root, result.frames[0]!))
+      .ensureAlpha()
       .raw()
-      .toBuffer();
-    const original = await sharp(source).removeAlpha().raw().toBuffer();
-    expect(restored.equals(original)).toBe(true);
+      .toBuffer({ resolveWithObject: true });
+    expect([info.width, info.height]).toEqual([16, 24]);
+    expect([...data.subarray(0, 4)]).toEqual([0, 0, 0, 0]);
+    expect([...data.subarray((5 * 16 + 3) * 4, (5 * 16 + 3) * 4 + 4)]).toEqual([
+      255, 0, 0, 255,
+    ]);
+    const before = await readdir(path.join(root, 'animations'));
+    for (const patch of [
+      { rotated: true },
+      { frame: { x: 999, y: 0, w: 6, h: 8 } },
+      { sourceSize: { w: 17, h: 24 } },
+      { duration: -1 },
+    ])
+      await expect(
+        importAnimation(root, {
+          ...input,
+          files: [upload('sheet.png', pixels)],
+          atlas: { frames: { a: { ...entry, ...patch } } },
+        }),
+      ).rejects.toThrow();
+    expect(await readdir(path.join(root, 'animations'))).toEqual(before);
+  } finally {
+    await rm(root, { recursive: true, force: true });
   }
 });
 
-test('fal 422 errors identify the field without leaking echoed inputs, keys or signed URLs', async () => {
-  const secret = 'server-only-secret';
-  for (const phase of ['submit', 'result']) {
-    let submissions = 0;
-    const base = 'https://queue.fal.run/fal-ai/wan/requests/test-id';
-    const provider = falVideoGenerator(
-      secret,
-      async (url, options) => {
-        if (options?.method === 'PUT')
-          return new Response(null, { status: 202 });
-        if (options?.method === 'POST') {
-          submissions++;
-          if (phase === 'result')
-            return Response.json({
-              request_id: 'test-id',
-              status_url: base + '/status',
-              response_url: base,
-              cancel_url: base + '/cancel',
-            });
-        }
-        if (String(url).endsWith('/status'))
-          return Response.json({
-            status: 'COMPLETED',
-            error: 'Validation failed',
-          });
-        return Response.json(
-          {
-            detail: [
-              {
-                loc: ['body', 'aspect_ratio'],
-                type: 'value_error',
-                msg: `The resolved output size 544x864 is not supported. Use aspect_ratio='1:1'. ${secret} https://example.invalid/private?token=sensitive data:image/png;base64,private-image-data`,
-                input: 'never-return-this-echoed-input',
-                ctx: { api_key: secret },
-              },
-            ],
-          },
-          { status: 422 },
-        );
-      },
-      1,
+test('real Codex blink atlas imports all five source-sized frames without pixel changes', async () => {
+  const root = await mkdtemp(path.join(tmpdir(), 'tukabel-codex-blink-'));
+  try {
+    await writeFile(
+      path.join(root, 'woman.png'),
+      await readFile('src/assets/woman.png'),
     );
-    let message = '';
-    try {
-      await provider.generate({
-        image: Buffer.from('source'),
-        prompt: 'Blink',
-        duration: 2,
-        signal: new AbortController().signal,
-        onProgress: () => {},
-      });
-    } catch (error) {
-      message = error instanceof Error ? error.message : String(error);
+    const folder = 'experiments/woman-blink/output';
+    const result = await importAnimation(root, {
+      source: 'woman.png',
+      label: 'Woman blink',
+      kind: 'blink',
+      fps: 14,
+      files: [
+        {
+          name: 'spritesheet.png',
+          data: (await readFile(`${folder}/spritesheet.png`)).toString(
+            'base64',
+          ),
+        },
+      ],
+      atlas: JSON.parse(await readFile(`${folder}/spritesheet.json`, 'utf8')),
+    });
+    expect(result.frames).toHaveLength(5);
+    expect(result.durationsMs).toEqual([1800, 60, 90, 80, 700]);
+    for (let i = 0; i < 5; i++) {
+      const actual = await sharp(path.join(root, result.frames[i]!))
+        .ensureAlpha()
+        .raw()
+        .toBuffer();
+      const expected = await sharp(`${folder}/frame-0${i + 1}.png`)
+        .ensureAlpha()
+        .raw()
+        .toBuffer();
+      expect(actual.equals(expected)).toBe(true);
     }
-    expect(message).toContain('HTTP 422');
-    expect(message).toContain('aspect_ratio');
-    expect(message).toContain('544x864');
-    for (const privateValue of [
-      secret,
-      'private-image-data',
-      'sensitive',
-      'never-return-this-echoed-input',
-    ])
-      expect(message).not.toContain(privateValue);
-    expect(submissions).toBe(1);
+  } finally {
+    await rm(root, { recursive: true, force: true });
   }
 });

@@ -36,37 +36,31 @@ export async function importAsset(file: File) {
   });
 }
 
-export const animationServiceInfo = () =>
-  request<import('./animationTypes').AnimationServiceInfo>('animations/info');
-export const animationSourceInfo = (id: string) =>
-  request<import('./animationTypes').SourceInfo>(
-    `animations/source?id=${encodeURIComponent(id)}`,
+export async function importAnimationFiles(input: {
+  source: string;
+  label: string;
+  kind: import('../game/types').AnimationKind;
+  fps: number;
+  files: File[];
+  atlas?: unknown;
+  animationName?: string;
+}) {
+  if (
+    input.files.reduce((size, file) => size + file.size, 0) >
+    32 * 1024 * 1024
+  )
+    throw new Error('Import môže mať spolu najviac 32 MB.');
+  const files = await Promise.all(
+    input.files.map(async (file) => {
+      const bytes = new Uint8Array(await file.arrayBuffer());
+      let binary = '';
+      for (let offset = 0; offset < bytes.length; offset += 8192)
+        binary += String.fromCharCode(...bytes.subarray(offset, offset + 8192));
+      return { name: file.name, data: btoa(binary) };
+    }),
   );
-export const animationJobs = () =>
-  request<import('./animationTypes').AnimationJob[]>('animations/jobs');
-export const startAnimationJob = (
-  input: import('./animationTypes').GenerationRequest,
-) =>
-  request<import('./animationTypes').AnimationJob>(
-    'animations/jobs',
-    'POST',
-    input,
-  );
-export const readAnimationJob = (id: string) =>
-  request<{ job: import('./animationTypes').AnimationJob; assets: string[] }>(
-    `animations/jobs/${id}`,
-  );
-export const cancelAnimationJob = (id: string) =>
-  request<import('./animationTypes').AnimationJob>(
-    `animations/jobs/${id}`,
-    'DELETE',
-  );
-
-export const saveAnimationVideo = (
-  id: string,
-  processing: import('./animationTypes').VideoProcessing,
-) =>
-  request<{
+  return request<{
     animation: import('../game/types').AnimationDefinition;
     assets: string[];
-  }>(`animations/jobs/${id}/save`, 'POST', processing);
+  }>('animations/import', 'POST', { ...input, files });
+}

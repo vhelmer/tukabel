@@ -4,6 +4,7 @@ import type { Texture } from 'pixi.js';
 import { createScene } from '../game/createScene';
 import type {
   AnimationDefinition,
+  AnimationTrigger,
   GameState,
   SceneCallbacks,
   SceneDefinition,
@@ -14,6 +15,7 @@ interface GameCanvasProps extends SceneCallbacks {
   state: GameState;
   animations?: readonly AnimationDefinition[];
   blocked?: boolean;
+  animationTrigger?: AnimationTrigger | null;
   hoveredId: string | null;
   selectedId: string | null;
   showHotspots: boolean;
@@ -30,12 +32,14 @@ function MountedCanvas({
   state,
   animations = noAnimations,
   blocked = false,
+  animationTrigger,
   hoveredId,
   selectedId,
   showHotspots,
   onHover,
   onInteract,
 }: GameCanvasProps) {
+  const lastTrigger = useRef(0);
   const callbacks = useRef({ onHover, onInteract });
   useEffect(() => {
     callbacks.current = { onHover, onInteract };
@@ -92,6 +96,7 @@ function MountedCanvas({
                     hotspot.animation?.idle,
                     hotspot.animation?.blink,
                     hotspot.animation?.talk,
+                    ...Object.values(hotspot.animation?.onInteract ?? {}),
                   ].includes(animation.id),
                 ),
               )
@@ -184,6 +189,21 @@ function MountedCanvas({
       playbackRef.current?.();
     }
   }, [hoveredId, selectedId, showHotspots, status, state, blocked]);
+
+  useEffect(() => {
+    if (
+      status === 'ready' &&
+      animationTrigger?.sceneId === scene.id &&
+      animationTrigger.nonce !== lastTrigger.current
+    ) {
+      lastTrigger.current = animationTrigger.nonce;
+      sceneRef.current?.trigger(
+        animationTrigger.hotspotId,
+        animationTrigger.verb,
+      );
+      playbackRef.current?.();
+    }
+  }, [animationTrigger, status, scene.id]);
 
   return (
     <div className="scene-frame" aria-label={`Lokácia: ${scene.title}`}>

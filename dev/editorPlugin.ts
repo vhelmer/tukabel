@@ -10,11 +10,8 @@ import {
 } from 'node:fs/promises';
 import path from 'node:path';
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { loadEnv } from 'vite';
 import type { Plugin } from 'vite';
-import { createAnimationService, AnimationError } from './animationService.ts';
-import { falVideoGenerator } from './falVideo.ts';
-import type { VideoGenerator } from './falVideo.ts';
+import { importAnimation, validateAnimationAssets } from './animationImport.ts';
 import { format, resolveConfig } from 'prettier';
 import { validateProject } from '../src/game/validateProject.ts';
 
@@ -22,7 +19,7 @@ const API = '/__tukabel/editor';
 const hash = (text: string) => createHash('sha256').update(text).digest('hex');
 const loopback = (host: string) =>
   ['localhost', '127.0.0.1', '[::1]'].includes(host);
-const imagePattern = /^[a-zA-Z0-9_/-]+\.(svg|png|jpe?g|webp|avif|mp4)$/;
+const imagePattern = /^[a-zA-Z0-9_/-]+\.(svg|png|jpe?g|webp|avif)$/;
 
 async function readJson(req: IncomingMessage): Promise<unknown> {
   if (!req.headers['content-type']?.startsWith('application/json'))
@@ -31,8 +28,8 @@ async function readJson(req: IncomingMessage): Promise<unknown> {
   let size = 0;
   for await (const chunk of req) {
     size += chunk.length;
-    if (size > 9 * 1024 * 1024)
-      throw new Error('Request is too large (max 9 MB)');
+    if (size > (req.url?.endsWith('/animations/import') ? 48 : 9) * 1024 * 1024)
+      throw new Error('Request is too large');
     chunks.push(Buffer.from(chunk));
   }
   return JSON.parse(Buffer.concat(chunks).toString('utf8'));
@@ -50,9 +47,7 @@ async function listAssets(directory: string, prefix = ''): Promise<string[]> {
   return nested.flat().sort();
 }
 
-export function editorPlugin(
-  options: { videoGenerator?: VideoGenerator; disableAI?: boolean } = {},
-): Plugin {
+export function editorPlugin(): Plugin {
   return {
     name: 'tukabel-local-editor',
     apply: 'serve',
@@ -65,27 +60,6 @@ export function editorPlugin(
         'src/game/content/project.json',
       );
       const assetsRoot = path.resolve(server.config.root, 'src/assets');
-      const key =
-        process.env.FAL_KEY ||
-        loadEnv(server.config.mode, server.config.envDir, 'FAL_').FAL_KEY;
-      const animationService = createAnimationService(
-        assetsRoot,
-        options.disableAI
-          ? undefined
-          : (options.videoGenerator ??
-              (key ? falVideoGenerator(key) : undefined)),
-        () => {
-          // Renaming a complete folder may not produce individual add events.
-          // Refresh the glob on the next page load without resetting the draft.
-          const modules =
-            server.environments.client.moduleGraph.getModulesByFile(
-              path.resolve(server.config.root, 'src/game/assets.ts'),
-            );
-          for (const module of modules ?? [])
-            server.environments.client.moduleGraph.invalidateModule(module);
-        },
-      );
-      server.httpServer?.once('close', () => animationService.dispose());
       let queue = Promise.resolve();
       server.middlewares.use((req, res, next) => {
         if (!req.url?.startsWith(API)) {
@@ -120,50 +94,21 @@ export function editorPlugin(
           }
           const parsedUrl = new URL(req.url!, host);
           const endpoint = parsedUrl.pathname;
-          if (endpoint === `${API}/animations/info` && req.method === 'GET') {
-            respond(200, await animationService.info());
-            return;
-          }
-          if (endpoint === `${API}/animations/source` && req.method === 'GET') {
-            respond(
-              200,
-              await animationService.sourceInfo(
-                parsedUrl.searchParams.get('id') ?? '',
-              ),
-            );
-            return;
-          }
-          if (endpoint === `${API}/animations/jobs` && req.method === 'GET') {
-            respond(200, animationService.list());
-            return;
-          }
-          if (endpoint === `${API}/animations/jobs` && req.method === 'POST') {
-            respond(202, await animationService.start(await readJson(req)));
-            return;
-          }
-          const jobEndpoint = new RegExp(
-            `^${API}/animations/jobs/([a-f0-9-]+)$`,
-          ).exec(endpoint);
-          const saveEndpoint = new RegExp(
-            `^${API}/animations/jobs/([a-f0-9-]+)/save$`,
-          ).exec(endpoint);
-          if (saveEndpoint && req.method === 'POST') {
-            const animation = await animationService.save(
-              saveEndpoint[1]!,
+          if (
+            endpoint === `${API}/animations/import` &&
+            req.method === 'POST'
+          ) {
+            const animation = await importAnimation(
+              assetsRoot,
               await readJson(req),
             );
+            const modules =
+              server.environments.client.moduleGraph.getModulesByFile(
+                path.resolve(server.config.root, 'src/game/assets.ts'),
+              );
+            for (const module of modules ?? [])
+              server.environments.client.moduleGraph.invalidateModule(module);
             respond(201, { animation, assets: await listAssets(assetsRoot) });
-            return;
-          }
-          if (jobEndpoint && req.method === 'GET') {
-            respond(200, {
-              job: animationService.get(jobEndpoint[1]!),
-              assets: await listAssets(assetsRoot),
-            });
-            return;
-          }
-          if (jobEndpoint && req.method === 'DELETE') {
-            respond(200, animationService.cancel(jobEndpoint[1]!));
             return;
           }
           if (endpoint === `${API}/project` && req.method === 'GET') {
@@ -186,6 +131,10 @@ export function editorPlugin(
               respond(422, { error: 'Invalid project', errors });
               return;
             }
+            await validateAnimationAssets(
+              assetsRoot,
+              body!.content as import('../src/game/types.ts').GameContent,
+            );
             const stat = await lstat(source);
             if (!stat.isFile() || stat.isSymbolicLink())
               throw new Error('Project must be a regular source file.');
@@ -263,7 +212,7 @@ export function editorPlugin(
         // Serialize writes and reads so two tabs cannot both overwrite the same revision.
         queue = queue.then(run).catch((error: unknown) => {
           if (!(res as ServerResponse).headersSent)
-            respond(error instanceof AnimationError ? error.status : 400, {
+            respond(400, {
               error:
                 error instanceof Error
                   ? error.message

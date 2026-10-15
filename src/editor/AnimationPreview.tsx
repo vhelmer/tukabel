@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
+import { frameDuration } from '../game/animation';
 import { assetUrl } from '../game/assets';
 import type { AnimationDefinition } from '../game/types';
 
@@ -18,16 +19,32 @@ export function AnimationPreview({
 }) {
   const image = useRef<HTMLImageElement>(null);
   useEffect(() => {
+    const images = animation.frames.map((frame) => {
+      const image = new Image();
+      image.src = assetUrl(frame);
+      return image;
+    });
+    return () => {
+      for (const image of images) image.src = '';
+    };
+  }, [animation.frames]);
+
+  useEffect(() => {
     if (!playing || !animation.frames.length) return;
-    const timer = window.setInterval(
-      () => {
-        if (!document.hidden && image.current?.getClientRects().length)
-          onIndex((previous) => (previous + 1) % animation.frames.length);
-      },
-      1000 / Math.max(1, animation.fps),
-    );
-    return () => window.clearInterval(timer);
-  }, [playing, animation.fps, animation.frames.length, onIndex]);
+    const current = Math.min(index, animation.frames.length - 1);
+    let timer: number;
+    const advance = () => {
+      if (document.hidden || !image.current?.getClientRects().length) {
+        timer = window.setTimeout(advance, 100);
+        return;
+      }
+      if (current === animation.frames.length - 1 && animation.loop === false)
+        onPlaying(false);
+      else onIndex((current + 1) % animation.frames.length);
+    };
+    timer = window.setTimeout(advance, frameDuration(animation, current));
+    return () => window.clearTimeout(timer);
+  }, [playing, animation, index, onIndex, onPlaying]);
   const current = Math.min(index, animation.frames.length - 1);
   return (
     <div className="animation-preview">
@@ -39,11 +56,17 @@ export function AnimationPreview({
         />
       </div>
       <div className="row-actions">
-        <button aria-pressed={playing} onClick={() => onPlaying(!playing)}>
+        <button
+          aria-pressed={playing}
+          onClick={() => {
+            if (!playing && current === animation.frames.length - 1) onIndex(0);
+            onPlaying(!playing);
+          }}
+        >
           {playing ? 'Zastaviť náhľad' : 'Prehrať náhľad'}
         </button>
         <span>
-          {current + 1} / {animation.frames.length} · {animation.fps} fps
+          {current + 1} / {animation.frames.length} · {animation.speed ?? 1}×
         </span>
       </div>
       <div className="animation-timeline">

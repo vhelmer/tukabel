@@ -561,25 +561,6 @@
 .animation-timeline small {
   font-size: 9px;
 }
-.generation-progress {
-  padding: 10px;
-  background: #f1ce8310;
-  border: 1px solid #f1ce8355;
-  border-radius: 5px;
-  font-size: 11px;
-  margin: 12px 0;
-}
-
-.animation-video {
-  display: block;
-  width: 100%;
-  max-height: 320px;
-  background: #0b1612;
-  border: 1px solid #ffffff25;
-  border-radius: 7px;
-  margin: 10px 0;
-}
-
 .stage-toolbar {
   flex-wrap: wrap;
 }

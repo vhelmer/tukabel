@@ -31,17 +31,13 @@ test('production serves a static game without editor code or write endpoints', a
       data: { content: JSON.parse(source), revision: 'unused' },
     });
     expect(write.status()).toBe(404);
-    const animationEndpoint = new URL('__tukabel/editor/animations/jobs', url)
+    const animationEndpoint = new URL('__tukabel/editor/animations/import', url)
       .href;
     const animationWrite = await page.request.post(animationEndpoint, {
       headers: { Origin: new URL(url).origin, 'X-Tukabel-Editor': '1' },
-      data: { prompt: 'Blink' },
+      data: { files: [] },
     });
     expect(animationWrite.status()).toBe(404);
-    const info = await page.request.get(
-      new URL('__tukabel/editor/animations/info', url).href,
-    );
-    expect(info.headers()['content-type']).not.toContain('application/json');
     expect(await readFile('src/game/content/project.json', 'utf8')).toBe(
       source,
     );
