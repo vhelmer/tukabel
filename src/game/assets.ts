@@ -1,7 +1,7 @@
 import type { GameContent } from './types';
 
 const files = import.meta.glob<string>(
-  '../assets/**/*.{svg,png,jpg,jpeg,webp,avif}',
+  '../assets/**/*.{svg,png,jpg,jpeg,webp,avif,mp4}',
   {
     eager: true,
     query: '?url',

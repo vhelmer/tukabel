@@ -6,17 +6,17 @@ import { createServer } from 'vite';
 import react from '@vitejs/plugin-react';
 import sharp from 'sharp';
 import { editorPlugin } from '../dev/editorPlugin';
-import type { ImageEditor } from '../dev/imageEdit';
+import type { VideoGenerator } from '../dev/falVideo';
 import { ready } from './helpers';
 
 // Every test gets an isolated source checkout. Browser saves never touch the real
 // project, developer notes, or another test's JSON/assets.
 export const test = base.extend<{
   workspace: { url: string; source: string; root: string };
-  imageEditor: ImageEditor | undefined;
+  videoGenerator: VideoGenerator | undefined;
 }>({
-  imageEditor: [undefined, { option: true }],
-  workspace: async ({ browserName, imageEditor }, use) => {
+  videoGenerator: [undefined, { option: true }],
+  workspace: async ({ browserName, videoGenerator }, use) => {
     const root = await mkdtemp(
       path.join(tmpdir(), `tukabel-editor-${browserName}-`),
     );
@@ -48,7 +48,7 @@ export const test = base.extend<{
         configFile: false,
         plugins: [
           react(),
-          editorPlugin({ imageEditor, disableAI: !imageEditor }),
+          editorPlugin({ videoGenerator, disableAI: !videoGenerator }),
         ],
         base: './',
         root,

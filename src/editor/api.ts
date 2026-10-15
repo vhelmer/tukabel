@@ -61,3 +61,12 @@ export const cancelAnimationJob = (id: string) =>
     `animations/jobs/${id}`,
     'DELETE',
   );
+
+export const saveAnimationVideo = (
+  id: string,
+  processing: import('./animationTypes').VideoProcessing,
+) =>
+  request<{
+    animation: import('../game/types').AnimationDefinition;
+    assets: string[];
+  }>(`animations/jobs/${id}/save`, 'POST', processing);

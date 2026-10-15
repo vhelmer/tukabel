@@ -1,17 +1,15 @@
 export type AnimationKind = 'blink' | 'talk' | 'expression' | 'idle';
-export interface ImageRegion {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
 export interface AnimationGeneration {
+  readonly provider: 'fal';
   readonly prompt: string;
   readonly model: string;
-  readonly quality: 'low' | 'medium' | 'high';
-  readonly mode: 'region' | 'full';
-  readonly region?: ImageRegion;
   readonly sourceHash: string;
+  readonly requestId: string;
+  readonly video: string;
+  readonly duration: number;
+  readonly background: 'magenta' | 'green' | 'keep';
+  readonly trimStart: number;
+  readonly trimEnd: number;
 }
 export interface AnimationDefinition {
   readonly id: string;

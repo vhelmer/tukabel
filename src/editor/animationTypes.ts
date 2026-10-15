@@ -1,21 +1,19 @@
-import type {
-  AnimationDefinition,
-  AnimationGeneration,
-  AnimationKind,
-  ImageRegion,
-} from '../game/types.ts';
+import type { AnimationDefinition, AnimationKind } from '../game/types.ts';
 
+export type AnimationBackground = 'magenta' | 'green' | 'keep';
 export interface GenerationRequest {
   source: string;
   sourceRevision: string;
   kind: AnimationKind;
   prompt: string;
-  frameCount: number;
-  quality: AnimationGeneration['quality'];
-  mode: AnimationGeneration['mode'];
-  region?: ImageRegion;
-  frameIndex?: number;
-  targetAnimationId?: string;
+  duration: 2 | 3 | 5;
+  background: AnimationBackground;
+}
+export interface VideoProcessing {
+  trimStart: number;
+  trimEnd: number;
+  fps: number;
+  keySimilarity: number;
 }
 export interface SourceInfo {
   width: number;
@@ -25,20 +23,15 @@ export interface SourceInfo {
 export interface AnimationServiceInfo {
   configured: boolean;
   model: string;
+  processorAvailable: boolean;
 }
 export interface AnimationJob {
   id: string;
   status: 'running' | 'completed' | 'failed' | 'cancelled';
   request: GenerationRequest;
-  completed: number;
-  total: number;
+  phase: string;
+  requestId?: string;
   error?: string;
-  result?: {
-    id: string;
-    source: string;
-    kind: AnimationKind;
-    frames: string[];
-    generation: AnimationGeneration;
-  };
+  video?: string;
+  result?: AnimationDefinition;
 }
-export type AnimationCandidate = AnimationDefinition;

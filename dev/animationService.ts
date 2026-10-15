@@ -9,22 +9,23 @@ import {
   writeFile,
 } from 'node:fs/promises';
 import path from 'node:path';
-import { format, resolveConfig } from 'prettier';
+import { format } from 'prettier';
 import type {
   AnimationJob,
   GenerationRequest,
   SourceInfo,
+  VideoProcessing,
 } from '../src/editor/animationTypes.ts';
 import {
-  assembleFrame,
-  framePlan,
-  framePrompt,
+  extractFrames,
   normalizeSource,
-  prepareEdit,
+  processorAvailable,
   validateGenerationRequest,
-} from './animationImages.ts';
-import type { ImageEditor } from './imageEdit.ts';
-import { IMAGE_MODEL } from './imageEdit.ts';
+  validateProcessing,
+  videoPrompt,
+} from './animationVideo.ts';
+import type { VideoGenerator } from './falVideo.ts';
+import { VIDEO_MODEL } from './falVideo.ts';
 
 export class AnimationError extends Error {
   constructor(
@@ -36,17 +37,29 @@ export class AnimationError extends Error {
 }
 const hash = (bytes: Buffer) =>
   createHash('sha256').update(bytes).digest('hex');
+const json = (value: unknown) =>
+  format(JSON.stringify(value), {
+    parser: 'json',
+    singleQuote: true,
+    printWidth: 80,
+    tabWidth: 2,
+    useTabs: false,
+  });
 export function createAnimationService(
   assetsRoot: string,
-  editor?: ImageEditor,
+  generator?: VideoGenerator,
   onPublished: () => void = () => {},
 ) {
   let preparing = false;
+  let processing = false;
   const jobs = new Map<
     string,
     { job: AnimationJob; controller: AbortController }
   >();
-  async function source(id: string) {
+  async function source(
+    id: string,
+    background: GenerationRequest['background'] = 'keep',
+  ) {
     if (!/^[a-zA-Z0-9_/-]+\.(png|webp|svg)$/.test(id) || id.includes('..'))
       throw new AnimationError('Vyber lokálny PNG/WebP/SVG asset.');
     const file = await realpath(path.join(assetsRoot, id));
@@ -56,135 +69,112 @@ export function createAnimationService(
     const bytes = await readFile(file);
     if (bytes.length > 6 * 1024 * 1024)
       throw new AnimationError('Zdroj môže mať najviac 6 MB.');
-    return { image: await normalizeSource(bytes), revision: hash(bytes) };
+    return {
+      image: await normalizeSource(bytes, background),
+      revision: hash(bytes),
+    };
+  }
+  async function folder() {
+    const directory = path.join(assetsRoot, 'animations');
+    await mkdir(directory, { recursive: true });
+    if (
+      (await lstat(directory)).isSymbolicLink() ||
+      !(await realpath(directory)).startsWith(
+        (await realpath(assetsRoot)) + path.sep,
+      )
+    )
+      throw new AnimationError(
+        'Adresár animácií musí byť lokálny priečinok bez symlinku.',
+      );
+    return directory;
+  }
+  async function assertSource(job: AnimationJob) {
+    if (
+      (await source(job.request.source)).revision !== job.request.sourceRevision
+    )
+      throw new AnimationError(
+        'Zdroj sa zmenil. Výsledok sa nepriradil; načítaj nový zdroj.',
+        409,
+      );
   }
   async function run(
     job: AnimationJob,
     controller: AbortController,
     input: Awaited<ReturnType<typeof source>>,
   ) {
-    const folder = path.join(assetsRoot, 'animations');
-    const staging = path.join(folder, `.${job.id}.tmp`);
-    const destination = path.join(folder, job.id);
+    const root = path.join(assetsRoot, 'animations');
+    const staging = path.join(root, `.${job.id}.tmp`);
+    const destination = path.join(root, job.id);
     try {
-      await mkdir(folder, { recursive: true });
-      if (
-        (await lstat(folder)).isSymbolicLink() ||
-        !(await realpath(folder)).startsWith(
-          (await realpath(assetsRoot)) + path.sep,
-        )
-      )
-        throw new AnimationError(
-          'Adresár animácií musí byť lokálny priečinok bez symlinku.',
-        );
-      const request = job.request;
-      const plan = framePlan(request.kind, request.frameCount);
-      const sequence =
-        request.frameIndex === undefined ? plan : [plan[request.frameIndex]!];
-      const layout = await prepareEdit(input.image, request.region);
-      const poses = new Map<
-        number,
-        { bytes: Buffer; name: string; prompt?: string }
-      >();
-      if (request.frameIndex === undefined)
-        poses.set(0, { bytes: input.image.png, name: 'source.png' });
-      for (const fraction of [...new Set(sequence)]) {
-        if (poses.has(fraction)) continue;
-        controller.signal.throwIfAborted();
-        const prompt = framePrompt(request, fraction);
-        const edited = await editor!.edit({
-          image: layout.image,
-          mask: layout.mask,
-          prompt,
-          quality: request.quality,
-          signal: controller.signal,
-          transparent: request.mode === 'full' && input.image.hasAlpha,
-        });
-        controller.signal.throwIfAborted();
-        const bytes = await assembleFrame(
-          input.image,
-          edited,
-          layout,
-          request.region,
-        );
-        poses.set(fraction, { bytes, name: `pose-${poses.size}.png`, prompt });
-        job.completed++;
-      }
+      await folder();
+      const result = await generator!.generate({
+        image: input.image.png,
+        prompt: videoPrompt(job.request),
+        duration: job.request.duration,
+        signal: controller.signal,
+        onProgress: (phase, requestId) => {
+          job.phase = phase;
+          job.requestId = requestId;
+        },
+      });
       controller.signal.throwIfAborted();
-      if ((await source(request.source)).revision !== input.revision)
-        throw new AnimationError(
-          'Zdroj sa zmenil počas generovania. Snímky sa nepriradili; načítaj nový zdroj.',
-        );
-      await mkdir(staging, { recursive: true });
-      const generation = {
-        prompt: request.prompt,
-        model: editor!.model,
-        quality: request.quality,
-        mode: request.mode,
-        region: request.region,
-        sourceHash: input.revision,
-      };
-      for (const pose of poses.values())
-        await writeFile(path.join(staging, pose.name), pose.bytes, {
-          flag: 'wx',
-        });
+      await assertSource(job);
+      if (
+        result.video.length > 60 * 1024 * 1024 ||
+        result.video.toString('ascii', 4, 8) !== 'ftyp'
+      )
+        throw new AnimationError('Očakávam MP4 do 60 MB.');
+      await mkdir(staging);
+      await writeFile(path.join(staging, 'original.mp4'), result.video, {
+        flag: 'wx',
+      });
+      await writeFile(path.join(staging, 'input.png'), input.image.png, {
+        flag: 'wx',
+      });
       await writeFile(
-        path.join(staging, 'generation.json'),
-        await format(
-          JSON.stringify(
-            {
-              version: 1,
-              source: request.source,
-              kind: request.kind,
-              ...generation,
-              width: input.image.width,
-              height: input.image.height,
-              sequence: sequence.map((fraction) => poses.get(fraction)!.name),
-              poses: [...poses].map(([fraction, pose]) => ({
-                fraction,
-                file: pose.name,
-                prompt: pose.prompt,
-              })),
-            },
-            null,
-            2,
-          ),
-          {
-            ...(await resolveConfig(path.join(folder, 'generation.json'))),
-            parser: 'json',
-          },
-        ),
+        path.join(staging, 'video.json'),
+        await json({
+          version: 1,
+          provider: 'fal',
+          model: generator!.model,
+          requestId: result.requestId,
+          request: job.request,
+          submittedPrompt: videoPrompt(job.request),
+          width: input.image.width,
+          height: input.image.height,
+        }),
       );
       controller.signal.throwIfAborted();
       await rename(staging, destination);
       controller.signal.throwIfAborted();
       onPublished();
-      job.result = {
-        id: `animation-${job.id.slice(0, 8)}`,
-        source: request.source,
-        kind: request.kind,
-        frames: sequence.map(
-          (fraction) => `animations/${job.id}/${poses.get(fraction)!.name}`,
-        ),
-        generation,
-      };
+      job.requestId = result.requestId;
+      job.video = `animations/${job.id}/original.mp4`;
       job.status = 'completed';
+      job.phase = 'Video je uložené. Vyber úsek a ulož herné snímky.';
     } catch (error) {
       await rm(staging, { recursive: true, force: true });
       await rm(destination, { recursive: true, force: true });
       job.status = controller.signal.aborted ? 'cancelled' : 'failed';
       job.error = controller.signal.aborted
-        ? 'Generovanie zrušené.'
+        ? 'Generovanie zrušené. fal.ai už mohlo požiadavku spracovať.'
         : error instanceof Error &&
             ['TimeoutError', 'AbortError'].includes(error.name)
-          ? 'Generovanie prekročilo časový limit. Skús to znovu ručne.'
+          ? 'Generovanie prekročilo časový limit.'
           : error instanceof Error
             ? error.message
             : 'Generovanie zlyhalo.';
+      job.phase = job.error;
     }
   }
   return {
-    info: { configured: Boolean(editor), model: editor?.model ?? IMAGE_MODEL },
+    async info() {
+      return {
+        configured: Boolean(generator),
+        model: generator?.model ?? VIDEO_MODEL,
+        processorAvailable: await processorAvailable(),
+      };
+    },
     async sourceInfo(id: string): Promise<SourceInfo> {
       const input = await source(id);
       return {
@@ -202,36 +192,37 @@ export function createAnimationService(
     async start(value: unknown) {
       if (!validateGenerationRequest(value))
         throw new AnimationError(
-          'Neplatné zadanie animácie. Očakávam 3–12 snímkov, prompt a oblasť úpravy.',
+          'Neplatné zadanie videa: vyber zdroj, prompt, typ, 2/3/5 sekúnd a pozadie.',
         );
-      if (!editor)
+      if (!generator)
         throw new AnimationError(
-          'AI generovanie nie je nakonfigurované. Nastav OPENAI_API_KEY v .env.local a reštartuj npm run dev.',
+          'AI nie je nakonfigurované. Nastav FAL_KEY v .env.local a reštartuj npm run dev.',
           503,
         );
       if (
         preparing ||
+        processing ||
         [...jobs.values()].some((entry) => entry.job.status === 'running')
       )
         throw new AnimationError(
-          'Už beží jedno generovanie. Počkaj alebo ho zruš.',
+          'Už beží jedno generovanie alebo spracovanie. Počkaj alebo ho zruš.',
           409,
         );
       preparing = true;
       try {
+        if (!(await processorAvailable()))
+          throw new AnimationError(
+            'FFmpeg chýba. Spusti npm ci alebo nastav FFMPEG_PATH.',
+            503,
+          );
         const request: GenerationRequest = structuredClone(value);
-        const input = await source(request.source);
+        const input = await source(request.source, request.background);
         if (input.revision !== request.sourceRevision)
           throw new AnimationError(
-            'Zdrojový obrázok sa zmenil. Načítaj ho znovu pred generovaním.',
+            'Zdrojový obrázok sa zmenil. Načítaj ho znovu.',
             409,
           );
-        await prepareEdit(input.image, request.region); // Reject bad geometry before any paid request.
-        const sequence = framePlan(request.kind, request.frameCount);
-        const total =
-          request.frameIndex === undefined
-            ? new Set(sequence.filter((fraction) => fraction !== 0)).size
-            : 1;
+        await folder();
         for (const [id, entry] of jobs)
           if (jobs.size >= 20 && entry.job.status !== 'running')
             jobs.delete(id);
@@ -240,14 +231,86 @@ export function createAnimationService(
           id: randomUUID(),
           status: 'running',
           request,
-          completed: 0,
-          total,
+          phase: 'Odosielam celý asset do fal.ai…',
         };
         jobs.set(job.id, { job, controller });
         void run(job, controller, input);
         return job;
       } finally {
         preparing = false;
+      }
+    },
+    async save(id: string, value: unknown) {
+      if (!validateProcessing(value))
+        throw new AnimationError(
+          'Neplatný časový výber / fps / kľúčovanie. Najviac 120 snímkov a 24 fps.',
+        );
+      if (processing)
+        throw new AnimationError('Už prebieha spracovanie videa.', 409);
+      const entry = jobs.get(id);
+      if (!entry?.job.video || entry.job.status !== 'completed')
+        throw new AnimationError('Video ešte nie je pripravené.', 409);
+      const job = entry.job;
+      if (value.trimEnd > job.request.duration + 0.05)
+        throw new AnimationError('Časový výber presahuje zadanú dĺžku videa.');
+      processing = true;
+      const clipId = randomUUID();
+      let staging: string | undefined;
+      try {
+        await assertSource(job);
+        const root = await folder();
+        const videoFile = await realpath(path.join(assetsRoot, job.video!));
+        if (!videoFile.startsWith((await realpath(root)) + path.sep))
+          throw new AnimationError('Video musí byť lokálne.');
+        staging = path.join(root, `.${clipId}.tmp`);
+        await mkdir(staging);
+        const input = await source(job.request.source);
+        const names = await extractFrames(
+          videoFile,
+          staging,
+          value as VideoProcessing,
+          { width: input.image.outputWidth, height: input.image.outputHeight },
+          job.request.background,
+          entry!.controller.signal,
+        );
+        const definition = {
+          id: `animation-${clipId}`,
+          label: `${job.request.kind} postavy`,
+          source: job.request.source,
+          kind: job.request.kind,
+          fps: value.fps,
+          frames: names.map((name) => `animations/${clipId}/${name}`),
+          generation: {
+            provider: 'fal' as const,
+            model: generator!.model,
+            prompt: job.request.prompt,
+            sourceHash: job.request.sourceRevision,
+            requestId: job.requestId!,
+            video: job.video!,
+            duration: job.request.duration,
+            background: job.request.background,
+            trimStart: value.trimStart,
+            trimEnd: value.trimEnd,
+          },
+        };
+        await writeFile(
+          path.join(staging, 'generation.json'),
+          await json({
+            version: 2,
+            ...definition,
+            processing: value,
+            width: input.image.outputWidth,
+            height: input.image.outputHeight,
+          }),
+        );
+        await assertSource(job);
+        await rename(staging, path.join(root, clipId));
+        onPublished();
+        job.result = definition;
+        return definition;
+      } finally {
+        if (staging) await rm(staging, { recursive: true, force: true });
+        processing = false;
       }
     },
     cancel(id: string) {
@@ -259,8 +322,7 @@ export function createAnimationService(
       return entry.job;
     },
     dispose() {
-      for (const entry of jobs.values())
-        if (entry.job.status === 'running') entry.controller.abort();
+      for (const entry of jobs.values()) entry.controller.abort();
     },
   };
 }

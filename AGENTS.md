@@ -67,10 +67,12 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
   lokální snímky a původní `source`; vazba hotspotu musí používat stejný obrázek.
 - Přehrávání je čistě vizuální: talk má přednost před blink a idle. Ticker zapínej
   jen pro aktivní postavy, uklízej listenery a respektuj pauzu / reduced motion.
-- AI pipeline je pouze v `dev/`. Klíč `OPENAI_API_KEY` patří do prostředí serveru
-  nebo ignorovaného `.env.local`, nikdy do `VITE_`, klienta nebo autorského JSON.
-- Lokální AI úprava musí zaručit shodu pixelů mimo masku a zachovat původní alfu.
-  Prompt a maska samotné nestačí. Snímky a provenance jsou v `src/assets/animations/`.
+- Animace generuj výhradně přes fal.ai image-to-video nad celým assetem, bez masek,
+  inpaintingu či generování dílčích póz. `FAL_KEY` patří pouze serveru / `.env.local`.
+  `OPENAI_API_KEY` ponech pro jiné budoucí funkce; animace jej nesmějí používat.
+- Původní MP4, odeslaný PNG, exportované snímky a metadata jsou v `src/assets/animations/`.
+  FFmpeg a klíčování celých snímků běží pouze v `dev/`; produkce přehrává lokální PNG.
+  Zachovej poměr stran a kontrolu zdroje/revizí. Neslibuj vizuální konzistenci modelu.
 - Testy nesmějí účtovat živé API požadavky. Používej kontrolované odpovědi modelu
   a dočasné assety; bez skutečného klíče netvrď, že byla ověřena kvalita generování.
 
@@ -82,7 +84,7 @@ save/load v localStorage. Herní okno s drag/drop inventářem, dotykem i HTML k
 Dev Mode upravuje lokace, hotspoty, assety, předměty, pravidla, dialogy a kombinace;
 mapa logiky ukazuje podmínky a efekty. Ukládá se do zdrojového JSON v Gitu. Krátká
 kompletní technická hádanka bez skutečného příběhu a finálních assetů.
-Animace: maskované AI snímky, náhled/regenerace/import v inspektoru, náhodné mrkání,
-mluvení během dialogu a procedurální idle pohyb. PNG i metadata se ukládají do Gitu;
-živé generování vyžaduje serverový OPENAI_API_KEY. Podrobnosti formátu a průchod
+Animace: fal.ai video celého assetu, video náhled, výběr úseku a PNG export,
+náhodné mrkání, mluvení během dialogu a procedurální idle pohyb. MP4, PNG i metadata
+se ukládají do Gitu; živé generování vyžaduje serverový FAL_KEY. Podrobnosti formátu a průchod
 jsou v README. Chůze postavy a zvuk zatím chybí.

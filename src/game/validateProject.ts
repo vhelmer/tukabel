@@ -258,51 +258,47 @@ export function validateProject(
       if (
         animation.generation !== undefined &&
         object(animation.generation, `${path}.generation`, [
-          'prompt',
+          'provider',
           'model',
-          'quality',
-          'mode',
-          'region',
+          'prompt',
           'sourceHash',
+          'requestId',
+          'video',
+          'duration',
+          'background',
+          'trimStart',
+          'trimEnd',
         ])
       ) {
-        const generation = animation.generation;
-        string(generation.prompt, `${path}.prompt`);
-        string(generation.model, `${path}.model`);
-        if (!['low', 'medium', 'high'].includes(String(generation.quality)))
-          errors.push(`${path}: invalid quality`);
-        if (!['region', 'full'].includes(String(generation.mode)))
-          errors.push(`${path}: invalid edit mode`);
+        const g = animation.generation;
+        for (const key of ['model', 'prompt', 'requestId'])
+          string(g[key], `${path}.generation.${key}`);
+        if (g.provider !== 'fal') errors.push(`${path}: expected fal provider`);
         if (
-          typeof generation.sourceHash !== 'string' ||
-          !/^[a-f0-9]{64}$/.test(generation.sourceHash)
+          typeof g.sourceHash !== 'string' ||
+          !/^[a-f0-9]{64}$/.test(g.sourceHash)
         )
           errors.push(`${path}: invalid source hash`);
-        if (generation.mode === 'region' && generation.region === undefined)
-          errors.push(`${path}: local edit requires region`);
         if (
-          generation.region !== undefined &&
-          object(generation.region, `${path}.region`, [
-            'x',
-            'y',
-            'width',
-            'height',
-          ])
-        ) {
-          for (const key of ['x', 'y', 'width', 'height'])
-            number(generation.region[key], `${path}.region.${key}`);
-          if (
-            !Object.values(generation.region).every(
-              (entry) =>
-                typeof entry === 'number' &&
-                Number.isInteger(entry) &&
-                entry >= 0,
-            ) ||
-            Number(generation.region.width) < 1 ||
-            Number(generation.region.height) < 1
-          )
-            errors.push(`${path}: invalid pixel region`);
-        }
+          typeof g.video !== 'string' ||
+          !/^[a-zA-Z0-9_/-]+\.mp4$/.test(g.video) ||
+          g.video.includes('..')
+        )
+          errors.push(`${path}: expected local MP4 asset ID`);
+        else if (assets && !assets.includes(g.video))
+          errors.push(`${path}: missing video asset "${g.video}"`);
+        if (!['magenta', 'green', 'keep'].includes(String(g.background)))
+          errors.push(`${path}: invalid video background`);
+        for (const key of ['duration', 'trimStart', 'trimEnd'])
+          number(g[key], `${path}.generation.${key}`);
+        if (
+          Number(g.duration) <= 0 ||
+          Number(g.duration) > 6 ||
+          Number(g.trimStart) < 0 ||
+          Number(g.trimEnd) <= Number(g.trimStart) ||
+          Number(g.trimEnd) > Number(g.duration) + 0.05
+        )
+          errors.push(`${path}: invalid video trim`);
       }
     });
   list(value.items, 'items', (item, path) => {

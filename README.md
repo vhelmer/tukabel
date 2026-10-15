@@ -108,8 +108,8 @@ mrkání, dialogové snímky a jemné idle pohyby lze přiřadit v editoru.
 - `src/ui/` — herní okno, životní cyklus canvasu, dialogy, inventář a pointer drag/drop.
 - `src/editor/` — pouze vývojový editor, SVG autorování oblastí, formuláře a graf.
 - `dev/editorPlugin.ts` — lokální Vite middleware pro načtení/zápis a import assetů.
-- `dev/animationService.ts`, `animationImages.ts`, `imageEdit.ts` — vývojové AI úlohy,
-  maskování/skládání přes Sharp a serverový adaptér Images API. Bez runtime závislosti.
+- `dev/animationService.ts`, `animationVideo.ts`, `falVideo.ts` — vývojové fal.ai úlohy,
+  archivace MP4, FFmpeg extrakce a klíčování celých snímků přes Sharp. Bez runtime závislosti.
 - `tests/` — pravidla, průchody hry, izolované testy editoru a produkčního buildu.
 
 React vlastní obsah návrhu, herní stav a UI. Pixi vykresluje a obsluhuje kliky
@@ -179,45 +179,86 @@ importují obrázek, vytvářejí dialogy, kontrolují JSON na disku, reload, ko
 a odmítnutí neplatného zápisu. Reálný projekt ani produkci nemění. Produkční test
 ověřuje nepřítomnost editoru i zápisového API. Screenshoty/trace jsou v ignorovaném
 `test-results/`, náhledy editoru a grafu také při úspěšném průchodu.
-Animační testy kreslí masku, ukládají skutečné PNG, kontrolují chráněné pixely,
-náhled, regeneraci snímku, reload a mrkání/mluvení v Pixi i ve statickém buildu
-dočasné hry. Používají výslovně testovací obrazový zdroj, nikoli placené AI volání.
+Animační testy používají skutečné testovací MP4: video náhled, extrakci, klíčování,
+opakované zpracování bez AI, reload a mrkání/mluvení v Pixi i ve statickém buildu
+dočasné hry. Testují také fal.ai HTTP adaptér. Nevolají placené AI API a nehodnotí
+kvalitu skutečného modelu.
 
 Instrukce pro agenty jsou v [AGENTS.md](AGENTS.md).
 
-## Animace postav v Dev Mode
+## Animace postav v Dev Mode: celý asset → fal.ai video → PNG
 
-1. V **Lokácie** vyber hotspot postavy a přiřaď její statický PNG/WebP obrázek
-   (podporován je také SVG zdroj). Otevři **Animácie postavy · AI** v inspektoru.
-2. Ponech typ **Mrkanie**, napiš například „Vytvoř mrknutí na 5 snímků“ a zvol
-   kvalitu. Počet snímků se převezme z promptu, lze ho změnit i ručně (3–12).
-3. V režimu **Iba označená oblasť** táhni obdélník kolem očí. Přidej malý okraj;
-   oblast může zahrnout obě oči. Souřadnice lze doladit číselně. Pro pohyb celé
-   postavy lze vybrat **Kompletný snímok**, pak zkontroluj konzistenci celého výstupu.
-4. **Vygenerovať / regenerovať animáciu** spustí skutečné placené API úpravy.
-   Panel ukazuje počet unikátních AI obrázků a průběh; úlohu můžeš zrušit.
-   Zrušení nezaručuje vrácení ceny již odeslaného požadavku. Návrat z Game Mode
-   naváže na poslední úlohu tohoto zdroje, dokud běží stejný vývojový server.
-5. Přehraj náhled, proklikej snímky, nastav název a fps. Obrázky lze nahradit
-   importem, snímky přidat, odebrat nebo posunout. Po přidání definice do návrhu
-   lze **Regenerovať túto snímku**; celý klip regeneruje hlavní tlačítko jako nový výsledek.
-6. **Priradiť postave** přidá definici a nastaví automatické mrkání; dolaď náhodný
-   interval. Pro typ **Rozprávanie** označ ústa a přiřaď dialog. Výraz/idle se
-   přiřadí jako základní animace, s opakováním nebo podržením posledního snímku.
-   **Pohyb bez AI** přidá jemné dýchání/kývání bez nových obrázků.
-7. **Game Mode** okamžitě testuje návrh. **Uložiť do projektu** zapíše konfiguraci
-   do JSON. PNG a `generation.json` jsou na disku už po úspěšném generování.
-   Commitni JSON i nové adresáře v `src/assets/animations/`. Nepoužité výstupy
-   můžeš ručně smazat, až nebudou odkazované. Odstranění definice soubory nemaže.
+1. V **Lokácie** vyber postavu a přiřaď statický PNG/WebP asset; SVG se převede na
+   PNG bez ořezu. Otevři **Animácie postavy · fal.ai**. Vyber **Mrkanie**, **Idle**
+   nebo **Rozprávanie**; výběr doplní prompt, který můžeš upravit.
+2. Zvol délku 2/3/5 sekund a pozadí. Pro průhledný asset použij magentu nebo zelenou,
+   podle toho, kterou barvu postava nepoužívá. **Ponechať pozadie** zachová neprůhledné
+   video. Již neprůhledné pozadí vstupního obrázku se samo neodstraní.
+3. **Vygenerovať / regenerovať video** odešle celý obrázek do fal.ai. Stav ukazuje
+   frontu, generování a stahování; úlohu lze zrušit. Jde o jedno placené video bez
+   automatického opakování. Zrušení nezaručuje zastavení již běžícího výpočtu ani
+   vrácení ceny. Původní MP4, odeslaný PNG a `video.json` se uloží ihned po úspěchu.
+4. Přehraj video. Podle pohybu zvol začátek/konec úseku, exportní fps (1–24)
+   a sílu odstranění pozadí. **Uložiť herné snímky** provede lokální FFmpeg extrakci;
+   zůstává celé zarámování postavy, nejdelší strana má nejvýše 512 px. Limit je
+   120 snímků. Úsek i klíčování lze opakovat bez dalšího AI požadavku.
+5. Přehraj PNG náhled a proklikej snímky. Pro krátké mrknutí vyber úsek obsahující
+   otevření → zavření → otevření očí; server mrknutí automaticky nedetekuje.
+   Posuď podobu postavy, hrany, pozadí a začátek/konec. Videomodel nezaručuje
+   identitu pixelů ani plynulou smyčku. Klíčování může odstranit stejnou barvu
+   z oblečení nebo ponechat barevné okraje; změň sílu/barvu či prompt a zkontroluj náhled.
+6. **Priradiť postave** přidá definici a nastaví automatické mrkání / dialogovou
+   animaci / základní idle. Dolaď interval mrkání nebo dialog. **Game Mode**
+   ihned přehraje návrh; **Uložiť do projektu** zapíše definici do zdrojového JSON.
+7. Commitni `project.json` i nové adresáře v `src/assets/animations/`. MP4 archiv,
+   vstup a metadata jsou v adresáři úlohy; každý úspěšný export má samostatný
+   adresář s PNG a `generation.json` (časový úsek, fps, klíčování, hash zdroje,
+   model, ID fal.ai požadavku a odkaz na MP4). Nic se nepřepisuje ani automaticky nemaže.
 
-Bez API klíče fungují stejné náhledy a přehrávání přes **Nová ručná animácia**
-a import snímků. Ruční klip je v panelu takto označený; nenahrazuje AI generování.
+Úlohy a jejich nastavení jsou v paměti vývojového serveru (nejvýše 20 posledních).
+Návrat z Game Mode na poslední úlohu naváže. Po restartu serveru zůstávají soubory
+na disku a uložené definice v projektu; původní video lze stále přehrát u uloženého
+klipu. Neuložený návrh a možnost znovu exportovat starou úlohu se restartem ztratí.
+Ruční import/úpravy PNG a **Pohyb bez AI** (dýchání/kývání) nadále fungují bez klíče.
+Dosavadní PNG assety zůstávají použitelné; staré generování po částech bylo odstraněno.
+Případná stará `generation` metadata v definici klipu je potřeba odstranit, samotné
+`source`, `frames` a `fps` zůstávají kompatibilní. Staré archivní soubory se nemění.
+
+### Konfigurace
+
+V existujícím ignorovaném `.env.local` **doplň** (soubor nepřepisuj):
+
+```dotenv
+FAL_KEY=tvuj_fal_klic
+```
+
+Pro novou instalaci můžeš zkopírovat `.env.example`. Restartuj `npm run dev`.
+`OPENAI_API_KEY` zůstává podporovanou serverovou konfigurací pro případné budoucí
+funkce; animace jej vůbec nečtou. Nikdy nepoužívej `VITE_` prefix. Klíče ani fal.ai
+podepsané URL se neukládají do obsahu, metadat, odpovědí či produkčního bundlu.
+Účet fal.ai potřebuje kredit a přístup k modelu. Bez `FAL_KEY` vrací API 503;
+neexistuje simulované generování. Automatické testy klíč nikdy nepoužívají.
+
+Použitý model je [Wan 2.2 5B image-to-video](https://fal.ai/models/fal-ai/wan/v2.2-5b/image-to-video/api),
+580p, 24 fps, původní poměr stran, bez interpolace a rozšiřování promptu. Krátký
+výstup a menší model omezují cenu; aktuální cenu ověř v modelové stránce fal.ai.
+Server používá nativní HTTP frontu: submit → status → result → download,
+[viz dokumentace fronty](https://fal.ai/docs/documentation/model-apis/inference/queue).
+Klíč se odesílá jen `queue.fal.run`; media se stahují bez klíče z fal CDN / Google
+Storage. Doba čekání je nejvýše 15 minut, velikost videa 60 MB. Zdroj je statický
+PNG/WebP/SVG do 2048 × 2048 px / 6 MB; po dobu úlohy jej chrání kontrola SHA-256.
+
+FFmpeg je **vývojová** npm závislost `ffmpeg-static`, dodaná při `npm ci`.
+Pokud platforma nemá podporovanou binárku, nastav `FFMPEG_PATH` na absolutní cestu
+k vlastnímu FFmpeg s PNG a H.264 podporou a restartuj server. Editor před placeným
+požadavkem kontroluje dostupnost binárky. Zpracování běží bez shellu s limitem
+60 sekund. Produkce nepotřebuje FFmpeg, fal.ai ani jakékoli AI API.
 
 ### Formát a přehrávání
 
 Projekt má volitelný registr `animations`. Klip obsahuje `id`, `label`, `source`
 (ID původního assetu), `kind` (`blink/talk/expression/idle`), `frames` (ID lokálních
-obrázků) a `fps` (1–30). Opakované ID snímku je v pořádku. Hotspot s `image` může
+obrázků, 1–120 snímků) a `fps` (1–30). Opakované ID snímku je v pořádku. Hotspot s `image` může
 mít `animation`: `idle`, `idleLoop`, `blink`, `blinkIntervalMs: [min, max]`, `talk`,
 `dialogueId` a `motion: "breath" | "sway"`. Zdroj klipu musí odpovídat obrázku postavy.
 Přehrávání má prioritu talk → blink → idle / originál; náhodné čekání mrknutí je
@@ -227,35 +268,8 @@ Pohyby i snímky jsou vizuální stav, nikoli součást uloženého postupu. Pix
 se spouští jen pro viditelné animované postavy, pauzuje v menu/skryté záložce a
 respektuje reduced motion. Statické scény nadále zůstávají bez trvalého loopu.
 
-Lokální generátor používá OpenAI `gpt-image-2` přes Images API a jeden obrázek na
-unikátní pózu. Pětisnímkové mrknutí používá dvě AI pózy a originál v pořadí
-originál / přivřené / zavřené / přivřené / originál. Pro lokální úpravu server vytvoří
-kontextový výřez a PNG masku; po návratu změní pouze označený obdélník a zachová
-původní alfu. Maska samotná je u modelu jen vodítko, zbytek chrání přesné skládání
-pixelů. Výstupy mají původní rozměry a ukládají se do `src/assets/animations/` s
-`generation.json` (model, prompt, hash zdroje, maska a pořadí snímků).
-Režim celých snímků tuto záruku nemá a vyžaduje vizuální kontrolu.
-
-Nastavení skutečného generování:
-
-```sh
-cp .env.example .env.local
-# Do .env.local nastav OPENAI_API_KEY a potom spusť / restartuj npm run dev.
-```
-
-Klíč vytvoř v [OpenAI platformě](https://platform.openai.com/api-keys) a povol
-účtu obrázkový model / API kredit. Nikdy nepoužívej prefix `VITE_`. Klíč čte pouze
-lokální server, nepíše se do JSON, metadat, odpovědí ani produkčního bundlu.
-Bez klíče API vrátí 503 a nic nefinguje. Nemění se běh produkce ani herní save/load.
-Generování běží jako úloha s průběhem a zrušením; jediná aktivní úloha omezuje
-souběžné placené požadavky. Chyby se automaticky neopakují. Úspěšné PNG a metadata
-se zveřejní společným přejmenováním adresáře; neúspěšná/zrušená úloha nezanechá snímky.
-Zdroj se kontroluje hashem, statický PNG/WebP/SVG je omezen na 2048 × 2048 px / 6 MB;
-SVG se nejprve převede na PNG. Výběr masky je v pixelech tohoto zdroje.
-
-Výchozí kvalita medium: dva 1024×1024 výstupy mají orientační cenu 0,106 USD **plus
-vstupní tokeny**; výsledná cena závisí na modelu, kvalitě a vstupu. Viz
-[oficiální přehled generování a cen](https://developers.openai.com/api/docs/guides/image-generation)
-a [Images edits API](https://developers.openai.com/api/reference/resources/images/methods/edit).
-Živé generování vyžaduje vlastní klíč. Automatické testy jej nepoužívají: ověřují
-HTTP adaptér a skládání s kontrolovanými odpověďmi, nikoli kvalitu skutečného modelu.
+Metadata `generation` u nových klipů obsahují `provider: "fal"`, `model`, `prompt`,
+`sourceHash`, `requestId`, `video` (lokální MP4 ID), `duration`, `background`,
+`trimStart` a `trimEnd`. Validator kontroluje i dostupnost MP4. Přehrávač potřebuje
+jen snímky a fps; archiv videa se během hry nestahuje. Žádné masky, inpainting,
+projekce původního alfa kanálu ani záruka pixelové shody se zde nepoužívají.

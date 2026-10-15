@@ -13,8 +13,8 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 import { loadEnv } from 'vite';
 import type { Plugin } from 'vite';
 import { createAnimationService, AnimationError } from './animationService.ts';
-import { openAIImageEditor } from './imageEdit.ts';
-import type { ImageEditor } from './imageEdit.ts';
+import { falVideoGenerator } from './falVideo.ts';
+import type { VideoGenerator } from './falVideo.ts';
 import { format, resolveConfig } from 'prettier';
 import { validateProject } from '../src/game/validateProject.ts';
 
@@ -22,7 +22,7 @@ const API = '/__tukabel/editor';
 const hash = (text: string) => createHash('sha256').update(text).digest('hex');
 const loopback = (host: string) =>
   ['localhost', '127.0.0.1', '[::1]'].includes(host);
-const imagePattern = /^[a-zA-Z0-9_/-]+\.(svg|png|jpe?g|webp|avif)$/;
+const imagePattern = /^[a-zA-Z0-9_/-]+\.(svg|png|jpe?g|webp|avif|mp4)$/;
 
 async function readJson(req: IncomingMessage): Promise<unknown> {
   if (!req.headers['content-type']?.startsWith('application/json'))
@@ -51,7 +51,7 @@ async function listAssets(directory: string, prefix = ''): Promise<string[]> {
 }
 
 export function editorPlugin(
-  options: { imageEditor?: ImageEditor; disableAI?: boolean } = {},
+  options: { videoGenerator?: VideoGenerator; disableAI?: boolean } = {},
 ): Plugin {
   return {
     name: 'tukabel-local-editor',
@@ -66,14 +66,14 @@ export function editorPlugin(
       );
       const assetsRoot = path.resolve(server.config.root, 'src/assets');
       const key =
-        process.env.OPENAI_API_KEY ||
-        loadEnv(server.config.mode, server.config.envDir, 'OPENAI_')
-          .OPENAI_API_KEY;
+        process.env.FAL_KEY ||
+        loadEnv(server.config.mode, server.config.envDir, 'FAL_').FAL_KEY;
       const animationService = createAnimationService(
         assetsRoot,
         options.disableAI
           ? undefined
-          : (options.imageEditor ?? (key ? openAIImageEditor(key) : undefined)),
+          : (options.videoGenerator ??
+              (key ? falVideoGenerator(key) : undefined)),
         () => {
           // Renaming a complete folder may not produce individual add events.
           // Refresh the glob on the next page load without resetting the draft.
@@ -121,7 +121,7 @@ export function editorPlugin(
           const parsedUrl = new URL(req.url!, host);
           const endpoint = parsedUrl.pathname;
           if (endpoint === `${API}/animations/info` && req.method === 'GET') {
-            respond(200, animationService.info);
+            respond(200, await animationService.info());
             return;
           }
           if (endpoint === `${API}/animations/source` && req.method === 'GET') {
@@ -144,6 +144,17 @@ export function editorPlugin(
           const jobEndpoint = new RegExp(
             `^${API}/animations/jobs/([a-f0-9-]+)$`,
           ).exec(endpoint);
+          const saveEndpoint = new RegExp(
+            `^${API}/animations/jobs/([a-f0-9-]+)/save$`,
+          ).exec(endpoint);
+          if (saveEndpoint && req.method === 'POST') {
+            const animation = await animationService.save(
+              saveEndpoint[1]!,
+              await readJson(req),
+            );
+            respond(201, { animation, assets: await listAssets(assetsRoot) });
+            return;
+          }
           if (jobEndpoint && req.method === 'GET') {
             respond(200, {
               job: animationService.get(jobEndpoint[1]!),

@@ -4,12 +4,12 @@ import type {
   AnimationKind,
   GameContent,
   Hotspot,
-  ImageRegion,
 } from '../game/types';
 import type {
   AnimationJob,
   AnimationServiceInfo,
   SourceInfo,
+  AnimationBackground,
 } from './animationTypes';
 import {
   animationJobs,
@@ -18,17 +18,26 @@ import {
   cancelAnimationJob,
   readAnimationJob,
   startAnimationJob,
+  saveAnimationVideo,
 } from './api';
 import { AssetField, Field, SelectId } from './fields';
 import { nextId, replaceAt } from './model';
-import { AnimationRegion } from './AnimationRegion';
 import { AnimationPreview } from './AnimationPreview';
+import { assetUrl } from '../game/assets';
 
 const kindLabels: Record<AnimationKind, string> = {
   blink: 'Mrkanie',
   talk: 'Rozprávanie',
   expression: 'Výraz',
   idle: 'Idle pohyb',
+};
+const prompts: Record<AnimationKind, string> = {
+  blink:
+    'The character blinks once naturally, then returns to the original pose. Very subtle movement.',
+  idle: 'The character breathes gently in place, with a subtle relaxed idle movement. Seamless resting pose.',
+  talk: 'The character speaks calmly with small mouth movements and minimal head motion, then returns to rest.',
+  expression:
+    'The character briefly smiles, keeping the original pose and appearance.',
 };
 export function AnimationPanel({
   hotspot,
@@ -58,37 +67,31 @@ export function AnimationPanel({
   const [candidate, setCandidate] = useState<AnimationDefinition | null>(
     initial ?? null,
   );
-  const candidateRef = useRef(candidate);
   const contentRef = useRef(content);
   useEffect(() => {
-    candidateRef.current = candidate;
     contentRef.current = content;
-  }, [candidate, content]);
+  }, [content]);
   const [service, setService] = useState<AnimationServiceInfo>();
   const [info, setInfo] = useState<SourceInfo>();
   const [kind, setKind] = useState<AnimationKind>(initial?.kind ?? 'blink');
   const [prompt, setPrompt] = useState(
-    initial?.generation?.prompt ??
-      'Vytvor mrknutie na 5 snímkov. Zachovaj vzhľad postavy.',
+    initial?.generation?.prompt ?? prompts.blink,
   );
-  const [count, setCount] = useState(
-    initial ? Math.max(3, Math.min(12, initial.frames.length)) : 5,
+  const [duration, setDuration] = useState<2 | 3 | 5>(2);
+  const [background, setBackground] = useState<AnimationBackground>(
+    initial?.generation?.background ?? 'magenta',
   );
-  const [quality, setQuality] = useState<'low' | 'medium' | 'high'>(
-    initial?.generation?.quality ?? 'medium',
-  );
-  const [mode, setMode] = useState<'region' | 'full'>(
-    initial?.generation?.mode ?? 'region',
-  );
-  const [region, setRegion] = useState<ImageRegion | undefined>(
-    initial?.generation?.region,
-  );
+  const [trimStart, setTrimStart] = useState(0);
+  const [trimEnd, setTrimEnd] = useState(2);
+  const [fps, setFps] = useState(12);
+  const [keySimilarity, setKeySimilarity] = useState(0.2);
   const [jobId, setJobId] = useState('');
   const [job, setJob] = useState<AnimationJob>();
   const [message, setMessage] = useState('');
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [saving, setSaving] = useState(false);
   useEffect(() => {
     let disposed = false;
     void Promise.all([
@@ -123,9 +126,9 @@ export function AnimationPanel({
   }, [source]);
   useEffect(() => {
     if (!jobId) return;
-    let disposed = false;
-    let busy = false;
-    let finished = false;
+    let disposed = false,
+      busy = false,
+      finished = false;
     const poll = async () => {
       if (busy || finished) return;
       busy = true;
@@ -136,45 +139,21 @@ export function AnimationPanel({
         if (response.job.status !== 'running') {
           finished = true;
           setSubmitting(false);
-          if (response.job.result) {
+          if (response.job.video) {
             onAssets(response.assets);
-            const result = response.job.result;
-            const target = response.job.request.targetAnimationId;
-            const original =
-              candidateRef.current?.id === target
-                ? candidateRef.current
-                : contentRef.current.animations?.find(
-                    (entry) => entry.id === target,
-                  );
-            if (response.job.request.frameIndex !== undefined && original)
-              setCandidate({
-                ...original,
-                frames: replaceAt(
-                  original.frames,
-                  response.job.request.frameIndex,
-                  result.frames[0]!,
-                ),
-                generation: result.generation,
-              });
-            else if (response.job.request.frameIndex === undefined)
+            setTrimStart(0);
+            setTrimEnd(response.job.request.duration);
+            if (response.job.result)
               setCandidate(
                 contentRef.current.animations?.find(
-                  (entry) => entry.id === result.id,
-                ) ?? {
-                  ...result,
-                  label: `${kindLabels[result.kind]} postavy`,
-                  fps: 12,
-                },
+                  (entry) => entry.id === response.job.result!.id,
+                ) ?? response.job.result,
               );
-            setIndex(response.job.request.frameIndex ?? 0);
-            setPlaying(false);
             setMessage(
-              'Snímky sú uložené v src/assets/animations/. Pozri náhľad, potom pridaj / priraď animáciu a ulož projekt.',
+              'Pôvodné MP4 je uložené. Pozri video, vyber úsek a ulož herné snímky.',
             );
           } else
-            setMessage(
-              response.job.error ?? 'Generovanie skončilo bez výsledku.',
-            );
+            setMessage(response.job.error ?? 'Generovanie skončilo bez videa.');
         }
       } catch (error) {
         if (!disposed) {
@@ -191,36 +170,42 @@ export function AnimationPanel({
       }
     };
     void poll();
-    const timer = window.setInterval(() => void poll(), 800);
+    const timer = window.setInterval(() => void poll(), 900);
     return () => {
       disposed = true;
       window.clearInterval(timer);
     };
   }, [jobId, onAssets]);
   const running = submitting || job?.status === 'running';
-  const validRegion =
-    info &&
-    region &&
-    [region.x, region.y, region.width, region.height].every(Number.isInteger) &&
-    region.x >= 0 &&
-    region.y >= 0 &&
-    region.width >= 4 &&
-    region.height >= 4 &&
-    region.x + region.width <= info.width &&
-    region.y + region.height <= info.height;
+  const video = job?.video ?? candidate?.generation?.video;
   const canGenerate =
     service?.configured &&
+    service.processorAvailable &&
     info &&
-    (mode === 'full' || validRegion) &&
-    Number.isInteger(count) &&
-    count >= 3 &&
-    count <= 12 &&
     prompt.trim().length >= 3 &&
-    !running;
-  async function generate(frameIndex?: number) {
+    !running &&
+    !saving;
+  const canProcess =
+    job?.video &&
+    service?.processorAvailable &&
+    !running &&
+    !saving &&
+    Number.isFinite(trimStart) &&
+    Number.isFinite(trimEnd) &&
+    trimStart >= 0 &&
+    trimEnd > trimStart &&
+    trimEnd <= job.request.duration + 0.05 &&
+    trimEnd - trimStart >= 0.08 &&
+    Number.isInteger(fps) &&
+    fps >= 1 &&
+    fps <= 24 &&
+    Math.ceil((trimEnd - trimStart) * fps) <= 120 &&
+    keySimilarity >= 0.05 &&
+    keySimilarity <= 0.5;
+  async function generate() {
     if (!info) return;
     setSubmitting(true);
-    setMessage('Posielam zadanie…');
+    setMessage('Odosielam celý asset…');
     setPlaying(false);
     try {
       const next = await startAnimationJob({
@@ -228,22 +213,44 @@ export function AnimationPanel({
         sourceRevision: info.revision,
         prompt,
         kind,
-        frameCount: frameIndex === undefined ? count : candidate!.frames.length,
-        quality,
-        mode,
-        region: mode === 'region' ? region : undefined,
-        frameIndex,
-        targetAnimationId: frameIndex === undefined ? undefined : candidate!.id,
+        duration,
+        background,
       });
+      setCandidate(null);
       setJob(next);
       setJobId(next.id);
     } catch (error) {
       setSubmitting(false);
       setMessage(
-        error instanceof Error
-          ? error.message
-          : 'Generovanie sa nepodarilo spustiť.',
+        error instanceof Error ? error.message : 'Generovanie zlyhalo.',
       );
+    }
+  }
+  async function saveFrames() {
+    if (!job) return;
+    setSaving(true);
+    setMessage('FFmpeg spracúva video a ukladá PNG snímky…');
+    try {
+      const result = await saveAnimationVideo(job.id, {
+        trimStart,
+        trimEnd,
+        fps,
+        keySimilarity,
+      });
+      onAssets(result.assets);
+      setCandidate(result.animation);
+      setIndex(0);
+      setPlaying(false);
+      setJob({ ...job, result: result.animation });
+      setMessage(
+        'Video aj herné snímky sú na disku. Priraď animáciu postave a ulož projekt.',
+      );
+    } catch (error) {
+      setMessage(
+        error instanceof Error ? error.message : 'Spracovanie videa zlyhalo.',
+      );
+    } finally {
+      setSaving(false);
     }
   }
   function select(id: string) {
@@ -251,15 +258,12 @@ export function AnimationPanel({
     setCandidate(selected ?? null);
     setIndex(0);
     setPlaying(false);
+    setJob(undefined);
+    setJobId('');
     if (selected) {
       setKind(selected.kind);
-      setCount(Math.max(3, Math.min(12, selected.frames.length)));
-      setPrompt(
-        selected.generation?.prompt ?? 'Vytvor krátku animáciu postavy.',
-      );
-      setRegion(selected.generation?.region);
-      setMode(selected.generation?.mode ?? 'region');
-      setQuality(selected.generation?.quality ?? 'medium');
+      setPrompt(selected.generation?.prompt ?? prompts[selected.kind]);
+      setBackground(selected.generation?.background ?? 'magenta');
     }
   }
   function commit(assign: boolean) {
@@ -286,16 +290,16 @@ export function AnimationPanel({
         : hotspot,
     );
     setMessage(
-      'Animácia je v pracovnom projekte. Tlačidlom Uložiť do projektu zapíš konfiguráciu do JSON.',
+      'Animácia je v pracovnom projekte. Uložiť do projektu zapíše konfiguráciu do JSON.',
     );
   }
   const current = candidate ? Math.min(index, candidate.frames.length - 1) : 0;
   return (
     <details className="animation-panel">
-      <summary>Animácie postavy · AI</summary>
+      <summary>Animácie postavy · fal.ai</summary>
       <p className="field-note">
-        Zdroj: {source}. AI vytvára skutočné PNG snímky; produkcia prehráva iba
-        lokálne súbory.
+        Zdroj: {source}. Do fal.ai sa odošle celý asset. Produkcia prehráva iba
+        lokálne PNG snímky.
       </p>
       <h3>Prehrávanie postavy</h3>
       {(['blink', 'talk', 'idle'] as const).map((key) => (
@@ -414,12 +418,16 @@ export function AnimationPanel({
         empty="Nový výsledok"
         onChange={select}
       />
-      <fieldset className="animation-authoring" disabled={running}>
-        <legend className="sr-only">AI zadanie</legend>
+      <fieldset className="animation-authoring" disabled={running || saving}>
+        <legend className="sr-only">fal.ai zadanie</legend>
         <Field label="Typ animácie">
           <select
             value={kind}
-            onChange={(event) => setKind(event.target.value as AnimationKind)}
+            onChange={(event) => {
+              const next = event.target.value as AnimationKind;
+              setKind(next);
+              setPrompt(prompts[next]);
+            }}
           >
             {Object.entries(kindLabels).map(([id, label]) => (
               <option key={id} value={id}>
@@ -432,85 +440,60 @@ export function AnimationPanel({
           <textarea
             value={prompt}
             maxLength={2000}
-            onChange={(event) => {
-              setPrompt(event.target.value);
-              const match = /(\d+)\s*(?:sn[ií]m|sn[ií]mk|frames)/i.exec(
-                event.target.value,
-              );
-              if (match) setCount(Number(match[1]));
-            }}
+            onChange={(event) => setPrompt(event.target.value)}
           />
         </Field>
-        <div className="field-row">
-          <Field label="Počet snímkov">
-            <input
-              type="number"
-              min={3}
-              max={12}
-              value={count}
-              onChange={(event) => setCount(Number(event.target.value))}
-            />
-          </Field>
-          <Field label="Kvalita AI">
-            <select
-              value={quality}
-              onChange={(event) =>
-                setQuality(event.target.value as typeof quality)
-              }
-            >
-              <option value="low">Low · návrh</option>
-              <option value="medium">Medium</option>
-              <option value="high">High</option>
-            </select>
-          </Field>
-        </div>
-        <Field label="Rozsah AI úpravy">
+        <Field label="Dĺžka AI videa">
           <select
-            value={mode}
-            onChange={(event) => setMode(event.target.value as typeof mode)}
+            value={duration}
+            onChange={(event) =>
+              setDuration(Number(event.target.value) as 2 | 3 | 5)
+            }
           >
-            <option value="region">Iba označená oblasť (odporúčané)</option>
-            <option value="full">Kompletný snímok</option>
+            <option value={2}>2 sekundy</option>
+            <option value={3}>3 sekundy</option>
+            <option value={5}>5 sekúnd</option>
           </select>
         </Field>
-        {info && mode === 'region' && (
-          <AnimationRegion
-            source={source}
-            size={info}
-            region={region}
-            onChange={setRegion}
-            disabled={running}
-          />
-        )}
-        {mode === 'full' && (
-          <p className="field-note">
-            Celý snímok sa generuje znova. Vzhľad aj priehľadnosť treba
-            skontrolovať; mimo očí nie je zaručená zhoda pixelov.
-          </p>
-        )}
+        <Field label="Pozadie videa">
+          <select
+            value={background}
+            onChange={(event) =>
+              setBackground(event.target.value as AnimationBackground)
+            }
+          >
+            <option value="magenta">Magenta → priehľadné snímky</option>
+            <option value="green">Zelené → priehľadné snímky</option>
+            <option value="keep">Ponechať pozadie (nepriehľadné)</option>
+          </select>
+        </Field>
         <p className="field-note">
-          {service?.model ?? 'OpenAI'} ·{' '}
-          {kind === 'blink'
-            ? Math.floor((count - 1) / 2)
-            : kind === 'expression'
-              ? count - 1
-              : count - 2}{' '}
-          platených obrázkov pre {count} snímkov. Mrknutie na 5 snímkov:
-          originál → privreté → zavreté → privreté → originál.
+          Pre PNG/WebP s priehľadnosťou zvoľ farbu, ktorú postava nepoužíva.
+          Nepriehľadné pozadie sa automaticky neodstráni. Každé generovanie je
+          jedno platené video; časový výber a extrakcia sú lokálne.
+        </p>
+        <p className="field-note">
+          Model: {service?.model ?? 'fal.ai Wan 2.2 5B'}. Bez záruky rovnakej
+          podoby alebo uzavretej slučky — skontroluj video a snímky.
         </p>
         {!service?.configured && (
           <p className="ai-unavailable">
-            AI nie je zapnuté. Nastav OPENAI_API_KEY v .env.local a reštartuj
-            npm run dev. Kľúč nedávaj do VITE_ premenných. Ručný import a náhľad
-            fungujú aj bez neho.
+            Nastav FAL_KEY v .env.local a reštartuj npm run dev. OpenAI kľúč sa
+            na animácie nepoužíva. Ručný import a náhľad fungujú aj bez fal.ai.
+          </p>
+        )}
+        {service && !service.processorAvailable && (
+          <p className="ai-unavailable">
+            FFmpeg chýba. Spusti npm ci alebo nastav absolútnu FFMPEG_PATH a
+            reštartuj server.
           </p>
         )}
         <button
-          disabled={!canGenerate}
           className="primary-button"
+          disabled={!canGenerate}
           onClick={() => void generate()}
         >
-          Vygenerovať / regenerovať animáciu
+          Vygenerovať / regenerovať video
         </button>
         <button
           onClick={() => {
@@ -534,7 +517,7 @@ export function AnimationPanel({
       </fieldset>
       {job?.status === 'running' && (
         <div className="generation-progress" role="status">
-          Generujem {job.completed} / {job.total} AI obrázkov…
+          {job.phase}
           <button
             onClick={() =>
               void cancelAnimationJob(job.id).catch((error: unknown) =>
@@ -553,8 +536,92 @@ export function AnimationPanel({
           {message}
         </p>
       )}
+      {video && (
+        <div className="video-processing">
+          <h3>Video → herné snímky</h3>
+          <video
+            key={video}
+            className="animation-video"
+            aria-label="Náhľad fal.ai videa"
+            src={assetUrl(video)}
+            controls
+            playsInline
+            preload="metadata"
+          />
+          <a className="field-note" href={assetUrl(video)} download>
+            Stiahnuť pôvodné MP4
+          </a>
+          {job?.video && (
+            <fieldset
+              className="animation-authoring"
+              disabled={saving || running}
+            >
+              <legend className="sr-only">Spracovanie celého videa</legend>
+              <div className="field-row">
+                <Field label="Začiatok úseku (s)">
+                  <input
+                    type="number"
+                    min={0}
+                    step={0.05}
+                    value={trimStart}
+                    onChange={(event) =>
+                      setTrimStart(Number(event.target.value))
+                    }
+                  />
+                </Field>
+                <Field label="Koniec úseku (s)">
+                  <input
+                    type="number"
+                    min={0.1}
+                    max={job.request.duration}
+                    step={0.05}
+                    value={trimEnd}
+                    onChange={(event) => setTrimEnd(Number(event.target.value))}
+                  />
+                </Field>
+              </div>
+              <Field label="Extrakcia snímkov (fps)">
+                <input
+                  type="number"
+                  min={1}
+                  max={24}
+                  value={fps}
+                  onChange={(event) => setFps(Number(event.target.value))}
+                />
+              </Field>
+              {job.request.background !== 'keep' && (
+                <Field label="Sila odstránenia pozadia">
+                  <input
+                    type="number"
+                    min={0.05}
+                    max={0.5}
+                    step={0.01}
+                    value={keySimilarity}
+                    onChange={(event) =>
+                      setKeySimilarity(Number(event.target.value))
+                    }
+                  />
+                </Field>
+              )}
+              <p className="field-note">
+                Výber: približne{' '}
+                {Math.max(0, Math.ceil((trimEnd - trimStart) * fps))} snímkov,
+                max. 120. Dlhšia strana do 512 px. Kľúčovanie sa týka celého
+                snímku. Farba v oblečení sa môže tiež odstrániť.
+              </p>
+              <button
+                className="primary-button"
+                disabled={!canProcess}
+                onClick={() => void saveFrames()}
+              >
+                {saving ? 'Spracúvam video…' : 'Uložiť herné snímky'}
+              </button>
+            </fieldset>
+          )}
+        </div>
+      )}
       {candidate && (
-        <fieldset className="animation-authoring" disabled={running}>
+        <fieldset className="animation-authoring" disabled={running || saving}>
           <legend className="sr-only">Výsledok animácie</legend>
           <Field label="Názov animácie">
             <input
@@ -599,7 +666,7 @@ export function AnimationPanel({
           />
           <div className="row-actions">
             <button
-              disabled={candidate.frames.length >= 24}
+              disabled={candidate.frames.length >= 120}
               onClick={() =>
                 setCandidate({
                   ...candidate,
@@ -640,17 +707,6 @@ export function AnimationPanel({
             >
               ← Snímka
             </button>
-            <button
-              disabled={
-                !canGenerate ||
-                candidate.frames.length < 3 ||
-                candidate.frames.length > 12 ||
-                !content.animations?.some((entry) => entry.id === candidate.id)
-              }
-              onClick={() => void generate(current)}
-            >
-              Regenerovať túto snímku
-            </button>
           </div>
           <div className="row-actions">
             <button onClick={() => commit(false)}>
@@ -683,7 +739,7 @@ export function AnimationPanel({
             nemažú.
           </p>
         </fieldset>
-      )}
+      )}{' '}
     </details>
   );
 }

@@ -127,8 +127,8 @@ export function validateContent(content: GameContent): string[] {
     }
   }
   for (const animation of content.animations ?? []) {
-    if (!animation.frames.length || animation.frames.length > 24)
-      errors.push(`${animation.id}: expected 1–24 animation frames`);
+    if (!animation.frames.length || animation.frames.length > 120)
+      errors.push(`${animation.id}: expected 1–120 animation frames`);
     if (
       !Number.isFinite(animation.fps) ||
       animation.fps < 1 ||
