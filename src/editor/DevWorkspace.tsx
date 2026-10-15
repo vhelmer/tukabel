@@ -334,12 +334,7 @@ export default function DevWorkspace({
                     scene={scene}
                     selectedId={hotspotId}
                     onSelect={setHotspotId}
-                    onBounds={(id, bounds) => {
-                      const entry = scene.hotspots.find(
-                        (hotspot) => hotspot.id === id,
-                      );
-                      if (entry) updateHotspot({ ...entry, bounds });
-                    }}
+                    onHotspot={updateHotspot}
                     onCreate={createHotspot}
                   />
                   <div className="hotspot-list">

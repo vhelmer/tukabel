@@ -140,6 +140,10 @@
 }
 .editor-stage.drawing {
   cursor: crosshair;
+  touch-action: none;
+}
+.editor-stage.panning {
+  touch-action: pan-x pan-y;
 }
 .editor-region {
   stroke: #76c5c4;
@@ -574,4 +578,61 @@
   border: 1px solid #ffffff25;
   border-radius: 7px;
   margin: 10px 0;
+}
+
+.stage-toolbar {
+  flex-wrap: wrap;
+}
+.stage-toolbar label,
+.stage-transform-tool label {
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.stage-toolbar select,
+.stage-transform-tool select {
+  max-width: 100%;
+  background: #10221b;
+  color: #f5eed8;
+  border: 1px solid #ffffff30;
+  border-radius: 5px;
+  min-height: 34px;
+  padding: 5px;
+  font-size: 11px;
+}
+.stage-transform-tool {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  padding: 0 14px;
+}
+.stage-transform-tool strong {
+  color: #e8ae9b;
+  font-size: 11px;
+}
+.editor-stage-viewport {
+  overflow: auto;
+  max-height: 75dvh;
+  overscroll-behavior: contain;
+  background: #10221b;
+}
+.editor-stage-surface {
+  flex: none;
+}
+.rotation-handle {
+  fill: #76c5c4;
+  stroke: #172823;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+  cursor: grab;
+}
+.rotation-stem {
+  stroke: #76c5c4;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+.resize-handle {
+  vector-effect: non-scaling-stroke;
 }

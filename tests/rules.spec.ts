@@ -349,3 +349,84 @@ test('rotated clickable geometry follows the visual rectangle rather than its or
     ),
   ).toBe(false);
 });
+
+test('editor scaling keeps proportions, anchors rotated corners and stops at scene edges', async () => {
+  const { resizeBounds, moveBounds, editDimension } =
+    await import('../src/editor/transformTools');
+  const { centre, rotateAround } = await import('../src/game/transforms');
+  const bounds = { x: 200, y: 150, width: 100, height: 200 },
+    scene = { width: 1000, height: 800 };
+  for (const angle of [0, 30, 90]) {
+    const resized = resizeBounds(bounds, angle, { x: 60, y: 100 }, scene, true);
+    expect(resized.width / resized.height).toBeCloseTo(0.5, 4);
+    const before = rotateAround(
+      { x: bounds.x, y: bounds.y },
+      centre(bounds),
+      angle,
+    );
+    const after = rotateAround(
+      { x: resized.x, y: resized.y },
+      centre(resized),
+      angle,
+    );
+    expect(after.x).toBeCloseTo(before.x, 2);
+    expect(after.y).toBeCloseTo(before.y, 2);
+    expect(isInsideScene(resized, scene, angle)).toBe(true);
+    expect(
+      isInsideScene(
+        resizeBounds(bounds, angle, { x: 5000, y: 5000 }, scene, true),
+        scene,
+        angle,
+      ),
+    ).toBe(true);
+    expect(
+      isInsideScene(
+        moveBounds(bounds, angle, { x: -5000, y: 5000 }, scene),
+        scene,
+        angle,
+      ),
+    ).toBe(true);
+  }
+  expect(editDimension(bounds, 'width', 150, true)).toEqual({
+    ...bounds,
+    width: 150,
+    height: 300,
+  });
+  expect(editDimension(bounds, 'width', 150, false)).toEqual({
+    ...bounds,
+    width: 150,
+  });
+});
+
+test('JSON validates transform modes, numeric angles and rotated scene limits', async () => {
+  const { validateProject } = await import('../src/game/validateProject');
+  const project = JSON.parse(
+    await (
+      await import('node:fs/promises')
+    ).readFile('src/game/content/project.json', 'utf8'),
+  ) as GameContent;
+  const withTransform = (patch: Record<string, unknown>) => ({
+    ...project,
+    scenes: project.scenes.map((scene, index) =>
+      index
+        ? scene
+        : {
+            ...scene,
+            hotspots: scene.hotspots.map((h, i) =>
+              i ? h : { ...h, ...patch },
+            ),
+          },
+    ),
+  });
+  expect(
+    validateProject(withTransform({ rotation: 15, imageFit: 'contain' })),
+  ).toEqual([]);
+  for (const patch of [
+    { rotation: '90' },
+    { rotation: Infinity },
+    { rotation: 361 },
+    { imageFit: 'squash' },
+    { rotation: 45, bounds: { x: 0, y: 0, width: 100, height: 20 } },
+  ])
+    expect(validateProject(withTransform(patch)).length).toBeGreaterThan(0);
+});

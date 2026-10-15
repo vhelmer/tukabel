@@ -26,7 +26,17 @@ hostingu i v podadresáři. `file://` není podporované.
 1. V lokální aplikaci přepni **Dev Mode**. Editor načte aktuální zdroj a jeho revizi.
 2. V **Lokácie** vyber nebo vytvoř lokaci. Přiřaď pozadí a původní rozměry.
    **Nakresliť hotspot** vytvoří obdélník tažením v obrázku. Klik oblast vybere,
-   tažení ji posune, dolní pravý roh mění velikost. Souřadnice lze zadat i číselně.
+   tažení ji posune, dolní pravý roh proporcionálně mění velikost obrázku.
+   Kruh nad rámem otáčí kolem středu; Shift zarovnává po 15°. Escape nebo zrušení
+   dotyku vrátí rozpracovaný tah. Každý dokončený tah je jedna úprava ve Späť/Znova.
+   Číselná šířka/výška v inspektoru se také mění společně. **Rám podľa obrázka**
+   přizpůsobí klikací rám viditelné velikosti assetu bez změny jeho zobrazení.
+   **Deformovať** explicitně povolí nezávislou šířku/výšku a protažení obrázku;
+   návrat na **Proporčne** obnoví nativní proporce. Hotspot bez obrázku má volné rozměry.
+   **Priblíženie scény** (50–200 %) a posun ve výřezu mění pouze pohled editoru.
+   Na dotyku zapni **Posun pohľadu** a tažením posuň zvětšený výřez; pro úpravy
+   objektů režim zase vypni. Myší používej posuvníky nebo kolečko.
+   **Pomôcky scény** vypne rámy, popisky a úchyty pro kontrolu čistého obrázku.
    Editor ukazuje i podmíněně skryté objekty; editace nespouští herní akce.
 3. V inspektoru nastav jméno, obrázek, viditelnost, kontextové sloveso a pravidla
    `look/take/talk/use`. Podmínky i efekty mají formuláře a výběr existujících ID.
@@ -104,9 +114,12 @@ mrkání, dialogové snímky a jemné idle pohyby lze přiřadit v editoru.
 - `src/game/state.ts` — původní čistý reducer; stejná pravidla v náhledu i produkci.
 - `src/game/storage.ts` — save/load postupu; nikdy neukládá definice obsahu.
 - `src/game/createScene.ts` — Pixi pozadí, sprity, hotspoty a stavové indikátory.
+- `src/game/transforms.ts` — společné proporce, natočení a geometrie kliků i dropů.
 - `src/game/animation.ts` — vizuální hodiny, náhodné mrkání a priorita klipů.
 - `src/ui/` — herní okno, životní cyklus canvasu, dialogy, inventář a pointer drag/drop.
 - `src/editor/` — pouze vývojový editor, SVG autorování oblastí, formuláře a graf.
+  `SceneImage.tsx` používá stejnou geometrii jako Pixi; `transformTools.ts` počítá
+  proporcionální tahy a limity scény. Zoom, pomůcky a rozpracovaný tah jsou jen UI stav.
 - `dev/editorPlugin.ts` — lokální Vite middleware pro načtení/zápis a import assetů.
 - `dev/animationService.ts`, `animationVideo.ts`, `falVideo.ts` — vývojové fal.ai úlohy,
   archivace MP4, FFmpeg extrakce a klíčování celých snímků přes Sharp. Bez runtime závislosti.
@@ -185,6 +198,10 @@ importují obrázek, vytvářejí dialogy, kontrolují JSON na disku, reload, ko
 a odmítnutí neplatného zápisu. Reálný projekt ani produkci nemění. Produkční test
 ověřuje nepřítomnost editoru i zápisového API. Screenshoty/trace jsou v ignorovaném
 `test-results/`, náhledy editoru a grafu také při úspěšném průchodu.
+Transformační testy navíc ověřují PNG/WebP/SVG, rotaci, zamknuté proporce, explicitní
+deformaci, undo/redo a rušení tahů. Porovnávají obraz SVG editoru a Pixi i po změně
+viewportu / zoomu a ověřují kliky a inventární dropy na otočenou oblast. Validace
+obsahu používá vlastní dočasnou Vite cache, aby nenarušila současně běžící hru.
 Animační testy používají skutečné testovací MP4: video náhled, extrakci, klíčování,
 opakované zpracování bez AI, reload a mrkání/mluvení v Pixi i ve statickém buildu
 dočasné hry. Testují také fal.ai HTTP adaptér. Nevolají placené AI API a nehodnotí

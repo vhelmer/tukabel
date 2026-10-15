@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test';
 import type { Page } from '@playwright/test';
-import { readFile, readdir } from 'node:fs/promises';
+import { readFile, readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
 import { build, preview } from 'vite';
@@ -15,6 +15,32 @@ import type {
 import type { GameContent, Hotspot } from '../src/game/types';
 import type { VideoGenerator } from '../dev/falVideo';
 import { fixtureVideo } from './videoFixture';
+
+// Animation authoring tests start with no clips in their temporary project,
+// independently of the developer's current experiments and reference artwork.
+test.beforeEach(async ({ workspace }) => {
+  const project = JSON.parse(
+    await readFile(workspace.source, 'utf8'),
+  ) as GameContent;
+  await writeFile(
+    workspace.source,
+    JSON.stringify({
+      ...project,
+      animations: [],
+      scenes: project.scenes.map((scene) => ({
+        ...scene,
+        hotspots: scene.hotspots.map((hotspot) => ({
+          ...hotspot,
+          animation: undefined,
+          bounds:
+            hotspot.id === 'caretaker'
+              ? { ...hotspot.bounds, width: 180, height: 290 }
+              : hotspot.bounds,
+        })),
+      })),
+    }),
+  );
+});
 
 const controlledProvider: VideoGenerator = {
   model: 'controlled-video-provider',

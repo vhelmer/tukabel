@@ -9,7 +9,7 @@ import type {
 } from '../game/types';
 import { matches } from '../game/state';
 import { scenePoint } from '../game/coordinates';
-import { containsPoint } from '../game/transforms';
+import { containsPoint, rotatedBounds } from '../game/transforms';
 import { saveGame, loadGame } from '../game/storage';
 import { GameCanvas } from './GameCanvas';
 import { Inventory } from './Inventory';
@@ -301,7 +301,12 @@ export function GameWindow({
                       sceneScale,
                 ),
               ),
-              top: Math.max(56, sceneTop + currentHover.bounds.y * sceneScale),
+              top: Math.max(
+                56,
+                sceneTop +
+                  rotatedBounds(currentHover.bounds, currentHover.rotation).y *
+                    sceneScale,
+              ),
             }}
           >
             {(dragItem?.label ?? item?.label)

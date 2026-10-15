@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { AnimationPanel } from './AnimationPanel';
+import { useImageSize } from './useImageSize';
+import { imagePlacement } from '../game/transforms';
+import { editDimension } from './transformTools';
 import type {
   AnimationDefinition,
   GameContent,
@@ -41,6 +44,7 @@ export function SceneInspector({
 }) {
   const [verb, setVerb] = useState<Verb>(hotspot?.defaultVerb ?? 'look');
   const [useItem, setUseItem] = useState(content.items[0]?.id ?? '');
+  const imageSize = useImageSize(hotspot?.image);
   return (
     <div className="scene-inspector">
       <details open>
@@ -92,23 +96,80 @@ export function SceneInspector({
           <div className="bounds-fields">
             {(['x', 'y', 'width', 'height'] as const).map((key) => (
               <Field key={key} label={`Oblasť ${key}`}>
-                <input
-                  type="number"
+                <TransformNumber
                   min={key === 'x' || key === 'y' ? 0 : 1}
                   value={hotspot.bounds[key]}
-                  onChange={(event) =>
+                  onChange={(value) =>
                     onHotspot({
                       ...hotspot,
-                      bounds: {
-                        ...hotspot.bounds,
-                        [key]: Number(event.target.value),
-                      },
+                      bounds: editDimension(
+                        hotspot.bounds,
+                        key,
+                        value,
+                        Boolean(hotspot.image) &&
+                          hotspot.imageFit !== 'stretch',
+                      ),
                     })
                   }
                 />
               </Field>
             ))}
           </div>
+          <Field label="Otočenie objektu (°)">
+            <TransformNumber
+              min={-360}
+              max={360}
+              step={1}
+              value={hotspot.rotation ?? 0}
+              onChange={(value) =>
+                onHotspot({
+                  ...hotspot,
+                  rotation: value || undefined,
+                })
+              }
+            />
+          </Field>
+          {hotspot.image && (
+            <>
+              <Field label="Spôsob zmeny veľkosti">
+                <select
+                  value={hotspot.imageFit ?? 'contain'}
+                  onChange={(event) =>
+                    onHotspot({
+                      ...hotspot,
+                      imageFit:
+                        event.target.value === 'stretch'
+                          ? 'stretch'
+                          : undefined,
+                    })
+                  }
+                >
+                  <option value="contain">Proporčne · bez deformácie</option>
+                  <option value="stretch">
+                    Deformovať · voľná šírka a výška
+                  </option>
+                </select>
+              </Field>
+              <p className="field-note">
+                {hotspot.imageFit === 'stretch'
+                  ? 'Deformácia je zapnutá: šírka a výška sa menia nezávisle.'
+                  : 'Šírka a výška sa menia spolu. Obrázok vždy zachová pôvodné proporcie vo svojom ráme.'}
+              </p>
+              <button
+                disabled={!imageSize}
+                onClick={() =>
+                  imageSize &&
+                  onHotspot({
+                    ...hotspot,
+                    imageFit: undefined,
+                    bounds: imagePlacement(hotspot.bounds, imageSize),
+                  })
+                }
+              >
+                Rám podľa obrázka
+              </button>
+            </>
+          )}
           <AssetField
             label="Obrázok objektu"
             value={hotspot.image ?? ''}
@@ -226,5 +287,45 @@ export function SceneInspector({
         </p>
       )}
     </div>
+  );
+}
+
+function TransformNumber({
+  value,
+  onChange,
+  min,
+  max,
+  step = 1,
+  id,
+}: {
+  value: number;
+  onChange: (value: number) => void;
+  min: number;
+  max?: number;
+  step?: number;
+  id?: string;
+}) {
+  const [draft, setDraft] = useState<string | null>(null);
+  return (
+    <input
+      id={id}
+      type="number"
+      min={min}
+      max={max}
+      step={step}
+      value={draft ?? value}
+      onFocus={() => setDraft(String(value))}
+      onBlur={() => setDraft(null)}
+      onChange={(event) => {
+        setDraft(event.target.value);
+        const next = event.target.valueAsNumber;
+        if (
+          Number.isFinite(next) &&
+          next >= min &&
+          (max === undefined || next <= max)
+        )
+          onChange(next);
+      }}
+    />
   );
 }

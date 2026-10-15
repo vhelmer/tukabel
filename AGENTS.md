@@ -55,6 +55,12 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
   myší i dotykem; zachovej také klikací a klávesnicovou alternativu.
 - SVG editor upravuje stejné souřadnice jako Pixi scéna. Úpravy návrhu jsou
   oddělené od hráčského postupu; náhled používá původní reducer bez zvláštních pravidel.
+- Proporce a natočení počítej v `src/game/transforms.ts` pro SVG i Pixi, včetně
+  cílení inventáře. Obrázky se standardně vejdou do rámu bez deformace; protažení
+  vyžaduje explicitní `imageFit: "stretch"`. `rotation` jsou stupně kolem středu
+  `bounds`; validátor hlídá i natočený rám. Zoom a úchyty nepatří do herního JSON.
+- Normální resize zachovává poměr stran i v číselných polích. Tah se ukládá jako
+  jediná úprava; Escape/pointercancel nic nemění. Úchyty zobrazuj nad ostatními objekty.
 - Zápisy povol pouze v lokálním vývojovém Vite middleware: pevné cílové cesty,
   validace JSON i odkazů/assetů, kontrola revize a atomický zápis. Produkce a
   preview nesmějí mít editorové API ani editorový bundle.
