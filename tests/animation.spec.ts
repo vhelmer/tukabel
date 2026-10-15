@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test';
 import type { Page } from '@playwright/test';
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
 import { build, preview } from 'vite';
@@ -394,6 +394,11 @@ test.describe('video cancellation', () => {
     await openEditor(page, workspace.url);
     await actorPanel(page);
     const original = await readFile(workspace.source, 'utf8');
+    const animationDirectory = path.join(
+      workspace.root,
+      'src/assets/animations',
+    );
+    const originalFolders = await readdir(animationDirectory).catch(() => []);
     await page
       .getByRole('button', { name: 'Vygenerovať / regenerovať video' })
       .click();
@@ -406,5 +411,6 @@ test.describe('video cancellation', () => {
     ).toContainText('zrušené');
     await expect(page.locator('.animation-video')).toHaveCount(0);
     expect(await readFile(workspace.source, 'utf8')).toBe(original);
+    expect(await readdir(animationDirectory)).toEqual(originalFolders);
   });
 });

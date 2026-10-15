@@ -166,6 +166,8 @@ export async function extractFrames(
 ) {
   await runFFmpeg(
     [
+      '-protocol_whitelist',
+      'file,pipe',
       '-ss',
       String(settings.trimStart),
       '-i',
@@ -210,6 +212,21 @@ export async function extractFrames(
               Math.min(1, (distance - settings.keySimilarity) / 0.08),
             ),
         );
+        // H.264 mixes the key colour into antialiased outlines. Remove that
+        // spill across the decoded frame rather than copying any source pixels.
+        if (background === 'magenta') {
+          const spill = Math.max(
+            0,
+            Math.min(data[i]!, data[i + 2]!) - data[i + 1]!,
+          );
+          data[i] = data[i]! - spill;
+          data[i + 2] = data[i + 2]! - spill;
+        } else if (data[i + 3]! < 255) {
+          data[i + 1] = Math.min(
+            data[i + 1]!,
+            Math.max(data[i]!, data[i + 2]!),
+          );
+        }
       }
       await writeFile(
         file,

@@ -377,3 +377,135 @@ test('real MP4 pipeline archives video, extracts full frames, keys backgrounds a
     await rm(root, { recursive: true, force: true });
   }
 });
+
+test('fal rejects untrusted queue/media destinations without forwarding credentials or retrying submissions', async () => {
+  const base = 'https://queue.fal.run/fal-ai/wan/requests/test-id';
+  for (const attack of ['queue', 'media']) {
+    const calls: string[] = [];
+    const provider = falVideoGenerator(
+      'server-secret',
+      async (url, options) => {
+        calls.push(String(url));
+        if (options?.method === 'PUT')
+          return new Response(null, { status: 202 });
+        if (options?.method === 'POST')
+          return Response.json({
+            request_id: 'test-id',
+            cancel_url: base + '/cancel',
+            response_url: base,
+            status_url:
+              attack === 'queue'
+                ? 'https://attacker.example/status'
+                : base + '/status',
+          });
+        if (String(url).endsWith('/status'))
+          return Response.json({ status: 'COMPLETED' });
+        return Response.json({
+          video: { url: 'http://127.0.0.1/private.mp4' },
+        });
+      },
+      1,
+    );
+    await expect(
+      provider.generate({
+        image: Buffer.from('reference'),
+        prompt: 'Blink',
+        duration: 2,
+        signal: new AbortController().signal,
+        onProgress: () => {},
+      }),
+    ).rejects.toThrow(/URL|adresu/);
+    expect(calls.every((url) => url.startsWith('https://queue.fal.run/'))).toBe(
+      true,
+    );
+    expect(
+      calls.filter(
+        (url) =>
+          url === 'https://queue.fal.run/fal-ai/wan/v2.2-5b/image-to-video',
+      ),
+    ).toHaveLength(1);
+  }
+});
+
+test('failed decoding keeps the original archive; stale generation and cancellation publish no assets', async () => {
+  const root = await mkdtemp(path.join(tmpdir(), 'tukabel-video-failures-'));
+  try {
+    const sourceFile = path.join(root, 'actor.png');
+    await writeFile(
+      sourceFile,
+      await sharp('src/assets/caretaker.svg').png().toBuffer(),
+    );
+    const broken = createAnimationService(root, {
+      model: 'broken-test-provider',
+      generate: async () => ({
+        video: Buffer.from('0000ftypnot-a-valid-mp4'),
+        requestId: 'broken-test-id',
+      }),
+    });
+    const input = request((await broken.sourceInfo('actor.png')).revision);
+    const job = await broken.start(input);
+    await expect.poll(() => job.status).toBe('completed');
+    await expect(
+      broken.save(job.id, {
+        trimStart: 0,
+        trimEnd: 2,
+        fps: 12,
+        keySimilarity: 0.2,
+      }),
+    ).rejects.toThrow('FFmpeg');
+    expect(job.result).toBeUndefined();
+    expect(await readdir(path.join(root, 'animations'))).toEqual([job.id]);
+    expect(await readFile(path.join(root, job.video!))).toEqual(
+      Buffer.from('0000ftypnot-a-valid-mp4'),
+    );
+    const changed = createAnimationService(root, {
+      model: 'changing-source-test-provider',
+      generate: async () => {
+        await writeFile(
+          sourceFile,
+          await sharp({
+            create: {
+              width: 30,
+              height: 30,
+              channels: 4,
+              background: '#123456',
+            },
+          })
+            .png()
+            .toBuffer(),
+        );
+        return { video: await fixtureVideo(), requestId: 'changed-test-id' };
+      },
+    });
+    const stale = await changed.start(input);
+    await expect.poll(() => stale.status).toBe('failed');
+    expect(stale.error).toContain('zmenil');
+    expect(await readdir(path.join(root, 'animations'))).toEqual([job.id]);
+    const cancel = createAnimationService(root, {
+      model: 'cancel-test-provider',
+      generate: async ({ signal }) =>
+        new Promise((_resolve, reject) => {
+          signal.throwIfAborted();
+          signal.addEventListener(
+            'abort',
+            () => reject(new DOMException('Abort', 'AbortError')),
+            { once: true },
+          );
+        }),
+    });
+    const cancelled = await cancel.start(
+      request((await cancel.sourceInfo('actor.png')).revision),
+    );
+    await expect(
+      cancel.start(request((await cancel.sourceInfo('actor.png')).revision)),
+    ).rejects.toThrow('Už beží');
+    cancel.cancel(cancelled.id);
+    await expect.poll(() => cancelled.status).toBe('cancelled');
+    expect(await readdir(path.join(root, 'animations'))).toEqual([job.id]);
+    broken.dispose();
+    changed.dispose();
+    cancel.dispose();
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});

@@ -204,7 +204,8 @@ Instrukce pro agenty jsou v [AGENTS.md](AGENTS.md).
    120 snímků. Úsek i klíčování lze opakovat bez dalšího AI požadavku.
 5. Přehraj PNG náhled a proklikej snímky. Pro krátké mrknutí vyber úsek obsahující
    otevření → zavření → otevření očí; server mrknutí automaticky nedetekuje.
-   Posuď podobu postavy, hrany, pozadí a začátek/konec. Videomodel nezaručuje
+   Posuď podobu postavy, hrany, pozadí a začátek/konec. Export potlačuje barevný
+   přesah klíče v komprimovaných hranách. Videomodel nezaručuje
    identitu pixelů ani plynulou smyčku. Klíčování může odstranit stejnou barvu
    z oblečení nebo ponechat barevné okraje; změň sílu/barvu či prompt a zkontroluj náhled.
 6. **Priradiť postave** přidá definici a nastaví automatické mrkání / dialogovou
@@ -233,8 +234,8 @@ FAL_KEY=tvuj_fal_klic
 ```
 
 Pro novou instalaci můžeš zkopírovat `.env.example`. Restartuj `npm run dev`.
-`OPENAI_API_KEY` zůstává podporovanou serverovou konfigurací pro případné budoucí
-funkce; animace jej vůbec nečtou. Nikdy nepoužívej `VITE_` prefix. Klíče ani fal.ai
+`OPENAI_API_KEY` v `.env.local` zůstává zachovaný pro případné budoucí funkce;
+animace jej vůbec nečtou. Nikdy nepoužívej `VITE_` prefix. Klíče ani fal.ai
 podepsané URL se neukládají do obsahu, metadat, odpovědí či produkčního bundlu.
 Účet fal.ai potřebuje kredit a přístup k modelu. Bez `FAL_KEY` vrací API 503;
 neexistuje simulované generování. Automatické testy klíč nikdy nepoužívají.
@@ -249,8 +250,9 @@ Storage. Doba čekání je nejvýše 15 minut, velikost videa 60 MB. Zdroj je st
 PNG/WebP/SVG do 2048 × 2048 px / 6 MB; po dobu úlohy jej chrání kontrola SHA-256.
 
 FFmpeg je **vývojová** npm závislost `ffmpeg-static`, dodaná při `npm ci`.
-Pokud platforma nemá podporovanou binárku, nastav `FFMPEG_PATH` na absolutní cestu
-k vlastnímu FFmpeg s PNG a H.264 podporou a restartuj server. Editor před placeným
+Pokud platforma nemá podporovanou binárku, nastav `FFMPEG_PATH` v prostředí procesu
+na absolutní cestu k vlastnímu FFmpeg s PNG a H.264 podporou, například
+`FFMPEG_PATH=/usr/bin/ffmpeg npm run dev`. Editor před placeným
 požadavkem kontroluje dostupnost binárky. Zpracování běží bez shellu s limitem
 60 sekund. Produkce nepotřebuje FFmpeg, fal.ai ani jakékoli AI API.
 

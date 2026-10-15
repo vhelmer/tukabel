@@ -52,6 +52,8 @@ test('production serves a static game without editor code or write endpoints', a
         for (const serverOnly of [
           '__tukabel/editor',
           'OPENAI_API_KEY',
+          'FAL_KEY',
+          'queue.fal.run',
           'api.openai.com/v1/images',
         ])
           expect(bundle).not.toContain(serverOnly);
