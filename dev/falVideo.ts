@@ -1,6 +1,41 @@
 import { setTimeout as delay } from 'node:timers/promises';
 
 export const VIDEO_MODEL = 'fal-ai/wan/v2.2-5b/image-to-video';
+
+// Include field-level validation messages, never the echoed `input` or raw body.
+function validationDetails(body: unknown, key: string): string {
+  if (!body || typeof body !== 'object') return '';
+  const detail = (body as { detail?: unknown }).detail;
+  if (!Array.isArray(detail)) return '';
+  return detail
+    .slice(0, 4)
+    .flatMap((entry: unknown) => {
+      if (!entry || typeof entry !== 'object') return [];
+      const { loc, msg } = entry as { loc?: unknown; msg?: unknown };
+      if (typeof msg !== 'string') return [];
+      const field = Array.isArray(loc)
+        ? loc
+            .filter(
+              (value): value is string =>
+                typeof value === 'string' &&
+                value !== 'body' &&
+                /^[a-zA-Z_][a-zA-Z0-9_]{0,49}$/.test(value),
+            )
+            .slice(0, 4)
+            .join('.')
+        : '';
+      const message = msg
+        .replaceAll(key, '[skryté]')
+        .replace(
+          /data:[^\s"']+|https?:\/\/[^\s"']+|[A-Za-z0-9+/_=-]{64,}/g,
+          '[skryté]',
+        )
+        .replace(/\p{Cc}/gu, ' ')
+        .slice(0, 400);
+      return [`${field ? field + ': ' : ''}${message}`];
+    })
+    .join(' · ');
+}
 export interface VideoGenerator {
   model: string;
   generate(input: {
@@ -81,7 +116,16 @@ export function falVideoGenerator(
       redirect: 'error',
       body: body === undefined ? undefined : JSON.stringify(body),
     });
-    if (!response.ok)
+    if (!response.ok) {
+      if (response.status === 422) {
+        const detail = validationDetails(
+          await response.json().catch(() => null),
+          key,
+        );
+        throw new Error(
+          `fal.ai odmietlo zadanie (HTTP 422).${detail ? ' ' + detail : ' Skontroluj parametre modelu.'}`,
+        );
+      }
       throw new Error(
         response.status === 401 || response.status === 403
           ? 'fal.ai odmietlo FAL_KEY alebo prístup k modelu.'
@@ -89,6 +133,7 @@ export function falVideoGenerator(
             ? 'fal.ai: vyčerpaný kredit alebo limit požiadaviek.'
             : `fal.ai požiadavka zlyhala (HTTP ${response.status}). Skús ju zopakovať ručne.`,
       );
+    }
     return (await response.json()) as Record<string, unknown>;
   }
   return {
@@ -110,7 +155,7 @@ export function falVideoGenerator(
             prompt: input.prompt,
             num_frames: input.duration * 24 + 1,
             frames_per_second: 24,
-            aspect_ratio: 'auto',
+            aspect_ratio: '1:1',
             resolution: '580p',
             enable_prompt_expansion: false,
             interpolator_model: 'none',
@@ -131,7 +176,7 @@ export function falVideoGenerator(
         input.onProgress('Čakám vo fronte fal.ai…', requestId);
         while (true) {
           const status = await json(statusUrl, 'GET', signal);
-          if (status.error)
+          if (status.error && status.status !== 'COMPLETED')
             throw new Error(
               'fal.ai generovanie zlyhalo. Skontroluj úlohu v dashboarde fal.ai.',
             );

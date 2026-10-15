@@ -11,6 +11,7 @@ import {
 import { validateProject } from '../src/game/validateProject';
 import type { AnimationDefinition, GameContent } from '../src/game/types';
 import {
+  normalizeSource,
   validateGenerationRequest,
   validateProcessing,
 } from '../dev/animationVideo';
@@ -201,7 +202,7 @@ test('fal adapter submits the entire PNG once, polls, downloads without credenti
           `data:image/png;base64,${png.toString('base64')}`,
         );
         expect(input.num_frames).toBe(49);
-        expect(input.aspect_ratio).toBe('auto');
+        expect(input.aspect_ratio).toBe('1:1');
         expect(input.mask).toBeUndefined();
         expect(options.headers).toMatchObject({
           Authorization: 'Key server-only-key',
@@ -298,7 +299,7 @@ test('real MP4 pipeline archives video, extracts full frames, keys backgrounds a
       generate: async ({ image }) => {
         calls++;
         const meta = await sharp(image).metadata();
-        expect(meta.width).toBe(180);
+        expect(meta.width).toBe(290);
         expect(meta.height).toBe(290);
         return { video: await fixtureVideo(), requestId: 'test-id' };
       },
@@ -507,5 +508,107 @@ test('failed decoding keeps the original archive; stale generation and cancellat
     cancel.dispose();
   } finally {
     await rm(root, { recursive: true, force: true });
+  }
+});
+
+test('portrait and landscape assets keep all source pixels when padded to a supported square canvas', async () => {
+  for (const [width, height] of [
+    [5, 8],
+    [8, 5],
+    [7, 7],
+  ]) {
+    const source = await sharp({
+      create: {
+        width: width!,
+        height: height!,
+        channels: 4,
+        background: '#1765aa',
+      },
+    })
+      .png()
+      .toBuffer();
+    const normalized = await normalizeSource(source, 'magenta');
+    const meta = await sharp(normalized.png).metadata();
+    expect(meta.width).toBe(Math.max(width!, height!));
+    expect(meta.height).toBe(meta.width);
+    const restored = await sharp(normalized.png)
+      .extract({
+        left: normalized.framing.x,
+        top: normalized.framing.y,
+        width: width!,
+        height: height!,
+      })
+      .raw()
+      .toBuffer();
+    const original = await sharp(source).removeAlpha().raw().toBuffer();
+    expect(restored.equals(original)).toBe(true);
+  }
+});
+
+test('fal 422 errors identify the field without leaking echoed inputs, keys or signed URLs', async () => {
+  const secret = 'server-only-secret';
+  for (const phase of ['submit', 'result']) {
+    let submissions = 0;
+    const base = 'https://queue.fal.run/fal-ai/wan/requests/test-id';
+    const provider = falVideoGenerator(
+      secret,
+      async (url, options) => {
+        if (options?.method === 'PUT')
+          return new Response(null, { status: 202 });
+        if (options?.method === 'POST') {
+          submissions++;
+          if (phase === 'result')
+            return Response.json({
+              request_id: 'test-id',
+              status_url: base + '/status',
+              response_url: base,
+              cancel_url: base + '/cancel',
+            });
+        }
+        if (String(url).endsWith('/status'))
+          return Response.json({
+            status: 'COMPLETED',
+            error: 'Validation failed',
+          });
+        return Response.json(
+          {
+            detail: [
+              {
+                loc: ['body', 'aspect_ratio'],
+                type: 'value_error',
+                msg: `The resolved output size 544x864 is not supported. Use aspect_ratio='1:1'. ${secret} https://example.invalid/private?token=sensitive data:image/png;base64,private-image-data`,
+                input: 'never-return-this-echoed-input',
+                ctx: { api_key: secret },
+              },
+            ],
+          },
+          { status: 422 },
+        );
+      },
+      1,
+    );
+    let message = '';
+    try {
+      await provider.generate({
+        image: Buffer.from('source'),
+        prompt: 'Blink',
+        duration: 2,
+        signal: new AbortController().signal,
+        onProgress: () => {},
+      });
+    } catch (error) {
+      message = error instanceof Error ? error.message : String(error);
+    }
+    expect(message).toContain('HTTP 422');
+    expect(message).toContain('aspect_ratio');
+    expect(message).toContain('544x864');
+    for (const privateValue of [
+      secret,
+      'private-image-data',
+      'sensitive',
+      'never-return-this-echoed-input',
+    ])
+      expect(message).not.toContain(privateValue);
+    expect(submissions).toBe(1);
   }
 });

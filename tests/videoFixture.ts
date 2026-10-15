@@ -19,6 +19,13 @@ export async function fixtureVideo() {
         path.join(root, `input-${String(frame).padStart(3, '0')}.png`),
         await sharp(Buffer.from(svg))
           .flatten({ background: '#ff00ff' })
+          .extend({
+            left: 55,
+            right: 55,
+            top: 0,
+            bottom: 0,
+            background: '#ff00ff',
+          })
           .png()
           .toBuffer(),
       );

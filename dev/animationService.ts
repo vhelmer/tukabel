@@ -142,6 +142,7 @@ export function createAnimationService(
           submittedPrompt: videoPrompt(job.request),
           width: input.image.width,
           height: input.image.height,
+          framing: input.image.framing,
         }),
       );
       controller.signal.throwIfAborted();
@@ -271,6 +272,7 @@ export function createAnimationService(
           value as VideoProcessing,
           { width: input.image.outputWidth, height: input.image.outputHeight },
           job.request.background,
+          input.image.framing,
           entry!.controller.signal,
         );
         const definition = {
@@ -301,6 +303,7 @@ export function createAnimationService(
             processing: value,
             width: input.image.outputWidth,
             height: input.image.outputHeight,
+            framing: input.image.framing,
           }),
         );
         await assertSource(job);

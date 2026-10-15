@@ -130,10 +130,26 @@ export async function normalizeSource(
       : background === 'magenta'
         ? '#ff00ff'
         : '#eeeeee';
-  // Preserve the entire framing: no crop, local edits, source alpha mask or ROI.
+  // Wan's distributed endpoint rejects some sizes resolved by aspect_ratio=auto.
+  // Pad the whole asset to 1:1, then reverse this padding after video generation.
+  const side = Math.max(meta.width, meta.height);
+  const framing = {
+    side,
+    x: Math.floor((side - meta.width) / 2),
+    y: Math.floor((side - meta.height) / 2),
+    width: meta.width,
+    height: meta.height,
+  };
   const png = await image
     .toColourspace('srgb')
     .flatten({ background: colour })
+    .extend({
+      left: framing.x,
+      right: side - meta.width - framing.x,
+      top: framing.y,
+      bottom: side - meta.height - framing.y,
+      background: colour,
+    })
     .png()
     .toBuffer();
   const scale = Math.min(1, 512 / Math.max(meta.width, meta.height));
@@ -141,6 +157,7 @@ export async function normalizeSource(
     png,
     width: meta.width,
     height: meta.height,
+    framing,
     outputWidth: Math.max(1, Math.round(meta.width * scale)),
     outputHeight: Math.max(1, Math.round(meta.height * scale)),
   };
@@ -162,6 +179,13 @@ export async function extractFrames(
   settings: VideoProcessing,
   dimensions: { width: number; height: number },
   background: AnimationBackground,
+  framing: {
+    side: number;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  },
   signal?: AbortSignal,
 ) {
   await runFFmpeg(
@@ -176,7 +200,7 @@ export async function extractFrames(
       String(settings.trimEnd - settings.trimStart),
       '-an',
       '-vf',
-      `fps=${settings.fps},scale=${dimensions.width}:${dimensions.height}:flags=lanczos`,
+      `fps=${settings.fps},crop=iw*${framing.width}/${framing.side}:ih*${framing.height}/${framing.side}:iw*${framing.x}/${framing.side}:ih*${framing.y}/${framing.side}:exact=1,scale=${dimensions.width}:${dimensions.height}:flags=lanczos`,
       '-frames:v',
       '120',
       '-threads',

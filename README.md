@@ -241,7 +241,11 @@ podepsané URL se neukládají do obsahu, metadat, odpovědí či produkčního 
 neexistuje simulované generování. Automatické testy klíč nikdy nepoužívají.
 
 Použitý model je [Wan 2.2 5B image-to-video](https://fal.ai/models/fal-ai/wan/v2.2-5b/image-to-video/api),
-580p, 24 fps, původní poměr stran, bez interpolace a rozšiřování promptu. Krátký
+580p, 24 fps, pevný poměr `1:1`, bez interpolace a rozšiřování promptu. Celý asset
+se doplní pozadím na čtverec; export snímků odstraní pouze tyto přidané okraje
+a obnoví původní poměr stran. Režim `auto` na distribuovaném GPU endpointu některé
+rozměry odmítá chybou 422. Validační chyby v editoru uvádějí konkrétní pole a zprávu,
+bez vrácení vstupního obrázku či klíče. Krátký
 výstup a menší model omezují cenu; aktuální cenu ověř v modelové stránce fal.ai.
 Server používá nativní HTTP frontu: submit → status → result → download,
 [viz dokumentace fronty](https://fal.ai/docs/documentation/model-apis/inference/queue).

@@ -21,7 +21,7 @@ const controlledProvider: VideoGenerator = {
   async generate({ image, signal, onProgress }) {
     signal.throwIfAborted();
     const metadata = await sharp(image).metadata();
-    expect(metadata.width).toBe(180);
+    expect(metadata.width).toBe(290);
     expect(metadata.height).toBe(290);
     onProgress('Testovací zdroj pripravuje celé video…', 'test-request');
     return { video: await fixtureVideo(), requestId: 'test-request' };
