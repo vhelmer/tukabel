@@ -279,6 +279,65 @@
           }
         }
       ]
+    },
+    {
+      "id": "animation-lab",
+      "title": "Animačný ateliér",
+      "width": 1280,
+      "height": 720,
+      "background": "demo-room.svg",
+      "hotspots": [
+        {
+          "id": "blink-character",
+          "label": "Skúšobná postava",
+          "bounds": {
+            "x": 485,
+            "y": 155,
+            "width": 330,
+            "height": 550
+          },
+          "image": "woman.png",
+          "animation": {
+            "blink": "woman-blink",
+            "blinkIntervalMs": [3000, 6000],
+            "onInteract": {
+              "look": "woman-blink"
+            }
+          },
+          "defaultVerb": "look",
+          "actions": {
+            "look": [
+              {
+                "message": "Na okamih privrela oči."
+              }
+            ]
+          }
+        },
+        {
+          "id": "lab-exit",
+          "label": "Späť do dielne",
+          "bounds": {
+            "x": 1120,
+            "y": 350,
+            "width": 140,
+            "height": 300
+          },
+          "defaultVerb": "use",
+          "actions": {
+            "use": [
+              {
+                "message": "Späť v dielni.",
+                "effects": [
+                  {
+                    "type": "scene",
+                    "id": "workshop"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
     }
   ],
   "items": [
@@ -404,6 +463,24 @@
           ]
         }
       ]
+    }
+  ],
+  "animations": [
+    {
+      "id": "woman-blink",
+      "label": "Mrknutie · Codex",
+      "source": "woman.png",
+      "kind": "blink",
+      "frames": [
+        "woman.png",
+        "animations/woman-blink/frame-02.png",
+        "animations/woman-blink/frame-03.png",
+        "animations/woman-blink/frame-02.png",
+        "woman.png"
+      ],
+      "fps": 14,
+      "durationsMs": [40, 60, 90, 80, 40],
+      "loop": false
     }
   ]
 }

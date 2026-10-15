@@ -71,16 +71,21 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
 
 - Registr `animations` je volitelnou součástí JSON projektu. Klipy odkazují na
   lokální snímky a původní `source`; vazba hotspotu musí používat stejný obrázek.
-- Přehrávání je čistě vizuální: talk má přednost před blink a idle. Ticker zapínej
+- Přehrávání je čistě vizuální: talk má přednost před reakcí, blink a idle. Ticker zapínej
   jen pro aktivní postavy, uklízej listenery a respektuj pauzu / reduced motion.
-- Animace generuj výhradně přes fal.ai image-to-video nad celým assetem, bez masek,
-  inpaintingu či generování dílčích póz. `FAL_KEY` patří pouze serveru / `.env.local`.
-  `OPENAI_API_KEY` ponech pro jiné budoucí funkce; animace jej nesmějí používat.
-- Původní MP4, odeslaný PNG, exportované snímky a metadata jsou v `src/assets/animations/`.
-  FFmpeg a klíčování celých snímků běží pouze v `dev/`; produkce přehrává lokální PNG.
-  Zachovej poměr stran a kontrolu zdroje/revizí. Neslibuj vizuální konzistenci modelu.
-- Testy nesmějí účtovat živé API požadavky. Používej kontrolované odpovědi modelu
-  a dočasné assety; bez skutečného klíče netvrď, že byla ověřena kvalita generování.
+- Hotové PNG sekvence a Pixi/TexturePacker spritesheety importuj lokálně přes
+  `dev/animationImport.ts`. Import atomicky uloží celé klipy; oříznuté atlasové
+  snímky obnoví na původní plátno, otočená atlasová políčka odmítne.
+- Všechny snímky musí mít stejné rozměry a zarovnání jako `source`. Neškáluj
+  jednotlivé pózy a neměň anchor. Kontrola rozměrů běží při importu, save i check.
+- `durationsMs` je volitelné časování jednotlivých snímků (jinak `fps`), `speed`
+  násobí rychlost. Klipy a vazby jsou v projektovém JSON; importní `clip.json`
+  je archivní záznam, nikoli druhý zdroj herního obsahu.
+- `onInteract` mapuje slovesa na jednorázové klipy. Priorita je talk → reakce →
+  blink → idle. Vizuální požadavky ani hodiny nepatří do uloženého postupu hráče.
+- Animace nepoužívají externí AI API ani video pipeline. `OPENAI_API_KEY` zůstává
+  rezervovaný pro budoucí jiné funkce, pouze v prostředí serveru / `.env.local`.
+  Klíče nikdy do `VITE_`, klienta nebo autorského JSON.
 
 ## Aktuální rozsah
 
@@ -90,7 +95,8 @@ save/load v localStorage. Herní okno s drag/drop inventářem, dotykem i HTML k
 Dev Mode upravuje lokace, hotspoty, assety, předměty, pravidla, dialogy a kombinace;
 mapa logiky ukazuje podmínky a efekty. Ukládá se do zdrojového JSON v Gitu. Krátká
 kompletní technická hádanka bez skutečného příběhu a finálních assetů.
-Animace: fal.ai video celého assetu, video náhled, výběr úseku a PNG export,
-náhodné mrkání, mluvení během dialogu a procedurální idle pohyb. MP4, PNG i metadata
-se ukládají do Gitu; živé generování vyžaduje serverový FAL_KEY. Podrobnosti formátu a průchod
-jsou v README. Chůze postavy a zvuk zatím chybí.
+Animace: import PNG sekvencí a spritesheetů, náhled a úprava časování, náhodné
+mrkání, mluvení během dialogu, jednorázové reakce a procedurální idle pohyb.
+Animační ateliér demonstruje Codex mrknutí; PNG a konfigurace jsou v Gitu.
+Žádné AI API ani FFmpeg nejsou potřeba. Formát a průchod jsou v README.
+Chůze postavy, zvuk a lip-sync zatím chybí.

@@ -8,5 +8,5 @@ playwright-report/
 !.env.example
 .DS_Store
 
-# Pracovní adresáře AI úloh; finální snímky a metadata se verzují.
+# Pracovní adresáře importu; finální snímky a metadata se verzují.
 src/assets/animations/.*.tmp/

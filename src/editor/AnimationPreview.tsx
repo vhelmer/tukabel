@@ -32,6 +32,8 @@ export function AnimationPreview({
   useEffect(() => {
     if (!playing || !animation.frames.length) return;
     const current = Math.min(index, animation.frames.length - 1);
+    const duration = frameDuration(animation, current);
+    if (!Number.isFinite(duration) || duration < 1) return;
     let timer: number;
     const advance = () => {
       if (document.hidden || !image.current?.getClientRects().length) {
@@ -42,7 +44,7 @@ export function AnimationPreview({
         onPlaying(false);
       else onIndex((current + 1) % animation.frames.length);
     };
-    timer = window.setTimeout(advance, frameDuration(animation, current));
+    timer = window.setTimeout(advance, duration);
     return () => window.clearTimeout(timer);
   }, [playing, animation, index, onIndex, onPlaying]);
   const current = Math.min(index, animation.frames.length - 1);

@@ -77,7 +77,10 @@ export function AnimationPanel({
       : [];
   const current = candidate ? Math.min(index, candidate.frames.length - 1) : 0;
   function select(id: string) {
-    setCandidate(compatible.find((clip) => clip.id === id) ?? null);
+    setCandidate(
+      compatible.find((clip) => clip.id === id) ??
+        (candidate?.id === id ? candidate : null),
+    );
     setIndex(0);
     setPlaying(false);
     setMessage('');
@@ -455,7 +458,11 @@ export function AnimationPanel({
       <SelectId
         label="Animácia na úpravu"
         value={candidate?.id ?? ''}
-        values={compatible}
+        values={
+          candidate && !compatible.some((clip) => clip.id === candidate.id)
+            ? [...compatible, candidate]
+            : compatible
+        }
         empty="Nový import / návrh"
         onChange={select}
       />

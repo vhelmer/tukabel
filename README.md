@@ -121,8 +121,8 @@ mrkání, dialogové snímky a jemné idle pohyby lze přiřadit v editoru.
   `SceneImage.tsx` používá stejnou geometrii jako Pixi; `transformTools.ts` počítá
   proporcionální tahy a limity scény. Zoom, pomůcky a rozpracovaný tah jsou jen UI stav.
 - `dev/editorPlugin.ts` — lokální Vite middleware pro načtení/zápis a import assetů.
-- `dev/animationService.ts`, `animationVideo.ts`, `falVideo.ts` — vývojové fal.ai úlohy,
-  archivace MP4, FFmpeg extrakce a klíčování celých snímků přes Sharp. Bez runtime závislosti.
+- `dev/animationImport.ts` — lokální import PNG sekvencí a atlasů přes Sharp, obnova
+  plátna oříznutých snímků, atomický zápis a kontrola rozměrů. Bez runtime závislosti.
 - `tests/` — pravidla, průchody hry, izolované testy editoru a produkčního buildu.
 
 React vlastní obsah návrhu, herní stav a UI. Pixi vykresluje a obsluhuje kliky
@@ -202,111 +202,89 @@ Transformační testy navíc ověřují PNG/WebP/SVG, rotaci, zamknuté proporce
 deformaci, undo/redo a rušení tahů. Porovnávají obraz SVG editoru a Pixi i po změně
 viewportu / zoomu a ověřují kliky a inventární dropy na otočenou oblast. Validace
 obsahu používá vlastní dočasnou Vite cache, aby nenarušila současně běžící hru.
-Animační testy používají skutečné testovací MP4: video náhled, extrakci, klíčování,
-opakované zpracování bez AI, reload a mrkání/mluvení v Pixi i ve statickém buildu
-dočasné hry. Testují také fal.ai HTTP adaptér. Nevolají placené AI API a nehodnotí
-kvalitu skutečného modelu.
+Animační testy importují skutečné Codex PNG i atlas, porovnávají všechny pixely,
+kontrolují velikosti pláten, časování, pořadí, chyby a atomický zápis. V prohlížeči
+ověřují náhled, reload, mrkání, interakční reakce a dialogové přehrávání v Pixi
+včetně statického buildu, pauzy a reduced motion. Nepoužívají žádné externí API.
 
 Instrukce pro agenty jsou v [AGENTS.md](AGENTS.md).
 
-## Animace postav v Dev Mode: celý asset → fal.ai video → PNG
+## Animace postav v Dev Mode: hotové PNG a spritesheety
 
-1. V **Lokácie** vyber postavu a přiřaď statický PNG/WebP asset; SVG se převede na
-   PNG bez ořezu. Otevři **Animácie postavy · fal.ai**. Vyber **Mrkanie**, **Idle**
-   nebo **Rozprávanie**; výběr doplní prompt, který můžeš upravit.
-2. Zvol délku 2/3/5 sekund a pozadí. Pro průhledný asset použij magentu nebo zelenou,
-   podle toho, kterou barvu postava nepoužívá. **Ponechať pozadie** zachová neprůhledné
-   video. Již neprůhledné pozadí vstupního obrázku se samo neodstraní.
-3. **Vygenerovať / regenerovať video** odešle celý obrázek do fal.ai. Stav ukazuje
-   frontu, generování a stahování; úlohu lze zrušit. Jde o jedno placené video bez
-   automatického opakování. Zrušení nezaručuje zastavení již běžícího výpočtu ani
-   vrácení ceny. Původní MP4, odeslaný PNG a `video.json` se uloží ihned po úspěchu.
-4. Přehraj video. Podle pohybu zvol začátek/konec úseku, exportní fps (1–24)
-   a sílu odstranění pozadí. **Uložiť herné snímky** provede lokální FFmpeg extrakci;
-   zůstává celé zarámování postavy, nejdelší strana má nejvýše 512 px. Limit je
-   120 snímků. Úsek i klíčování lze opakovat bez dalšího AI požadavku.
-5. Přehraj PNG náhled a proklikej snímky. Pro krátké mrknutí vyber úsek obsahující
-   otevření → zavření → otevření očí; server mrknutí automaticky nedetekuje.
-   Posuď podobu postavy, hrany, pozadí a začátek/konec. Export potlačuje barevný
-   přesah klíče v komprimovaných hranách. Videomodel nezaručuje
-   identitu pixelů ani plynulou smyčku. Klíčování může odstranit stejnou barvu
-   z oblečení nebo ponechat barevné okraje; změň sílu/barvu či prompt a zkontroluj náhled.
-6. **Priradiť postave** přidá definici a nastaví automatické mrkání / dialogovou
-   animaci / základní idle. Dolaď interval mrkání nebo dialog. **Game Mode**
-   ihned přehraje návrh; **Uložiť do projektu** zapíše definici do zdrojového JSON.
-7. Commitni `project.json` i nové adresáře v `src/assets/animations/`. MP4 archiv,
-   vstup a metadata jsou v adresáři úlohy; každý úspěšný export má samostatný
-   adresář s PNG a `generation.json` (časový úsek, fps, klíčování, hash zdroje,
-   model, ID fal.ai požadavku a odkaz na MP4). Nic se nepřepisuje ani automaticky nemaže.
+1. V **Lokácie** vyber postavu a její původní obrázek. Otevři
+   **Animácie postavy · sprite import**. Všechny pózy musí mít stejné plátno,
+   pozici postavy a průhledné okraje jako zdroj; individuální ořez nebo změna
+   rozměrů způsobuje poskakování a import jej proto odmítne.
+2. Vyber typ (blink / talk / idle / expression), název a **PNG snímky alebo atlas**.
+   PNG sekvence se řadí přirozeně podle názvů (`frame-2` před `frame-10`).
+   Pro spritesheet vyber jediný PNG a jeho JSON do **Spritesheet metadáta**.
+   Podporovaný je Pixi/TexturePacker objekt `frames`, volitelné `animations`,
+   `duration`, `sourceSize` a `spriteSourceSize`. Vyber sekvenci, pokud jich atlas
+   obsahuje víc. Oříznuté snímky se doplní průhlednými okraji podle metadat;
+   otočená políčka atlasu (`rotated: true`) nejsou podporovaná — exportuj bez rotace.
+3. **Importovať animáciu** validuje soubory a uloží nový adresář
+   `src/assets/animations/<uuid>/` se snímky `frame-001.png` atd. Celý adresář se
+   zveřejní atomicky až po úspěšném importu. Limit je 120 snímků, 32 MB vstupu
+   a 64 milionů pixelů výsledných pláten. Nic se automaticky neškáluje.
+   Původní PNG sekvence se kopíruje bajtově přesně. U atlasu se archivuje i
+   `atlas.png` + `atlas.json`; `clip.json` je importní záznam se SHA-256 zdroje.
+   Jediná aktuální konfigurace hry nadále patří do `project.json`.
+4. Přehrávej náhled, vybírej snímky, měň pořadí, fps nebo délku konkrétního snímku.
+   Atlasová `duration` se zachová. **Rýchlosť prehrávania (×)** násobí rychlost
+   celého klipu; **Rovnomerné časovanie podľa fps** odstraní individuální délky.
+   **Opakovať klip** řídí náhled, idle a talk; jednorázový idle drží poslední pózu.
+5. **Priradiť postave** uloží klip do návrhu a podle typu jej přiřadí jako blink,
+   talk nebo idle. Existující klipy vybírej v **Animácia na úpravu**; změny klipu
+   potvrď **Pridať / aktualizovať animáciu** nebo znovu **Priradiť postave**.
+   Jedna postava může mít různé kompatibilní klipy pro každý způsob spouštění.
+6. Nastav automatické mrkání (náhodný interval), animaci během konkrétního dialogu,
+   základní idle nebo **Animácia pri interakcii** pro look/take/talk/use. Reakce
+   i mrknutí se vždy přehrají jednou a vrátí k idle / originálu. Dialogové mluvení
+   má přednost. Záměrný procedurální pohyb je samostatná volba.
+7. **Game Mode** nebo **Otestovať odtiaľto** okamžitě testuje návrh.
+   **Uložiť do projektu** zapíše konfiguraci a vazby do JSON; potom commitni JSON
+   i nové assety. Neuložené změny klipu zůstanou jen v panelu. Při odstranění
+   definice se soubory automaticky nemažou; jiné postavy je mohou stále používat.
 
-Úlohy a jejich nastavení jsou v paměti vývojového serveru (nejvýše 20 posledních).
-Návrat z Game Mode na poslední úlohu naváže. Po restartu serveru zůstávají soubory
-na disku a uložené definice v projektu; původní video lze stále přehrát u uloženého
-klipu. Neuložený návrh a možnost znovu exportovat starou úlohu se restartem ztratí.
-Ruční import/úpravy PNG a **Pohyb bez AI** (dýchání/kývání) nadále fungují bez klíče.
-Dosavadní PNG assety zůstávají použitelné; staré generování po částech bylo odstraněno.
-Případná stará `generation` metadata v definici klipu je potřeba odstranit, samotné
-`source`, `frames` a `fps` zůstávají kompatibilní. Staré archivní soubory se nemění.
-
-### Konfigurace
-
-V existujícím ignorovaném `.env.local` **doplň** (soubor nepřepisuj):
-
-```dotenv
-FAL_KEY=tvuj_fal_klic
-```
-
-Pro novou instalaci můžeš zkopírovat `.env.example`. Restartuj `npm run dev`.
-`OPENAI_API_KEY` v `.env.local` zůstává zachovaný pro případné budoucí funkce;
-animace jej vůbec nečtou. Nikdy nepoužívej `VITE_` prefix. Klíče ani fal.ai
-podepsané URL se neukládají do obsahu, metadat, odpovědí či produkčního bundlu.
-Účet fal.ai potřebuje kredit a přístup k modelu. Bez `FAL_KEY` vrací API 503;
-neexistuje simulované generování. Automatické testy klíč nikdy nepoužívají.
-
-Použitý model je [Wan 2.2 5B image-to-video](https://fal.ai/models/fal-ai/wan/v2.2-5b/image-to-video/api),
-580p, 24 fps, pevný poměr `1:1`, bez interpolace a rozšiřování promptu. Celý asset
-se doplní pozadím na čtverec; export snímků odstraní pouze tyto přidané okraje
-a obnoví původní poměr stran. Režim `auto` na distribuovaném GPU endpointu některé
-rozměry odmítá chybou 422. Validační chyby v editoru uvádějí konkrétní pole a zprávu,
-bez vrácení vstupního obrázku či klíče. Krátký
-výstup a menší model omezují cenu; aktuální cenu ověř v modelové stránce fal.ai.
-Server používá nativní HTTP frontu: submit → status → result → download,
-[viz dokumentace fronty](https://fal.ai/docs/documentation/model-apis/inference/queue).
-Klíč se odesílá jen `queue.fal.run`; media se stahují bez klíče z fal CDN / Google
-Storage. Doba čekání je nejvýše 15 minut, velikost videa 60 MB. Zdroj je statický
-PNG/WebP/SVG do 2048 × 2048 px / 6 MB; po dobu úlohy jej chrání kontrola SHA-256.
-
-FFmpeg je **vývojová** npm závislost `ffmpeg-static`, dodaná při `npm ci`.
-Pokud platforma nemá podporovanou binárku, nastav `FFMPEG_PATH` v prostředí procesu
-na absolutní cestu k vlastnímu FFmpeg s PNG a H.264 podporou, například
-`FFMPEG_PATH=/usr/bin/ffmpeg npm run dev`. Editor před placeným
-požadavkem kontroluje dostupnost binárky. Zpracování běží bez shellu s limitem
-60 sekund. Produkce nepotřebuje FFmpeg, fal.ai ani jakékoli AI API.
+První příklad: v editoru zvol lokaci **Animačný ateliér**, pak
+**Otestovať odtiaľto**. Postava z `woman.png` náhodně mrká po 3–6 s a mrkne také
+při prozkoumání. Pět póz vychází z `experiments/woman-blink/output/`; shodné
+otevřené a přivřené pózy sdílejí PNG. Otevřené pózy mají krátké prodlevy,
+protože čekání mezi mrknutími zajišťuje vazba, nikoli samotný klip.
+Celý import si vyzkoušíš výběrem týchž pěti PNG nebo `spritesheet.png` + JSON.
 
 ### Formát a přehrávání
 
-Projekt má volitelný registr `animations`. Klip obsahuje `id`, `label`, `source`
-(ID původního assetu), `kind` (`blink/talk/expression/idle`), `frames` (ID lokálních
-obrázků, 1–120 snímků) a `fps` (1–30). Opakované ID snímku je v pořádku. Hotspot s `image` může
-mít `animation`: `idle`, `idleLoop`, `blink`, `blinkIntervalMs: [min, max]`, `talk`,
-`dialogueId` a `motion: "breath" | "sway"`. Zdroj klipu musí odpovídat obrázku postavy.
-Přehrávání má prioritu talk → blink → idle / originál; náhodné čekání mrknutí je
-ve výchozím nastavení 3–7 sekund. Mluvení běží při aktivním přiřazeném dialogu;
-bez explicitního `dialogueId` se odvodí z efektů akcí `talk`. Nejde o audio lipsync.
-Pohyby i snímky jsou vizuální stav, nikoli součást uloženého postupu. Pixi ticker
-se spouští jen pro viditelné animované postavy, pauzuje v menu/skryté záložce a
-respektuje reduced motion. Statické scény nadále zůstávají bez trvalého loopu.
+`animations[]` obsahuje `id`, `label`, `source`, `kind`, `frames`, `fps` (1–30),
+volitelně `durationsMs` (jedna délka 10–60000 ms pro každý snímek), `speed` (0.1–4)
+a `loop` (výchozí true). Opakované odkazy na stejný snímek jsou v pořádku.
+Vazba `hotspot.animation` používá `blink`, `blinkIntervalMs: [min,max]`, `idle`,
+volitelné `idleLoop` přepsání smyčky, `talk`, `dialogueId`, `onInteract: { look:
+"clip-id" }` a volitelný `motion: "breath" | "sway"`. Zdroj každého přiřazeného
+klipu musí odpovídat `hotspot.image`. Rozměry všech snímků kontroluje import,
+uložení projektu a `npm run validate:content`; runtime navíc odmítne deformovat
+postavu při chybně změněném assetu. Zarovnání kresby uvnitř plátna je odpovědnost autora.
 
-Metadata `generation` u nových klipů obsahují `provider: "fal"`, `model`, `prompt`,
-`sourceHash`, `requestId`, `video` (lokální MP4 ID), `duration`, `background`,
-`trimStart` a `trimEnd`. Validator kontroluje i dostupnost MP4. Přehrávač potřebuje
-jen snímky a fps; archiv videa se během hry nestahuje. Žádné masky, inpainting,
-projekce původního alfa kanálu ani záruka pixelové shody se zde nepoužívají.
+Přehrávač zachovává pozici, natočení a velikost zdrojového obrázku. Priorita je
+**talk → reakce na interakci → blink → idle / originál**. Reakce se spouští stejnou
+cestou pro canvas, HTML seznam objektů i inventární drop. Mluvení zatím sleduje
+aktivní dialog; data jsou připravená pro pozdější doplnění dabingu, bez lip-syncu.
+Vizuální hodiny nejsou součást uloženého postupu. Ticker se zapíná jen pro
+viditelné animované postavy, respektuje menu, skrytou záložku a reduced motion.
+Náhled pozastaví postup, pokud panel není vidět.
+
+Animace nepoužívají AI služby, video ani FFmpeg. Produkce přehrává pouze místní
+obrázky bez editoru a zápisového API. Dřívější `generation` metadata je potřeba
+z definic klipů odstranit. Původní PNG se správně velkým plátnem, fps a vazby
+zůstávají použitelné; starší zmenšené video exporty nejprve připrav na zdrojovém
+plátně. Staré archivní soubory se automaticky nemažou. `OPENAI_API_KEY` zůstává volitelně
+v ignorovaném `.env.local` pro jiné budoucí funkce a animace jej nečtou.
 
 ### Izolovaný experiment: programové mrknutí `woman.png`
 
-`experiments/woman-blink/` je samostatný experiment, bez zapojení do hry nebo
-editoru. Python 3 + Pillow 10.2.0; z kořene projektu spusť:
+`experiments/woman-blink/` obsahuje samostatný reprodukční skript. Nemění herní
+JSON ani editor; ukázkový ateliér používá kopie jeho výsledků.
+Python 3 + Pillow 10.2.0; z kořene projektu spusť:
 
 ```sh
 python3 experiments/woman-blink/generate.py --self-test

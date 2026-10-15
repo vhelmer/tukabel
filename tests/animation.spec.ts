@@ -52,7 +52,7 @@ async function saveProject(page: Page) {
     page.getByRole('status', { name: 'Stav editora' }),
   ).toContainText('Uložené do');
 }
-async function actorPixels(page: Page) {
+async function actorPixels(page: Page, baseline?: Buffer) {
   const canvas = page.locator('canvas');
   const box = (await canvas.boundingBox())!;
   const bytes = await canvas.screenshot({ animations: 'disabled' });
@@ -61,7 +61,7 @@ async function actorPixels(page: Page) {
   const resolution = metadata.width! / box.width;
   // Crop the character's head above reaction/dialogue overlays. Locator
   // screenshots include overlapping DOM, even when the locator is a canvas.
-  return sharp(bytes)
+  const { data, info } = await sharp(bytes)
     .extract({
       left: Math.round(
         ((box.width - 1280 * scale) / 2 + 850 * scale) * resolution,
@@ -72,8 +72,32 @@ async function actorPixels(page: Page) {
       width: Math.floor(300 * scale * resolution),
       height: Math.floor(210 * scale * resolution),
     })
+    .ensureAlpha()
     .raw()
-    .toBuffer();
+    .toBuffer({ resolveWithObject: true });
+  if (baseline) {
+    expect(data.length).toBe(baseline.length);
+    const unit = scale * resolution;
+    let outsideEyes = 0;
+    for (let i = 0; i < data.length; i += 4) {
+      if (data.subarray(i, i + 4).equals(baseline.subarray(i, i + 4))) continue;
+      const x = (i / 4) % info.width;
+      const y = Math.floor(i / 4 / info.width);
+      // Source eye footprint after fixed contain placement, plus raster filter margin.
+      if (
+        x < 103 * unit - 2 ||
+        x > 143 * unit + 2 ||
+        y < 91 * unit - 2 ||
+        y > 116 * unit + 2
+      )
+        outsideEyes++;
+    }
+    expect(
+      outsideEyes,
+      'A frame swap changed pixels outside the eyes (position/scale drift)',
+    ).toBe(0);
+  }
+  return data;
 }
 
 test('PNG blink imports, previews, saves, reloads and plays with stable placement and interaction triggers', async ({
@@ -137,7 +161,7 @@ test('PNG blink imports, previews, saves, reloads and plays with stable placemen
   await page.mouse.move(0, 0);
   const first = await actorPixels(page);
   await expect
-    .poll(async () => (await actorPixels(page)).equals(first))
+    .poll(async () => (await actorPixels(page, first)).equals(first))
     .toBe(false);
   await page.emulateMedia({ reducedMotion: 'reduce' });
   const still = await actorPixels(page);
