@@ -148,7 +148,13 @@ Efekty v pořadí mění příznak (`flag`, `id`, `value`), přidají/odeberou p
 inventární položky nevznikají. Chybějící akce má bezpečnou obecnou reakci.
 
 Sebratelné věci mají samostatný `image` a `visibleWhen`, nejsou zapečené do pozadí.
-Obrázek objektu sdílí jeho `bounds`. Inventární `image` je volitelný. `tintWhen`
+Obrázek objektu se proporcionálně vejde doprostřed jeho `bounds`; stejný výpočet
+`src/game/transforms.ts` používá SVG editor i Pixi. Volitelné `imageFit: "stretch"`
+umožní záměrné protažení. `rotation` jsou stupně po směru hodin kolem středu rámu;
+rotuje se obrázek i klikací oblast, včetně cílení inventáře. Natočený rám musí
+zůstat uvnitř lokace. Starší objekty bez `imageFit` nyní zachovávají nativní proporce
+i ve hře; pro původní protažený vzhled nastav explicitně `stretch`.
+Inventární `image` je volitelný. `tintWhen`
 rozsvítí jednoduchý zelený indikátor. ID obrázků jsou cesty relativně k `src/assets/`.
 Dialog má `start` a uzly `id/speaker/text/choices`; odpověď má `id/text`, případně
 `when/effects/message/next`. Bez `next` rozhovor skončí. UI navíc vždy dovolí odchod.

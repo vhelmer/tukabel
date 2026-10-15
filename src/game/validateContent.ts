@@ -1,4 +1,5 @@
 import type { Condition, Effect, GameContent, Rule } from './types.ts';
+import { isInsideScene } from './transforms.ts';
 
 // TypeScript checks data shape; this pass checks references and authoring mistakes.
 export function validateContent(content: GameContent): string[] {
@@ -89,6 +90,8 @@ export function validateContent(content: GameContent): string[] {
         y + height > scene.height
       )
         errors.push(`${path}: bounds outside scene`);
+      else if (!isInsideScene(hotspot.bounds, scene, hotspot.rotation))
+        errors.push(`${path}: rotated bounds outside scene`);
       if (!hotspot.actions[hotspot.defaultVerb]?.length)
         errors.push(`${path}: missing default action`);
       if (hotspot.animation) {

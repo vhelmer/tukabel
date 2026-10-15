@@ -9,6 +9,7 @@ import type {
 } from '../game/types';
 import { matches } from '../game/state';
 import { scenePoint } from '../game/coordinates';
+import { containsPoint } from '../game/transforms';
 import { saveGame, loadGame } from '../game/storage';
 import { GameCanvas } from './GameCanvas';
 import { Inventory } from './Inventory';
@@ -158,13 +159,7 @@ export function GameWindow({
         point &&
         [...hotspots]
           .reverse()
-          .find(
-            ({ bounds }) =>
-              point.x >= bounds.x &&
-              point.y >= bounds.y &&
-              point.x <= bounds.x + bounds.width &&
-              point.y <= bounds.y + bounds.height,
-          );
+          .find((hotspot) => containsPoint(hotspot, point));
       return hotspot ? { type: 'hotspot', id: hotspot.id } : null;
     };
     const move = (event: PointerEvent) => {

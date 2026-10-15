@@ -167,7 +167,7 @@ test('keyboard alternatives, contextual verbs, dialogue focus and resizing remai
         ),
     )
     .toBeLessThan(2);
-  await activate(page, 1090, 375, isMobile);
+  await activate(page, 1140, 375, isMobile);
   await expect(reaction(page)).toContainText('Zásuvka je len kulisa');
 });
 

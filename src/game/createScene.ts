@@ -9,6 +9,7 @@ import type {
 } from './types';
 import { matches } from './state';
 import { createAnimationPlayer, isCharacterSpeaking } from './animation';
+import { imagePlacement, radians } from './transforms';
 
 // A background and a few interactive regions, rather than a general game engine.
 export function createScene(
@@ -32,6 +33,7 @@ export function createScene(
     visual: Container;
     player: ReturnType<typeof createAnimationPlayer>;
     lastFrame: string;
+    placement: ReturnType<typeof imagePlacement>;
   }[] = [];
   let state: GameState | null = null;
   let paused = false;
@@ -41,15 +43,23 @@ export function createScene(
   for (const hotspot of definition.hotspots) {
     const { x, y, width, height } = hotspot.bounds;
     const region = new Container();
-    region.position.set(x, y);
+    region.pivot.set(width / 2, height / 2);
+    region.position.set(x + width / 2, y + height / 2);
+    region.rotation = radians(hotspot.rotation ?? 0);
     region.eventMode = 'static';
     region.cursor = 'pointer';
     region.hitArea = new Rectangle(0, 0, width, height);
 
     if (hotspot.image) {
       const sprite = new Sprite(textures.get(hotspot.image));
-      sprite.width = width;
-      sprite.height = height;
+      const placement = imagePlacement(
+        { x: 0, y: 0, width, height },
+        sprite.texture.orig,
+        hotspot.imageFit,
+      );
+      sprite.position.set(placement.x, placement.y);
+      sprite.width = placement.width;
+      sprite.height = placement.height;
       sprite.eventMode = 'none';
       const visual = new Container();
       visual.pivot.set(width / 2, height);
@@ -72,6 +82,7 @@ export function createScene(
           visual,
           player: createAnimationPlayer(hotspot.animation, animations),
           lastFrame: hotspot.image,
+          placement,
         });
     }
     if (hotspot.tintWhen) {
@@ -119,8 +130,8 @@ export function createScene(
         const frame = sample.frame ?? actor.hotspot.image!;
         if (frame !== actor.lastFrame) {
           actor.sprite.texture = textures.get(frame)!;
-          actor.sprite.width = actor.hotspot.bounds.width;
-          actor.sprite.height = actor.hotspot.bounds.height;
+          actor.sprite.width = actor.placement.width;
+          actor.sprite.height = actor.placement.height;
           actor.lastFrame = frame;
         }
         if (actor.hotspot.animation?.motion === 'breath')
@@ -136,8 +147,8 @@ export function createScene(
         actor.visual.scale.set(1);
         actor.visual.rotation = 0;
         actor.sprite.texture = textures.get(actor.hotspot.image!)!;
-        actor.sprite.width = actor.hotspot.bounds.width;
-        actor.sprite.height = actor.hotspot.bounds.height;
+        actor.sprite.width = actor.placement.width;
+        actor.sprite.height = actor.placement.height;
         actor.lastFrame = actor.hotspot.image!;
       }
       render();

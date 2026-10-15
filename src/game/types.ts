@@ -61,6 +61,10 @@ export interface Hotspot {
   readonly uses?: Readonly<Record<string, readonly Rule[]>>;
   // Optional local sprite, hidden together with the hotspot (e.g. a pickup).
   readonly image?: string;
+  // Degrees clockwise about the centre of bounds, including the clickable area.
+  readonly rotation?: number;
+  // Normal assets preserve their intrinsic aspect; stretching is opt-in.
+  readonly imageFit?: 'contain' | 'stretch';
   readonly animation?: CharacterAnimation;
   readonly tintWhen?: Condition;
 }

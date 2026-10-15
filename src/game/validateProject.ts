@@ -157,6 +157,8 @@ export function validateProject(
           'actions',
           'uses',
           'image',
+          'rotation',
+          'imageFit',
           'tintWhen',
           'animation',
         ])
@@ -164,6 +166,16 @@ export function validateProject(
         return;
       string(hotspot.id, `${key}.id`);
       string(hotspot.label, `${key}.label`);
+      if (hotspot.rotation !== undefined) {
+        number(hotspot.rotation, `${key}.rotation`);
+        if (Number(hotspot.rotation) < -360 || Number(hotspot.rotation) > 360)
+          errors.push(`${key}: rotation must be within -360–360 degrees`);
+      }
+      if (
+        hotspot.imageFit !== undefined &&
+        !['contain', 'stretch'].includes(String(hotspot.imageFit))
+      )
+        errors.push(`${key}: imageFit must be contain or stretch`);
       if (
         object(hotspot.bounds, `${key}.bounds`, ['x', 'y', 'width', 'height'])
       )

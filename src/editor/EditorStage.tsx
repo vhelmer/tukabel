@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import type { PointerEvent } from 'react';
-import { assetUrl } from '../game/assets';
+import { SceneImage } from './SceneImage';
 import { scenePoint } from '../game/coordinates';
 import type { Hotspot, SceneDefinition } from '../game/types';
 
@@ -165,11 +165,10 @@ export function EditorStage({
         onPointerUp={(event) => finish(event)}
         onPointerCancel={(event) => finish(event, true)}
       >
-        <image
-          href={assetUrl(scene.background)}
-          width={scene.width}
-          height={scene.height}
-          pointerEvents="none"
+        <SceneImage
+          asset={scene.background}
+          bounds={{ x: 0, y: 0, width: scene.width, height: scene.height }}
+          fit="stretch"
         />
         {scene.hotspots.map((hotspot) => {
           const bounds =
@@ -178,15 +177,16 @@ export function EditorStage({
             <g
               key={hotspot.id}
               data-hotspot-id={hotspot.id}
+              transform={`rotate(${hotspot.rotation ?? 0} ${bounds.x + bounds.width / 2} ${bounds.y + bounds.height / 2})`}
               onPointerDown={(event) => {
                 if (!drawing) begin(event, 'move', hotspot);
               }}
             >
               {hotspot.image && (
-                <image
-                  href={assetUrl(hotspot.image)}
-                  {...bounds}
-                  pointerEvents="none"
+                <SceneImage
+                  asset={hotspot.image}
+                  bounds={bounds}
+                  fit={hotspot.imageFit}
                 />
               )}
               <rect

@@ -5,6 +5,12 @@ import { initialState, matches, reduceGame } from '../src/game/state';
 import { decodeSave, loadGame, saveGame, SAVE_KEY } from '../src/game/storage';
 import { validateContent } from '../src/game/validateContent';
 import type { GameContent } from '../src/game/types';
+import {
+  imagePlacement,
+  containsPoint,
+  rotatedBounds,
+  isInsideScene,
+} from '../src/game/transforms';
 
 const content: GameContent = {
   id: 'test',
@@ -231,18 +237,12 @@ test('saves round trip a dialogue and reject corrupt, incompatible and unknown s
 
 test('JSON boundary rejects malformed shapes, unknown fields, remote assets and excessive nesting', async () => {
   const { validateProject } = await import('../src/game/validateProject');
-  const { readFile } = await import('node:fs/promises');
+  const { readFile, readdir } = await import('node:fs/promises');
   const project = JSON.parse(
     await readFile('src/game/content/project.json', 'utf8'),
   ) as GameContent;
   expect(
-    validateProject(project, [
-      'demo-room.svg',
-      'cable.svg',
-      'caretaker.svg',
-      'courtyard.svg',
-      'favicon.svg',
-    ]),
+    validateProject(project, await readdir('src/assets', { recursive: true })),
   ).toEqual([]);
   for (const invalid of [
     null,
@@ -311,4 +311,41 @@ test('pointer coordinates account for letterboxing and reject scene margins', as
   expect(scenePoint(rect, scene, 330, 380)).toEqual({ x: 640, y: 360 });
   expect(scenePoint(rect, scene, 20, 25)).toBeNull();
   expect(scenePoint({ ...rect, width: 0 }, scene, 10, 20)).toBeNull();
+});
+
+test('shared image fitting preserves portrait/landscape proportions and only explicit stretching deforms', () => {
+  const frame = { x: 10, y: 20, width: 400, height: 200 };
+  const portrait = imagePlacement(frame, { width: 100, height: 300 });
+  expect(portrait.width / portrait.height).toBeCloseTo(1 / 3);
+  expect(portrait.height).toBe(200);
+  expect(portrait.x + portrait.width / 2).toBe(210);
+  const landscape = imagePlacement(frame, { width: 800, height: 200 });
+  expect(landscape).toEqual({ x: 10, y: 70, width: 400, height: 100 });
+  expect(imagePlacement(frame, { width: 100, height: 300 }, 'stretch')).toEqual(
+    frame,
+  );
+});
+
+test('rotated clickable geometry follows the visual rectangle rather than its original bounding box', () => {
+  const hotspot = {
+    bounds: { x: 150, y: 190, width: 100, height: 20 },
+    rotation: 90,
+  };
+  expect(containsPoint(hotspot, { x: 200, y: 245 })).toBe(true);
+  expect(containsPoint(hotspot, { x: 245, y: 200 })).toBe(false);
+  const bounds = rotatedBounds(hotspot.bounds, 90);
+  expect(bounds.x).toBeCloseTo(190);
+  expect(bounds.y).toBeCloseTo(150);
+  expect(bounds.width).toBeCloseTo(20);
+  expect(bounds.height).toBeCloseTo(100);
+  expect(isInsideScene(hotspot.bounds, { width: 400, height: 400 }, 90)).toBe(
+    true,
+  );
+  expect(
+    isInsideScene(
+      { x: 0, y: 0, width: 100, height: 20 },
+      { width: 400, height: 400 },
+      90,
+    ),
+  ).toBe(false);
 });
