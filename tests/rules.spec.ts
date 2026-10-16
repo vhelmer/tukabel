@@ -463,3 +463,56 @@ test('clicks support silent decoration and effects without mandatory commentary'
   expect(switched.message).toBe('');
   expect(switched.inventory).toEqual(state.inventory);
 });
+
+test('cursor and portrait validation rejects missing links, mismatched sources and old verb data', async () => {
+  const { validateProject } = await import('../src/game/validateProject');
+  const { readFile } = await import('node:fs/promises');
+  const project = JSON.parse(
+    await readFile('src/game/content/project.json', 'utf8'),
+  ) as GameContent;
+  const withCursor = (patch: Record<string, unknown>) => ({
+    ...project,
+    scenes: project.scenes.map((scene, i) => ({
+      ...scene,
+      hotspots: scene.hotspots.map((hotspot, j) =>
+        i === 0 && j === 0
+          ? {
+              ...hotspot,
+              cursorImage: 'woman.png',
+              cursorAnimation: 'woman-blink',
+              ...patch,
+            }
+          : hotspot,
+      ),
+    })),
+  });
+  expect(
+    validateProject(
+      withCursor({ cursorSize: 48, cursorOffset: [4, 4], onClick: [] }),
+    ),
+  ).toEqual([]);
+  for (const patch of [
+    { cursorAnimation: 'missing' },
+    { cursorImage: 'cable.svg' },
+    { cursorSize: 0 },
+    { cursorOffset: [-1, 4] },
+    { cursor: 'unknown' },
+    { onClick: null },
+    { onClick: [{ message: 5 }] },
+    { actions: { look: [] } },
+  ])
+    expect(validateProject(withCursor(patch)).length).toBeGreaterThan(0);
+  const invalidPortrait = {
+    ...project,
+    dialogues: project.dialogues.map((d) => ({
+      ...d,
+      nodes: d.nodes.map((n) => ({
+        ...n,
+        portrait: 'https://remote.example/portrait.png',
+      })),
+    })),
+  };
+  expect(validateProject(invalidPortrait).join('\n')).toContain(
+    'local image asset',
+  );
+});
