@@ -14,15 +14,8 @@
         {
           "id": "router",
           "label": "Router",
-          "bounds": {
-            "x": 300,
-            "y": 340,
-            "width": 285,
-            "height": 180
-          },
-          "tintWhen": {
-            "flag": "powered"
-          },
+          "bounds": { "x": 300, "y": 340, "width": 285, "height": 180 },
+          "tintWhen": { "flag": "powered" },
           "uses": {
             "cable": [
               {
@@ -31,62 +24,35 @@
             ],
             "fixedCable": [
               {
-                "when": {
-                  "not": {
-                    "flag": "powered"
-                  }
-                },
+                "when": { "not": { "flag": "powered" } },
                 "message": "Zapojené! Router ožil a dvere do dvora cvakli.",
                 "effects": [
-                  {
-                    "type": "removeItem",
-                    "id": "fixedCable"
-                  },
-                  {
-                    "type": "flag",
-                    "id": "powered",
-                    "value": true
-                  }
+                  { "type": "removeItem", "id": "fixedCable" },
+                  { "type": "flag", "id": "powered", "value": true }
                 ]
               }
             ]
           },
           "onClick": [
             {
-              "when": {
-                "flag": "powered"
-              },
+              "when": { "flag": "powered" },
               "message": "Router svieti. Dvere do dvora sú odomknuté."
             },
-            {
-              "message": "Dve antény. Tri kontrolky. Chýba mu opravený kábel."
-            }
+            { "message": "Dve antény. Tri kontrolky. Chýba mu opravený kábel." }
           ]
         },
         {
           "id": "mug",
           "label": "Hrnček",
-          "bounds": {
-            "x": 665,
-            "y": 415,
-            "width": 160,
-            "height": 135
-          },
+          "bounds": { "x": 665, "y": 415, "width": 160, "height": 135 },
           "onClick": [
-            {
-              "message": "Káva už vychladla. Technický problém ostáva horúci."
-            }
+            { "message": "Káva už vychladla. Technický problém ostáva horúci." }
           ]
         },
         {
           "id": "socket",
           "label": "Zásuvka",
-          "bounds": {
-            "x": 1030,
-            "y": 300,
-            "width": 125,
-            "height": 160
-          },
+          "bounds": { "x": 1030, "y": 300, "width": 125, "height": 160 },
           "onClick": [
             {
               "message": "Zásuvka je len kulisa. Skúšobný router má vlastný bezpečný zdroj."
@@ -96,31 +62,15 @@
         {
           "id": "cable",
           "label": "Kábel pri stoličke",
-          "bounds": {
-            "x": 70,
-            "y": 580,
-            "width": 180,
-            "height": 95
-          },
+          "bounds": { "x": 70, "y": 580, "width": 180, "height": 95 },
           "image": "cable.svg",
-          "visibleWhen": {
-            "not": {
-              "flag": "cableTaken"
-            }
-          },
+          "visibleWhen": { "not": { "flag": "cableTaken" } },
           "onClick": [
             {
               "message": "Zdvihol si poškodený kábel.",
               "effects": [
-                {
-                  "type": "addItem",
-                  "id": "cable"
-                },
-                {
-                  "type": "flag",
-                  "id": "cableTaken",
-                  "value": true
-                }
+                { "type": "addItem", "id": "cable" },
+                { "type": "flag", "id": "cableTaken", "value": true }
               ]
             }
           ]
@@ -128,22 +78,12 @@
         {
           "id": "caretaker",
           "label": "Správca",
-          "bounds": {
-            "x": 830,
-            "y": 270,
-            "width": 180,
-            "height": 290
-          },
+          "bounds": { "x": 830, "y": 270, "width": 180, "height": 290 },
           "image": "caretaker.svg",
           "onClick": [
             {
               "message": "Začal si rozhovor so správcom.",
-              "effects": [
-                {
-                  "type": "dialogue",
-                  "id": "caretaker"
-                }
-              ]
+              "effects": [{ "type": "dialogue", "id": "caretaker" }]
             }
           ],
           "cursor": "talk"
@@ -151,45 +91,24 @@
         {
           "id": "exit",
           "label": "Dvere do dvora",
-          "bounds": {
-            "x": 1170,
-            "y": 340,
-            "width": 105,
-            "height": 210
-          },
+          "bounds": { "x": 1170, "y": 340, "width": 105, "height": 210 },
           "onClick": [
             {
-              "when": {
-                "flag": "powered"
-              },
+              "when": { "flag": "powered" },
               "message": "Vyšiel si do skúšobného dvora.",
               "effects": [
-                {
-                  "type": "scene",
-                  "id": "courtyard"
-                },
-                {
-                  "type": "flag",
-                  "id": "completed",
-                  "value": true
-                }
+                { "type": "scene", "id": "courtyard" },
+                { "type": "flag", "id": "completed", "value": true }
               ]
             },
-            {
-              "message": "Zamknuté. Správca možno vie, ako oživiť router."
-            }
+            { "message": "Zamknuté. Správca možno vie, ako oživiť router." }
           ],
           "cursor": "exit"
         },
         {
           "id": "wall-scratch",
           "label": "Škrabanec",
-          "bounds": {
-            "x": 270,
-            "y": 180,
-            "width": 65,
-            "height": 130
-          },
+          "bounds": { "x": 270, "y": 180, "width": 65, "height": 130 },
           "onClick": []
         }
       ]
@@ -204,21 +123,11 @@
         {
           "id": "return",
           "label": "Späť do skúšobne",
-          "bounds": {
-            "x": 60,
-            "y": 160,
-            "width": 245,
-            "height": 410
-          },
+          "bounds": { "x": 60, "y": 160, "width": 245, "height": 410 },
           "onClick": [
             {
               "message": "Späť v skúšobni. Router stále funguje.",
-              "effects": [
-                {
-                  "type": "scene",
-                  "id": "workshop"
-                }
-              ]
+              "effects": [{ "type": "scene", "id": "workshop" }]
             }
           ],
           "cursor": "exit"
@@ -226,12 +135,7 @@
         {
           "id": "sign",
           "label": "Skúšobná tabuľa",
-          "bounds": {
-            "x": 580,
-            "y": 220,
-            "width": 500,
-            "height": 240
-          },
+          "bounds": { "x": 580, "y": 220, "width": 500, "height": 240 },
           "onClick": [
             {
               "message": "Ukážka dokončená! Rozhovor, inventár, kombinovanie, hádanka aj prechod fungujú. Skutočný príbeh príde neskôr."
@@ -250,42 +154,31 @@
         {
           "id": "blink-character",
           "label": "Skúšobná postava",
-          "bounds": {
-            "x": 485,
-            "y": 155,
-            "width": 330,
-            "height": 550
-          },
+          "bounds": { "x": 485, "y": 155, "width": 330, "height": 550 },
           "image": "woman.png",
           "animation": {
             "blink": "woman-blink",
             "blinkIntervalMs": [3000, 6000],
-            "onClick": "woman-blink"
+            "onClick": "woman-blink",
+            "talk": "woman-talk",
+            "dialogueId": "animation-demo",
+            "motion": "breath"
           },
           "onClick": [
             {
-              "message": "Na okamih privrela oči."
+              "message": "Na okamih privrela oči.",
+              "effects": [{ "type": "dialogue", "id": "animation-demo" }]
             }
           ]
         },
         {
           "id": "lab-exit",
           "label": "Späť do dielne",
-          "bounds": {
-            "x": 1120,
-            "y": 350,
-            "width": 140,
-            "height": 300
-          },
+          "bounds": { "x": 1120, "y": 350, "width": 140, "height": 300 },
           "onClick": [
             {
               "message": "Späť v dielni.",
-              "effects": [
-                {
-                  "type": "scene",
-                  "id": "workshop"
-                }
-              ]
+              "effects": [{ "type": "scene", "id": "workshop" }]
             }
           ],
           "cursor": "exit"
@@ -334,15 +227,10 @@
             {
               "id": "report",
               "text": "Router už svieti.",
-              "when": {
-                "flag": "powered"
-              },
+              "when": { "flag": "powered" },
               "next": "done"
             },
-            {
-              "id": "bye",
-              "text": "Zatiaľ sa rozhliadnem."
-            }
+            { "id": "bye", "text": "Zatiaľ sa rozhliadnem." }
           ],
           "portrait": "caretaker-portrait.svg"
         },
@@ -354,21 +242,10 @@
             {
               "id": "getTape",
               "text": "Môžem si vziať pásku?",
-              "when": {
-                "not": {
-                  "flag": "tapeGiven"
-                }
-              },
+              "when": { "not": { "flag": "tapeGiven" } },
               "effects": [
-                {
-                  "type": "flag",
-                  "id": "tapeGiven",
-                  "value": true
-                },
-                {
-                  "type": "addItem",
-                  "id": "tape"
-                }
+                { "type": "flag", "id": "tapeGiven", "value": true },
+                { "type": "addItem", "id": "tape" }
               ],
               "message": "Správca ti podal izolačnú pásku.",
               "next": "greeting"
@@ -378,10 +255,7 @@
               "text": "Rozumiem. Ešte niečo…",
               "next": "greeting"
             },
-            {
-              "id": "leave",
-              "text": "Idem na to."
-            }
+            { "id": "leave", "text": "Idem na to." }
           ],
           "portrait": "caretaker-portrait.svg"
         },
@@ -389,13 +263,21 @@
           "id": "done",
           "speaker": "Skúšobný správca",
           "text": "Výborne. Dvere do dvora sú odomknuté. Tam už na teba čaká len koniec ukážky.",
-          "choices": [
-            {
-              "id": "finish",
-              "text": "Vďaka, idem sa pozrieť."
-            }
-          ],
+          "choices": [{ "id": "finish", "text": "Vďaka, idem sa pozrieť." }],
           "portrait": "caretaker-portrait.svg"
+        }
+      ]
+    },
+    {
+      "id": "animation-demo",
+      "start": "demo",
+      "nodes": [
+        {
+          "id": "demo",
+          "speaker": "Skúšobná postava",
+          "portrait": "woman.png",
+          "text": "Teraz rozprávam, náhodne mrkám a jemne sa pohybujem. Oči a ústa bežia nezávisle. Toto je iba technický test.",
+          "choices": [{ "id": "end", "text": "Ukončiť skúšku animácií." }]
         }
       ]
     }
@@ -407,18 +289,9 @@
         {
           "message": "Páska drží. Máš opravený kábel.",
           "effects": [
-            {
-              "type": "removeItem",
-              "id": "cable"
-            },
-            {
-              "type": "removeItem",
-              "id": "tape"
-            },
-            {
-              "type": "addItem",
-              "id": "fixedCable"
-            }
+            { "type": "removeItem", "id": "cable" },
+            { "type": "removeItem", "id": "tape" },
+            { "type": "addItem", "id": "fixedCable" }
           ]
         }
       ]
@@ -439,7 +312,25 @@
       ],
       "fps": 14,
       "durationsMs": [40, 60, 90, 80, 40],
-      "loop": false
+      "loop": false,
+      "region": { "x": 394, "y": 173, "width": 100, "height": 36 }
+    },
+    {
+      "id": "woman-talk",
+      "label": "Ústa · technická ukážka",
+      "source": "woman.png",
+      "kind": "talk",
+      "frames": [
+        "woman.png",
+        "animations/woman-talk/frame-02.png",
+        "animations/woman-talk/frame-03.png",
+        "animations/woman-talk/frame-02.png",
+        "woman.png"
+      ],
+      "fps": 12,
+      "durationsMs": [100, 80, 100, 70, 90],
+      "loop": true,
+      "region": { "x": 429, "y": 271, "width": 58, "height": 31 }
     }
   ]
 }

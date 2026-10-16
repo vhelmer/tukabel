@@ -85,6 +85,7 @@ export function App() {
         <div hidden={mode !== 'dev'} className="dev-host">
           <Suspense fallback={<p>Načítavam editor…</p>}>
             <DevWorkspace
+              active={mode === 'dev'}
               document={document}
               onChange={setDocument}
               sceneId={sceneId}

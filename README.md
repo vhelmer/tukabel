@@ -136,6 +136,8 @@ mrkání, dialogové snímky a jemné idle pohyby lze přiřadit v editoru.
 - `src/game/state.ts` — původní čistý reducer; stejná pravidla v náhledu i produkci.
 - `src/game/storage.ts` — save/load postupu; nikdy neukládá definice obsahu.
 - `src/game/createScene.ts` — Pixi pozadí, sprity, hotspoty a stavové indikátory.
+- `src/game/characterVisual.ts` — skládání lokálních animačních oblastí bez změny
+  zarovnání nebo násobení průhlednosti; `animation.ts` řídí nezávislé hodiny.
 - `src/game/transforms.ts` — společné proporce, natočení a geometrie rámů.
 - `src/game/hitTest.ts`, `alphaMasks.ts`, `polygon.ts` — společné cílení alfa masek
   a polygonů, cache pixelů a kontrola geometrie pro Pixi, dropy a SVG editor.
@@ -272,14 +274,20 @@ geometrie serverem, překryvy, hover, kliky a inventární dropy i po rotaci a z
 Animační testy importují skutečné Codex PNG i atlas, porovnávají všechny pixely,
 kontrolují velikosti pláten, časování, pořadí, chyby a atomický zápis. V prohlížeči
 ověřují náhled, reload, mrkání, interakční reakce a dialogové přehrávání v Pixi
-včetně statického buildu, pauzy a reduced motion. Nepoužívají žádné externí API.
+včetně statického buildu, pauzy a reduced motion. `layered-animation.spec.ts`
+kontroluje současné oči/ústa, zachování alfa a ignorování změn mimo oblast,
+klikání skrz vymazanou oblast, celý editorový workflow a skutečnou Codex postavu
+během dialogu. Nepoužívají žádné externí API.
 
 Instrukce pro agenty jsou v [AGENTS.md](AGENTS.md).
 
 ## Animace postav v Dev Mode: hotové PNG a spritesheety
 
-1. V **Lokácie** vyber postavu a její původní obrázek. Otevři
-   **Animácie postavy · sprite import**. Všechny pózy musí mít stejné plátno,
+1. V **Lokácie** vyber postavu a stiskni **Otvoriť animačné štúdio**, nebo otevři
+   samostatnou záložku **Animácie** a vyber **Animovaná postava**. Celý pracovní
+   prostor nabízí velký Pixi náhled, přiřazení vlevo a knihovnu/nastavení vpravo.
+   Na menší obrazovce se části skládají pod sebe. **Priblíženie postavy** zvětší
+   detail tváře až 4×. Všechny pózy musí mít stejné plátno,
    pozici postavy a průhledné okraje jako zdroj; individuální ořez nebo změna
    rozměrů způsobuje poskakování a import jej proto odmítne.
 2. Vyber typ (blink / talk / idle / expression), název a **PNG snímky alebo atlas**.
@@ -296,18 +304,25 @@ Instrukce pro agenty jsou v [AGENTS.md](AGENTS.md).
    Původní PNG sekvence se kopíruje bajtově přesně. U atlasu se archivuje i
    `atlas.png` + `atlas.json`; `clip.json` je importní záznam se SHA-256 zdroje.
    Jediná aktuální konfigurace hry nadále patří do `project.json`.
+   U blink/talk import navíc porovná snímky s originálem a najde oblast změn.
+   Stejnou kontrolu pro starší klip spustí **Zistiť zmenenú oblasť**. Transparentní
+   RGB šum se nepočítá jako změna. Při příliš rozsáhlých změnách vymez oblast
+   ručně v původních pixelech; okolí mimo ni se při přehrávání ignoruje.
 4. Přehrávej náhled, vybírej snímky, měň pořadí, fps nebo délku konkrétního snímku.
    Atlasová `duration` se zachová. **Rýchlosť prehrávania (×)** násobí rychlost
    celého klipu; **Rovnomerné časovanie podľa fps** odstraní individuální délky.
    **Opakovať klip** řídí náhled, idle a talk; jednorázový idle drží poslední pózu.
 5. **Priradiť postave** uloží klip do návrhu a podle typu jej přiřadí jako blink,
-   talk nebo idle. Existující klipy vybírej v **Animácia na úpravu**; změny klipu
+   talk, idle nebo reakci při kliknutí (expression). Existující klipy vybírej v **Animácia na úpravu**; změny klipu
    potvrď **Pridať / aktualizovať animáciu** nebo znovu **Priradiť postave**.
    Jedna postava může mít různé kompatibilní klipy pro každý způsob spouštění.
 6. Nastav automatické mrkání (náhodný interval), animaci během konkrétního dialogu,
    základní idle nebo **Animácia pri interakcii** pro kliknutí nebo použití předmětu. Reakce
-   i mrknutí se vždy přehrají jednou a vrátí k idle / originálu. Dialogové mluvení
-   má přednost. Záměrný procedurální pohyb je samostatná volba.
+   i mrknutí se přehrají jednou a vrátí svou oblast k základu. Lokální mrkání
+   pokračuje i během mluvení. Procedurální pohyb se aplikuje na celou sestavu.
+   **Kombinácia postavy** umožňuje zvlášť testovat oči, ústa a idle, pozastavit
+   přehrávání, vynutit **Mrknúť teraz** a zobrazit oblasti. Testovací přepínače
+   nemění přiřazení. **Vybraný klip** nabízí samostatný náhled a časovou osu.
 7. **Game Mode** nebo **Otestovať odtiaľto** okamžitě testuje návrh.
    **Uložiť do projektu** zapíše konfiguraci a vazby do JSON; potom commitni JSON
    i nové assety. Neuložené změny klipu zůstanou jen v panelu. Při odstranění
@@ -315,7 +330,10 @@ Instrukce pro agenty jsou v [AGENTS.md](AGENTS.md).
 
 První příklad: v editoru zvol lokaci **Animačný ateliér**, pak
 **Otestovať odtiaľto**. Postava z `woman.png` náhodně mrká po 3–6 s a mrkne také
-při prozkoumání. Pět póz vychází z `experiments/woman-blink/output/`; shodné
+při kliknutí. Kliknutí spustí technický dialog s nezávislou animací úst;
+mrkání i idle pohyb pokračují. Dva nové lokální snímky úst reprodukuje
+`python3 experiments/woman-blink/generate_talk.py` (Pillow); zachovávají alfa kanál
+celého zdroje a pixely mimo ústa. Pět póz vychází z `experiments/woman-blink/output/`; shodné
 otevřené a přivřené pózy sdílejí PNG. Otevřené pózy mají krátké prodlevy,
 protože čekání mezi mrknutími zajišťuje vazba, nikoli samotný klip.
 Celý import si vyzkoušíš výběrem týchž pěti PNG nebo `spritesheet.png` + JSON.
@@ -324,20 +342,39 @@ Celý import si vyzkoušíš výběrem týchž pěti PNG nebo `spritesheet.png` 
 
 `animations[]` obsahuje `id`, `label`, `source`, `kind`, `frames`, `fps` (1–30),
 volitelně `durationsMs` (jedna délka 10–60000 ms pro každý snímek), `speed` (0.1–4)
-a `loop` (výchozí true). Opakované odkazy na stejný snímek jsou v pořádku.
+a `loop` (výchozí true). `region: {"x":394,"y":173,"width":100,"height":36}`
+vymezuje nezávislou oblast v původních pixelech `source`. Region musí být celočíselný
+obdélník uvnitř zdroje; všechny snímky dál používají celé původní plátno. Různé
+přiřazené lokální klipy se nesmějí překrývat. Opakované odkazy na stejný snímek
+jsou v pořádku. Klipy bez `region` zachovávají původní celopostavové přehrávání.
 Vazba `hotspot.animation` používá `blink`, `blinkIntervalMs: [min,max]`, `idle`,
 volitelné `idleLoop` přepsání smyčky, `talk`, `dialogueId`, `onClick: "clip-id"`, `onUse: "clip-id"` a volitelný `motion: "breath" | "sway"`. Zdroj každého přiřazeného
 klipu musí odpovídat `hotspot.image`. Rozměry všech snímků kontroluje import,
 uložení projektu a `npm run validate:content`; runtime navíc odmítne deformovat
 postavu při chybně změněném assetu. Zarovnání kresby uvnitř plátna je odpovědnost autora.
 
-Přehrávač zachovává pozici, natočení a velikost zdrojového obrázku. Priorita je
-**talk → reakce na interakci → blink → idle / originál**. Reakce se spouští stejnou
-cestou pro canvas, HTML seznam objektů i inventární drop. Mluvení zatím sleduje
-aktivní dialog; data jsou připravená pro pozdější doplnění dabingu, bez lip-syncu.
-Vizuální hodiny nejsou součást uloženého postupu. Ticker se zapíná jen pro
-viditelné animované postavy, respektuje menu, skrytou záložku a reduced motion.
-Náhled pozastaví postup, pokud panel není vidět.
+Přehrávač zachovává pozici, natočení a velikost zdrojového obrázku. Lokální
+blink, talk, idle a reakce mají nezávislé hodiny. Celopostavové starší klipy tvoří
+základ s původní prioritou talk → reakce → blink → idle; aktivní lokální vrstvy
+se skládají nad ním. Tělo a části obličeje se dělí podél hran oblastí na navazující
+výřezy sdílených textur (`characterVisual.ts`): každý pixel se vykreslí jednou.
+Zachová se i částečná průhlednost nebo vymazané pixely, bez duplikování těla pod
+překryvem. Výřezy se cachují, bez čtení GPU/canvasu při přehrávání. Alfa cílení
+vybírá stejné snímky/oblasti jako renderer. Při úklidu se ničí jen výřezy, nikoli
+sdílené zdrojové textury.
+
+Pro jemný pohyb celé postavy používej `motion`; všechny části se pohybují společně.
+Celopostavový idle klip kombinuj s lokální tváří pouze tehdy, pokud její poloha ve
+snímcích zůstává stejná. Editor nepřidává automatické sledování obličeje ani kosti.
+Náhled klipu i kombinace používá tentýž Pixi renderer jako hra; při přepnutí do
+Game Mode se editorový canvas odpojí, rozpracovaná nastavení zůstanou zachovaná.
+Ticker respektuje pauzu, skrytou záložku a reduced motion.
+
+Příprava na zvuk: `createAnimationPlayer.tick(deltaMs, speech)` přijímá boolean
+(pro dnešní dialogy) nebo `SpeechPlayback {active, timeMs, frameIndex?}`. Budoucí
+zvukový adaptér může posílat pozici nahrávky v milisekundách nebo přímo index
+snímku úst/visému; změna ani seek řeči neresetují mrkání. Vstup je pomíjivý, mimo
+herní save i autorský JSON. Dabing, ElevenLabs a lip-sync zatím nejsou implementované.
 
 Animace nepoužívají AI služby, video ani FFmpeg. Produkce přehrává pouze místní
 obrázky bez editoru a zápisového API. Dřívější `generation` metadata je potřeba

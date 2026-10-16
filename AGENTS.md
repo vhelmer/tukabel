@@ -90,18 +90,29 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
 
 - Registr `animations` je volitelnou součástí JSON projektu. Klipy odkazují na
   lokální snímky a původní `source`; vazba hotspotu musí používat stejný obrázek.
-- Přehrávání je čistě vizuální: talk má přednost před reakcí, blink a idle. Ticker zapínej
-  jen pro aktivní postavy, uklízej listenery a respektuj pauzu / reduced motion.
+- Klip může mít `region: {x,y,width,height}` v původních pixelech `source`.
+  Lokální oči/ústa/idle/reakce mají nezávislé hodiny; různé přiřazené oblasti
+  se nesmějí překrývat. `characterVisual.ts` vykreslí každý pixel právě jednou
+  pomocí výřezů textur, včetně částečné alfa a vymazání. Nepřekrývej plné snímky
+  běžným source-over blendem. Náhled v záložce Animácie používá stejný Pixi kód.
+- Celopostavové klipy bez `region` zachovávají původní prioritu a tvoří základ
+  pod lokálními vrstvami. Jemný celkový idle řeš transformací celé sestavy.
+  Ticker zapínej jen pro aktivní postavy, uklízej listenery i výřezy textur
+  (nikoli sdílené zdroje) a respektuj pauzu / reduced motion.
 - Hotové PNG sekvence a Pixi/TexturePacker spritesheety importuj lokálně přes
   `dev/animationImport.ts`. Import atomicky uloží celé klipy; oříznuté atlasové
-  snímky obnoví na původní plátno, otočená atlasová políčka odmítne.
+  snímky obnoví na původní plátno, otočená atlasová políčka odmítne. Blink/talk
+  porovnává se zdrojem a hledá oblast změn; `/animations/region` slouží pro
+  starší klipy, pouze lokálně a bez externího API.
 - Všechny snímky musí mít stejné rozměry a zarovnání jako `source`. Neškáluj
   jednotlivé pózy a neměň anchor. Kontrola rozměrů běží při importu, save i check.
 - `durationsMs` je volitelné časování jednotlivých snímků (jinak `fps`), `speed`
   násobí rychlost. Klipy a vazby jsou v projektovém JSON; importní `clip.json`
   je archivní záznam, nikoli druhý zdroj herního obsahu.
-- `animation.onClick` / `onUse` spouští jednorázové klipy. Priorita je talk → reakce →
-  blink → idle. Vizuální požadavky ani hodiny nepatří do uloženého postupu hráče.
+- `animation.onClick` / `onUse` spouští jednorázové klipy. `SpeechPlayback`
+  (`active`, `timeMs`, volitelný `frameIndex`) připravuje řízení úst zvukovým
+  adaptérem. Seek řeči nesmí restartovat oči. Vizuální požadavky ani hodiny
+  nepatří do uloženého postupu hráče. Při skrytí Dev Mode odpoj jeho Pixi canvas.
 - Animace nepoužívají externí AI API ani video pipeline. `OPENAI_API_KEY` zůstává
   rezervovaný pro budoucí jiné funkce, pouze v prostředí serveru / `.env.local`.
   Klíče nikdy do `VITE_`, klienta nebo autorského JSON.
@@ -116,6 +127,7 @@ mapa logiky ukazuje podmínky a efekty. Ukládá se do zdrojového JSON v Gitu. 
 kompletní technická hádanka bez skutečného příběhu a finálních assetů.
 Animace: import PNG sekvencí a spritesheetů, náhled a úprava časování, náhodné
 mrkání, mluvení během dialogu, jednorázové reakce a procedurální idle pohyb.
-Animační ateliér demonstruje Codex mrknutí; PNG a konfigurace jsou v Gitu.
+Samostatné animační štúdio a ateliér demonstrují současné Codex mrknutí, ústa
+během dialogu a idle pohyb; PNG a konfigurace jsou v Gitu.
 Žádné AI API ani FFmpeg nejsou potřeba. Formát a průchod jsou v README.
 Chůze postavy, zvuk a lip-sync zatím chybí.

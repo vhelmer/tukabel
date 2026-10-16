@@ -488,51 +488,11 @@
   }
 }
 
-.animation-panel {
-  border-top: 1px solid #ffffff25;
-  border-bottom: 1px solid #ffffff25;
-  margin: 20px 0;
-  padding: 12px 0;
-}
-.animation-panel > summary {
-  color: var(--yellow);
-  font-weight: bold;
-  font-size: 13px;
-  cursor: pointer;
-}
 .animation-authoring {
   border: 0;
   margin: 0;
   padding: 0;
   min-width: 0;
-}
-.animation-panel button {
-  font-size: 11px;
-  margin: 4px 0;
-}
-.ai-unavailable {
-  border: 1px solid #e6ac7d55;
-  border-radius: 5px;
-  background: #46362355;
-  padding: 12px;
-  font-size: 11px;
-  color: #ead3a5;
-  line-height: 1.6;
-}
-.animation-image {
-  height: 250px;
-  background: repeating-conic-gradient(#ffffff0b 0% 25%, #10221b 0% 50%) 50% /
-    18px 18px;
-  border: 1px solid #ffffff20;
-  border-radius: 7px;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-}
-.animation-image img {
-  max-width: 100%;
-  max-height: 250px;
-  object-fit: contain;
 }
 .animation-preview > .row-actions > span {
   font-size: 10px;
@@ -616,4 +576,152 @@
 }
 .resize-handle {
   vector-effect: non-scaling-stroke;
+}
+
+.animation-workspace {
+  display: grid;
+  grid-template-columns: minmax(210px, 0.8fr) minmax(320px, 2fr) minmax(
+      250px,
+      1fr
+    );
+  gap: 20px;
+  align-items: start;
+  min-height: 70dvh;
+}
+.animation-workspace > div {
+  min-width: 0;
+}
+.animation-binding-column,
+.animation-library-column {
+  padding: 16px;
+  border: 1px solid #ffffff20;
+  border-radius: 12px;
+  background: #20342e;
+}
+.animation-workspace h3 {
+  margin-top: 0;
+}
+.animation-workspace label {
+  font-size: 13px;
+}
+.animation-preview-column {
+  position: sticky;
+  top: 12px;
+}
+.character-preview {
+  margin-top: 12px;
+}
+.character-preview-canvas {
+  position: relative;
+  height: 62dvh;
+  min-height: 320px;
+  overflow: hidden;
+  border: 1px solid #a8885660;
+  border-radius: 12px;
+}
+.preview-switches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 14px;
+}
+.preview-switches label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.animation-library-column details {
+  margin-bottom: 20px;
+}
+.animation-library-column summary {
+  font-weight: bold;
+  cursor: pointer;
+  padding: 8px 0;
+}
+.animation-library-column fieldset {
+  padding: 0;
+  border: 0;
+}
+.animation-workspace .animation-timeline {
+  grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+}
+@media (max-width: 1100px) {
+  .animation-workspace {
+    grid-template-columns: minmax(200px, 1fr) minmax(300px, 2fr);
+  }
+  .animation-library-column {
+    grid-column: 1 / -1;
+  }
+  .animation-preview-column {
+    position: static;
+  }
+}
+@media (max-width: 650px) {
+  .animation-workspace {
+    display: flex;
+    flex-direction: column;
+  }
+  .animation-workspace > div {
+    width: 100%;
+  }
+  .animation-preview-column {
+    order: -1;
+  }
+  .character-preview-canvas {
+    height: 52dvh;
+  }
+}
+
+.animation-library-column .bounds-fields {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.animation-mode .editor-header {
+  padding: 12px 18px;
+}
+.animation-mode .editor-header h1 {
+  font-size: 23px;
+  margin: 4px 0;
+}
+@media (min-width: 1101px) {
+  .animation-workspace {
+    height: calc(100dvh - 245px);
+    min-height: 480px;
+    align-items: stretch;
+  }
+  .animation-binding-column,
+  .animation-library-column {
+    overflow-y: auto;
+  }
+  .animation-preview-column {
+    position: static;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .animation-preview-column > .combined-preview,
+  .animation-preview-column > .animation-preview,
+  .clip-preview-stage,
+  .animation-preview-column .character-preview {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+  }
+  .animation-preview-column .character-preview {
+    margin-top: 8px;
+  }
+  .animation-preview-column .character-preview-canvas {
+    height: auto;
+    flex: 1;
+    min-height: 160px;
+  }
+  .animation-workspace .row-actions,
+  .animation-workspace .field-note,
+  .animation-workspace .preview-switches,
+  .animation-workspace .animation-timeline {
+    flex-shrink: 0;
+  }
+  .animation-workspace .animation-timeline {
+    max-height: 90px;
+  }
 }

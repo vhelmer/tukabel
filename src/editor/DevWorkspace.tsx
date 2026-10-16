@@ -11,6 +11,7 @@ import type {
 import { readProject, writeProject } from './api';
 import { nextId } from './model';
 import { Field, SelectId } from './fields';
+import { AnimationPanel } from './AnimationPanel';
 import { EditorStage } from './EditorStage';
 import { SceneInspector } from './SceneInspector';
 import { DialoguesPanel, ItemsPanel, PuzzlesPanel } from './ContentPanels';
@@ -18,10 +19,12 @@ import { LogicGraph } from './LogicGraph';
 import type { GraphTarget } from './LogicGraph';
 import './editor.css';
 
-type Tab = 'scenes' | 'items' | 'dialogues' | 'puzzles' | 'graph';
+type Tab =
+  'animations' | 'scenes' | 'items' | 'dialogues' | 'puzzles' | 'graph';
 const serialize = (value: GameContent) => JSON.stringify(value);
 const tabs: { id: Tab; label: string }[] = [
   { id: 'scenes', label: 'Lokácie' },
+  { id: 'animations', label: 'Animácie' },
   { id: 'items', label: 'Predmety' },
   { id: 'dialogues', label: 'Dialógy' },
   { id: 'puzzles', label: 'Hádanky' },
@@ -29,6 +32,7 @@ const tabs: { id: Tab; label: string }[] = [
 ];
 
 export default function DevWorkspace({
+  active,
   document,
   onChange,
   sceneId,
@@ -36,6 +40,7 @@ export default function DevWorkspace({
   onPreview,
   testState,
 }: {
+  active: boolean;
   document: GameContent;
   onChange: (content: GameContent) => void;
   sceneId: string;
@@ -64,6 +69,21 @@ export default function DevWorkspace({
     () => validateProject(document, assets),
     [document, assets],
   );
+  const actors = document.scenes.flatMap((s) =>
+    s.hotspots
+      .filter((h) => h.image)
+      .map((h) => ({
+        scene: s,
+        hotspot: h,
+        key: JSON.stringify([s.id, h.id]),
+      })),
+  );
+  const actor =
+    actors.find(
+      (a) => a.scene.id === scene?.id && a.hotspot.id === hotspotId,
+    ) ??
+    actors.find((a) => a.scene.id === scene?.id) ??
+    actors[0];
   const dirty = saved !== null && serialize(document) !== saved;
   useEffect(() => {
     let disposed = false;
@@ -186,11 +206,18 @@ export default function DevWorkspace({
     } else setTab('puzzles');
   }
   return (
-    <section className="dev-workspace" aria-label="Vývojársky editor">
+    <section
+      className={`dev-workspace ${tab === 'animations' ? 'animation-mode' : ''}`}
+      aria-label="Vývojársky editor"
+    >
       <header className="editor-header">
         <div>
           <p className="eyebrow">AUTORSKÝ EDITOR</p>
-          <h1>Tvoja scéna. Tvoje pravidlá.</h1>
+          <h1>
+            {tab === 'animations'
+              ? 'Animačné štúdio'
+              : 'Tvoja scéna. Tvoje pravidlá.'}
+          </h1>
           <p>Obsah v Gite · náhľad bez zápisu · lokálne ukladanie do zdrojov</p>
         </div>
         <div className="editor-save">
@@ -388,22 +415,7 @@ export default function DevWorkspace({
                     onAssets={setAssets}
                     onScene={updateScene}
                     onHotspot={updateHotspot}
-                    onAnimationCommit={(animations, hotspot) =>
-                      change({
-                        ...document,
-                        animations,
-                        scenes: document.scenes.map((entry) =>
-                          entry.id === scene.id
-                            ? {
-                                ...entry,
-                                hotspots: entry.hotspots.map((object) =>
-                                  object.id === hotspot.id ? hotspot : object,
-                                ),
-                              }
-                            : entry,
-                        ),
-                      })
-                    }
+                    onOpenAnimations={() => setTab('animations')}
                     onDelete={() =>
                       updateScene({
                         ...scene,
@@ -415,6 +427,71 @@ export default function DevWorkspace({
                   />
                 </aside>
               </div>
+            )}
+          </>
+        )}
+        {tab === 'animations' && (
+          <>
+            <div className="scene-selector">
+              <SelectId
+                label="Animovaná postava"
+                value={actor?.key ?? ''}
+                values={actors.map((a) => ({
+                  id: a.key,
+                  label: `${a.scene.title} · ${a.hotspot.label}`,
+                }))}
+                empty="Vyber postavu s obrázkom"
+                onChange={(key) => {
+                  const next = actors.find((a) => a.key === key);
+                  if (next) {
+                    onScene(next.scene.id);
+                    setHotspotId(next.hotspot.id);
+                  }
+                }}
+              />
+            </div>
+            {actor ? (
+              <AnimationPanel
+                active={active}
+                key={`${actor.key}/${actor.hotspot.image}`}
+                hotspot={actor.hotspot}
+                content={document}
+                assets={assets}
+                onAssets={setAssets}
+                onHotspot={(next) =>
+                  change({
+                    ...document,
+                    scenes: document.scenes.map((s) =>
+                      s.id === actor.scene.id
+                        ? {
+                            ...s,
+                            hotspots: s.hotspots.map((h) =>
+                              h.id === next.id ? next : h,
+                            ),
+                          }
+                        : s,
+                    ),
+                  })
+                }
+                onCommit={(animations, next) =>
+                  change({
+                    ...document,
+                    animations,
+                    scenes: document.scenes.map((s) =>
+                      s.id === actor.scene.id
+                        ? {
+                            ...s,
+                            hotspots: s.hotspots.map((h) =>
+                              h.id === next.id ? next : h,
+                            ),
+                          }
+                        : s,
+                    ),
+                  })
+                }
+              />
+            ) : (
+              <p>Najprv pridaj do lokácie objekt s obrázkom postavy.</p>
             )}
           </>
         )}

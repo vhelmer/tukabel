@@ -1,16 +1,10 @@
 import { useState } from 'react';
-import { AnimationPanel } from './AnimationPanel';
 import { useImageSize } from './useImageSize';
 import { imagePlacement } from '../game/transforms';
 import { rectanglePoints } from '../game/polygon';
 import { withHotspotBounds } from './polygonTools';
 import { editDimension } from './transformTools';
-import type {
-  AnimationDefinition,
-  GameContent,
-  Hotspot,
-  SceneDefinition,
-} from '../game/types';
+import type { GameContent, Hotspot, SceneDefinition } from '../game/types';
 import {
   AssetField,
   ConditionField,
@@ -28,7 +22,7 @@ export function SceneInspector({
   onScene,
   onHotspot,
   onDelete,
-  onAnimationCommit,
+  onOpenAnimations,
 }: {
   scene: SceneDefinition;
   hotspot?: Hotspot;
@@ -38,10 +32,7 @@ export function SceneInspector({
   onScene: (scene: SceneDefinition) => void;
   onHotspot: (hotspot: Hotspot) => void;
   onDelete: () => void;
-  onAnimationCommit: (
-    animations: readonly AnimationDefinition[],
-    hotspot: Hotspot,
-  ) => void;
+  onOpenAnimations: () => void;
 }) {
   const [useItem, setUseItem] = useState(content.items[0]?.id ?? '');
   const imageSize = useImageSize(hotspot?.image);
@@ -236,15 +227,9 @@ export function SceneInspector({
             Ručný obdĺžnik má prednosť pred priehľadnosťou.
           </p>
           {hotspot.image && (
-            <AnimationPanel
-              key={hotspot.image}
-              hotspot={hotspot}
-              content={content}
-              assets={assets}
-              onAssets={onAssets}
-              onHotspot={onHotspot}
-              onCommit={onAnimationCommit}
-            />
+            <button className="primary-button" onClick={onOpenAnimations}>
+              Otvoriť animačné štúdio
+            </button>
           )}
           <ConditionField
             label="Viditeľnosť objektu"

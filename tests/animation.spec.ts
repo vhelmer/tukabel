@@ -36,10 +36,22 @@ test.beforeEach(async ({ workspace }) => {
   );
 });
 async function actorPanel(page: Page) {
+  await page.getByRole('button', { name: 'Lokácie', exact: true }).click();
   await page
     .getByLabel('Vybraný objekt', { exact: true })
     .selectOption('caretaker');
-  await page.locator('.animation-panel > summary').click();
+  await page
+    .getByRole('button', { name: 'Otvoriť animačné štúdio', exact: true })
+    .click();
+  const importSummary = page.getByText('Import hotovej animácie', {
+    exact: true,
+  });
+  if (
+    !(await page
+      .getByLabel('PNG snímky alebo atlas', { exact: true })
+      .isVisible())
+  )
+    await importSummary.click();
   await expect(
     page.getByRole('button', { name: 'Importovať animáciu', exact: true }),
   ).toBeVisible();
