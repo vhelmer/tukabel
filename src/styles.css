@@ -333,40 +333,6 @@ button[aria-pressed='true'] {
 .drag-ghost.valid-drop {
   border-color: var(--yellow);
 }
-.dialogue-panel {
-  position: absolute;
-  z-index: 5;
-  bottom: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(740px, calc(100% - 24px));
-  max-height: calc(100% - 24px);
-  overflow-y: auto;
-  padding: 18px 22px;
-  background: #14251ef5;
-  border: 1px solid #f1ce8380;
-  border-radius: 10px;
-  box-shadow: 0 8px 40px #0007;
-  animation: appear 0.18s ease-out;
-}
-.dialogue-panel > p {
-  line-height: 1.5;
-  font-size: clamp(12px, 1.25vw, 16px);
-  margin: 10px 0 12px;
-}
-.dialogue-panel > p.eyebrow {
-  font-size: 10px;
-  margin-top: 0;
-}
-.dialogue-choices {
-  display: grid;
-  gap: 6px;
-}
-.dialogue-choices button {
-  text-align: left;
-  font-size: 13px;
-  padding: 8px 12px;
-}
 .text-button {
   background: transparent;
   border: 0;
@@ -493,12 +459,6 @@ button[aria-pressed='true'] {
   }
   .inventory-heading small {
     font-size: 9px;
-  }
-  .dialogue-panel {
-    padding: 12px;
-  }
-  .dialogue-choices button {
-    font-size: 12px;
   }
 }
 @media (max-height: 520px) and (orientation: landscape) {
@@ -654,85 +614,201 @@ body {
   padding: 0 8px;
   font-weight: 600;
 }
+/* Crooked stage props: choices disappear completely while a line is spoken. */
 .dialogue-panel {
-  color: #33251f;
-  background: linear-gradient(120deg, #f6e4bf, #dfc59b);
-  border: 3px solid #634432;
-  border-radius: 18px 9px 20px 10px;
-  box-shadow: 6px 8px 0 #0005;
-  padding: 18px 24px;
+  position: absolute;
+  z-index: 5;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(740px, calc(100% - 28px));
+  max-height: calc(100% - 24px);
+  overflow-y: auto;
+  padding: 48px 10px 8px;
+  color: #fff1cd;
+  animation: appear 0.18s ease-out;
 }
-.dialogue-heading {
+.dialogue-close {
+  position: absolute;
+  top: 0;
+  right: 4px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  font-size: 26px;
+  line-height: 1;
+  border: 2px solid #ae8761;
+  border-radius: 47% 40% 44% 36%;
+  background: #302329;
+  color: #f6d7a6;
+  box-shadow: 2px 3px 0 #130f15a0;
+}
+.dialogue-choices {
+  display: grid;
+  gap: 12px;
+  padding: 3px 5px 8px;
+}
+.dialogue-choice,
+.game-menu > button {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 14px;
-}
-.dialogue-heading .eyebrow {
-  color: #87603e;
-}
-.dialogue-speaker {
-  color: #513624;
-  font-size: 18px;
-  font-weight: 900;
-  margin: 4px 0;
-}
-.dialogue-portrait,
-.dialogue-monogram {
-  width: 66px;
-  height: 72px;
-  flex-shrink: 0;
-  background: #593f34;
-  border: 2px solid #8b6546;
-  border-radius: 45% 40% 42% 35%;
-  object-fit: cover;
-  object-position: 50% 8%;
-}
-.dialogue-monogram {
-  display: grid;
-  place-items: center;
-  font:
-    bold 36px Georgia,
-    serif;
-  color: #efd4a3;
-}
-.dialogue-panel #dialogue-text {
-  font-weight: 600;
-  font-size: clamp(13px, 1.2vw, 17px);
-  min-height: 2.8em;
+  width: 100%;
+  min-height: 48px;
+  padding: 13px 20px;
+  border: 2px solid #aa8057;
+  border-radius: 4px 13px 5px 9px;
+  background:
+    repeating-linear-gradient(
+      2deg,
+      transparent 0 9px,
+      #160f191c 10px 11px,
+      transparent 12px 18px
+    ),
+    linear-gradient(100deg, #493139, #624535 60%, #3c2a31);
+  box-shadow:
+    3px 4px 0 #120f15bd,
+    inset 0 2px 0 #d5a66c45;
+  color: #fff0c9;
+  text-align: left;
+  font-weight: 700;
+  font-size: clamp(14px, 1.5vw, 18px);
+  line-height: 1.35;
+  text-shadow: 1px 2px #201820;
   overflow-wrap: anywhere;
 }
-.dialogue-choices {
-  counter-reset: reply;
+.dialogue-choice:nth-child(odd) {
+  transform: rotate(-0.35deg);
 }
-.dialogue-choices button {
-  counter-increment: reply;
-  color: #34231f;
-  background: #fff5db55;
-  border: 0;
-  border-bottom: 1px solid #8c613b55;
-  border-radius: 3px;
-  min-height: 40px;
+.dialogue-choice:nth-child(even) {
+  transform: rotate(0.3deg);
 }
-.dialogue-choices button::before {
-  content: counter(reply) '. ';
-  color: #98613b;
-  font-weight: bold;
+.dialogue-choice::after,
+.game-menu > button::after {
+  content: '';
+  position: absolute;
+  right: 7px;
+  top: 7px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #241c24;
+  box-shadow:
+    0 1px #c8a476,
+    -1px -1px #151119;
 }
-.dialogue-choices button:hover:not(:disabled) {
-  background: #ab733933;
-  color: #6d3426;
+.dialogue-choice:hover:not(:disabled),
+.game-menu > button:hover:not(:disabled) {
+  background: linear-gradient(100deg, #694443, #825b3c 60%, #50323b);
+  border-color: #f0c87e;
+  color: #fff9df;
 }
-.dialogue-panel .text-button {
-  color: #76523e;
+.choice-mark {
+  color: #d6ac77;
+  font-size: 0.8em;
+  transform: rotate(-5deg);
+}
+.dialogue-caption {
+  padding: 14px 24px 18px;
+  border: 2px solid #b58c605c;
+  border-radius: 9px 17px 7px 14px;
+  background: linear-gradient(110deg, #221b26ed, #30212ce8 70%, #241d25ed);
+  box-shadow: 3px 5px 0 #100d1690;
+  text-align: center;
+}
+.dialogue-speaker {
+  display: block;
+  color: #d8b283;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.dialogue-panel #dialogue-text {
+  margin: 8px 0 0;
+  min-height: 2.7em;
+  font-size: clamp(15px, 1.7vw, 22px);
+  font-weight: 700;
+  line-height: 1.4;
+  color: #fff5d8;
+  text-shadow: 1px 2px 1px #000;
+  overflow-wrap: anywhere;
+}
+.dialogue-line-controls {
+  display: flex;
+  justify-content: flex-end;
+  padding: 6px 4px 0;
+}
+.dialogue-line-controls button {
+  min-height: 36px;
+  font-size: 12px;
+  color: #f2d7ac;
+  background: #30232bec;
+  border: 1px solid #9d7756;
+  border-radius: 8px 3px 9px 4px;
+}
+.dialogue-audio.is-compact {
+  margin: 0;
+  gap: 6px;
+  justify-content: flex-end;
+}
+.dialogue-audio.is-compact p {
+  flex-basis: 100%;
+  max-width: 420px;
+  font-size: 11px;
+}
+.dialogue-audio.is-compact .speech-toggle {
+  min-width: 36px;
 }
 .objects-popover {
   background: #2d2229f5;
   border-color: #ac8053;
 }
 .game-menu {
-  background: #33272d;
-  border-color: #bb905b;
+  background: repeating-linear-gradient(
+    3deg,
+    #382832 0 16px,
+    #30232c 17px 19px
+  );
+  border: 4px solid #ac7e51;
+  border-radius: 16px 6px 18px 9px;
+  box-shadow:
+    8px 10px 0 #160f1bbb,
+    inset 0 0 0 2px #261b25;
+  color: #f5dfb4;
 }
+.game-menu h2 {
+  color: #f5d69d;
+  text-shadow: 2px 3px #1b1420;
+  transform: rotate(-1deg);
+}
+@media (max-width: 600px), (max-height: 520px) {
+  .dialogue-panel {
+    bottom: 6px;
+    width: calc(100% - 16px);
+    padding-inline: 4px;
+  }
+  .dialogue-choices {
+    gap: 8px;
+  }
+  .dialogue-choice {
+    min-height: 44px;
+    padding: 10px 12px;
+  }
+  .dialogue-caption {
+    padding: 10px 14px;
+  }
+  .dialogue-line-controls button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  .dialogue-panel #dialogue-text {
+    font-size: 15px;
+  }
+}
+
 .scene-cursor {
   position: absolute;
   z-index: 35;
@@ -808,14 +884,6 @@ body {
   .game-help {
     min-height: 24px;
   }
-  .dialogue-portrait,
-  .dialogue-monogram {
-    width: 44px;
-    height: 50px;
-  }
-  .dialogue-panel {
-    padding: 12px;
-  }
 }
 @media (max-height: 520px) and (orientation: landscape) {
   .inventory-tools {
@@ -833,11 +901,6 @@ body {
   }
   .inventory-item {
     height: 44px;
-  }
-  .dialogue-portrait,
-  .dialogue-monogram {
-    width: 38px;
-    height: 42px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

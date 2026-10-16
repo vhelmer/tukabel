@@ -221,7 +221,7 @@ export interface GameState {
 export type GameAction =
   | { type: 'interact'; hotspotId: string; itemId?: string }
   | { type: 'combine'; first: string; second: string }
-  | { type: 'choose'; choiceId: string }
+  | { type: 'choose'; choiceId: string; from?: { id: string; nodeId: string } }
   | { type: 'closeDialogue' }
   | { type: 'inspectItem'; itemId: string };
 

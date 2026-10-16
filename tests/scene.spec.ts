@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import {
   activate,
+  finishLine,
   dragItem,
   getTape,
   menuAction,
@@ -41,6 +42,7 @@ test('complete adventure supports real inventory drags, scene drops, transitions
   await getTape(page);
   await (await object(page, 'Správca')).click();
   await page.getByRole('button', { name: 'Ako opravím router?' }).click();
+  await finishLine(page);
   await expect(
     page.getByRole('button', { name: 'Môžem si vziať pásku?' }),
   ).toHaveCount(0);
@@ -132,6 +134,7 @@ test('context clicks, silent props, keyboard dialogue and resizing remain usable
     page.getByRole('group', { name: 'Inventár', exact: true }),
   ).toHaveAttribute('disabled', '');
   await page.keyboard.press('Enter');
+  await finishLine(page);
   await expect(
     page.getByRole('button', { name: 'Môžem si vziať pásku?' }),
   ).toBeFocused();
@@ -139,9 +142,7 @@ test('context clicks, silent props, keyboard dialogue and resizing remain usable
   await page.keyboard.press('Escape');
   await expect(page.getByRole('dialog')).toHaveCount(0);
   await menuAction(page, 'Načítať hru');
-  await expect(page.getByRole('dialog')).toContainText(
-    'Kábel leží pri stoličke',
-  );
+  await expect(page.getByRole('dialog')).toContainText('Môžem si vziať pásku?');
   await page.keyboard.press('Escape');
   await (await object(page, 'Kábel pri stoličke')).focus();
   await page.keyboard.press('Enter');

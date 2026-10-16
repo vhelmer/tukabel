@@ -49,13 +49,29 @@ export async function getTape(page: Page) {
   await (await object(page, 'Správca')).click();
   const dialogue = page.getByRole('dialog');
   await dialogue.getByRole('button', { name: 'Ako opravím router?' }).click();
+  await finishLine(page);
   await dialogue.getByRole('button', { name: 'Môžem si vziať pásku?' }).click();
+  await finishLine(page);
   await dialogue
     .getByRole('button', { name: 'Zatiaľ sa rozhliadnem.' })
     .click();
   await expect(
     page.getByRole('button', { name: 'Izolačná páska', exact: true }),
   ).toBeVisible();
+}
+export async function finishLine(page: Page) {
+  const panel = page.locator('.dialogue-panel');
+  await expect(panel).toHaveClass(/is-speaking/);
+  const skip = panel.getByRole('button', {
+    name: 'Preskočiť repliku',
+    exact: true,
+  });
+  if (await skip.count()) await skip.click();
+  else
+    await panel
+      .getByRole('button', { name: 'Pokračovať', exact: true })
+      .click();
+  await expect(panel).toHaveClass(/is-choosing/);
 }
 export async function dragItem(
   page: Page,

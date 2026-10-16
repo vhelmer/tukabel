@@ -93,6 +93,12 @@ export function reduceGame(
 ): GameState {
   if (action.type === 'closeDialogue') return { ...state, dialogue: null };
   if (action.type === 'choose') {
+    if (
+      action.from &&
+      (action.from.id !== state.dialogue?.id ||
+        action.from.nodeId !== state.dialogue.nodeId)
+    )
+      return state;
     const choice = getDialogueNode(content, state)?.choices.find(
       (entry) => entry.id === action.choiceId && matches(state, entry.when),
     );

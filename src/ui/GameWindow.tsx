@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { PointerEvent as ReactPointerEvent } from 'react';
 import type {
   GameAction,
@@ -8,6 +8,7 @@ import type {
   Hotspot,
 } from '../game/types';
 import { useDialogueAudio } from './DialogueAudio';
+import { useConversation } from './useConversation';
 import { getDialogueNode } from '../game/state';
 import { reduceGame } from '../game/state';
 import { SceneCursor, PickupFlight } from './SceneCursor';
@@ -107,14 +108,6 @@ export function GameWindow({
             ),
           ),
       );
-  const dialogueAudio = useDialogueAudio(
-    dialogueNode,
-    voiceActor?.animation,
-    menu,
-    true,
-    true,
-    `${state.dialogue?.id}/${dialogueNode?.id}`,
-  );
   const hotspots = scene.hotspots.filter((hotspot) =>
     matches(state, hotspot.visibleWhen),
   );
@@ -201,6 +194,26 @@ export function GameWindow({
     },
     [dispatchGame, content, state],
   );
+  const conversation = useConversation(content, state, dispatch, menu);
+  const { close: closeConversation, reset: resetConversation } = conversation;
+  const dialogueAudio = useDialogueAudio(
+    dialogueNode,
+    voiceActor?.animation,
+    menu,
+    conversation.phase === 'speech',
+    true,
+    conversation.utteranceKey,
+    { compact: true, onComplete: conversation.finish },
+  );
+  const silentPlayback = useMemo(
+    () => ({ read: () => ({ active: false, timeMs: 0 }) }),
+    [],
+  );
+  const speechPlayback =
+    conversation.phase === 'speech' ? dialogueAudio.clock : silentPlayback;
+  const hasSpeech = Boolean(
+    dialogueNode?.speech && dialogueNode.speech.text === dialogueNode.text,
+  );
   const act = useCallback(
     (hotspot: Hotspot) => {
       dispatch({
@@ -233,7 +246,7 @@ export function GameWindow({
         setSelectedItem(null);
         setMenu(false);
         setObjectsOpen(false);
-        dispatch({ type: 'closeDialogue' });
+        closeConversation();
       }
     };
     const onBlur = () => finishDrag();
@@ -243,7 +256,7 @@ export function GameWindow({
       window.removeEventListener('keydown', onKey);
       window.removeEventListener('blur', onBlur);
     };
-  }, [dispatch, finishDrag, menu]);
+  }, [closeConversation, finishDrag, menu]);
   // Pointer capture keeps both mouse and touch drags alive across the canvas.
   useEffect(() => {
     const targetAt = (event: PointerEvent): Target | null => {
@@ -339,6 +352,7 @@ export function GameWindow({
   }
   const dragItem = content.items.find((entry) => entry.id === drag?.id);
   function clearUI() {
+    resetConversation();
     finishDrag();
     setSelectedItem(null);
     setHovered(null);
@@ -399,7 +413,7 @@ export function GameWindow({
           state={state}
           animations={content.animations}
           animationTrigger={animationTrigger}
-          speechPlayback={dialogueAudio.clock}
+          speechPlayback={speechPlayback}
           onPickerReady={registerPicker}
           onHover={setHovered}
           onInteract={act}
@@ -445,11 +459,10 @@ export function GameWindow({
         )}
         {state.dialogue && (
           <DialoguePanel
-            content={content}
-            state={state}
-            dispatch={dispatch}
+            conversation={conversation}
             audio={dialogueAudio.controls}
             subtitle={dialogueAudio.subtitle}
+            hasSpeech={hasSpeech}
           />
         )}
         {objectsOpen && !state.dialogue && (

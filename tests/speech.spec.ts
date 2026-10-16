@@ -3,7 +3,7 @@ import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { tmpdir } from 'node:os';
 import { test as base, openEditor } from './editorFixture';
-import { ready, object } from './helpers';
+import { ready, object, finishLine } from './helpers';
 import type { GameContent } from '../src/game/types';
 
 const test = base.extend<{
@@ -238,6 +238,9 @@ test('studio explicitly generates, analyzes, previews, saves and reloads speech 
   await page.getByRole('button', { name: 'Game Mode', exact: true }).click();
   await ready(page);
   await (await object(page, 'Skúšobná postava')).click();
+  await page
+    .getByRole('button', { name: 'Porozprávať sa.', exact: true })
+    .click();
   await expect(page.getByRole('dialog')).toContainText('Skúšam nový dabing');
   const gameAudio = page.locator('.dialogue-panel audio');
   await audioAt(gameAudio, 0.9);
@@ -259,13 +262,8 @@ test('studio explicitly generates, analyzes, previews, saves and reloads speech 
   await expect
     .poll(() => gameAudio.evaluate((el) => (el as HTMLAudioElement).paused))
     .toBe(false);
-  await page
-    .getByRole('button', { name: 'Preskočiť dabing', exact: true })
-    .click();
-  await expect
-    .poll(() => gameAudio.evaluate((el) => (el as HTMLAudioElement).paused))
-    .toBe(true);
   const oldAudio = await gameAudio.elementHandle();
+  await finishLine(page);
   await page
     .getByRole('button', { name: 'Ukončiť rozhovor', exact: true })
     .click();
@@ -300,6 +298,12 @@ base(
     const actor = project.scenes
       .find((s) => s.id === 'animation-lab')!
       .hotspots.find((h) => h.id === 'blink-character')!;
+    const demoText = 'Ahoj. Mrkám a rozprávam. Oči a ústa fungujú nezávisle.';
+    const demoSpeech = {
+      text: demoText,
+      audio: 'speech/animation-demo/audio.wav',
+      lipSync: 'speech/animation-demo/track.lipsync.json',
+    };
     const configured = {
       ...project,
       startScene: 'animation-lab',
@@ -307,14 +311,34 @@ base(
         d.id === 'animation-demo'
           ? {
               ...d,
+              start: 'topics',
               nodes: [
                 {
+                  id: 'topics',
+                  speaker: 'Test',
+                  text: 'Vyber skúšku.',
+                  choices: [
+                    {
+                      id: 'begin',
+                      text: 'Spustiť skúšobnú repliku.',
+                      next: d.nodes[0]!.id,
+                    },
+                  ],
+                },
+                {
                   ...d.nodes[0]!,
+                  text: demoText,
+                  speech: demoSpeech,
                   choices: [
                     { id: 'next', text: 'Ďalšia replika', next: 'second' },
                   ],
                 },
-                { ...d.nodes[0]!, id: 'second' },
+                {
+                  ...d.nodes[0]!,
+                  text: demoText,
+                  speech: demoSpeech,
+                  id: 'second',
+                },
               ],
             }
           : d,
@@ -344,6 +368,9 @@ base(
     await page.goto(workspace.url);
     await ready(page);
     await (await object(page, actor.label)).click();
+    await page
+      .getByRole('button', { name: 'Spustiť skúšobnú repliku.', exact: true })
+      .click();
     const audio = page.locator('.dialogue-panel audio');
     await expect(audio).toHaveCount(1);
     await audioAt(audio, 0.1);
@@ -430,6 +457,7 @@ base(
       )
       .toBe(true);
     // Advancing a branch/end removes and stops the old audio immediately.
+    await finishLine(page);
     await page
       .getByRole('button', { name: 'Ďalšia replika', exact: true })
       .click();
@@ -438,7 +466,7 @@ base(
       .toBeLessThan(0.5);
     const handle = await audio.elementHandle();
     await page
-      .getByRole('button', { name: 'Ukončiť skúšku animácií.', exact: true })
+      .getByRole('button', { name: 'Ukončiť rozhovor', exact: true })
       .click();
     await expect(page.locator('audio')).toHaveCount(0);
     expect(
@@ -585,6 +613,9 @@ test('models and editable subtitle segments survive save/reload and follow the a
   await page.getByRole('button', { name: 'Game Mode', exact: true }).click();
   await ready(page);
   await (await object(page, 'Skúšobná postava')).click();
+  await page
+    .getByRole('button', { name: 'Porozprávať sa.', exact: true })
+    .click();
   const gameAudio = page.locator('.dialogue-panel audio');
   await audioAt(gameAudio, 6.5);
   await expect(page.locator('#dialogue-text')).toHaveText(
@@ -610,11 +641,9 @@ test('models and editable subtitle segments survive save/reload and follow the a
     'Prvá dlhšia veta',
   );
   await expect(page.getByRole('dialog')).not.toContainText('[laughs]');
-  await page
-    .getByRole('button', { name: 'Preskočiť dabing', exact: true })
-    .click();
-  await expect(page.locator('#dialogue-text')).toContainText('Štvrtá veta');
   await page.screenshot({ path: testInfo.outputPath('subtitles-in-game.png') });
+  await finishLine(page);
+  await expect(page.locator('#dialogue-text')).toHaveCount(0);
   await page
     .getByRole('button', { name: 'Ukončiť rozhovor', exact: true })
     .click();

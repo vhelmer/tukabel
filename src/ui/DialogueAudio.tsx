@@ -17,6 +17,7 @@ export function useDialogueAudio(
   enabled = true,
   autoplay = true,
   utteranceKey = node?.id,
+  options: { compact?: boolean; onComplete?: () => void } = {},
 ) {
   const ref = useRef<HTMLAudioElement>(null);
   const track = useRef<LipSyncTrack | null>(null);
@@ -25,6 +26,8 @@ export function useDialogueAudio(
     failed = useRef(false),
     resume = useRef(false);
   const [status, setStatus] = useState('');
+  const [playing, setPlaying] = useState(false);
+  const completed = useRef(false);
   const speech = node?.speech?.text === node?.text ? node?.speech : undefined;
   const audioUrl = speech?.audio,
     lipSyncUrl = speech?.lipSync;
@@ -38,6 +41,8 @@ export function useDialogueAudio(
     skipped.current = false;
     failed.current = false;
     resume.current = false;
+    completed.current = false;
+    setPlaying(false);
     setStatus('');
     audio.src = audioUrl;
     if (lipSyncUrl)
@@ -49,7 +54,7 @@ export function useDialogueAudio(
           if (!abort.signal.aborted) track.current = data as LipSyncTrack;
         })
         .catch(() => {
-          if (!abort.signal.aborted)
+          if (!abort.signal.aborted && !failed.current)
             setStatus(
               'Časovanie úst sa nepodarilo načítať; používam bežnú animáciu.',
             );
@@ -57,7 +62,11 @@ export function useDialogueAudio(
     if (autoplay)
       void audio.play().catch(() => {
         if (!abort.signal.aborted)
-          setStatus('Spusti dabing tlačidlom Prehrať.');
+          setStatus(
+            audio.error || failed.current
+              ? 'Dabing sa nepodarilo prehrať. Text zostáva dostupný.'
+              : 'Spusti dabing tlačidlom Prehrať.',
+          );
       });
     return () => {
       abort.abort();
@@ -112,38 +121,73 @@ export function useDialogueAudio(
         : undefined,
     [speech, enabled, node?.actor, binding],
   );
+  const finish = () => {
+    if (completed.current) return;
+    completed.current = true;
+    options.onComplete?.();
+  };
+  const skip = () => {
+    const audio = ref.current;
+    if (audio) {
+      skipped.current = true;
+      resume.current = false;
+      audio.pause();
+      if (Number.isFinite(audio.duration)) audio.currentTime = audio.duration;
+    }
+    finish();
+  };
   const controls =
     speech && enabled ? (
-      <div className="dialogue-audio" aria-label="Dabing repliky">
+      <div
+        className={`dialogue-audio${options.compact ? ' is-compact' : ''}`}
+        aria-label="Dabing repliky"
+      >
         <audio
           key={speech.audio}
           ref={ref}
           src={speech.audio}
-          controls
+          controls={!options.compact}
+          hidden={options.compact}
           preload="auto"
           onPlay={() => {
             started.current = true;
             skipped.current = false;
+            setPlaying(true);
           }}
+          onPause={() => setPlaying(false)}
+          onEnded={finish}
           onError={() => {
             failed.current = true;
             setStatus('Dabing sa nepodarilo prehrať. Text zostáva dostupný.');
           }}
         />
-        <button
-          type="button"
-          onClick={() => {
-            const audio = ref.current;
-            if (audio) {
-              audio.pause();
-              skipped.current = true;
-              audio.currentTime = Number.isFinite(audio.duration)
-                ? audio.duration
-                : 0;
-            }
-          }}
-        >
-          Preskočiť dabing
+        {options.compact && (
+          <button
+            type="button"
+            className="speech-toggle"
+            aria-label={playing ? 'Pozastaviť repliku' : 'Prehrať repliku'}
+            title={playing ? 'Pozastaviť repliku' : 'Prehrať repliku'}
+            onClick={() => {
+              const audio = ref.current;
+              if (!audio) return;
+              if (playing) {
+                resume.current = false;
+                audio.pause();
+              } else
+                void audio
+                  .play()
+                  .catch(() =>
+                    setStatus(
+                      'Zvuk sa nepodarilo prehrať. Repliku môžeš preskočiť.',
+                    ),
+                  );
+            }}
+          >
+            {playing ? 'Ⅱ' : '▶'}
+          </button>
+        )}
+        <button type="button" onClick={skip}>
+          {options.compact ? 'Preskočiť repliku' : 'Preskočiť dabing'}
         </button>
         {status && <p role="status">{status}</p>}
       </div>

@@ -1,23 +1,20 @@
 import { useEffect, useRef, type ReactNode } from 'react';
-import { getDialogueNode, matches } from '../game/state';
-import type { GameAction, GameContent, GameState } from '../game/types';
 import { subtitleText } from '../game/subtitles';
+import type { useConversation } from './useConversation';
 
 export function DialoguePanel({
-  content,
-  state,
-  dispatch,
+  conversation,
   audio,
   subtitle,
+  hasSpeech,
 }: {
-  content: GameContent;
-  state: GameState;
-  dispatch: (action: GameAction) => void;
+  conversation: ReturnType<typeof useConversation>;
   audio?: ReactNode;
   subtitle?: string;
+  hasSpeech: boolean;
 }) {
   const panel = useRef<HTMLDivElement>(null);
-  const node = getDialogueNode(content, state);
+  const { node, phase, choices, ready } = conversation;
   useEffect(() => {
     const previous = document.activeElement;
     return () => {
@@ -26,20 +23,31 @@ export function DialoguePanel({
     };
   }, []);
   useEffect(() => {
-    panel.current?.querySelector('button')?.focus();
-  }, [state.dialogue?.id, node?.id]);
+    if (ready)
+      panel.current
+        ?.querySelector<HTMLButtonElement>('button:not(:disabled)')
+        ?.focus();
+  }, [phase, ready, conversation.utteranceKey]);
   if (!node) return null;
+  const speaking = phase === 'speech';
   return (
     <div
-      className="dialogue-panel"
+      className={`dialogue-panel ${speaking ? 'is-speaking' : 'is-choosing'}`}
       role="dialog"
-      aria-labelledby="speaker"
-      aria-describedby="dialogue-text"
-      ref={panel}
+      aria-label="Rozhovor"
       aria-modal="true"
+      inert={conversation.paused}
+      aria-hidden={conversation.paused}
+      ref={panel}
       onKeyDown={(event) => {
+        if (event.repeat && (event.key === 'Enter' || event.key === ' ')) {
+          event.preventDefault();
+          return;
+        }
         if (event.key !== 'Tab') return;
-        const buttons = event.currentTarget.querySelectorAll('button');
+        const buttons = event.currentTarget.querySelectorAll<HTMLButtonElement>(
+          'button:not(:disabled)',
+        );
         const first = buttons[0],
           last = buttons[buttons.length - 1];
         if (event.shiftKey && document.activeElement === first) {
@@ -51,42 +59,68 @@ export function DialoguePanel({
         }
       }}
     >
-      <div className="dialogue-heading">
-        {node.portrait ? (
-          <img className="dialogue-portrait" src={node.portrait} alt="" />
-        ) : (
-          <span className="dialogue-monogram" aria-hidden="true">
-            {node.speaker.slice(0, 1)}
-          </span>
-        )}
-        <div>
-          <p className="eyebrow">ROZHOVOR</p>
-          <p id="speaker" className="dialogue-speaker">
-            {node.speaker}
-          </p>
-        </div>
-      </div>
-      <p id="dialogue-text" key={node.id} aria-live="polite" aria-atomic="true">
-        {subtitle ?? subtitleText(node)}
-      </p>
-      {audio}
-      <div className="dialogue-choices">
-        {node.choices
-          .filter((choice) => matches(state, choice.when))
-          .map((choice) => (
+      {speaking ? (
+        <>
+          <div className="dialogue-caption">
+            <span className="dialogue-speaker">{node.speaker}</span>
+            <p id="dialogue-text" aria-live="polite" aria-atomic="true">
+              {subtitle ?? subtitleText(node)}
+            </p>
+          </div>
+          <div className="dialogue-line-controls" inert={!ready}>
+            {audio}
+            {!hasSpeech && (
+              <button disabled={!ready} onClick={conversation.finish}>
+                Pokračovať
+              </button>
+            )}
+          </div>
+        </>
+      ) : (
+        <div className="dialogue-choices" aria-label="Možnosti rozhovoru">
+          {conversation.intro ? (
             <button
-              key={choice.id}
-              onClick={() => dispatch({ type: 'choose', choiceId: choice.id })}
+              className="dialogue-choice"
+              disabled={!ready}
+              onClick={conversation.start}
             >
-              {choice.text}
+              Porozprávať sa.
             </button>
-          ))}
-      </div>
+          ) : (
+            choices.map((choice, index) => (
+              <button
+                key={choice.id}
+                className="dialogue-choice"
+                disabled={!ready}
+                onClick={(event) => {
+                  if (event.detail <= 1) conversation.choose(choice.id);
+                }}
+              >
+                <span className="choice-mark" aria-hidden="true">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <span>{choice.text}</span>
+              </button>
+            ))
+          )}
+          {!conversation.intro && !choices.length && (
+            <button
+              className="dialogue-choice"
+              disabled={!ready}
+              onClick={conversation.close}
+            >
+              Rozlúčiť sa.
+            </button>
+          )}
+        </div>
+      )}
       <button
-        className="text-button"
-        onClick={() => dispatch({ type: 'closeDialogue' })}
+        className="dialogue-close"
+        aria-label="Ukončiť rozhovor"
+        title="Ukončiť rozhovor (Esc)"
+        onClick={conversation.close}
       >
-        Ukončiť rozhovor
+        ×
       </button>
     </div>
   );

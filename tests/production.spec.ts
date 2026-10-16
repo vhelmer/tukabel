@@ -44,6 +44,9 @@ test('production serves a static game without editor code or write endpoints', a
       .find((s) => s.id === 'animation-lab')!
       .hotspots.find((h) => h.id === 'blink-character')!;
     await (await object(page, actor.label)).click();
+    await page
+      .getByRole('button', { name: 'Porozprávať sa.', exact: true })
+      .click();
     const audio = page.locator('.dialogue-panel audio');
     await expect(audio).toHaveCount(1);
     await audio.evaluate(async (el) => {

@@ -154,12 +154,8 @@ export function DialoguesPanel({
   selectedDialogue,
   onSelectDialogue,
   initialNodeId = '',
-  assets,
-  onAssets,
 }: Props & {
   initialNodeId?: string;
-  assets: readonly string[];
-  onAssets: (ids: string[]) => void;
   selectedDialogue: string;
   onSelectDialogue: (id: string) => void;
 }) {
@@ -237,6 +233,11 @@ export function DialoguesPanel({
             values={dialogue.nodes}
             onChange={(start) => updateDialogue({ ...dialogue, start })}
           />
+          <p className="field-note">
+            Začiatočný uzol ponúkne možnosti. Výber s ďalším uzlom prehrá
+            repliku cieľa; ďalšie možnosti sa ukážu až po jej dokončení. Pri
+            jedinej replike bez ďalšej vetvy hra ponúkne „Porozprávať sa.“.
+          </p>
           <div className="field-row">
             <SelectId
               label="Uzol dialógu"
@@ -278,16 +279,6 @@ export function DialoguesPanel({
                   }
                 />
               </Field>
-              <AssetField
-                label="Portrét hovoriacej postavy"
-                value={node.portrait ?? ''}
-                optional
-                assets={assets}
-                onAssets={onAssets}
-                onChange={(portrait) =>
-                  updateNode({ ...node, portrait: portrait || undefined })
-                }
-              />
               <Field label="Replika">
                 <textarea
                   value={node.text}

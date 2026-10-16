@@ -522,8 +522,6 @@ export default function DevWorkspace({
         {tab === 'dialogues' && (
           <DialoguesPanel
             key={`${dialogueId}/${graphNodeId}`}
-            assets={assets}
-            onAssets={setAssets}
             initialNodeId={graphNodeId}
             content={document}
             onChange={change}

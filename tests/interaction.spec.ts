@@ -51,7 +51,7 @@ test('pickup flies into a distinct inventory icon; hover shows a name and a conv
   expect(errors).toEqual([]);
 });
 
-test('editor saves silent click rules, custom cursor animation, inventory icon and dialogue portrait', async ({
+test('editor saves silent click rules, custom cursor animation and inventory icon; dialogue omits portraits', async ({
   page,
   workspace,
   isMobile,
@@ -89,9 +89,6 @@ test('editor saves silent click rules, custom cursor animation, inventory icon a
     .click();
   await page.getByRole('button', { name: 'Dialógy', exact: true }).click();
   await page
-    .getByLabel('Portrét hovoriacej postavy', { exact: true })
-    .selectOption('woman.png');
-  await page
     .getByRole('button', { name: 'Uložiť do projektu', exact: true })
     .click();
   await expect(
@@ -104,7 +101,6 @@ test('editor saves silent click rules, custom cursor animation, inventory icon a
   expect(mug.onClick).toEqual([]);
   expect(mug.cursorAnimation).toBe('woman-blink');
   expect(mug.cursorOffset).toEqual([8, 0]);
-  expect(saved.dialogues[0]!.nodes[0]!.portrait).toBe('woman.png');
   await page.reload();
   await ready(page);
   if (!isMobile) {
@@ -128,9 +124,9 @@ test('editor saves silent click rules, custom cursor animation, inventory icon a
   await (await object(page, 'Kábel pri stoličke')).click();
   await expect(page.getByRole('status', { name: 'Reakcia' })).toHaveCount(0);
   await (await object(page, 'Správca')).click();
-  await expect(page.locator('.dialogue-portrait')).toHaveAttribute(
-    'src',
-    /woman\.png/,
-  );
+  await expect(page.locator('.dialogue-portrait')).toHaveCount(0);
+  await expect(
+    page.getByRole('button', { name: 'Ako opravím router?', exact: true }),
+  ).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath('conversation.png') });
 });

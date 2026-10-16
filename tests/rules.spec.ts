@@ -124,6 +124,20 @@ test('rules enforce conditions, dialogue blocking, unique pickups and symmetric 
   expect(
     reduceGame(content, state, { type: 'interact', hotspotId: 'pickup' }),
   ).toBe(state);
+  expect(
+    reduceGame(content, state, {
+      type: 'choose',
+      choiceId: 'reward',
+      from: { id: 'old-conversation', nodeId: 'start' },
+    }),
+  ).toBe(state);
+  expect(
+    reduceGame(content, state, {
+      type: 'choose',
+      choiceId: 'reward',
+      from: { id: state.dialogue!.id, nodeId: 'old-node' },
+    }),
+  ).toBe(state);
   state = reduceGame(content, state, { type: 'choose', choiceId: 'reward' });
   expect(state.inventory).toEqual(['a', 'b']);
   state = reduceGame(content, state, {

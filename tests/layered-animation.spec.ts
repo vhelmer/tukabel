@@ -235,10 +235,14 @@ test('independent regional playback preserves alpha, ignores unrelated frame edi
   await page.getByRole('button', { name: 'Game Mode', exact: true }).click();
   await ready(page);
   await (await object(page, 'Postava')).click();
+  await page
+    .getByRole('button', { name: 'Porozprávať sa.', exact: true })
+    .click();
   await expect(page.getByRole('dialog')).toContainText('Mrkám aj rozprávam');
   const game = page.locator('.canvas-host canvas');
   await color(game, 1280, 720, 560, 200, [20, 40, 160]);
   await color(game, 1280, 720, 560, 320, [16, 16, 16]);
+  await page.getByRole('button', { name: 'Pokračovať', exact: true }).click();
   await page.getByRole('button', { name: 'Koniec', exact: true }).click();
   await page.getByRole('button', { name: 'Dev Mode', exact: true }).click();
   await page
@@ -332,6 +336,9 @@ test('existing Codex blink and mouth demo run simultaneously in a dialogue', asy
     .find((s) => s.id === 'animation-lab')!
     .hotspots.find((h) => h.id === 'blink-character')!;
   await (await object(page, demoActor.label)).click();
+  await page
+    .getByRole('button', { name: 'Porozprávať sa.', exact: true })
+    .click();
   await expect(page.getByRole('dialog')).toContainText('Oči a ústa');
   const scene = project.scenes.find((s) => s.id === 'animation-lab')!,
     actor = scene.hotspots.find((h) => h.id === 'blink-character')!;
