@@ -36,29 +36,25 @@ const content: GameContent = {
           label: 'A',
           bounds: { x: 0, y: 0, width: 10, height: 10 },
           visibleWhen: { not: { flag: 'taken' } },
-          defaultVerb: 'take',
-          actions: {
-            take: [
-              {
-                message: 'Taken',
-                effects: [
-                  { type: 'addItem', id: 'a' },
-                  { type: 'flag', id: 'taken', value: true },
-                ],
-              },
-            ],
-          },
+
+          onClick: [
+            {
+              message: 'Taken',
+              effects: [
+                { type: 'addItem', id: 'a' },
+                { type: 'flag', id: 'taken', value: true },
+              ],
+            },
+          ],
         },
         {
           id: 'person',
           label: 'Person',
           bounds: { x: 20, y: 0, width: 10, height: 10 },
-          defaultVerb: 'talk',
-          actions: {
-            talk: [
-              { message: 'Hi', effects: [{ type: 'dialogue', id: 'talk' }] },
-            ],
-          },
+
+          onClick: [
+            { message: 'Hi', effects: [{ type: 'dialogue', id: 'talk' }] },
+          ],
         },
       ],
     },
@@ -273,8 +269,7 @@ test('JSON boundary rejects malformed shapes, unknown fields, remote assets and 
               id: 'bad',
               label: 'Bad',
               bounds: null,
-              actions: {},
-              defaultVerb: 'fly',
+              onClick: [],
             },
           ],
         },
@@ -429,4 +424,42 @@ test('JSON validates transform modes, numeric angles and rotated scene limits', 
     { rotation: 45, bounds: { x: 0, y: 0, width: 100, height: 20 } },
   ])
     expect(validateProject(withTransform(patch)).length).toBeGreaterThan(0);
+});
+
+test('clicks support silent decoration and effects without mandatory commentary', () => {
+  const project: GameContent = {
+    ...content,
+    scenes: content.scenes.map((scene) => ({
+      ...scene,
+      hotspots: [
+        ...scene.hotspots,
+        {
+          id: 'silent',
+          label: 'Silent',
+          bounds: { x: 40, y: 0, width: 10, height: 10 },
+          onClick: [],
+        },
+        {
+          id: 'switch',
+          label: 'Switch',
+          bounds: { x: 50, y: 0, width: 10, height: 10 },
+          onClick: [{ effects: [{ type: 'flag', id: 'open', value: true }] }],
+        },
+      ],
+    })),
+  };
+  expect(validateContent(project)).toEqual([]);
+  const state = initialState(project);
+  const silent = reduceGame(project, state, {
+    type: 'interact',
+    hotspotId: 'silent',
+  });
+  expect(silent).toEqual({ ...state, message: '' });
+  const switched = reduceGame(project, silent, {
+    type: 'interact',
+    hotspotId: 'switch',
+  });
+  expect(switched.flags.open).toBe(true);
+  expect(switched.message).toBe('');
+  expect(switched.inventory).toEqual(state.inventory);
 });

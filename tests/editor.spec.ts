@@ -186,7 +186,7 @@ test('forms create linked locations, items, uploaded assets, branching dialogue 
     'Uložené do src/assets/imported/',
   );
   const uploaded = await page
-    .getByLabel('Obrázok predmetu', { exact: true })
+    .getByLabel('Inventárová ikonka', { exact: true })
     .inputValue();
   expect(
     (await readFile(path.join(workspace.root, 'src/assets', uploaded))).equals(
@@ -226,14 +226,6 @@ test('forms create linked locations, items, uploaded assets, branching dialogue 
   await page
     .getByLabel('Názov objektu', { exact: true })
     .fill('Testovací správca');
-  await page
-    .getByLabel('Kontextová akcia', { exact: true })
-    .selectOption('talk');
-  await page.getByRole('button', { name: 'talk', exact: true }).click();
-  await page
-    .getByRole('button', { name: '+ Pravidlo', exact: true })
-    .first()
-    .click();
   await page
     .getByLabel('Reakcia', { exact: true })
     .fill('Začína testovací rozhovor.');

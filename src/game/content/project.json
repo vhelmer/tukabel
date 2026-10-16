@@ -20,27 +20,8 @@
             "width": 285,
             "height": 180
           },
-          "defaultVerb": "look",
           "tintWhen": {
             "flag": "powered"
-          },
-          "actions": {
-            "look": [
-              {
-                "when": {
-                  "flag": "powered"
-                },
-                "message": "Router svieti. Dvere do dvora sú odomknuté."
-              },
-              {
-                "message": "Dve antény. Tri kontrolky. Chýba mu opravený kábel."
-              }
-            ],
-            "use": [
-              {
-                "message": "Najprv vyber opravený kábel v inventári, potom klikni na router."
-              }
-            ]
           },
           "uses": {
             "cable": [
@@ -69,7 +50,18 @@
                 ]
               }
             ]
-          }
+          },
+          "onClick": [
+            {
+              "when": {
+                "flag": "powered"
+              },
+              "message": "Router svieti. Dvere do dvora sú odomknuté."
+            },
+            {
+              "message": "Dve antény. Tri kontrolky. Chýba mu opravený kábel."
+            }
+          ]
         },
         {
           "id": "mug",
@@ -80,19 +72,11 @@
             "width": 160,
             "height": 135
           },
-          "defaultVerb": "look",
-          "actions": {
-            "look": [
-              {
-                "message": "Káva už vychladla. Technický problém ostáva horúci."
-              }
-            ],
-            "take": [
-              {
-                "message": "Hrnček patrí správcovi. Ten má na kávu autorské práva."
-              }
-            ]
-          }
+          "onClick": [
+            {
+              "message": "Káva už vychladla. Technický problém ostáva horúci."
+            }
+          ]
         },
         {
           "id": "socket",
@@ -103,14 +87,11 @@
             "width": 125,
             "height": 160
           },
-          "defaultVerb": "look",
-          "actions": {
-            "look": [
-              {
-                "message": "Zásuvka je len kulisa. Skúšobný router má vlastný bezpečný zdroj."
-              }
-            ]
-          }
+          "onClick": [
+            {
+              "message": "Zásuvka je len kulisa. Skúšobný router má vlastný bezpečný zdroj."
+            }
+          ]
         },
         {
           "id": "cable",
@@ -127,30 +108,22 @@
               "flag": "cableTaken"
             }
           },
-          "defaultVerb": "take",
-          "actions": {
-            "look": [
-              {
-                "message": "Poškodený kábel. Páska by mu vrátila pracovné sebavedomie."
-              }
-            ],
-            "take": [
-              {
-                "message": "Zdvihol si poškodený kábel.",
-                "effects": [
-                  {
-                    "type": "addItem",
-                    "id": "cable"
-                  },
-                  {
-                    "type": "flag",
-                    "id": "cableTaken",
-                    "value": true
-                  }
-                ]
-              }
-            ]
-          }
+          "onClick": [
+            {
+              "message": "Zdvihol si poškodený kábel.",
+              "effects": [
+                {
+                  "type": "addItem",
+                  "id": "cable"
+                },
+                {
+                  "type": "flag",
+                  "id": "cableTaken",
+                  "value": true
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "caretaker",
@@ -162,25 +135,18 @@
             "height": 290
           },
           "image": "caretaker.svg",
-          "defaultVerb": "talk",
-          "actions": {
-            "look": [
-              {
-                "message": "Skúšobný správca. Zatiaľ má viac odpovedí než animácií."
-              }
-            ],
-            "talk": [
-              {
-                "message": "Začal si rozhovor so správcom.",
-                "effects": [
-                  {
-                    "type": "dialogue",
-                    "id": "caretaker"
-                  }
-                ]
-              }
-            ]
-          }
+          "onClick": [
+            {
+              "message": "Začal si rozhovor so správcom.",
+              "effects": [
+                {
+                  "type": "dialogue",
+                  "id": "caretaker"
+                }
+              ]
+            }
+          ],
+          "cursor": "talk"
         },
         {
           "id": "exit",
@@ -191,36 +157,40 @@
             "width": 105,
             "height": 210
           },
-          "defaultVerb": "use",
-          "actions": {
-            "look": [
-              {
-                "message": "Elektrický zámok je prepojený s routerom. Architektúru radšej nesúď."
-              }
-            ],
-            "use": [
-              {
-                "when": {
-                  "flag": "powered"
-                },
-                "message": "Vyšiel si do skúšobného dvora.",
-                "effects": [
-                  {
-                    "type": "scene",
-                    "id": "courtyard"
-                  },
-                  {
-                    "type": "flag",
-                    "id": "completed",
-                    "value": true
-                  }
-                ]
+          "onClick": [
+            {
+              "when": {
+                "flag": "powered"
               },
-              {
-                "message": "Zamknuté. Správca možno vie, ako oživiť router."
-              }
-            ]
-          }
+              "message": "Vyšiel si do skúšobného dvora.",
+              "effects": [
+                {
+                  "type": "scene",
+                  "id": "courtyard"
+                },
+                {
+                  "type": "flag",
+                  "id": "completed",
+                  "value": true
+                }
+              ]
+            },
+            {
+              "message": "Zamknuté. Správca možno vie, ako oživiť router."
+            }
+          ],
+          "cursor": "exit"
+        },
+        {
+          "id": "wall-scratch",
+          "label": "Škrabanec",
+          "bounds": {
+            "x": 270,
+            "y": 180,
+            "width": 65,
+            "height": 130
+          },
+          "onClick": []
         }
       ]
     },
@@ -240,25 +210,18 @@
             "width": 245,
             "height": 410
           },
-          "defaultVerb": "use",
-          "actions": {
-            "use": [
-              {
-                "message": "Späť v skúšobni. Router stále funguje.",
-                "effects": [
-                  {
-                    "type": "scene",
-                    "id": "workshop"
-                  }
-                ]
-              }
-            ],
-            "look": [
-              {
-                "message": "Dvere ostali otvorené. Technický pokrok."
-              }
-            ]
-          }
+          "onClick": [
+            {
+              "message": "Späť v skúšobni. Router stále funguje.",
+              "effects": [
+                {
+                  "type": "scene",
+                  "id": "workshop"
+                }
+              ]
+            }
+          ],
+          "cursor": "exit"
         },
         {
           "id": "sign",
@@ -269,14 +232,11 @@
             "width": 500,
             "height": 240
           },
-          "defaultVerb": "look",
-          "actions": {
-            "look": [
-              {
-                "message": "Ukážka dokončená! Rozhovor, inventár, kombinovanie, hádanka aj prechod fungujú. Skutočný príbeh príde neskôr."
-              }
-            ]
-          }
+          "onClick": [
+            {
+              "message": "Ukážka dokončená! Rozhovor, inventár, kombinovanie, hádanka aj prechod fungujú. Skutočný príbeh príde neskôr."
+            }
+          ]
         }
       ]
     },
@@ -300,18 +260,13 @@
           "animation": {
             "blink": "woman-blink",
             "blinkIntervalMs": [3000, 6000],
-            "onInteract": {
-              "look": "woman-blink"
-            }
+            "onClick": "woman-blink"
           },
-          "defaultVerb": "look",
-          "actions": {
-            "look": [
-              {
-                "message": "Na okamih privrela oči."
-              }
-            ]
-          }
+          "onClick": [
+            {
+              "message": "Na okamih privrela oči."
+            }
+          ]
         },
         {
           "id": "lab-exit",
@@ -322,20 +277,18 @@
             "width": 140,
             "height": 300
           },
-          "defaultVerb": "use",
-          "actions": {
-            "use": [
-              {
-                "message": "Späť v dielni.",
-                "effects": [
-                  {
-                    "type": "scene",
-                    "id": "workshop"
-                  }
-                ]
-              }
-            ]
-          }
+          "onClick": [
+            {
+              "message": "Späť v dielni.",
+              "effects": [
+                {
+                  "type": "scene",
+                  "id": "workshop"
+                }
+              ]
+            }
+          ],
+          "cursor": "exit"
         }
       ]
     }
@@ -345,19 +298,22 @@
       "id": "cable",
       "label": "Poškodený kábel",
       "description": "Prerušená izolácia. Pred zapojením ho treba opraviť páskou.",
-      "icon": "〰"
+      "icon": "〰",
+      "image": "cursors/cable-icon.svg"
     },
     {
       "id": "tape",
       "label": "Izolačná páska",
       "description": "Univerzálna odpoveď údržby. Skús ju spojiť s káblom.",
-      "icon": "◉"
+      "icon": "◉",
+      "image": "cursors/tape-icon.svg"
     },
     {
       "id": "fixedCable",
       "label": "Opravený kábel",
       "description": "Izolácia drží. Kábel môže ísť do skúšobného routera.",
-      "icon": "⌁"
+      "icon": "⌁",
+      "image": "cursors/cable-icon.svg"
     }
   ],
   "dialogues": [
@@ -387,7 +343,8 @@
               "id": "bye",
               "text": "Zatiaľ sa rozhliadnem."
             }
-          ]
+          ],
+          "portrait": "caretaker-portrait.svg"
         },
         {
           "id": "repair",
@@ -425,7 +382,8 @@
               "id": "leave",
               "text": "Idem na to."
             }
-          ]
+          ],
+          "portrait": "caretaker-portrait.svg"
         },
         {
           "id": "done",
@@ -436,7 +394,8 @@
               "id": "finish",
               "text": "Vďaka, idem sa pozrieť."
             }
-          ]
+          ],
+          "portrait": "caretaker-portrait.svg"
         }
       ]
     }

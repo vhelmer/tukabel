@@ -1,7 +1,6 @@
 import type { GameContent } from './types.ts';
 import { validateContent } from './validateContent.ts';
 
-const verbs = ['look', 'take', 'talk', 'use'];
 const isObject = (value: unknown): value is Record<string, unknown> =>
   value !== null && typeof value === 'object' && !Array.isArray(value);
 
@@ -96,7 +95,7 @@ export function validateProject(
   function rules(input: unknown, path: string) {
     list(input, path, (entry, key) => {
       if (!object(entry, key, ['when', 'message', 'effects'])) return;
-      string(entry.message, `${key}.message`);
+      optionalString(entry, 'message', key);
       condition(entry.when, `${key}.when`);
       effects(entry.effects, `${key}.effects`);
     });
@@ -153,8 +152,12 @@ export function validateProject(
           'label',
           'bounds',
           'visibleWhen',
-          'defaultVerb',
-          'actions',
+          'onClick',
+          'cursor',
+          'cursorImage',
+          'cursorAnimation',
+          'cursorSize',
+          'cursorOffset',
           'uses',
           'image',
           'rotation',
@@ -191,21 +194,19 @@ export function validateProject(
           'talk',
           'dialogueId',
           'motion',
-          'onInteract',
+          'onClick',
+          'onUse',
         ])
       ) {
         const binding = hotspot.animation;
-        if (
-          binding.onInteract !== undefined &&
-          object(binding.onInteract, `${key}.onInteract`, verbs)
-        )
-          Object.entries(binding.onInteract).forEach(([verb, id]) =>
-            id === undefined
-              ? undefined
-              : string(id, `${key}/onInteract/${verb}`),
-          );
-
-        for (const field of ['idle', 'blink', 'talk', 'dialogueId'])
+        for (const field of [
+          'idle',
+          'blink',
+          'talk',
+          'dialogueId',
+          'onClick',
+          'onUse',
+        ])
           optionalString(binding, field, `${key}.animation`);
         if (
           binding.idleLoop !== undefined &&
@@ -237,12 +238,32 @@ export function validateProject(
       condition(hotspot.visibleWhen, `${key}.visibleWhen`);
       condition(hotspot.tintWhen, `${key}.tintWhen`);
       asset(hotspot.image, `${key}.image`, true);
-      if (!verbs.includes(String(hotspot.defaultVerb)))
-        errors.push(`${key}: invalid default verb`);
-      if (object(hotspot.actions, `${key}.actions`, verbs))
-        Object.entries(hotspot.actions).forEach(([verb, entries]) =>
-          rules(entries, `${key}/${verb}`),
-        );
+      rules(hotspot.onClick, `${key}/onClick`);
+      asset(hotspot.cursorImage, `${key}.cursorImage`, true);
+      optionalString(hotspot, 'cursorAnimation', key);
+      if (
+        hotspot.cursor !== undefined &&
+        !['auto', 'interact', 'talk', 'exit'].includes(String(hotspot.cursor))
+      )
+        errors.push(`${key}: invalid cursor`);
+      if (
+        hotspot.cursorSize !== undefined &&
+        (typeof hotspot.cursorSize !== 'number' ||
+          !Number.isFinite(hotspot.cursorSize) ||
+          hotspot.cursorSize < 16 ||
+          hotspot.cursorSize > 96)
+      )
+        errors.push(`${key}: cursorSize must be 16–96`);
+      if (
+        hotspot.cursorOffset !== undefined &&
+        (!Array.isArray(hotspot.cursorOffset) ||
+          hotspot.cursorOffset.length !== 2 ||
+          !hotspot.cursorOffset.every(
+            (n) =>
+              typeof n === 'number' && Number.isFinite(n) && n >= 0 && n <= 96,
+          ))
+      )
+        errors.push(`${key}: cursorOffset must be two numbers in 0–96`);
       if (hotspot.uses !== undefined && isObject(hotspot.uses))
         Object.entries(hotspot.uses).forEach(([id, entries]) =>
           rules(entries, `${key}/uses/${id}`),
@@ -299,9 +320,11 @@ export function validateProject(
     string(dialogue.id, `${path}.id`);
     string(dialogue.start, `${path}.start`);
     list(dialogue.nodes, `${path}.nodes`, (node, key) => {
-      if (!object(node, key, ['id', 'speaker', 'text', 'choices'])) return;
+      if (!object(node, key, ['id', 'speaker', 'text', 'choices', 'portrait']))
+        return;
       for (const field of ['id', 'speaker', 'text'])
         string(node[field], `${key}.${field}`);
+      asset(node.portrait, `${key}.portrait`, true);
       list(node.choices, `${key}.choices`, (choice, choicePath) => {
         if (
           !object(choice, choicePath, [

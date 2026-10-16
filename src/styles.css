@@ -225,22 +225,6 @@ button[aria-pressed='true'] {
   background: linear-gradient(#243a30, #192b25);
   border-top: 1px solid #ffffff24;
 }
-.verb-controls {
-  border: 0;
-  padding: 8px 16px;
-  margin: 0;
-  display: flex;
-  gap: 6px;
-  overflow-x: auto;
-}
-.verb-controls button {
-  white-space: nowrap;
-  font-size: 11px;
-  padding: 7px 11px;
-}
-.verb-controls button:last-child {
-  margin-left: auto;
-}
 .inventory {
   border: 0;
   border-top: 1px solid #ffffff10;
@@ -328,7 +312,7 @@ button[aria-pressed='true'] {
   border: 0;
 }
 .drag-ghost {
-  position: fixed;
+  position: absolute;
   z-index: 30;
   pointer-events: none;
   transform: translate(-35%, -110%);
@@ -490,8 +474,7 @@ button[aria-pressed='true'] {
   .scene-title {
     font-size: 11px;
   }
-  .inventory,
-  .verb-controls {
+  .inventory {
     padding-left: 8px;
     padding-right: 8px;
   }
@@ -533,17 +516,7 @@ button[aria-pressed='true'] {
   }
   .game-dock {
     display: grid;
-    grid-template-columns: auto 1fr;
-  }
-  .verb-controls {
-    max-width: 230px;
-    flex-wrap: wrap;
-    gap: 3px;
-    padding: 4px;
-  }
-  .verb-controls button {
-    padding: 4px;
-    font-size: 10px;
+    grid-template-columns: 1fr;
   }
   .inventory {
     padding: 4px 8px;
@@ -573,7 +546,310 @@ button[aria-pressed='true'] {
   grid-template-columns: minmax(0, 1fr);
 }
 .game-dock,
-.game-topbar,
-.verb-controls {
+.game-topbar {
   min-width: 0;
+}
+
+/* The game is a framed illustration, with pockets and dialogue inside it. */
+:root {
+  --yellow: #efc888;
+  --muted: #b9afa0;
+}
+body {
+  background: #18131b;
+}
+.game-window {
+  border: 3px solid #604733;
+  border-radius: 14px 18px 12px 17px;
+  background: #211a20;
+  box-shadow:
+    0 20px 70px #0009,
+    inset 0 0 0 2px #c3a17055;
+}
+.game-topbar {
+  background: linear-gradient(#35262a, #241d22);
+  border-bottom: 2px solid #7e593c;
+}
+.game-brand {
+  color: #efc888;
+  text-shadow: 1px 2px #000;
+}
+.play-area {
+  background: #17151b;
+}
+.game-dock {
+  background: linear-gradient(#493129, #2b2024);
+  border-top: 3px solid #936b47;
+}
+.inventory-tools {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 16px 0;
+}
+.inventory-tools button {
+  font-size: 11px;
+  padding: 5px 10px;
+}
+.inventory {
+  border: 0;
+}
+.inventory-heading {
+  display: none;
+}
+.inventory-items {
+  min-height: 68px;
+  gap: 10px;
+}
+.inventory-item {
+  min-width: 132px;
+  height: 64px;
+  background: radial-gradient(ellipse at center, #72553855, #100d1470);
+  border: 2px solid #b0875455;
+  border-radius: 8px 13px 8px 10px;
+}
+.inventory-item img {
+  width: 46px;
+  height: 45px;
+  filter: drop-shadow(2px 3px 1px #0007);
+}
+.inventory-item:hover {
+  transform: translateY(-2px);
+}
+.inventory-item[aria-pressed='true'] {
+  box-shadow: inset 0 0 14px #f1ce8330;
+}
+.game-help {
+  color: #c3b096;
+}
+.scene-label {
+  background: #291e24ee;
+  color: #ffe0a0;
+  border: 0;
+  border-bottom: 2px solid #d9a75b;
+  border-radius: 5px 8px 4px 7px;
+  padding: 6px 12px;
+  font-weight: bold;
+  text-shadow: 1px 1px #000;
+}
+.reaction {
+  background: #f1dfbdf2;
+  color: #35251f;
+  border: 2px solid #71543e;
+  border-radius: 15px 5px 17px 8px;
+  box-shadow: 3px 5px 0 #0004;
+  bottom: 20px;
+}
+.reaction::before {
+  content: '“';
+  color: #9d6343;
+  font:
+    bold 32px Georgia,
+    serif;
+  position: absolute;
+  top: 1px;
+  left: 7px;
+}
+.reaction p {
+  padding: 0 8px;
+  font-weight: 600;
+}
+.dialogue-panel {
+  color: #33251f;
+  background: linear-gradient(120deg, #f6e4bf, #dfc59b);
+  border: 3px solid #634432;
+  border-radius: 18px 9px 20px 10px;
+  box-shadow: 6px 8px 0 #0005;
+  padding: 18px 24px;
+}
+.dialogue-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.dialogue-heading .eyebrow {
+  color: #87603e;
+}
+.dialogue-speaker {
+  color: #513624;
+  font-size: 18px;
+  font-weight: 900;
+  margin: 4px 0;
+}
+.dialogue-portrait,
+.dialogue-monogram {
+  width: 66px;
+  height: 72px;
+  flex-shrink: 0;
+  background: #593f34;
+  border: 2px solid #8b6546;
+  border-radius: 45% 40% 42% 35%;
+  object-fit: cover;
+  object-position: 50% 8%;
+}
+.dialogue-monogram {
+  display: grid;
+  place-items: center;
+  font:
+    bold 36px Georgia,
+    serif;
+  color: #efd4a3;
+}
+.dialogue-panel #dialogue-text {
+  font-weight: 600;
+  font-size: clamp(13px, 1.2vw, 17px);
+}
+.dialogue-choices {
+  counter-reset: reply;
+}
+.dialogue-choices button {
+  counter-increment: reply;
+  color: #34231f;
+  background: #fff5db55;
+  border: 0;
+  border-bottom: 1px solid #8c613b55;
+  border-radius: 3px;
+  min-height: 40px;
+}
+.dialogue-choices button::before {
+  content: counter(reply) '. ';
+  color: #98613b;
+  font-weight: bold;
+}
+.dialogue-choices button:hover:not(:disabled) {
+  background: #ab733933;
+  color: #6d3426;
+}
+.dialogue-panel .text-button {
+  color: #76523e;
+}
+.objects-popover {
+  background: #2d2229f5;
+  border-color: #ac8053;
+}
+.game-menu {
+  background: #33272d;
+  border-color: #bb905b;
+}
+.scene-cursor {
+  position: absolute;
+  z-index: 35;
+  pointer-events: none;
+  filter: drop-shadow(1px 2px 1px #0008);
+}
+.scene-cursor img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.talk-cursor img {
+  animation: chatter 0.36s steps(2, end) infinite;
+  transform-origin: 50% 55%;
+}
+.has-scene-cursor .canvas-host canvas,
+.is-dragging * {
+  cursor: none !important;
+}
+.pickup-flight {
+  position: absolute;
+  z-index: 25;
+  pointer-events: none;
+  display: grid;
+  place-items: center;
+}
+.pickup-flight img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.pickup-flight span {
+  font-size: 44px;
+}
+.drag-ghost {
+  padding: 8px;
+  background: #241a25c9;
+  border: 2px dashed #d7b48180;
+  border-radius: 14px;
+  transform: translate(-40%, -60%);
+}
+.drag-ghost img {
+  width: 52px;
+  height: 46px;
+}
+.drag-ghost.valid-drop {
+  border-style: solid;
+  border-color: #f8d786;
+  box-shadow: 0 0 18px #e8c37555;
+}
+@keyframes chatter {
+  0%,
+  100% {
+    transform: scaleY(0.65) rotate(-5deg);
+  }
+  50% {
+    transform: scaleY(1.15) rotate(4deg);
+  }
+}
+@media (max-width: 700px) {
+  .inventory-tools {
+    padding: 5px 8px 0;
+  }
+  .inventory-item {
+    min-width: 105px;
+    max-width: 150px;
+    height: 58px;
+  }
+  .inventory-item img {
+    width: 36px;
+    height: 38px;
+  }
+  .game-help {
+    min-height: 24px;
+  }
+  .dialogue-portrait,
+  .dialogue-monogram {
+    width: 44px;
+    height: 50px;
+  }
+  .dialogue-panel {
+    padding: 12px;
+  }
+}
+@media (max-height: 520px) and (orientation: landscape) {
+  .inventory-tools {
+    position: absolute;
+    right: 8px;
+    bottom: 4px;
+    z-index: 3;
+  }
+  .inventory-tools .eyebrow {
+    display: none;
+  }
+  .inventory-items {
+    min-height: 46px;
+    padding-right: 70px;
+  }
+  .inventory-item {
+    height: 44px;
+  }
+  .dialogue-portrait,
+  .dialogue-monogram {
+    width: 38px;
+    height: 42px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .talk-cursor img {
+    animation: none;
+  }
+  .inventory-item:hover {
+    transform: none;
+  }
+}
+
+.canvas-host canvas {
+  cursor: default !important;
+}
+.scene-notice {
+  background: #241d25;
 }

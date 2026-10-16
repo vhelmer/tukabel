@@ -104,6 +104,23 @@ test('PNG blink imports, previews, saves, reloads and plays with stable placemen
   page,
   workspace,
 }, testInfo) => {
+  const clickProject = JSON.parse(
+    await readFile(workspace.source, 'utf8'),
+  ) as GameContent;
+  await writeFile(
+    workspace.source,
+    JSON.stringify({
+      ...clickProject,
+      scenes: clickProject.scenes.map((scene) => ({
+        ...scene,
+        hotspots: scene.hotspots.map((h) =>
+          h.id === 'caretaker'
+            ? { ...h, onClick: [{ message: 'Skúšobná reakcia.' }] }
+            : h,
+        ),
+      })),
+    }),
+  );
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await openEditor(page, workspace.url);
@@ -178,9 +195,7 @@ test('PNG blink imports, previews, saves, reloads and plays with stable placemen
     .getByLabel('Automatické mrkanie', { exact: true })
     .selectOption('');
   await page.getByText('Animácia pri interakcii', { exact: true }).click();
-  await page
-    .getByLabel('Pri akcii: Preskúmať', { exact: true })
-    .selectOption(blink.id);
+  await page.getByLabel('Pri kliknutí', { exact: true }).selectOption(blink.id);
   await saveProject(page);
   await page.reload();
   await ready(page);
@@ -190,13 +205,12 @@ test('PNG blink imports, previews, saves, reloads and plays with stable placemen
     page.getByLabel('Automatické mrkanie', { exact: true }),
   ).toHaveValue('');
   await page.getByText('Animácia pri interakcii', { exact: true }).click();
-  await expect(
-    page.getByLabel('Pri akcii: Preskúmať', { exact: true }),
-  ).toHaveValue(blink.id);
+  await expect(page.getByLabel('Pri kliknutí', { exact: true })).toHaveValue(
+    blink.id,
+  );
   await page.getByRole('button', { name: 'Game Mode', exact: true }).click();
   await ready(page);
   const neutral = await actorPixels(page);
-  await page.getByRole('button', { name: 'Preskúmať', exact: true }).click();
   await (await object(page, 'Správca')).click();
   await page.mouse.move(0, 0);
   await expect

@@ -51,7 +51,7 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
 ## Editor a herní UI
 
 - Game Mode drží veškeré hraní uvnitř jednoho okna: scéna, reakce, dialog,
-  inventář, slovesa, seznam objektů i save/load menu. Drag/drop musí fungovat
+  inventář, seznam objektů i save/load menu. Drag/drop musí fungovat
   myší i dotykem; zachovej také klikací a klávesnicovou alternativu.
 - SVG editor upravuje stejné souřadnice jako Pixi scéna. Úpravy návrhu jsou
   oddělené od hráčského postupu; náhled používá původní reducer bez zvláštních pravidel.
@@ -67,6 +67,12 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
 - Editorové E2E zapisují do dočasných kopií projektu, nikdy do pracovních zdrojů.
   Při změně ukládání ověř reálný soubor, reload, konflikt i odmítnutí neplatných dat.
 
+- Hotspot má jediná pravidla `onClick` a volitelné `uses` pro inventář. Žádná
+  slovesa / hráčské režimy ani obrysy při hoveru. `onClick: []` je tichá kulisa;
+  `message` pravidla je volitelná. Kurzory a portréty se nastavují daty v editoru.
+- Inventární `item.image` je samostatná ikonka. Pickup efekt je pouze vizuální,
+  spouští ho skutečné získání přes akci, nikoli load/reset nebo přepnutí režimu.
+
 ## Animace postav
 
 - Registr `animations` je volitelnou součástí JSON projektu. Klipy odkazují na
@@ -81,7 +87,7 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
 - `durationsMs` je volitelné časování jednotlivých snímků (jinak `fps`), `speed`
   násobí rychlost. Klipy a vazby jsou v projektovém JSON; importní `clip.json`
   je archivní záznam, nikoli druhý zdroj herního obsahu.
-- `onInteract` mapuje slovesa na jednorázové klipy. Priorita je talk → reakce →
+- `animation.onClick` / `onUse` spouští jednorázové klipy. Priorita je talk → reakce →
   blink → idle. Vizuální požadavky ani hodiny nepatří do uloženého postupu hráče.
 - Animace nepoužívají externí AI API ani video pipeline. `OPENAI_API_KEY` zůstává
   rezervovaný pro budoucí jiné funkce, pouze v prostředí serveru / `.env.local`.
@@ -89,7 +95,7 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
 
 ## Aktuální rozsah
 
-Dvě zkušební lokace: kontextové akce i explicitní slovesa, inventář a kombinace,
+Dvě zkušební lokace: kontextové klikání, inventář a kombinace,
 podmíněné dialogy, stav hádanky, dynamické hotspoty, přechody a verzovaný ruční
 save/load v localStorage. Herní okno s drag/drop inventářem, dotykem i HTML klávesnicí.
 Dev Mode upravuje lokace, hotspoty, assety, předměty, pravidla, dialogy a kombinace;

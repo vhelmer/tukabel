@@ -38,7 +38,7 @@ export function isCharacterSpeaking(
   if (hotspot.animation?.dialogueId)
     return hotspot.animation.dialogueId === state.dialogue.id;
   return (
-    hotspot.actions.talk?.some((rule) =>
+    hotspot.onClick.some((rule) =>
       rule.effects?.some(
         (effect) =>
           effect.type === 'dialogue' && effect.id === state.dialogue?.id,
@@ -66,8 +66,8 @@ export function createAnimationPlayer(
   let wasSpeaking = false;
   let interaction: { clip: AnimationDefinition; time: number } | null = null;
   return {
-    trigger(verb: import('./types').Verb) {
-      const clip = find(binding.onInteract?.[verb]);
+    trigger(kind: 'click' | 'use') {
+      const clip = find(kind === 'click' ? binding.onClick : binding.onUse);
       if (clip) {
         interaction = { clip, time: 0 };
         blinkTime = null;

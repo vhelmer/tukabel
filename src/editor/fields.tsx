@@ -416,7 +416,7 @@ export function RulesField({
           </summary>
           <Field label="Reakcia">
             <textarea
-              value={rule.message}
+              value={rule.message ?? ''}
               onChange={(event) =>
                 onChange(
                   replaceAt(value, index, {

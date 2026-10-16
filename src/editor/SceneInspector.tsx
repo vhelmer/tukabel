@@ -8,7 +8,6 @@ import type {
   GameContent,
   Hotspot,
   SceneDefinition,
-  Verb,
 } from '../game/types';
 import {
   AssetField,
@@ -42,7 +41,6 @@ export function SceneInspector({
     hotspot: Hotspot,
   ) => void;
 }) {
-  const [verb, setVerb] = useState<Verb>(hotspot?.defaultVerb ?? 'look');
   const [useItem, setUseItem] = useState(content.items[0]?.id ?? '');
   const imageSize = useImageSize(hotspot?.image);
   return (
@@ -220,44 +218,84 @@ export function SceneInspector({
               }
             />
           )}
-          <Field label="Kontextová akcia">
+          <h3>Kliknutie na objekt</h3>
+          <p className="field-note">
+            Prvá splnená reakcia sa vykoná automaticky. Prázdny zoznam znamená
+            tichú kulisu; komentár nie je povinný.
+          </p>
+          <RulesField
+            content={content}
+            value={hotspot.onClick}
+            onChange={(onClick) => onHotspot({ ...hotspot, onClick })}
+          />
+          <h3>Kurzor nad objektom</h3>
+          <Field label="Typ kurzora">
             <select
-              value={hotspot.defaultVerb}
+              value={hotspot.cursor ?? 'auto'}
               onChange={(event) =>
                 onHotspot({
                   ...hotspot,
-                  defaultVerb: event.target.value as Verb,
+                  cursor: event.target.value as Hotspot['cursor'],
                 })
               }
             >
-              <option value="look">Preskúmať</option>
-              <option value="take">Vziať</option>
-              <option value="talk">Hovoriť</option>
-              <option value="use">Použiť</option>
+              <option value="auto">Automaticky podľa kliknutia</option>
+              <option value="interact">Ruka · interakcia</option>
+              <option value="talk">Rozprávajúca pusa</option>
+              <option value="exit">Odchod</option>
             </select>
           </Field>
-          <h3>Interakcie</h3>
-          <div className="editor-tabs">
-            {(['look', 'take', 'talk', 'use'] as const).map((id) => (
-              <button
-                key={id}
-                aria-pressed={verb === id}
-                onClick={() => setVerb(id)}
-              >
-                {id}
-              </button>
+          <AssetField
+            label="Vlastný obrázok kurzora"
+            value={hotspot.cursorImage ?? ''}
+            optional
+            assets={assets}
+            onAssets={onAssets}
+            onChange={(cursorImage) =>
+              onHotspot({
+                ...hotspot,
+                cursorImage: cursorImage || undefined,
+                cursorAnimation: undefined,
+              })
+            }
+          />
+          <SelectId
+            label="Animácia kurzora"
+            value={hotspot.cursorAnimation ?? ''}
+            values={(content.animations ?? []).filter(
+              (c) => !hotspot.cursorImage || c.source === hotspot.cursorImage,
+            )}
+            empty="Bez animácie"
+            onChange={(id) =>
+              onHotspot({ ...hotspot, cursorAnimation: id || undefined })
+            }
+          />
+          <Field label="Veľkosť kurzora (px)">
+            <TransformNumber
+              min={16}
+              max={96}
+              value={hotspot.cursorSize ?? 40}
+              onChange={(cursorSize) => onHotspot({ ...hotspot, cursorSize })}
+            />
+          </Field>
+          <div className="field-row">
+            {([0, 1] as const).map((i) => (
+              <Field key={i} label={`Špička kurzora ${i === 0 ? 'x' : 'y'}`}>
+                <TransformNumber
+                  min={0}
+                  max={96}
+                  value={hotspot.cursorOffset?.[i] ?? 0}
+                  onChange={(value) => {
+                    const offset: [number, number] = [
+                      ...(hotspot.cursorOffset ?? [0, 0]),
+                    ];
+                    offset[i] = value;
+                    onHotspot({ ...hotspot, cursorOffset: offset });
+                  }}
+                />
+              </Field>
             ))}
           </div>
-          <RulesField
-            content={content}
-            value={hotspot.actions[verb]}
-            onChange={(rules) => {
-              const actions = { ...hotspot.actions };
-              if (rules.length) actions[verb] = rules;
-              else delete actions[verb];
-              onHotspot({ ...hotspot, actions });
-            }}
-          />
           <h3>Použitie inventára na objekt</h3>
           <SelectId
             label="Použitý predmet"

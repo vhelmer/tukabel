@@ -16,9 +16,6 @@ interface GameCanvasProps extends SceneCallbacks {
   animations?: readonly AnimationDefinition[];
   blocked?: boolean;
   animationTrigger?: AnimationTrigger | null;
-  hoveredId: string | null;
-  selectedId: string | null;
-  showHotspots: boolean;
 }
 
 const noAnimations: readonly AnimationDefinition[] = [];
@@ -33,9 +30,6 @@ function MountedCanvas({
   animations = noAnimations,
   blocked = false,
   animationTrigger,
-  hoveredId,
-  selectedId,
-  showHotspots,
   onHover,
   onInteract,
 }: GameCanvasProps) {
@@ -75,7 +69,7 @@ function MountedCanvas({
       try {
         await app.init({
           preference: 'webgl',
-          background: '#172823',
+          background: '#1c1720',
           antialias: true,
           resolution: Math.min(window.devicePixelRatio || 1, 2),
           autoDensity: true,
@@ -96,7 +90,8 @@ function MountedCanvas({
                     hotspot.animation?.idle,
                     hotspot.animation?.blink,
                     hotspot.animation?.talk,
-                    ...Object.values(hotspot.animation?.onInteract ?? {}),
+                    hotspot.animation?.onClick,
+                    hotspot.animation?.onUse,
                   ].includes(animation.id),
                 ),
               )
@@ -185,10 +180,9 @@ function MountedCanvas({
   useEffect(() => {
     if (status === 'ready') {
       sceneRef.current?.update(state, blocked);
-      sceneRef.current?.highlight(hoveredId, selectedId, showHotspots);
       playbackRef.current?.();
     }
-  }, [hoveredId, selectedId, showHotspots, status, state, blocked]);
+  }, [status, state, blocked]);
 
   useEffect(() => {
     if (
@@ -199,7 +193,7 @@ function MountedCanvas({
       lastTrigger.current = animationTrigger.nonce;
       sceneRef.current?.trigger(
         animationTrigger.hotspotId,
-        animationTrigger.verb,
+        animationTrigger.interaction,
       );
       playbackRef.current?.();
     }

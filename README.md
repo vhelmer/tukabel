@@ -38,8 +38,9 @@ hostingu i v podadresáři. `file://` není podporované.
    objektů režim zase vypni. Myší používej posuvníky nebo kolečko.
    **Pomôcky scény** vypne rámy, popisky a úchyty pro kontrolu čistého obrázku.
    Editor ukazuje i podmíněně skryté objekty; editace nespouští herní akce.
-3. V inspektoru nastav jméno, obrázek, viditelnost, kontextové sloveso a pravidla
-   `look/take/talk/use`. Podmínky i efekty mají formuláře a výběr existujících ID.
+3. V inspektoru nastav jméno, obrázek, viditelnost a pravidla **Kliknutie na objekt**.
+   Prázdný seznam je tichá interaktivní kulisa; komentář je volitelný.
+   Podmínky i efekty mají formuláře a výběr existujících ID.
    Pravidla a efekty lze přidávat, odstraňovat a přesouvat nahoru.
    Sekce použití inventáře nastavuje reakce na konkrétní předmět.
 4. V **Predmety** vytvoř inventární položky, popisy a symboly/obrázky.
@@ -76,20 +77,31 @@ přímo do repozitáře. Názvy assetů používej bez mezer a diakritiky (`a-z`
 ## Game Mode
 
 Herní okno se vejde do viewportu: nahoře je název lokace a menu, uprostřed scéna
-s popisky, reakcemi a dialogy, dole lišta sloves a inventář. Herní prvky nejsou pod
-canvasem mimo hlavní okno. Na úzkém displeji mají lišty vlastní horizontální posun;
-na nízkém displeji se inventář a akce skládají vedle sebe. Celá scéna se škáluje
-se zachováním poměru stran, včetně hotspotů. Letterbox okraje nejsou interaktivní.
+s popisky, reakcemi a dialogy, dole inventář. Všechny herní prvky jsou uvnitř
+hlavního okna. Na úzkém displeji má inventář horizontální posun. Celá scéna se
+škáluje se zachováním poměru stran, včetně hotspotů; letterbox není interaktivní.
 
-- Klik/tap provede kontextovou akci; sloveso lze zvolit explicitně.
-- Inventární předmět **přetáhni na druhý předmět** pro kombinaci nebo **do scény**
-  pro použití. Pointer capture funguje myší i dotykem. Náhled taženého předmětu,
-  zvýraznění cíle a reakce potvrzují výsledek. Neplatný/cancelovaný drop nic nespotřebuje.
-- Alternativa bez přetahování: vyber předmět a klikni na cíl. Tab/Enter ovládá
-  skutečná HTML tlačítka; **Objekty** otevře seznam objektů uvnitř scény.
-  Vybranou položku lze prozkoumat tlačítkem nebo dvojklikem.
+- Klik/tap provede první splněné pravidlo `onClick`: komentář, sebrání, rozhovor,
+  přechod nebo jiný efekt. Hráč nepřepíná slovesa. Prázdné `onClick: []` je tichý
+  objekt bez vlivu na postup; Škrabanec v ukázkové místnosti to demonstruje.
+- Hover zobrazí pouze název. Objekty nemají obrys ani přepínač odhalující hotspoty.
+  Kurzor je ruka, animovaná pusa nebo šipka odchodu. V editoru zvol typ, vlastní
+  `cursorImage`, klip `cursorAnimation`, velikost 16–96 px a souřadnice špičky.
+  Animované kurzory používají běžný registr klipů; bez samostatného obrázku vezmou
+  zdroj klipu. Snímky a source podléhají stejné kontrole rozměrů jako postavy.
+- Inventární předmět **přetáhni na druhý předmět** nebo **do scény**. Pointer
+  capture podporuje myš i dotyk; vizuální náhled předmětu a cíl potvrzují drop.
+  Neplatný/cancelovaný drop nic nespotřebuje. Inventář má vlastní `item.image`
+  (**Inventárová ikonka**); nemusí odpovídat obrázku hotspotu. Nový předmět krátce
+  povyroste, zprůhlední a přeletí do kapsy. Načtení uložené hry tento efekt nespouští.
+- Alternativa bez tažení: klikni/tapni na předmět a následně na cíl. Výběr zároveň
+  zobrazí jeho popis. Tab/Enter ovládá skutečná HTML tlačítka; **Objekty** nabízí
+  přístupný seznam všech viditelných interaktivních oblastí včetně nepodstatných.
+- Reakce se zobrazují v kreslené bublině; prázdný komentář žádnou bublinu nevytvoří.
+  Dialog má portrét (`portrait` u uzlu), řečníka a větvené odpovědi na pergamenu
+  uvnitř scény. Portrét se nastavuje v editoru dialogů; není povinný.
 - Escape ruší výběr/tah, zavírá menu nebo rozhovor. Dialog blokuje akce světa.
-  **Ukázať predmety** zvýrazní hotspoty. Krátké přechody respektují reduced motion.
+  Efekty a animace respektují reduced motion; drag/drop zůstává funkční.
 - **Menu** obsahuje ruční **Uložiť hru**, **Načítať hru** a **Nová hra**. Postup
   zůstává v jednom verzovaném localStorage slotu daného originu, oddělený od obsahu.
   Načítá se až na požádání a obnovuje i rozmluvený dialog. Nová hra slot nemaže.
@@ -152,8 +164,8 @@ Podmínky: `{ "flag": "powered" }`, `{ "flag": "powered", "value": false }`,
 Bez podmínky pravidlo platí vždy. Nepřítomný příznak je false. Podmínky používají
 pravidla, dialogové odpovědi, `visibleWhen` i `tintWhen`.
 
-Pravidlo má `when?`, `message`, `effects?`. **První vyhovující vyhrává**, takže
-bezpodmínečná reakce patří poslední. `defaultVerb` určuje kontextový klik;
+Pravidlo má `when?`, `message?`, `effects?`. **První vyhovující vyhrává**, takže
+bezpodmínečná reakce patří poslední. `hotspot.onClick` definuje kliknutí;
 `uses` mapuje ID inventárních položek na pravidla použití. Kombinace jsou symetrické.
 Efekty v pořadí mění příznak (`flag`, `id`, `value`), přidají/odeberou položku
 (`addItem`/`removeItem`, `id`), přepnou lokaci (`scene`, `id`) nebo otevřou dialog
@@ -173,10 +185,16 @@ Dialog má `start` a uzly `id/speaker/text/choices`; odpověď má `id/text`, p�
 `when/effects/message/next`. Bez `next` rozhovor skončí. UI navíc vždy dovolí odchod.
 
 Validátor kontroluje tvar JSON, neznámá pole, lokální assety, stabilní/duplicitní ID,
-neexistující odkazy, výchozí akce, dialogové uzly, kombinace, zastíněná pravidla
+neexistující odkazy, kurzory, dialogové uzly, kombinace, zastíněná pravidla
 a hotspoty mimo scénu. Řešitelnost se ověřuje průchodem. Při nekompatibilní změně
 obsahu změň `id` projektu; strukturu uložených pozic verzuj v `storage.ts`.
 Starší nekompatibilní pozice se odmítají, migrace zatím nejsou implementované.
+
+Migrace ovládání: `defaultVerb` a slovník `actions` byly nahrazeny `onClick`.
+Projektové příklady jsou převedené; staré vlastní JSON převeď výběrem původních
+pravidel výchozího slovesa do `onClick`. `uses` i podmínky a efekty se nemění.
+Animační vazby dřívějšího `onInteract` převeď na `onClick` / `onUse`.
+Uložený hráčský postup zůstává kompatibilní, protože ID a herní příznaky se nemění.
 
 ## Prohlížečové testy
 
@@ -198,6 +216,8 @@ importují obrázek, vytvářejí dialogy, kontrolují JSON na disku, reload, ko
 a odmítnutí neplatného zápisu. Reálný projekt ani produkci nemění. Produkční test
 ověřuje nepřítomnost editoru i zápisového API. Screenshoty/trace jsou v ignorovaném
 `test-results/`, náhledy editoru a grafu také při úspěšném průchodu.
+Interakční testy ověřují let do inventáře, vlastní animovaný kurzor a portrét po
+uložení/reloadu; kontextový průchod zahrnuje i tichou kulisu.
 Transformační testy navíc ověřují PNG/WebP/SVG, rotaci, zamknuté proporce, explicitní
 deformaci, undo/redo a rušení tahů. Porovnávají obraz SVG editoru a Pixi i po změně
 viewportu / zoomu a ověřují kliky a inventární dropy na otočenou oblast. Validace
@@ -238,7 +258,7 @@ Instrukce pro agenty jsou v [AGENTS.md](AGENTS.md).
    potvrď **Pridať / aktualizovať animáciu** nebo znovu **Priradiť postave**.
    Jedna postava může mít různé kompatibilní klipy pro každý způsob spouštění.
 6. Nastav automatické mrkání (náhodný interval), animaci během konkrétního dialogu,
-   základní idle nebo **Animácia pri interakcii** pro look/take/talk/use. Reakce
+   základní idle nebo **Animácia pri interakcii** pro kliknutí nebo použití předmětu. Reakce
    i mrknutí se vždy přehrají jednou a vrátí k idle / originálu. Dialogové mluvení
    má přednost. Záměrný procedurální pohyb je samostatná volba.
 7. **Game Mode** nebo **Otestovať odtiaľto** okamžitě testuje návrh.
@@ -259,8 +279,7 @@ Celý import si vyzkoušíš výběrem týchž pěti PNG nebo `spritesheet.png` 
 volitelně `durationsMs` (jedna délka 10–60000 ms pro každý snímek), `speed` (0.1–4)
 a `loop` (výchozí true). Opakované odkazy na stejný snímek jsou v pořádku.
 Vazba `hotspot.animation` používá `blink`, `blinkIntervalMs: [min,max]`, `idle`,
-volitelné `idleLoop` přepsání smyčky, `talk`, `dialogueId`, `onInteract: { look:
-"clip-id" }` a volitelný `motion: "breath" | "sway"`. Zdroj každého přiřazeného
+volitelné `idleLoop` přepsání smyčky, `talk`, `dialogueId`, `onClick: "clip-id"`, `onUse: "clip-id"` a volitelný `motion: "breath" | "sway"`. Zdroj každého přiřazeného
 klipu musí odpovídat `hotspot.image`. Rozměry všech snímků kontroluje import,
 uložení projektu a `npm run validate:content`; runtime navíc odmítne deformovat
 postavu při chybně změněném assetu. Zarovnání kresby uvnitř plátna je odpovědnost autora.

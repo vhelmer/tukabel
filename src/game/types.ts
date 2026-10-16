@@ -18,10 +18,9 @@ export interface CharacterAnimation {
   readonly talk?: string;
   readonly dialogueId?: string;
   readonly motion?: 'breath' | 'sway';
-  readonly onInteract?: Partial<Readonly<Record<Verb, string>>>;
+  readonly onClick?: string;
+  readonly onUse?: string;
 }
-
-export type Verb = 'look' | 'take' | 'talk' | 'use';
 
 export type Condition =
   | { flag: string; value?: boolean }
@@ -37,7 +36,7 @@ export type Effect =
 
 export interface Rule {
   readonly when?: Condition;
-  readonly message: string;
+  readonly message?: string;
   readonly effects?: readonly Effect[];
 }
 
@@ -46,9 +45,13 @@ export interface Hotspot {
   readonly label: string;
   readonly bounds: { x: number; y: number; width: number; height: number };
   readonly visibleWhen?: Condition;
-  readonly defaultVerb: Verb;
-  // First matching rule wins; keep an unconditional fallback last.
-  readonly actions: Partial<Record<Verb, readonly Rule[]>>;
+  // First matching click rule wins. Empty means an intentionally silent prop.
+  readonly onClick: readonly Rule[];
+  readonly cursor?: 'auto' | 'interact' | 'talk' | 'exit';
+  readonly cursorImage?: string;
+  readonly cursorAnimation?: string;
+  readonly cursorSize?: number;
+  readonly cursorOffset?: readonly [number, number];
   readonly uses?: Readonly<Record<string, readonly Rule[]>>;
   // Optional local sprite, hidden together with the hotspot (e.g. a pickup).
   readonly image?: string;
@@ -79,6 +82,7 @@ export interface ItemDefinition {
 
 export interface DialogueNode {
   readonly id: string;
+  readonly portrait?: string;
   readonly speaker: string;
   readonly text: string;
   readonly choices: readonly {
@@ -122,7 +126,7 @@ export interface GameState {
 }
 
 export type GameAction =
-  | { type: 'interact'; hotspotId: string; verb?: Verb; itemId?: string }
+  | { type: 'interact'; hotspotId: string; itemId?: string }
   | { type: 'combine'; first: string; second: string }
   | { type: 'choose'; choiceId: string }
   | { type: 'closeDialogue' }
@@ -137,6 +141,6 @@ export interface SceneCallbacks {
 export interface AnimationTrigger {
   readonly sceneId: string;
   readonly hotspotId: string;
-  readonly verb: Verb;
+  readonly interaction: 'click' | 'use';
   readonly nonce: number;
 }

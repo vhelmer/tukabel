@@ -31,11 +31,39 @@ export function DialoguePanel({
       aria-labelledby="speaker"
       aria-describedby="dialogue-text"
       ref={panel}
+      aria-modal="true"
+      onKeyDown={(event) => {
+        if (event.key !== 'Tab') return;
+        const buttons = event.currentTarget.querySelectorAll('button');
+        const first = buttons[0],
+          last = buttons[buttons.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last?.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first?.focus();
+        }
+      }}
     >
-      <p className="eyebrow" id="speaker">
-        {node.speaker}
+      <div className="dialogue-heading">
+        {node.portrait ? (
+          <img className="dialogue-portrait" src={node.portrait} alt="" />
+        ) : (
+          <span className="dialogue-monogram" aria-hidden="true">
+            {node.speaker.slice(0, 1)}
+          </span>
+        )}
+        <div>
+          <p className="eyebrow">ROZHOVOR</p>
+          <p id="speaker" className="dialogue-speaker">
+            {node.speaker}
+          </p>
+        </div>
+      </div>
+      <p id="dialogue-text" key={node.id}>
+        {node.text}
       </p>
-      <p id="dialogue-text">{node.text}</p>
       <div className="dialogue-choices">
         {node.choices
           .filter((choice) => matches(state, choice.when))

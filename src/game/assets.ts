@@ -31,12 +31,22 @@ export function resolveAssets(content: GameContent): GameContent {
       hotspots: scene.hotspots.map((hotspot) => ({
         ...hotspot,
         image: hotspot.image ? assetUrl(hotspot.image) : undefined,
+        cursorImage: hotspot.cursorImage
+          ? assetUrl(hotspot.cursorImage)
+          : undefined,
       })),
     })),
     animations: content.animations?.map((animation) => ({
       ...animation,
       source: assetUrl(animation.source),
       frames: animation.frames.map(assetUrl),
+    })),
+    dialogues: content.dialogues.map((dialogue) => ({
+      ...dialogue,
+      nodes: dialogue.nodes.map((node) => ({
+        ...node,
+        portrait: node.portrait ? assetUrl(node.portrait) : undefined,
+      })),
     })),
     items: content.items.map((item) => ({
       ...item,

@@ -32,25 +32,27 @@ function graphRows(content: GameContent): Row[] {
   const rows: Row[] = [];
   for (const scene of content.scenes)
     for (const hotspot of scene.hotspots) {
-      for (const [verb, rules] of [
-        ...Object.entries(hotspot.actions),
+      for (const [interaction, rules] of [
+        ['click', hotspot.onClick] as const,
         ...Object.entries(hotspot.uses ?? {}).map(
           ([item, rules]) => [`use:${item}`, rules] as const,
         ),
       ])
         for (const [index, rule] of rules.entries()) {
-          const usedItem = verb.startsWith('use:') ? verb.slice(4) : null;
+          const usedItem = interaction.startsWith('use:')
+            ? interaction.slice(4)
+            : null;
           const all = [
             hotspot.visibleWhen,
             rule.when,
             usedItem ? { item: usedItem } : undefined,
           ].filter((entry): entry is Condition => Boolean(entry));
           rows.push({
-            label: `${scene.title} / ${hotspot.label} · ${verb} #${index + 1}`,
+            label: `${scene.title} / ${hotspot.label} · ${interaction} #${index + 1}`,
             when: { all },
             requires: [`Lokácia: ${scene.id}`, ...all.flatMap(describe)],
             outcomes: (rule.effects ?? []).map(effectText),
-            message: rule.message,
+            message: rule.message ?? '',
             target: { type: 'scene', sceneId: scene.id, hotspotId: hotspot.id },
           });
         }
@@ -89,7 +91,7 @@ function graphRows(content: GameContent): Row[] {
         when,
         requires: describe(when),
         outcomes: (rule.effects ?? []).map(effectText),
-        message: rule.message,
+        message: rule.message ?? '',
         target: { type: 'puzzles' },
       });
     }

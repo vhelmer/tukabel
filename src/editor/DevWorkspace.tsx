@@ -127,8 +127,7 @@ export default function DevWorkspace({
           id,
           label: 'Nový objekt',
           bounds,
-          defaultVerb: 'look',
-          actions: { look: [{ message: 'Zatiaľ nenápadný objekt.' }] },
+          onClick: [{ message: 'Zatiaľ nenápadný objekt.' }],
         },
       ],
     });
@@ -426,6 +425,8 @@ export default function DevWorkspace({
         {tab === 'dialogues' && (
           <DialoguesPanel
             key={`${dialogueId}/${graphNodeId}`}
+            assets={assets}
+            onAssets={setAssets}
             initialNodeId={graphNodeId}
             content={document}
             onChange={change}

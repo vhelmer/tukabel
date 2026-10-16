@@ -49,15 +49,13 @@ async function seed(workspace: { root: string; source: string }) {
             label: 'Postava',
             bounds: { x: 100, y: 120, width: 300, height: 300 },
             image: 'animation-actor.png',
-            defaultVerb: 'look',
-            actions: {
-              look: [
-                {
-                  message: 'Tu je žetón.',
-                  effects: [{ type: 'addItem', id: 'token' }],
-                },
-              ],
-            },
+
+            onClick: [
+              {
+                message: 'Tu je žetón.',
+                effects: [{ type: 'addItem', id: 'token' }],
+              },
+            ],
             uses: { token: [{ message: 'Predmet zasiahol otočenú postavu.' }] },
           },
           {
@@ -66,16 +64,16 @@ async function seed(workspace: { root: string; source: string }) {
             bounds: { x: 650, y: 140, width: 400, height: 260 },
             rotation: 20,
             image: 'transform-wide.webp',
-            defaultVerb: 'look',
-            actions: { look: [{ message: 'Široký obrázok.' }] },
+
+            onClick: [{ message: 'Široký obrázok.' }],
           },
           {
             id: 'vector',
             label: 'SVG',
             bounds: { x: 1000, y: 480, width: 180, height: 180 },
             image: 'cable.svg',
-            defaultVerb: 'look',
-            actions: { look: [{ message: 'Vektor.' }] },
+
+            onClick: [{ message: 'Vektor.' }],
           },
         ],
       },

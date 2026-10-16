@@ -6,7 +6,6 @@ import type {
   Hotspot,
   SceneCallbacks,
   SceneDefinition,
-  Verb,
 } from './types';
 import { matches } from './state';
 import { createAnimationPlayer, isCharacterSpeaking } from './animation';
@@ -38,7 +37,6 @@ export function createScene(
   }[] = [];
   let state: GameState | null = null;
   let paused = false;
-  const outlines = new Map<string, Graphics>();
   const regions = new Map<string, Container>();
   const indicators = new Map<string, Graphics>();
   for (const hotspot of definition.hotspots) {
@@ -48,7 +46,7 @@ export function createScene(
     region.position.set(x + width / 2, y + height / 2);
     region.rotation = radians(hotspot.rotation ?? 0);
     region.eventMode = 'static';
-    region.cursor = 'pointer';
+    region.cursor = 'none';
     region.hitArea = new Rectangle(0, 0, width, height);
 
     if (hotspot.image) {
@@ -75,7 +73,8 @@ export function createScene(
           hotspot.animation.blink,
           hotspot.animation.talk,
           hotspot.animation.motion,
-          ...Object.values(hotspot.animation.onInteract ?? {}),
+          hotspot.animation.onClick,
+          hotspot.animation.onUse,
         ].some(Boolean)
       )
         actors.push({
@@ -96,19 +95,11 @@ export function createScene(
       indicators.set(hotspot.id, indicator);
       region.addChild(indicator);
     }
-    const outline = new Graphics()
-      .roundRect(0, 0, width, height, 18)
-      .fill({ color: 0xffd16e, alpha: 0.13 })
-      .stroke({ color: 0xffd16e, width: 4 });
-    outline.eventMode = 'none';
-    outline.visible = false;
-    region.addChild(outline);
     region.on('pointerover', () => callbacks.onHover(hotspot));
     region.on('pointerout', () => callbacks.onHover(null));
     region.on('pointertap', (event) => {
       if (event.button === 0) callbacks.onInteract(hotspot);
     });
-    outlines.set(hotspot.id, outline);
     regions.set(hotspot.id, region);
     root.addChild(region);
   }
@@ -121,13 +112,13 @@ export function createScene(
         actors.some((actor) => regions.get(actor.hotspot.id)?.visible)
       );
     },
-    trigger(hotspotId: string, verb: Verb) {
-      if (paused || !state || state.dialogue) return;
+    trigger(hotspotId: string, interaction: 'click' | 'use') {
+      if (paused || !state) return;
       const actor = actors.find(
         (entry) =>
           entry.hotspot.id === hotspotId && regions.get(hotspotId)?.visible,
       );
-      actor?.player.trigger(verb);
+      actor?.player.trigger(interaction);
     },
     animate(deltaMs: number) {
       if (!state || paused) return;
@@ -192,17 +183,6 @@ export function createScene(
         (width - definition.width * scale) / 2,
         (height - definition.height * scale) / 2,
       );
-      render();
-    },
-    highlight(
-      hoveredId: string | null,
-      selectedId: string | null,
-      showAll: boolean,
-    ) {
-      for (const [id, outline] of outlines) {
-        outline.visible = showAll || id === hoveredId || id === selectedId;
-        outline.alpha = id === hoveredId || id === selectedId ? 1 : 0.45;
-      }
       render();
     },
   };

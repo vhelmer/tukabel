@@ -77,15 +77,13 @@ test('visual clocks prioritize speech, schedule finite blinks and hold once-only
         id: 'npc',
         label: '',
         bounds: { x: 0, y: 0, width: 1, height: 1 },
-        defaultVerb: 'talk',
-        actions: {
-          talk: [
-            {
-              message: '',
-              effects: [{ type: 'dialogue', id: 'conversation' }],
-            },
-          ],
-        },
+
+        onClick: [
+          {
+            message: '',
+            effects: [{ type: 'dialogue', id: 'conversation' }],
+          },
+        ],
       },
       state,
     ),
@@ -106,18 +104,18 @@ test('per-frame timing, speed, one-shots and priority share one visual clock', (
   expect(frameAt(timed, 100)).toBe('closed');
   expect(frameAt(timed, 100, true)).toBe('open');
   const talking = clip('talk', 'talk', ['mouth1', 'mouth2']);
-  const player = createAnimationPlayer(
-    { onInteract: { look: 'timed' }, talk: 'talk' },
-    [timed, talking],
-  );
-  player.trigger('look');
+  const player = createAnimationPlayer({ onClick: 'timed', talk: 'talk' }, [
+    timed,
+    talking,
+  ]);
+  player.trigger('click');
   expect(player.tick(0, false)).toMatchObject({
     priority: 'interaction',
     frame: 'open',
   });
   expect(player.tick(20, false).frame).toBe('half');
   expect(player.tick(80, false).priority).toBe('base');
-  player.trigger('look');
+  player.trigger('click');
   expect(player.tick(0, true).priority).toBe('talk');
   expect(player.tick(0, false).priority).toBe('base');
 });
@@ -161,7 +159,7 @@ test('content validation rejects invalid frame timing and missing interaction cl
       ...scene,
       hotspots: scene.hotspots.map((hotspot, index) =>
         sceneIndex === 0 && index === 0
-          ? { ...hotspot, animation: { onInteract: { look: 'missing' } } }
+          ? { ...hotspot, animation: { onClick: 'missing' } }
           : hotspot,
       ),
     })),

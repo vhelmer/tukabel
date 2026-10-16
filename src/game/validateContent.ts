@@ -92,8 +92,16 @@ export function validateContent(content: GameContent): string[] {
         errors.push(`${path}: bounds outside scene`);
       else if (!isInsideScene(hotspot.bounds, scene, hotspot.rotation))
         errors.push(`${path}: rotated bounds outside scene`);
-      if (!hotspot.actions[hotspot.defaultVerb]?.length)
-        errors.push(`${path}: missing default action`);
+      if (hotspot.cursorAnimation) {
+        reference(animations, hotspot.cursorAnimation, `${path}/cursor`);
+        const clip = content.animations?.find(
+          (c) => c.id === hotspot.cursorAnimation,
+        );
+        if (clip && hotspot.cursorImage && clip.source !== hotspot.cursorImage)
+          errors.push(
+            `${path}: cursor animation source must match cursor image`,
+          );
+      }
       if (hotspot.animation) {
         if (!hotspot.image)
           errors.push(`${path}: animated character needs an image`);
@@ -101,11 +109,8 @@ export function validateContent(content: GameContent): string[] {
           idle: hotspot.animation.idle,
           blink: hotspot.animation.blink,
           talk: hotspot.animation.talk,
-          ...Object.fromEntries(
-            Object.entries(hotspot.animation.onInteract ?? {}).map(
-              ([verb, id]) => [`onInteract/${verb}`, id],
-            ),
-          ),
+          onClick: hotspot.animation.onClick,
+          onUse: hotspot.animation.onUse,
         };
         for (const [key, id] of Object.entries(bindings)) {
           if (!id) continue;
@@ -133,9 +138,7 @@ export function validateContent(content: GameContent): string[] {
       }
       condition(hotspot.visibleWhen, path);
       condition(hotspot.tintWhen, path);
-      Object.entries(hotspot.actions).forEach(([verb, values]) =>
-        rules(values, `${path}/${verb}`),
-      );
+      if (hotspot.onClick.length) rules(hotspot.onClick, `${path}/click`);
       Object.entries(hotspot.uses ?? {}).forEach(([item, values]) => {
         reference(items, item, path);
         rules(values, `${path}/use/${item}`);

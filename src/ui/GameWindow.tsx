@@ -6,8 +6,10 @@ import type {
   GameContent,
   GameState,
   Hotspot,
-  Verb,
 } from '../game/types';
+import { reduceGame } from '../game/state';
+import { SceneCursor, PickupFlight } from './SceneCursor';
+import type { Pickup } from './SceneCursor';
 import { matches } from '../game/state';
 import { scenePoint } from '../game/coordinates';
 import { containsPoint, rotatedBounds } from '../game/transforms';
@@ -16,13 +18,6 @@ import { GameCanvas } from './GameCanvas';
 import { Inventory } from './Inventory';
 import { DialoguePanel } from './DialoguePanel';
 
-const verbs: { id: Verb | 'auto'; label: string }[] = [
-  { id: 'auto', label: 'Kontextová akcia' },
-  { id: 'look', label: 'Preskúmať' },
-  { id: 'take', label: 'Vziať' },
-  { id: 'talk', label: 'Hovoriť' },
-  { id: 'use', label: 'Použiť' },
-];
 type Target = { type: 'item'; id: string } | { type: 'hotspot'; id: string };
 interface Drag {
   id: string;
@@ -50,8 +45,6 @@ export function GameWindow({
     useState<AnimationTrigger | null>(null);
   const [hovered, setHovered] = useState<Hotspot | null>(null);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
-  const [verb, setVerb] = useState<Verb | 'auto'>('auto');
-  const [showHotspots, setShowHotspots] = useState(false);
   const [menu, setMenu] = useState(false);
   const [objectsOpen, setObjectsOpen] = useState(false);
   const [storageMessage, setStorageMessage] = useState(
@@ -63,6 +56,19 @@ export function GameWindow({
     | null
   >(null);
   const suppressClick = useRef(false);
+  const gameRef = useRef<HTMLElement>(null);
+  const [pointer, setPointer] = useState<{
+    x: number;
+    y: number;
+    inScene: boolean;
+  } | null>(null);
+  const [pickups, setPickups] = useState<Pickup[]>([]);
+  const pickupNonce = useRef(0);
+  const finishPickup = useCallback(
+    (id: number) =>
+      setPickups((previous) => previous.filter((p) => p.id !== id)),
+    [],
+  );
   const viewport = useRef<HTMLDivElement>(null);
   const menuButton = useRef<HTMLButtonElement>(null);
   const [areaSize, setAreaSize] = useState({ width: 0, height: 0 });
@@ -106,27 +112,77 @@ export function GameWindow({
           setAnimationTrigger((previous) => ({
             sceneId: scene.id,
             hotspotId: actor.id,
-            verb: action.itemId ? 'use' : (action.verb ?? actor.defaultVerb),
+            interaction: action.itemId ? 'use' : 'click',
             nonce: (previous?.nonce ?? 0) + 1,
           }));
       }
+      const next = reduceGame(content, state, action);
+      const added = next.inventory.filter(
+        (id) => !state.inventory.includes(id),
+      );
+      const rootBox = gameRef.current?.getBoundingClientRect();
+      const viewBox = viewport.current?.getBoundingClientRect();
+      if (
+        added.length &&
+        rootBox &&
+        viewBox &&
+        !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      ) {
+        const location = content.scenes.find((s) => s.id === state.sceneId)!;
+        const actor =
+          action.type === 'interact'
+            ? location.hotspots.find((h) => h.id === action.hotspotId)
+            : undefined;
+        const scale = Math.min(
+          viewBox.width / location.width,
+          viewBox.height / location.height,
+        );
+        const origin = actor?.bounds;
+        const width = origin ? origin.width * scale : 56;
+        const height = origin ? origin.height * scale : 56;
+        const x =
+          viewBox.x -
+          rootBox.x +
+          (viewBox.width - location.width * scale) / 2 +
+          (origin?.x ?? location.width / 2) * scale;
+        const y =
+          viewBox.y -
+          rootBox.y +
+          (viewBox.height - location.height * scale) / 2 +
+          (origin?.y ?? location.height * 0.6) * scale;
+        setPickups((previous) => [
+          ...previous,
+          ...added.map((id) => {
+            const item = content.items.find((i) => i.id === id)!;
+            return {
+              id: ++pickupNonce.current,
+              itemId: id,
+              image: actor?.image ?? item.image,
+              icon: item.icon,
+              x,
+              y,
+              width,
+              height,
+              rotation: actor?.rotation ?? 0,
+            };
+          }),
+        ]);
+      }
       dispatchGame(action);
     },
-    [dispatchGame, content.scenes, state],
+    [dispatchGame, content, state],
   );
   const act = useCallback(
     (hotspot: Hotspot) => {
       dispatch({
         type: 'interact',
         hotspotId: hotspot.id,
-        verb: verb === 'auto' ? undefined : verb,
         itemId: selectedItem ?? undefined,
       });
       setSelectedItem(null);
-      setHovered(null);
       setObjectsOpen(false);
     },
-    [dispatch, verb, selectedItem],
+    [dispatch, selectedItem],
   );
   const finishDrag = useCallback(() => {
     const current = dragRef.current;
@@ -199,7 +255,12 @@ export function GameWindow({
       current.target = targetAt(event);
       if (current.active) {
         event.preventDefault();
-        setDrag({ ...current });
+        const box = gameRef.current?.getBoundingClientRect();
+        setDrag({
+          ...current,
+          x: current.x - (box?.x ?? 0),
+          y: current.y - (box?.y ?? 0),
+        });
       }
     };
     const up = (event: PointerEvent) => {
@@ -252,18 +313,12 @@ export function GameWindow({
     };
   }
   const dragItem = content.items.find((entry) => entry.id === drag?.id);
-  const verbLabel = currentHover
-    ? verbs.find(
-        (entry) =>
-          entry.id === (verb === 'auto' ? currentHover.defaultVerb : verb),
-      )!.label
-    : '';
   function clearUI() {
     finishDrag();
     setSelectedItem(null);
     setHovered(null);
-    setVerb('auto');
     setObjectsOpen(false);
+    setPickups([]);
   }
 
   const sceneScale = Math.min(
@@ -275,19 +330,32 @@ export function GameWindow({
   const labelPadding = Math.min(150, areaSize.width / 2);
 
   return (
-    <section className="game-window" aria-label="Herné okno">
+    <section
+      ref={gameRef}
+      className={`game-window ${pointer?.inScene && (currentHover || selected) && !menu && !state.dialogue ? 'has-scene-cursor' : ''} ${drag?.active ? 'is-dragging' : ''}`}
+      aria-label="Herné okno"
+      onPointerMove={(event) => {
+        if (event.pointerType === 'touch') return;
+        const box = event.currentTarget.getBoundingClientRect();
+        setPointer({
+          x: event.clientX - box.x,
+          y: event.clientY - box.y,
+          inScene:
+            event.target instanceof Element &&
+            Boolean(event.target.closest('.canvas-host')),
+        });
+      }}
+      onPointerLeave={() => {
+        setPointer(null);
+        setHovered(null);
+      }}
+    >
       <header className="game-topbar">
         <div className="game-brand">
           <span aria-hidden="true">↯</span> TUKABEL
         </div>
         <span className="scene-title">{scene.title}</span>
         <div className="game-tools">
-          <button
-            aria-pressed={showHotspots}
-            onClick={() => setShowHotspots((value) => !value)}
-          >
-            {showHotspots ? 'Skryť predmety' : 'Ukázať predmety'}
-          </button>
           <button
             ref={menuButton}
             aria-expanded={menu}
@@ -306,9 +374,6 @@ export function GameWindow({
           state={state}
           animations={content.animations}
           animationTrigger={animationTrigger}
-          hoveredId={currentHover?.id ?? null}
-          selectedId={null}
-          showHotspots={showHotspots}
           onHover={setHovered}
           onInteract={act}
           blocked={menu || Boolean(drag?.active)}
@@ -336,11 +401,11 @@ export function GameWindow({
           >
             {(dragItem?.label ?? item?.label)
               ? `${dragItem?.label ?? item?.label} → `
-              : `${verbLabel} · `}
+              : ''}
             {currentHover.label}
           </div>
         )}
-        {!state.dialogue && (
+        {!state.dialogue && Boolean(state.message) && (
           <div
             className="reaction"
             role="status"
@@ -452,30 +517,16 @@ export function GameWindow({
         )}
       </div>
       <div className="game-dock">
-        <fieldset
-          className="verb-controls"
-          disabled={Boolean(state.dialogue) || menu}
-        >
-          <legend className="sr-only">Herné akcie</legend>
-          {verbs.map((entry) => (
-            <button
-              key={entry.id}
-              aria-pressed={!selected && verb === entry.id}
-              onClick={() => {
-                setVerb(entry.id);
-                setSelectedItem(null);
-              }}
-            >
-              {entry.label}
-            </button>
-          ))}
+        <div className="inventory-tools">
+          <span className="eyebrow">VRECKÁ PLNÉ MOŽNOSTÍ</span>
           <button
             aria-expanded={objectsOpen}
+            disabled={Boolean(state.dialogue) || menu}
             onClick={() => setObjectsOpen((value) => !value)}
           >
             Objekty
           </button>
-        </fieldset>
+        </div>
         <Inventory
           content={content}
           state={state}
@@ -492,7 +543,10 @@ export function GameWindow({
             if (selected && selected !== id) {
               dispatch({ type: 'combine', first: selected, second: id });
               setSelectedItem(null);
-            } else setSelectedItem(selected === id ? null : id);
+            } else {
+              setSelectedItem(selected === id ? null : id);
+              dispatch({ type: 'inspectItem', itemId: id });
+            }
           }}
           onInspect={(id) => dispatch({ type: 'inspectItem', itemId: id })}
         />
@@ -502,13 +556,6 @@ export function GameWindow({
               <span>
                 Použiť: <strong>{item.label}</strong>
               </span>
-              <button
-                onClick={() =>
-                  dispatch({ type: 'inspectItem', itemId: item.id })
-                }
-              >
-                Preskúmať predmet
-              </button>
               <button onClick={() => setSelectedItem(null)}>
                 Zrušiť výber
               </button>
@@ -522,6 +569,38 @@ export function GameWindow({
           <span>{scene.title}</span>
         </div>
       </div>
+      {pointer?.inScene &&
+        currentHover &&
+        !drag?.active &&
+        !selected &&
+        !state.dialogue &&
+        !menu && (
+          <SceneCursor
+            key={currentHover.id}
+            hotspot={currentHover}
+            clips={content.animations ?? []}
+            x={pointer.x}
+            y={pointer.y}
+          />
+        )}
+      {pointer?.inScene &&
+        selected &&
+        item &&
+        !drag?.active &&
+        !state.dialogue &&
+        !menu && (
+          <div
+            className="drag-ghost held-item"
+            aria-hidden="true"
+            style={{ left: pointer.x, top: pointer.y }}
+          >
+            {item.image ? <img src={item.image} alt="" /> : item.icon}
+            <span>{item.label}</span>
+          </div>
+        )}
+      {pickups.map((pickup) => (
+        <PickupFlight key={pickup.id} pickup={pickup} onDone={finishPickup} />
+      ))}
       {drag?.active && dragItem && (
         <div
           className={`drag-ghost ${drag.target && !(drag.target.type === 'item' && drag.target.id === drag.id) ? 'valid-drop' : ''}`}

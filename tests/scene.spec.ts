@@ -92,7 +92,7 @@ test('complete adventure supports real inventory drags, scene drops, transitions
       () => document.documentElement.scrollHeight <= window.innerHeight + 1,
     ),
   ).toBe(true);
-  for (const selector of ['.play-area', '.inventory', '.verb-controls']) {
+  for (const selector of ['.play-area', '.inventory', '.inventory-tools']) {
     const box = await page.locator(selector).boundingBox();
     const game = await page.locator('.game-window').boundingBox();
     expect(box!.y).toBeGreaterThanOrEqual(game!.y);
@@ -101,34 +101,36 @@ test('complete adventure supports real inventory drags, scene drops, transitions
   expect(errors).toEqual([]);
 });
 
-test('keyboard alternatives, contextual verbs, dialogue focus and resizing remain usable', async ({
+test('context clicks, silent props, keyboard dialogue and resizing remain usable', async ({
   page,
   isMobile,
 }) => {
   await page.goto('/');
   await ready(page);
-  const hints = page.getByRole('button', { name: 'Ukázať predmety' });
-  await hints.focus();
-  await page.keyboard.press('Enter');
-  await expect(
-    page.getByRole('button', { name: 'Skryť predmety' }),
-  ).toHaveAttribute('aria-pressed', 'true');
-  await page.getByRole('button', { name: 'Preskúmať', exact: true }).click();
+  await expect(page.locator('.verb-controls')).toHaveCount(0);
+  for (const name of [
+    'Preskúmať',
+    'Vziať',
+    'Hovoriť',
+    'Použiť',
+    'Ukázať predmety',
+  ])
+    await expect(page.getByRole('button', { name, exact: true })).toHaveCount(
+      0,
+    );
   await (await object(page, 'Hrnček')).focus();
   await page.keyboard.press('Enter');
   await expect(reaction(page)).toContainText('Káva už vychladla');
-  await page.getByRole('button', { name: 'Vziať', exact: true }).click();
-  await (await object(page, 'Hrnček')).click();
-  await expect(reaction(page)).toContainText('Hrnček patrí správcovi');
-  await page.getByRole('button', { name: 'Kontextová akcia' }).click();
+  await (await object(page, 'Škrabanec')).click();
+  await expect(reaction(page)).toHaveCount(0);
   await (await object(page, 'Správca')).focus();
   await page.keyboard.press('Enter');
   await expect(
     page.getByRole('button', { name: 'Ako opravím router?' }),
   ).toBeFocused();
   await expect(
-    page.getByRole('button', { name: 'Vziať', exact: true }),
-  ).toBeDisabled();
+    page.getByRole('group', { name: 'Inventár', exact: true }),
+  ).toHaveAttribute('disabled', '');
   await page.keyboard.press('Enter');
   await expect(
     page.getByRole('button', { name: 'Môžem si vziať pásku?' }),
@@ -149,9 +151,6 @@ test('keyboard alternatives, contextual verbs, dialogue focus and resizing remai
   });
   await cable.focus();
   await page.keyboard.press('Enter');
-  await page
-    .getByRole('button', { name: 'Preskúmať predmet', exact: true })
-    .click();
   await expect(reaction(page)).toContainText('Prerušená izolácia');
   await page.keyboard.press('Escape');
   await expect(cable).toHaveAttribute('aria-pressed', 'false');

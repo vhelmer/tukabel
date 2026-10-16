@@ -72,7 +72,10 @@ function runRules(
 ): GameState {
   const rule = rules.find((entry) => matches(state, entry.when));
   return rule
-    ? { ...applyEffects(content, state, rule.effects), message: rule.message }
+    ? {
+        ...applyEffects(content, state, rule.effects),
+        message: rule.message ?? '',
+      }
     : { ...state, message: fallback };
 }
 
@@ -145,10 +148,5 @@ export function reduceGame(
       'Toto tu nepomôže. Predmet si radšej nechám.',
     );
   }
-  return runRules(
-    content,
-    state,
-    hotspot.actions[action.verb ?? hotspot.defaultVerb],
-    'Takto to nepôjde. Skús inú akciu.',
-  );
+  return runRules(content, state, hotspot.onClick, '');
 }

@@ -5,7 +5,6 @@ import type {
   CharacterAnimation,
   GameContent,
   Hotspot,
-  Verb,
 } from '../game/types';
 import { importAnimationFiles } from './api';
 import { AssetField, Field, SelectId } from './fields';
@@ -16,12 +15,6 @@ const kinds: Record<AnimationKind, string> = {
   talk: 'Rozprávanie',
   idle: 'Idle',
   expression: 'Výraz / reakcia',
-};
-const verbs: Record<Verb, string> = {
-  look: 'Preskúmať',
-  take: 'Vziať',
-  talk: 'Hovoriť',
-  use: 'Použiť',
 };
 
 export function AnimationPanel({
@@ -144,7 +137,8 @@ export function AnimationPanel({
       binding?.blink,
       binding?.idle,
       binding?.talk,
-      ...Object.values(binding?.onInteract ?? {}),
+      binding?.onClick,
+      binding?.onUse,
     ];
     if (
       content.scenes.some((scene) =>
@@ -163,11 +157,8 @@ export function AnimationPanel({
     const binding = { ...hotspot.animation };
     for (const key of ['idle', 'blink', 'talk'] as const)
       if (binding[key] === candidate.id) delete binding[key];
-    binding.onInteract = Object.fromEntries(
-      Object.entries(binding.onInteract ?? {}).filter(
-        ([, id]) => id !== candidate.id,
-      ),
-    );
+    if (binding.onClick === candidate.id) delete binding.onClick;
+    if (binding.onUse === candidate.id) delete binding.onUse;
     onCommit(
       (content.animations ?? []).filter((clip) => clip.id !== candidate.id),
       { ...hotspot, animation: binding },
@@ -322,23 +313,17 @@ export function AnimationPanel({
       </Field>
       <details>
         <summary>Animácia pri interakcii</summary>
-        {(Object.keys(verbs) as Verb[]).map((verb) => (
+        {(['onClick', 'onUse'] as const).map((key) => (
           <SelectId
-            key={verb}
-            label={`Pri akcii: ${verbs[verb]}`}
-            value={hotspot.animation?.onInteract?.[verb] ?? ''}
+            key={key}
+            label={key === 'onClick' ? 'Pri kliknutí' : 'Pri použití predmetu'}
+            value={hotspot.animation?.[key] ?? ''}
             values={compatible}
             empty="Žiadna"
             onChange={(id) =>
               onHotspot({
                 ...hotspot,
-                animation: {
-                  ...hotspot.animation,
-                  onInteract: {
-                    ...hotspot.animation?.onInteract,
-                    [verb]: id || undefined,
-                  },
-                },
+                animation: { ...hotspot.animation, [key]: id || undefined },
               })
             }
           />
