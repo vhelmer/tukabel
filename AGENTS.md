@@ -117,6 +117,27 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
   rezervovaný pro budoucí jiné funkce, pouze v prostředí serveru / `.env.local`.
   Klíče nikdy do `VITE_`, klienta nebo autorského JSON.
 
+## Dabing a lip-sync
+
+- `hotspot.animation.voice` je konfigurace hlasu ElevenLabs, `mouthShapes` mapuje
+  A–H/X na **nulové indexy** regionálního talk klipu. Chybějící otevřené tvary mají
+  fallback C → B → X → 0, zavřené A/X používají klid. Bez mapy běží původní talk.
+- `DialogueNode.actor` odkazuje na `{sceneId,hotspotId}`, `speech` obsahuje lokální
+  `audio`, volitelný `lipSync` a kopii `text`. Změněný text označí audio za zastaralé;
+  runtime jej nehraje. Nové audio musí odpojit staré časování.
+- ElevenLabs a Rhubarb patří pouze do `dev/speech.ts` za lokální editorové API.
+  `ELEVENLABS_API_KEY` a `RHUBARB_BIN` jsou serverové env hodnoty, nikdy `VITE_`.
+  Generaci spouštěj jen výslovně, bez automatických retry; testy mockují provider.
+- Vstup je WAV PCM 16-bit, max. 180 s / 20 MB. TTS PCM 22050 Hz se obalí WAV
+  hlavičkou bez FFmpeg. Rhubarb běží bez shellu s `-r phonetic`, timeoutem a
+  pevnými argumenty. Výsledky ukládej atomicky do `src/assets/speech/`.
+- Save a check musí ověřit skutečný WAV a cue JSON včetně délky a audio SHA-256.
+  Pozice úst vychází přímo z `HTMLAudioElement.currentTime`, oči mají vlastní hodiny.
+  Uklízej audio, fetch, visibility listener i původní nahrávku při změně repliky;
+  pozastav při menu/skrytí a respektuj blokovaný autoplay. Playhead neukládej do save.
+- Dabing rozšiřuje existující animační studio. Import/generace zapisuje assety;
+  vazby na repliky, hlasy a mapy se zapíší až přes Uložiť do projektu.
+
 ## Aktuální rozsah
 
 Dvě zkušební lokace: kontextové klikání, inventář a kombinace,
@@ -129,5 +150,7 @@ Animace: import PNG sekvencí a spritesheetů, náhled a úprava časování, n�
 mrkání, mluvení během dialogu, jednorázové reakce a procedurální idle pohyb.
 Samostatné animační štúdio a ateliér demonstrují současné Codex mrknutí, ústa
 během dialogu a idle pohyb; PNG a konfigurace jsou v Gitu.
-Žádné AI API ani FFmpeg nejsou potřeba. Formát a průchod jsou v README.
-Chůze postavy, zvuk a lip-sync zatím chybí.
+Dabing: vývojové ElevenLabs TTS nebo WAV import, Rhubarb phonetic, mapování tvarů úst
+na talk snímky. Ateliér obsahuje místní eSpeak nahrávku se skutečnou Rhubarb analýzou.
+Produkce potřebuje jen lokální assety; FFmpeg není potřeba. Formát a průchod jsou v README.
+Chůze postavy a generování finálního dabingu zatím chybí.

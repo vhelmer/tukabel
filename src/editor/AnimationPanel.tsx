@@ -6,6 +6,7 @@ import type {
   GameContent,
   Hotspot,
 } from '../game/types';
+import { VoicePanel, SpeechPanel } from './SpeechPanel';
 import { CombinedPreview } from './CharacterPreview';
 import { useImageSize } from './useImageSize';
 import { importAnimationFiles, detectRegion } from './api';
@@ -21,6 +22,8 @@ const kinds: Record<AnimationKind, string> = {
 
 export function AnimationPanel({
   active,
+  sceneId,
+  onNode,
   hotspot,
   content,
   assets,
@@ -29,6 +32,11 @@ export function AnimationPanel({
   onCommit,
 }: {
   active: boolean;
+  sceneId: string;
+  onNode: (
+    dialogueId: string,
+    node: import('../game/types').DialogueNode,
+  ) => void;
   hotspot: Hotspot;
   content: GameContent;
   assets: readonly string[];
@@ -41,9 +49,9 @@ export function AnimationPanel({
 }) {
   const source = hotspot.image!;
   const size = useImageSize(source);
-  const [previewMode, setPreviewMode] = useState<'clip' | 'combined'>(
-    'combined',
-  );
+  const [previewMode, setPreviewMode] = useState<
+    'clip' | 'combined' | 'speech'
+  >('combined');
   const compatible = (content.animations ?? []).filter(
     (clip) => clip.source === source,
   );
@@ -353,6 +361,7 @@ export function AnimationPanel({
             <option value="sway">Jemné kývanie</option>
           </select>
         </Field>
+        <VoicePanel hotspot={hotspot} content={content} onHotspot={onHotspot} />
         <details>
           <summary>Animácia pri interakcii</summary>
           {(['onClick', 'onUse'] as const).map((key) => (
@@ -394,8 +403,23 @@ export function AnimationPanel({
           >
             Vybraný klip
           </button>
+          <button
+            aria-pressed={previewMode === 'speech'}
+            onClick={() => setPreviewMode('speech')}
+          >
+            Dabing a lip-sync
+          </button>
         </div>
-        {previewMode === 'combined' ? (
+        {previewMode === 'speech' ? (
+          <SpeechPanel
+            active={active}
+            sceneId={sceneId}
+            hotspot={hotspot}
+            content={content}
+            onNode={onNode}
+            onAssets={onAssets}
+          />
+        ) : previewMode === 'combined' ? (
           <CombinedPreview
             active={active}
             hotspot={hotspot}

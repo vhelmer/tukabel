@@ -453,6 +453,22 @@ export default function DevWorkspace({
             {actor ? (
               <AnimationPanel
                 active={active}
+                sceneId={actor.scene.id}
+                onNode={(dialogueId, node) =>
+                  change({
+                    ...document,
+                    dialogues: document.dialogues.map((d) =>
+                      d.id === dialogueId
+                        ? {
+                            ...d,
+                            nodes: d.nodes.map((n) =>
+                              n.id === node.id ? node : n,
+                            ),
+                          }
+                        : d,
+                    ),
+                  })
+                }
                 key={`${actor.key}/${actor.hotspot.image}`}
                 hotspot={actor.hotspot}
                 content={document}

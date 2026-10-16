@@ -295,6 +295,16 @@ export function DialoguesPanel({
                   }
                 />
               </Field>
+              {node.speech && (
+                <p className="field-note">
+                  Dabing:{' '}
+                  {node.speech.text === node.text
+                    ? 'aktuálny'
+                    : 'text sa zmenil – nahrávka je zastaralá'}
+                  . Správa hlasu, zvuku a lip-syncu je v Animácie → Dabing a
+                  lip-sync.
+                </p>
+              )}
               <h3>Možnosti odpovede</h3>
               {node.choices.map((choice, index) => (
                 <details key={choice.id} className="choice-card" open>

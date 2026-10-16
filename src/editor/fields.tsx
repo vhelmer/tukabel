@@ -92,7 +92,9 @@ export function AssetField({
       <SelectId
         label={label}
         value={value}
-        values={assets.map((id) => ({ id }))}
+        values={assets
+          .filter((id) => /\.(svg|png|jpe?g|webp|avif)$/.test(id))
+          .map((id) => ({ id }))}
         onChange={onChange}
         empty={optional ? 'Bez obrázka' : undefined}
       />

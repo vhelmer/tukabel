@@ -71,3 +71,45 @@ export const detectRegion = (source: string, frames: readonly string[]) =>
     'POST',
     { source, frames },
   );
+
+export interface SpeechCatalog {
+  voices: { id: string; label: string }[];
+  hasMore: boolean;
+  models: {
+    id: string;
+    label: string;
+    style: boolean;
+    speakerBoost: boolean;
+    languages: string[];
+  }[];
+}
+export const getSpeechStatus = () =>
+  request<{ elevenLabs: boolean; rhubarb: boolean }>('speech/status');
+export const getSpeechCatalog = () =>
+  request<SpeechCatalog>('speech/catalog', 'POST', {});
+export const generateSpeech = (
+  text: string,
+  voice: import('../game/types').VoiceSettings,
+) =>
+  request<import('../game/types').DialogueSpeech & { assets: string[] }>(
+    'speech/generate',
+    'POST',
+    { text, voice, confirmed: true },
+  );
+export const analyzeSpeech = (audio: string) =>
+  request<{ lipSync: string; assets: string[] }>('speech/analyze', 'POST', {
+    audio,
+  });
+export async function uploadSpeech(text: string, file: File) {
+  if (file.size > 20 * 1024 * 1024)
+    throw new Error('WAV môže mať najviac 20 MB.');
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  let binary = '';
+  for (let offset = 0; offset < bytes.length; offset += 8192)
+    binary += String.fromCharCode(...bytes.subarray(offset, offset + 8192));
+  return request<import('../game/types').DialogueSpeech & { assets: string[] }>(
+    'speech/import',
+    'POST',
+    { text, data: btoa(binary) },
+  );
+}

@@ -150,6 +150,8 @@ mrkání, dialogové snímky a jemné idle pohyby lze přiřadit v editoru.
 - `dev/editorPlugin.ts` — lokální Vite middleware pro načtení/zápis a import assetů.
 - `dev/animationImport.ts` — lokální import PNG sekvencí a atlasů přes Sharp, obnova
   plátna oříznutých snímků, atomický zápis a kontrola rozměrů. Bez runtime závislosti.
+- `dev/speech.ts` — vývojové ElevenLabs TTS, WAV import, Rhubarb a validace souborů.
+- `src/game/speech.ts`, `src/ui/DialogueAudio.tsx` — časování tvarů a přehrávání lokálního dabingu.
 - `tests/` — pravidla, průchody hry, izolované testy editoru a produkčního buildu.
 
 React vlastní obsah návrhu, herní stav a UI. Pixi vykresluje a obsluhuje kliky
@@ -370,18 +372,90 @@ Náhled klipu i kombinace používá tentýž Pixi renderer jako hra; při přep
 Game Mode se editorový canvas odpojí, rozpracovaná nastavení zůstanou zachovaná.
 Ticker respektuje pauzu, skrytou záložku a reduced motion.
 
-Příprava na zvuk: `createAnimationPlayer.tick(deltaMs, speech)` přijímá boolean
-(pro dnešní dialogy) nebo `SpeechPlayback {active, timeMs, frameIndex?}`. Budoucí
-zvukový adaptér může posílat pozici nahrávky v milisekundách nebo přímo index
-snímku úst/visému; změna ani seek řeči neresetují mrkání. Vstup je pomíjivý, mimo
-herní save i autorský JSON. Dabing, ElevenLabs a lip-sync zatím nejsou implementované.
+Animace obrázků nepoužívají AI služby, video ani FFmpeg. Produkce přehrává místní
+obrázky, audio a časování bez editoru a zápisového API. Staré archivní soubory se
+automaticky nemažou. `OPENAI_API_KEY` zůstává rezervovaný pro jiné budoucí funkce.
 
-Animace nepoužívají AI služby, video ani FFmpeg. Produkce přehrává pouze místní
-obrázky bez editoru a zápisového API. Dřívější `generation` metadata je potřeba
-z definic klipů odstranit. Původní PNG se správně velkým plátnem, fps a vazby
-zůstávají použitelné; starší zmenšené video exporty nejprve připrav na zdrojovém
-plátně. Staré archivní soubory se automaticky nemažou. `OPENAI_API_KEY` zůstává volitelně
-v ignorovaném `.env.local` pro jiné budoucí funkce a animace jej nečtou.
+### Dabing ElevenLabs a Rhubarb Lip Sync
+
+1. Do ignorovaného `.env.local` přidej `ELEVENLABS_API_KEY=...` a restartuj Vite.
+   Klíč musí mít přístup k text-to-speech, seznamu hlasů a modelů. Nikdy nepoužívej
+   prefix `VITE_`. Žádný klíč nepatří do projektového JSON ani do produkce.
+2. Stáhni a rozbal [Rhubarb Lip Sync](https://github.com/DanielSWolf/rhubarb-lip-sync/releases)
+   pro svůj systém. Zachovej i jeho doprovodný adresář `res/`. Nastav
+   `RHUBARB_BIN=/absolutni/cesta/rhubarb` (Windows: `rhubarb.exe`), nebo jej přidej
+   do PATH; restartuj Vite. Ověřeno s 1.14.0. Binárku lze držet v ignorovaném `.local-tools/`; necommituje se a produkce ji nepotřebuje.
+3. V **Animácie** vyber postavu. Vlevo otevři **Hlas ElevenLabs**, stiskni
+   **Načítať hlasy a modely** a přiřaď Voice ID a Model ID. ID lze vložit i přímo;
+   katalog vrací prvních 100 hlasů. Výchozí model je `eleven_multilingual_v2`,
+   dostupný je i např. `eleven_flash_v2_5`. Vyber model/hlas vhodný pro slovenštinu.
+   Nastav stabilitu, podobnost, rychlost 0.7–1.2 a podle možností modelu výraznost
+   a speaker boost. Eleven v3 používá stabilitu 0 / 0.5 / 1. Server před generováním
+   ověří schopnosti modelu a odešle pouze podporované volitelné parametry.
+4. Otevři **Dabing a lip-sync**. Vyber repliku z existujících dialogů a uprav text
+   (nové uzly a větvení dál vytvářej v **Dialógy**). Potvrď zaškrtávátko placeného
+   generování této repliky a stiskni **Vygenerovať dabing ElevenLabs**. Po úspěchu
+   se potvrzení zruší; změna textu sama žádné API volání nevyvolává. Požadavky se
+   automaticky neopakují. Samotné načtení katalogu negeneruje audio.
+5. Alternativně **Nahrať WAV** importuje vlastní nahrávku bez API. Vstup je
+   nekomprimovaný WAV PCM 16-bit, mono/stereo, 8–48 kHz, max. 20 MB / 180 s.
+   Jiné kodeky nejprve exportuj do tohoto formátu. ElevenLabs vrací `pcm_22050`,
+   server doplní WAV hlavičku — není potřeba FFmpeg ani placený 44.1kHz WAV export.
+6. **Analyzovať Rhubarb** spustí místní CLI s `-r phonetic -f json --threads 2`.
+   Režim phonetic nevyžaduje anglický text a je vhodný pro slovenské repliky.
+   Analýza má timeout 120 s, běží bez shellu a dostává pouze ověřený lokální WAV.
+7. Vlevo v **Tvary úst Rhubarb** přiřaď snímky regionálního klipu **Rozprávanie**.
+   Vyplň alespoň X (klid) a C (otevřená ústa). A/B/C/D/E/F/G/H/X odpovídají
+   [tvarům Rhubarbu](https://github.com/DanielSWolf/rhubarb-lip-sync#mouth-shapes).
+   Chybějící A použije X → A → snímek 1; ostatní otevřené tvary C → B → X → snímek 1.
+   Bez mapování se při přehrávání zvuku použije běžná smyčka talk.
+8. Přehrávej/pozastavuj audio v náhledu, posouvej jeho čas a přibliž tvář. Oči
+   náhodně mrkají a idle pokračuje nezávisle. **Uložiť do projektu** zapíše vazby,
+   hlas a mapování do JSON. **Game Mode** okamžitě přehraje tentýž návrh.
+
+Audio a archivní údaje generování vznikají atomicky v `src/assets/speech/<uuid>/`.
+Analýza ukládá nový `track.lipsync.json`; původní asset se nepřepisuje. Commitni nové
+adresáře i `project.json`. Vrácení úpravy/odpojení dabingu soubory nemaže.
+Konfigurace repliky vypadá například takto:
+
+```json
+{
+  "actor": { "sceneId": "animation-lab", "hotspotId": "blink-character" },
+  "speech": {
+    "audio": "speech/animation-demo/audio.wav",
+    "lipSync": "speech/animation-demo/track.lipsync.json",
+    "text": "Ahoj. Mrkám a rozprávam. Oči a ústa fungujú nezávisle."
+  }
+}
+```
+
+`actor` určuje konkrétní postavu pro daný uzel; při generování/importu se přiřadí
+vybraná postava. **Priradiť hovoriacu postavu** ji změní bez generování audia.
+`speech.text` je kopie namluveného textu: po editaci repliky editor ukáže upozornění
+a hra staré audio nepřehraje. Nová generace/import staré časování odpojí. Uložit lze
+záměrně i rozpracovaný zastaralý dabing. Save/check ověřují skutečný WAV, délku a
+SHA-256 vazbu synchronizačního souboru na audio, lokální cesty, postavu a indexy snímků.
+
+`DialogueAudio.tsx` poskytuje Pixi živý `SpeechPlayback` z `HTMLAudioElement.currentTime`.
+Nevznikají druhé hodiny úst ani React render pro každý snímek. Pauza a seek drží
+odpovídající tvar; otevření menu nebo skrytí záložky pozastaví zvuk. Přeskočení,
+konec nahrávky, změna uzlu, ukončení dialogu a opuštění režimu zastaví původní audio.
+Blokované automatické přehrání nabídne ruční spuštění; chybějící audio zachová text.
+Při chybě časování se použije běžná talk animace. Bez dabingu zůstává původní
+textový dialog. Audio playhead není součástí uloženého herního postupu; load začne
+repliku znovu. Reduced motion ponechá původní kresbu, audio se přehrává dál.
+
+**Lokální ukázka:** Animačný ateliér obsahuje slovenskou nahrávku vytvořenou
+lokálně přes eSpeak NG, skutečnou analýzu Rhubarb 1.14.0 (34 cue / 4.67 s) a mapování
+na existující tři pózy úst. Nejde o ukázku kvality ElevenLabs ani o kompletní sadu
+kreslených fonémů. WAV reprodukuje `python3 experiments/woman-blink/generate_voice.py`
+(systémová knihovna `libespeak-ng`), nové časování vytvoří editor. ElevenLabs je
+v automatických testech mockovaný; pro ověření kvality skutečného hlasu je potřeba
+vlastní API klíč a ručně spuštěná generace.
+
+API vychází z oficiálního [TTS rozhraní ElevenLabs](https://elevenlabs.io/docs/api-reference/text-to-speech/convert),
+[katalogu modelů](https://elevenlabs.io/docs/api-reference/models/list) a
+[CLI Rhubarbu](https://github.com/DanielSWolf/rhubarb-lip-sync#command-line-options).
 
 ### Izolovaný experiment: programové mrknutí `woman.png`
 

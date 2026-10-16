@@ -3,6 +3,7 @@ import { GameCanvas } from '../ui/GameCanvas';
 import { assetUrl } from '../game/assets';
 import type {
   AnimationDefinition,
+  SceneSpeechPlayback,
   AnimationPreviewState,
   CharacterAnimation,
   GameState,
@@ -27,6 +28,7 @@ export function CharacterPreview({
   binding,
   clips,
   preview,
+  speechPlayback,
   playing = false,
 }: {
   active?: boolean;
@@ -34,6 +36,7 @@ export function CharacterPreview({
   binding: CharacterAnimation;
   clips: readonly AnimationDefinition[];
   preview?: AnimationPreviewState;
+  speechPlayback?: SceneSpeechPlayback;
   playing?: boolean;
 }) {
   const size = useImageSize(source),
@@ -94,6 +97,16 @@ export function CharacterPreview({
         : undefined,
     [preview],
   );
+  const clock = useMemo(
+    () =>
+      speechPlayback
+        ? {
+            ...speechPlayback,
+            actor: { sceneId: 'character-preview', hotspotId: 'actor' },
+          }
+        : undefined,
+    [speechPlayback],
+  );
   return (
     <div className="character-preview">
       <Field label="Priblíženie postavy">
@@ -112,6 +125,7 @@ export function CharacterPreview({
             state={state}
             animations={animations}
             animationPreview={resolvedPreview}
+            speechPlayback={clock}
             blocked={!playing}
             onHover={noop}
             onInteract={noop}
@@ -128,7 +142,11 @@ export function CombinedPreview({
   active,
   hotspot,
   clips,
+  speechPlayback,
+  onPlaybackChange,
 }: {
+  speechPlayback?: SceneSpeechPlayback;
+  onPlaybackChange?: (playing: boolean) => void;
   active: boolean;
   hotspot: import('../game/types').Hotspot;
   clips: readonly AnimationDefinition[];
@@ -178,10 +196,16 @@ export function CombinedPreview({
         binding={binding}
         clips={clips}
         preview={preview}
+        speechPlayback={speechPlayback}
         playing={playing}
       />
       <div className="row-actions">
-        <button onClick={() => setPlaying(!playing)}>
+        <button
+          onClick={() => {
+            setPlaying(!playing);
+            onPlaybackChange?.(!playing);
+          }}
+        >
           {playing ? 'Pozastaviť kombináciu' : 'Prehrať kombináciu'}
         </button>
         <button
