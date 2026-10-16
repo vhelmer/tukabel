@@ -178,6 +178,47 @@ export function SceneInspector({
               onHotspot({ ...hotspot, image: image || undefined })
             }
           />
+          <label>
+            Klikateľná oblasť
+            <select
+              aria-label="Klikateľná oblasť"
+              value={hotspot.hitTest ?? 'alpha'}
+              onChange={(event) =>
+                onHotspot({
+                  ...hotspot,
+                  hitTest:
+                    event.target.value === 'bounds' ? 'bounds' : undefined,
+                })
+              }
+            >
+              <option value="alpha">
+                Automaticky · viditeľné pixely obrázka
+              </option>
+              <option value="bounds">Ručný obdĺžnik · celý rám hotspotu</option>
+            </select>
+          </label>
+          {hotspot.image && hotspot.hitTest !== 'bounds' && (
+            <label>
+              Prah nepriehľadnosti (1–255)
+              <input
+                type="number"
+                min={1}
+                max={255}
+                step={1}
+                value={hotspot.alphaThreshold ?? 32}
+                onChange={(event) => {
+                  const value = Number(event.target.value);
+                  if (Number.isInteger(value) && value >= 1 && value <= 255)
+                    onHotspot({ ...hotspot, alphaThreshold: value });
+                }}
+              />
+            </label>
+          )}
+          <p className="field-note">
+            Bez obrázka je klikateľný celý rám. Automatický režim prepúšťa
+            priehľadné pixely na objekty pod nimi; predvolený prah je 32/255.
+            Ručný obdĺžnik má prednosť pred priehľadnosťou.
+          </p>
           {hotspot.image && (
             <AnimationPanel
               key={hotspot.image}

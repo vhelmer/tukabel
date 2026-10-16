@@ -162,6 +162,8 @@ export function validateProject(
           'image',
           'rotation',
           'imageFit',
+          'hitTest',
+          'alphaThreshold',
           'tintWhen',
           'animation',
         ])
@@ -179,6 +181,18 @@ export function validateProject(
         !['contain', 'stretch'].includes(String(hotspot.imageFit))
       )
         errors.push(`${key}: imageFit must be contain or stretch`);
+      if (
+        hotspot.hitTest !== undefined &&
+        !['alpha', 'bounds'].includes(String(hotspot.hitTest))
+      )
+        errors.push(`${key}: hitTest must be alpha or bounds`);
+      if (
+        hotspot.alphaThreshold !== undefined &&
+        (!Number.isInteger(hotspot.alphaThreshold) ||
+          Number(hotspot.alphaThreshold) < 1 ||
+          Number(hotspot.alphaThreshold) > 255)
+      )
+        errors.push(`${key}: alphaThreshold must be an integer within 1–255`);
       if (
         object(hotspot.bounds, `${key}.bounds`, ['x', 'y', 'width', 'height'])
       )

@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import type { PointerEvent } from 'react';
+import { assetUrl } from '../game/assets';
+import { hitTestHotspot } from '../game/hitTest';
+import { useAlphaMasks } from './useAlphaMasks';
 import { SceneImage } from './SceneImage';
 import { centre, isInsideScene } from '../game/transforms';
 import type { Bounds, Point } from '../game/transforms';
@@ -40,6 +43,18 @@ export function EditorStage({
   const [zoom, setZoom] = useState(1);
   const [helpers, setHelpers] = useState(true);
   const [screenScale, setScreenScale] = useState(1);
+  const { masks, error: maskError } = useAlphaMasks(scene);
+  const [hoveredId, setHoveredId] = useState('');
+  const pick = (p: Point) =>
+    [...scene.hotspots]
+      .reverse()
+      .find((hotspot) =>
+        hitTestHotspot(
+          hotspot,
+          p,
+          hotspot.image ? masks?.get(assetUrl(hotspot.image)) : undefined,
+        ),
+      );
   const selected = scene.hotspots.find((h) => h.id === selectedId);
   useEffect(() => {
     const element = svg.current;
@@ -110,7 +125,11 @@ export function EditorStage({
   function move(event: PointerEvent<SVGElement>) {
     const current = gesture.current,
       end = point(event);
-    if (!current || current.pointerId !== event.pointerId || !end) return;
+    if (!current) {
+      setHoveredId(end && !drawing && !panning ? (pick(end)?.id ?? '') : '');
+      return;
+    }
+    if (current.pointerId !== event.pointerId || !end) return;
     const delta = { x: end.x - current.start.x, y: end.y - current.start.y };
     if (current.mode === 'move')
       current.bounds = moveBounds(
@@ -267,8 +286,13 @@ export function EditorStage({
           ? 'Potiahni v scéne a vytvor novú oblasť.'
           : panning
             ? 'Na dotyku potiahni scénu pre posun zväčšeného výrezu. Myšou použi posuvníky alebo koliesko. Vypni Posun pohľadu pre úpravy objektov.'
-            : 'Ťahaj objekt alebo rohový úchyt. Kruh nad rámom otáča; Shift zarovnáva po 15°. Escape zruší ťah. Pomôcky možno skryť pre čistý náhľad. Zobrazené sú aj podmienene skryté objekty.'}
+            : 'Ťahaj viditeľnú časť objektu. Ľavý horný úchyt presúva celý rám, pravý dolný mení veľkosť. Objekt môžeš vybrať aj zo zoznamu. Kruh nad rámom otáča; Shift zarovnáva po 15°. Escape zruší ťah. Pomôcky možno skryť pre čistý náhľad. Zobrazené sú aj podmienene skryté objekty.'}
       </p>
+      {maskError ? (
+        <p role="alert">Klikateľné pixely sa nepodarilo načítať: {maskError}</p>
+      ) : (
+        !masks && <p role="status">Načítavam klikateľné oblasti…</p>
+      )}
       <div className="editor-stage-viewport">
         <div
           className="editor-stage-surface"
@@ -278,12 +302,22 @@ export function EditorStage({
             ref={svg}
             className={`editor-stage ${drawing ? 'drawing' : ''} ${panning ? 'panning' : ''}`}
             viewBox={`0 0 ${scene.width} ${scene.height}`}
-            style={{ aspectRatio: `${scene.width} / ${scene.height}` }}
+            style={{
+              aspectRatio: `${scene.width} / ${scene.height}`,
+              cursor: !drawing && !panning && hoveredId ? 'move' : undefined,
+            }}
+            data-hovered-id={hoveredId}
             aria-label="Vizuálny editor lokácie"
             onPointerDown={(e) => {
               if (drawing) begin(e, 'draw');
+              else if (!panning) {
+                const p = point(e);
+                const hotspot = p && pick(p);
+                if (hotspot) begin(e, 'move', hotspot);
+              }
             }}
             onPointerMove={move}
+            onPointerLeave={() => setHoveredId('')}
             onPointerUp={(e) => finish(e)}
             onPointerCancel={(e) => finish(e, true)}
             onLostPointerCapture={(e) => finish(e, true)}
@@ -306,9 +340,6 @@ export function EditorStage({
                   key={hotspot.id}
                   data-hotspot-id={hotspot.id}
                   transform={`rotate(${angle} ${pivot.x} ${pivot.y})`}
-                  onPointerDown={(e) => {
-                    if (!drawing && !panning) begin(e, 'move', hotspot);
-                  }}
                 >
                   {hotspot.image && (
                     <SceneImage
@@ -329,7 +360,7 @@ export function EditorStage({
                         ? undefined
                         : { fill: 'transparent', stroke: 'none' }
                     }
-                    pointerEvents={drawing ? 'none' : 'all'}
+                    pointerEvents="none"
                   />
                   {helpers && (
                     <text
@@ -351,6 +382,19 @@ export function EditorStage({
               <g
                 transform={`rotate(${active.rotation} ${activePivot.x} ${activePivot.y})`}
               >
+                <rect
+                  x={active.bounds.x - handle / 2}
+                  y={active.bounds.y - handle / 2}
+                  width={handle}
+                  height={handle}
+                  className="resize-handle"
+                  style={{ cursor: 'move' }}
+                  data-move-id={active.id}
+                  aria-label="Presunúť vybraný objekt"
+                  onPointerDown={(e) => {
+                    if (!drawing) begin(e, 'move', active);
+                  }}
+                />
                 <rect
                   x={active.bounds.x + active.bounds.width - handle / 2}
                   y={active.bounds.y + active.bounds.height - handle / 2}

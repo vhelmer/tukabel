@@ -1,6 +1,9 @@
 import { expect, test } from '@playwright/test';
 // URL assets cannot be imported by Node. The browser suite validates the actual
 // content bundle; these tests exercise the same reducer with a minimal fixture.
+import { hitTestHotspot, hitTestLocal } from '../src/game/hitTest';
+import { rotateAround, centre } from '../src/game/transforms';
+import type { Hotspot } from '../src/game/types';
 import { initialState, matches, reduceGame } from '../src/game/state';
 import { decodeSave, loadGame, saveGame, SAVE_KEY } from '../src/game/storage';
 import { validateContent } from '../src/game/validateContent';
@@ -497,6 +500,11 @@ test('cursor and portrait validation rejects missing links, mismatched sources a
     { cursorSize: 0 },
     { cursorOffset: [-1, 4] },
     { cursor: 'unknown' },
+    { hitTest: 'polygon' },
+    { alphaThreshold: 0 },
+    { alphaThreshold: 256 },
+    { alphaThreshold: 12.5 },
+    { alphaThreshold: '32' },
     { onClick: null },
     { onClick: [{ message: 5 }] },
     { actions: { look: [] } },
@@ -515,4 +523,59 @@ test('cursor and portrait validation rejects missing links, mismatched sources a
   expect(validateProject(invalidPortrait).join('\n')).toContain(
     'local image asset',
   );
+});
+
+test('alpha hits use source pixels, threshold, placement, rotation and the visual pose', () => {
+  const mask = {
+    width: 4,
+    height: 2,
+    alpha: new Uint8Array([0, 31, 32, 255, 0, 0, 128, 0]),
+  };
+  const hotspot: Hotspot = {
+    id: 'sprite',
+    label: 'Sprite',
+    image: 'sprite.png',
+    bounds: { x: 100, y: 200, width: 80, height: 80 },
+    onClick: [],
+  };
+  // Contain places this 2:1 source at y=20 inside its square frame.
+  expect(hitTestLocal(hotspot, { x: 70, y: 10 }, mask)).toBe(false);
+  expect(hitTestLocal(hotspot, { x: 10, y: 30 }, mask)).toBe(false);
+  expect(hitTestLocal(hotspot, { x: 30, y: 30 }, mask)).toBe(false);
+  expect(hitTestLocal(hotspot, { x: 50, y: 30 }, mask)).toBe(true);
+  expect(
+    hitTestLocal({ ...hotspot, alphaThreshold: 129 }, { x: 50, y: 50 }, mask),
+  ).toBe(false);
+  expect(
+    hitTestLocal({ ...hotspot, alphaThreshold: 128 }, { x: 50, y: 50 }, mask),
+  ).toBe(true);
+  expect(hitTestLocal(hotspot, { x: 80, y: 30 }, mask)).toBe(false);
+  expect(hitTestLocal(hotspot, { x: 70, y: 30 })).toBe(false);
+  expect(
+    hitTestLocal({ ...hotspot, hitTest: 'bounds' }, { x: 10, y: 10 }),
+  ).toBe(true);
+  expect(hitTestLocal({ ...hotspot, image: undefined }, { x: 10, y: 10 })).toBe(
+    true,
+  );
+  expect(
+    hitTestLocal({ ...hotspot, imageFit: 'stretch' }, { x: 70, y: 10 }, mask),
+  ).toBe(true);
+  const rotated = { ...hotspot, rotation: 37 };
+  const world = rotateAround({ x: 170, y: 230 }, centre(hotspot.bounds), 37);
+  expect(hitTestHotspot(rotated, world, mask)).toBe(true);
+  expect(
+    hitTestHotspot(
+      rotated,
+      rotateAround({ x: 110, y: 230 }, centre(hotspot.bounds), 37),
+      mask,
+    ),
+  ).toBe(false);
+  const pose = { rotation: 15, scaleX: 1.2, scaleY: 1.1 };
+  const posed = rotateAround(
+    { x: 40 + 30 * pose.scaleX, y: 80 - 50 * pose.scaleY },
+    { x: 40, y: 80 },
+    pose.rotation,
+  );
+  expect(hitTestLocal(hotspot, posed, mask, pose)).toBe(true);
+  expect(hitTestLocal(hotspot, { x: -1, y: 30 }, mask)).toBe(false);
 });

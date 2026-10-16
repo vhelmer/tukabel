@@ -1,4 +1,4 @@
-import { Container, Graphics, Rectangle, Sprite } from 'pixi.js';
+import { Container, Graphics, Sprite } from 'pixi.js';
 import type { Texture } from 'pixi.js';
 import type {
   AnimationDefinition,
@@ -9,6 +9,9 @@ import type {
 } from './types';
 import { matches } from './state';
 import { createAnimationPlayer, isCharacterSpeaking } from './animation';
+import { hitTestLocal, hotspotLocalPoint } from './hitTest';
+import type { AlphaMask } from './hitTest';
+import type { Point } from './transforms';
 import { imagePlacement, radians } from './transforms';
 
 // A background and a few interactive regions, rather than a general game engine.
@@ -19,6 +22,7 @@ export function createScene(
   render: () => void,
   textures: ReadonlyMap<string, Texture>,
   animations: readonly AnimationDefinition[] = [],
+  masks: ReadonlyMap<string, AlphaMask> = new Map(),
 ) {
   const root = new Container();
   const background = new Sprite(texture);
@@ -34,10 +38,22 @@ export function createScene(
     player: ReturnType<typeof createAnimationPlayer>;
     lastFrame: string;
     placement: ReturnType<typeof imagePlacement>;
+    hit: { frame: string; visual?: Container };
   }[] = [];
   let state: GameState | null = null;
   let paused = false;
+  let pointer: Point | null = null;
+  let hovered: Hotspot | null = null;
+  const hover = (hotspot: Hotspot | null) => {
+    if (hotspot?.id === hovered?.id) return;
+    hovered = hotspot;
+    callbacks.onHover(hotspot);
+  };
   const regions = new Map<string, Container>();
+  const hits = new Map<
+    string,
+    { contains: (x: number, y: number) => boolean }
+  >();
   const indicators = new Map<string, Graphics>();
   for (const hotspot of definition.hotspots) {
     const { x, y, width, height } = hotspot.bounds;
@@ -47,7 +63,26 @@ export function createScene(
     region.rotation = radians(hotspot.rotation ?? 0);
     region.eventMode = 'static';
     region.cursor = 'none';
-    region.hitArea = new Rectangle(0, 0, width, height);
+    const hit: { frame: string; visual?: Container } = {
+      frame: hotspot.image ?? '',
+    };
+    const hitArea = {
+      contains: (x: number, y: number) =>
+        hitTestLocal(
+          hotspot,
+          { x, y },
+          masks.get(hit.frame),
+          hit.visual
+            ? {
+                rotation: (hit.visual.rotation * 180) / Math.PI,
+                scaleX: hit.visual.scale.x,
+                scaleY: hit.visual.scale.y,
+              }
+            : undefined,
+        ),
+    };
+    region.hitArea = hitArea;
+    hits.set(hotspot.id, hitArea);
 
     if (hotspot.image) {
       const sprite = new Sprite(textures.get(hotspot.image));
@@ -63,6 +98,7 @@ export function createScene(
       const visual = new Container();
       visual.pivot.set(width / 2, height);
       visual.position.set(width / 2, height);
+      hit.visual = visual;
       visual.eventMode = 'none';
       visual.addChild(sprite);
       region.addChild(visual);
@@ -84,6 +120,7 @@ export function createScene(
           player: createAnimationPlayer(hotspot.animation, animations),
           lastFrame: hotspot.image,
           placement,
+          hit,
         });
     }
     if (hotspot.tintWhen) {
@@ -95,8 +132,8 @@ export function createScene(
       indicators.set(hotspot.id, indicator);
       region.addChild(indicator);
     }
-    region.on('pointerover', () => callbacks.onHover(hotspot));
-    region.on('pointerout', () => callbacks.onHover(null));
+    region.on('pointerover', () => hover(hotspot));
+    region.on('pointerout', () => hover(null));
     region.on('pointertap', (event) => {
       if (event.button === 0) callbacks.onInteract(hotspot);
     });
@@ -104,8 +141,28 @@ export function createScene(
     root.addChild(region);
   }
 
+  // The same predicate serves Pixi, inventory drops and stationary hover.
+  function pick(point: Point): Hotspot | null {
+    if (!state || state.dialogue) return null;
+    for (let i = definition.hotspots.length - 1; i >= 0; i--) {
+      const hotspot = definition.hotspots[i]!;
+      if (!regions.get(hotspot.id)?.visible) continue;
+      const local = hotspotLocalPoint(hotspot, point);
+      if (hits.get(hotspot.id)!.contains(local.x, local.y)) return hotspot;
+    }
+    return null;
+  }
+  function syncHover() {
+    hover(pointer && !paused ? pick(pointer) : null);
+  }
+
   return {
     root,
+    hoverAt(point: Point | null) {
+      pointer = point;
+      syncHover();
+    },
+    pick,
     get hasActiveAnimations() {
       return (
         !paused &&
@@ -140,6 +197,8 @@ export function createScene(
               : base;
           actor.sprite.width = actor.placement.width;
           actor.sprite.height = actor.placement.height;
+          actor.hit.frame =
+            actor.sprite.texture === next ? frame : actor.hotspot.image!;
           actor.lastFrame = frame;
         }
         if (actor.hotspot.animation?.motion === 'breath')
@@ -149,6 +208,7 @@ export function createScene(
           actor.visual.rotation =
             Math.sin((sample.elapsedMs * Math.PI * 2) / 4000) * 0.015;
       }
+      syncHover();
     },
     resetMotion() {
       for (const actor of actors) {
@@ -158,7 +218,9 @@ export function createScene(
         actor.sprite.width = actor.placement.width;
         actor.sprite.height = actor.placement.height;
         actor.lastFrame = actor.hotspot.image!;
+        actor.hit.frame = actor.hotspot.image!;
       }
+      syncHover();
       render();
     },
     update(nextState: GameState, blocked = false) {
@@ -171,6 +233,7 @@ export function createScene(
         const indicator = indicators.get(hotspot.id);
         if (indicator) indicator.visible = matches(state, hotspot.tintWhen);
       }
+      syncHover();
       render();
     },
     resize(width: number, height: number) {

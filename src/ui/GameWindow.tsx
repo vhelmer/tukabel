@@ -12,7 +12,8 @@ import { SceneCursor, PickupFlight } from './SceneCursor';
 import type { Pickup } from './SceneCursor';
 import { matches } from '../game/state';
 import { scenePoint } from '../game/coordinates';
-import { containsPoint, rotatedBounds } from '../game/transforms';
+import type { ScenePicker } from '../game/hitTest';
+import { rotatedBounds } from '../game/transforms';
 import { saveGame, loadGame } from '../game/storage';
 import { GameCanvas } from './GameCanvas';
 import { Inventory } from './Inventory';
@@ -70,6 +71,10 @@ export function GameWindow({
     [],
   );
   const viewport = useRef<HTMLDivElement>(null);
+  const picker = useRef<ScenePicker | null>(null);
+  const registerPicker = useCallback((next: ScenePicker | null) => {
+    picker.current = next;
+  }, []);
   const menuButton = useRef<HTMLButtonElement>(null);
   const [areaSize, setAreaSize] = useState({ width: 0, height: 0 });
   useEffect(() => {
@@ -235,11 +240,7 @@ export function GameWindow({
         event.clientX,
         event.clientY,
       );
-      const hotspot =
-        point &&
-        [...hotspots]
-          .reverse()
-          .find((hotspot) => containsPoint(hotspot, point));
+      const hotspot = point && picker.current?.(point);
       return hotspot ? { type: 'hotspot', id: hotspot.id } : null;
     };
     const move = (event: PointerEvent) => {
@@ -374,6 +375,7 @@ export function GameWindow({
           state={state}
           animations={content.animations}
           animationTrigger={animationTrigger}
+          onPickerReady={registerPicker}
           onHover={setHovered}
           onInteract={act}
           blocked={menu || Boolean(drag?.active)}

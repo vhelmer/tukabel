@@ -25,8 +25,9 @@ hostingu i v podadresáři. `file://` není podporované.
 
 1. V lokální aplikaci přepni **Dev Mode**. Editor načte aktuální zdroj a jeho revizi.
 2. V **Lokácie** vyber nebo vytvoř lokaci. Přiřaď pozadí a původní rozměry.
-   **Nakresliť hotspot** vytvoří obdélník tažením v obrázku. Klik oblast vybere,
-   tažení ji posune, dolní pravý roh proporcionálně mění velikost obrázku.
+   **Nakresliť hotspot** vytvoří obdélník tažením v obrázku. Klik na viditelnou část obrázku objekt vybere a tažení jej posune.
+   Levý horní úchyt přesouvá celý rám (i u průhledného assetu), dolní pravý roh
+   proporcionálně mění velikost obrázku. Pro výběr překrytého objektu použij seznam.
    Kruh nad rámem otáčí kolem středu; Shift zarovnává po 15°. Escape nebo zrušení
    dotyku vrátí rozpracovaný tah. Každý dokončený tah je jedna úprava ve Späť/Znova.
    Číselná šířka/výška v inspektoru se také mění společně. **Rám podľa obrázka**
@@ -126,7 +127,9 @@ mrkání, dialogové snímky a jemné idle pohyby lze přiřadit v editoru.
 - `src/game/state.ts` — původní čistý reducer; stejná pravidla v náhledu i produkci.
 - `src/game/storage.ts` — save/load postupu; nikdy neukládá definice obsahu.
 - `src/game/createScene.ts` — Pixi pozadí, sprity, hotspoty a stavové indikátory.
-- `src/game/transforms.ts` — společné proporce, natočení a geometrie kliků i dropů.
+- `src/game/transforms.ts` — společné proporce, natočení a geometrie rámů.
+- `src/game/hitTest.ts`, `alphaMasks.ts` — sdílené alfa cílení a cache pixelů pro
+  Pixi, inventární dropy a SVG editor.
 - `src/game/animation.ts` — vizuální hodiny, náhodné mrkání a priorita klipů.
 - `src/ui/` — herní okno, životní cyklus canvasu, dialogy, inventář a pointer drag/drop.
 - `src/editor/` — pouze vývojový editor, SVG autorování oblastí, formuláře a graf.
@@ -179,6 +182,20 @@ umožní záměrné protažení. `rotation` jsou stupně po směru hodin kolem s
 rotuje se obrázek i klikací oblast, včetně cílení inventáře. Natočený rám musí
 zůstat uvnitř lokace. Starší objekty bez `imageFit` nyní zachovávají nativní proporce
 i ve hře; pro původní protažený vzhled nastav explicitně `stretch`.
+Obrázky automaticky reagují jen na pixely s alfa hodnotou alespoň 32/255;
+průhledné okraje, díry a volný prostor při `contain` propouštějí hover, kliky
+i dropy na další objekt pod nimi. To platí pro PNG/WebP i rasterizované SVG.
+V inspektoru **Klikateľná oblasť** přepíná automatickou masku a ruční obdélník:
+`hitTest: "bounds"` dává přednost celému autorskému `bounds` včetně rotace.
+Bez obrázku se používá obdélník vždy; `hitTest: "alpha"` nebo chybějící nastavení
+volí automatickou masku. `alphaThreshold` lze nastavit na celé číslo 1–255.
+Editor používá stejnou detekci pro výběr i hover; rámy a popisky ji nepřekrývají,
+transformační úchyty jsou samostatné ovládací prvky. Ve hře maska sleduje právě
+vykreslený snímek i procedurální pohyb. Alfa data se čtou jednou na URL, sdílejí
+mezi režimy a drží v cache s limitem 32 MiB mimo reference aktivních scén.
+Čtení canvasu ani GPU neprobíhá při pointer událostech. Chyba načtení nikdy
+nezmění průhledný obrázek v obdélníkový cíl.
+
 Inventární `image` je volitelný. `tintWhen`
 rozsvítí jednoduchý zelený indikátor. ID obrázků jsou cesty relativně k `src/assets/`.
 Dialog má `start` a uzly `id/speaker/text/choices`; odpověď má `id/text`, případně
@@ -222,6 +239,9 @@ Transformační testy navíc ověřují PNG/WebP/SVG, rotaci, zamknuté proporce
 deformaci, undo/redo a rušení tahů. Porovnávají obraz SVG editoru a Pixi i po změně
 viewportu / zoomu a ověřují kliky a inventární dropy na otočenou oblast. Validace
 obsahu používá vlastní dočasnou Vite cache, aby nenarušila současně běžící hru.
+`tests/alpha.spec.ts` vytváří překryté PNG s velkými průhlednými okraji a několika
+úrovněmi alfa. Ověřuje hover, klik, inventární drop, práh po save/reloadu, ruční
+rám, zoom editoru, aktuální animační snímek i reduced motion na myši a dotyku.
 Animační testy importují skutečné Codex PNG i atlas, porovnávají všechny pixely,
 kontrolují velikosti pláten, časování, pořadí, chyby a atomický zápis. V prohlížeči
 ověřují náhled, reload, mrkání, interakční reakce a dialogové přehrávání v Pixi

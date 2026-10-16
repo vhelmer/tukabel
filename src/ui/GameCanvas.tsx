@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { Application, Assets } from 'pixi.js';
 import type { Texture } from 'pixi.js';
+import { scenePoint } from '../game/coordinates';
+import { loadAlphaMask } from '../game/alphaMasks';
+import type { ScenePicker } from '../game/hitTest';
 import { createScene } from '../game/createScene';
 import type {
   AnimationDefinition,
@@ -16,6 +19,7 @@ interface GameCanvasProps extends SceneCallbacks {
   animations?: readonly AnimationDefinition[];
   blocked?: boolean;
   animationTrigger?: AnimationTrigger | null;
+  onPickerReady?: (picker: ScenePicker | null) => void;
 }
 
 const noAnimations: readonly AnimationDefinition[] = [];
@@ -32,7 +36,12 @@ function MountedCanvas({
   animationTrigger,
   onHover,
   onInteract,
+  onPickerReady,
 }: GameCanvasProps) {
+  const currentState = useRef({ state, blocked });
+  useEffect(() => {
+    currentState.current = { state, blocked };
+  }, [state, blocked]);
   const lastTrigger = useRef(0);
   const callbacks = useRef({ onHover, onInteract });
   useEffect(() => {
@@ -52,10 +61,15 @@ function MountedCanvas({
     let disposed = false;
     let initialized = false;
     let destroyed = false;
+    let pickerPublished = false;
     let observer: ResizeObserver | undefined;
     let stopPlayback: (() => void) | undefined;
 
     const destroy = () => {
+      if (pickerPublished) {
+        onPickerReady?.(null);
+        pickerPublished = false;
+      }
       observer?.disconnect();
       stopPlayback?.();
       if (initialized && !destroyed) {
@@ -101,11 +115,38 @@ function MountedCanvas({
             ),
           ]),
         ];
-        const loaded = await Promise.all(
-          urls.map(
-            async (url) => [url, await Assets.load<Texture>(url)] as const,
-          ),
+        const maskUrls = new Set(
+          scene.hotspots.flatMap((hotspot) => {
+            if (!hotspot.image || hotspot.hitTest === 'bounds') return [];
+            const binding = hotspot.animation;
+            return [
+              hotspot.image,
+              ...animations
+                .filter((clip) =>
+                  [
+                    binding?.idle,
+                    binding?.blink,
+                    binding?.talk,
+                    binding?.onClick,
+                    binding?.onUse,
+                  ].includes(clip.id),
+                )
+                .flatMap((clip) => clip.frames),
+            ];
+          }),
         );
+        const [loaded, alpha] = await Promise.all([
+          Promise.all(
+            urls.map(
+              async (url) => [url, await Assets.load<Texture>(url)] as const,
+            ),
+          ),
+          Promise.all(
+            [...maskUrls].map(
+              async (url) => [url, await loadAlphaMask(url)] as const,
+            ),
+          ),
+        ]);
         const textures = new Map(loaded);
         const texture = textures.get(scene.background)!;
         if (disposed) return;
@@ -119,7 +160,14 @@ function MountedCanvas({
           () => app.render(),
           textures,
           animations,
+          new Map(alpha),
         );
+        mountedScene.update(
+          currentState.current.state,
+          currentState.current.blocked,
+        );
+        onPickerReady?.(mountedScene.pick);
+        pickerPublished = true;
         sceneRef.current = mountedScene;
         app.stage.addChild(mountedScene.root);
         const reducedMotion = window.matchMedia(
@@ -139,10 +187,41 @@ function MountedCanvas({
           else app.start();
           if (reducedMotion.matches) mountedScene.resetMotion();
         };
+        // Keep a scene-space pointer for stationary hover as animation silhouettes
+        // change. Reuse the existing animation ticker instead of another ticker.
+        let pointer: { x: number; y: number } | null = null;
+        const syncPointer = () =>
+          mountedScene.hoverAt(
+            pointer
+              ? scenePoint(
+                  app.canvas.getBoundingClientRect(),
+                  scene,
+                  pointer.x,
+                  pointer.y,
+                )
+              : null,
+          );
+        const movePointer = (event: PointerEvent) => {
+          pointer =
+            event.pointerType === 'touch'
+              ? null
+              : { x: event.clientX, y: event.clientY };
+          syncPointer();
+        };
+        const leavePointer = () => {
+          pointer = null;
+          syncPointer();
+        };
+        app.canvas.addEventListener('pointermove', movePointer);
+        app.canvas.addEventListener('pointerenter', movePointer);
+        app.canvas.addEventListener('pointerleave', leavePointer);
         playbackRef.current = syncPlayback;
         reducedMotion.addEventListener('change', syncPlayback);
         document.addEventListener('visibilitychange', syncPlayback);
         stopPlayback = () => {
+          app.canvas.removeEventListener('pointermove', movePointer);
+          app.canvas.removeEventListener('pointerenter', movePointer);
+          app.canvas.removeEventListener('pointerleave', leavePointer);
           reducedMotion.removeEventListener('change', syncPlayback);
           document.removeEventListener('visibilitychange', syncPlayback);
           playbackRef.current = null;
@@ -155,6 +234,7 @@ function MountedCanvas({
           const height = Math.max(1, host.clientHeight);
           app.renderer.resize(width, height);
           mountedScene.resize(width, height);
+          syncPointer();
         };
         observer = new ResizeObserver(resize);
         observer.observe(host);
@@ -175,7 +255,7 @@ function MountedCanvas({
       sceneRef.current = null;
       destroy();
     };
-  }, [scene, animations]);
+  }, [scene, animations, onPickerReady]);
 
   useEffect(() => {
     if (status === 'ready') {

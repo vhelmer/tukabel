@@ -59,6 +59,8 @@ export interface Hotspot {
   readonly rotation?: number;
   // Normal assets preserve their intrinsic aspect; stretching is opt-in.
   readonly imageFit?: 'contain' | 'stretch';
+  readonly hitTest?: 'alpha' | 'bounds';
+  readonly alphaThreshold?: number;
   readonly animation?: CharacterAnimation;
   readonly tintWhen?: Condition;
 }
