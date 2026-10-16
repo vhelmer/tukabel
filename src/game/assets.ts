@@ -1,7 +1,7 @@
 import type { GameContent } from './types';
 
 const files = import.meta.glob<string>(
-  '../assets/**/*.{svg,png,jpg,jpeg,webp,avif}',
+  '../assets/**/*.{svg,png,jpg,jpeg,webp,avif,wav,json}',
   {
     eager: true,
     query: '?url',
@@ -45,6 +45,15 @@ export function resolveAssets(content: GameContent): GameContent {
       ...dialogue,
       nodes: dialogue.nodes.map((node) => ({
         ...node,
+        speech: node.speech
+          ? {
+              ...node.speech,
+              audio: assetUrl(node.speech.audio),
+              lipSync: node.speech.lipSync
+                ? assetUrl(node.speech.lipSync)
+                : undefined,
+            }
+          : undefined,
         portrait: node.portrait ? assetUrl(node.portrait) : undefined,
       })),
     })),

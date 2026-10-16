@@ -7,6 +7,7 @@ import type { ScenePicker } from '../game/hitTest';
 import { createScene } from '../game/createScene';
 import type {
   AnimationDefinition,
+  SceneSpeechPlayback,
   AnimationPreviewState,
   AnimationTrigger,
   GameState,
@@ -21,6 +22,7 @@ interface GameCanvasProps extends SceneCallbacks {
   blocked?: boolean;
   animationTrigger?: AnimationTrigger | null;
   animationPreview?: AnimationPreviewState;
+  speechPlayback?: SceneSpeechPlayback;
   onPickerReady?: (picker: ScenePicker | null) => void;
 }
 
@@ -37,14 +39,20 @@ function MountedCanvas({
   blocked = false,
   animationTrigger,
   animationPreview,
+  speechPlayback,
   onHover,
   onInteract,
   onPickerReady,
 }: GameCanvasProps) {
-  const currentState = useRef({ state, blocked, animationPreview });
+  const currentState = useRef({
+    state,
+    blocked,
+    animationPreview,
+    speechPlayback,
+  });
   useEffect(() => {
-    currentState.current = { state, blocked, animationPreview };
-  }, [state, blocked, animationPreview]);
+    currentState.current = { state, blocked, animationPreview, speechPlayback };
+  }, [state, blocked, animationPreview, speechPlayback]);
   const lastTrigger = useRef(0);
   const callbacks = useRef({ onHover, onInteract });
   useEffect(() => {
@@ -203,6 +211,7 @@ function MountedCanvas({
           currentState.current.state,
           currentState.current.blocked,
           currentState.current.animationPreview,
+          currentState.current.speechPlayback,
         );
         onPickerReady?.(mountedScene.pick);
         pickerPublished = true;
@@ -298,10 +307,15 @@ function MountedCanvas({
 
   useEffect(() => {
     if (status === 'ready') {
-      sceneRef.current?.update(state, blocked, animationPreview);
+      sceneRef.current?.update(
+        state,
+        blocked,
+        animationPreview,
+        speechPlayback,
+      );
       playbackRef.current?.();
     }
-  }, [status, state, blocked, animationPreview]);
+  }, [status, state, blocked, animationPreview, speechPlayback]);
 
   useEffect(() => {
     if (

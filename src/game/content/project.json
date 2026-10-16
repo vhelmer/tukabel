@@ -162,7 +162,18 @@
             "onClick": "woman-blink",
             "talk": "woman-talk",
             "dialogueId": "animation-demo",
-            "motion": "breath"
+            "motion": "breath",
+            "mouthShapes": {
+              "X": 0,
+              "A": 0,
+              "B": 1,
+              "C": 2,
+              "D": 2,
+              "E": 1,
+              "F": 1,
+              "G": 1,
+              "H": 2
+            }
           },
           "onClick": [
             {
@@ -276,8 +287,17 @@
           "id": "demo",
           "speaker": "Skúšobná postava",
           "portrait": "woman.png",
-          "text": "Teraz rozprávam, náhodne mrkám a jemne sa pohybujem. Oči a ústa bežia nezávisle. Toto je iba technický test.",
-          "choices": [{ "id": "end", "text": "Ukončiť skúšku animácií." }]
+          "text": "Ahoj. Mrkám a rozprávam. Oči a ústa fungujú nezávisle.",
+          "choices": [{ "id": "end", "text": "Ukončiť skúšku animácií." }],
+          "actor": {
+            "sceneId": "animation-lab",
+            "hotspotId": "blink-character"
+          },
+          "speech": {
+            "audio": "speech/animation-demo/audio.wav",
+            "lipSync": "speech/animation-demo/track.lipsync.json",
+            "text": "Ahoj. Mrkám a rozprávam. Oči a ústa fungujú nezávisle."
+          }
         }
       ]
     }

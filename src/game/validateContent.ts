@@ -120,6 +120,21 @@ export function validateContent(content: GameContent): string[] {
             `${path}: cursor animation source must match cursor image`,
           );
       }
+      if (hotspot.animation?.mouthShapes) {
+        const talk = content.animations?.find(
+          (c) => c.id === hotspot.animation?.talk,
+        );
+        if (!talk?.region)
+          errors.push(`${path}: mouth shapes require a regional talk clip`);
+        for (const index of Object.values(hotspot.animation.mouthShapes))
+          if (
+            !talk ||
+            !Number.isInteger(index) ||
+            index < 0 ||
+            index >= talk.frames.length
+          )
+            errors.push(`${path}: mouth shape index outside talk clip`);
+      }
       if (hotspot.animation) {
         if (!hotspot.image)
           errors.push(`${path}: animated character needs an image`);
@@ -228,6 +243,13 @@ export function validateContent(content: GameContent): string[] {
     );
     reference(nodes, dialogue.start, dialogue.id);
     for (const node of dialogue.nodes) {
+      if (
+        node.actor &&
+        !content.scenes
+          .find((s) => s.id === node.actor!.sceneId)
+          ?.hotspots.some((h) => h.id === node.actor!.hotspotId && h.image)
+      )
+        errors.push(`${dialogue.id}/${node.id}: unknown speaking actor`);
       const path = `${dialogue.id}/${node.id}`;
       collect(
         node.choices.map((entry) => entry.id),

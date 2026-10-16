@@ -12,6 +12,10 @@ export interface SpeechPlayback {
   readonly timeMs: number;
   readonly frameIndex?: number;
 }
+export interface SceneSpeechPlayback {
+  readonly actor?: { readonly sceneId: string; readonly hotspotId: string };
+  readonly read: () => SpeechPlayback;
+}
 export interface AnimationLayer {
   readonly clipId: string;
   readonly frame: string;
@@ -42,6 +46,8 @@ export interface AnimationDefinition {
   readonly loop?: boolean;
 }
 export interface CharacterAnimation {
+  readonly voice?: VoiceSettings;
+  readonly mouthShapes?: Partial<Readonly<Record<MouthShape, number>>>;
   readonly idle?: string;
   readonly idleLoop?: boolean;
   readonly blink?: string;
@@ -51,6 +57,33 @@ export interface CharacterAnimation {
   readonly motion?: 'breath' | 'sway';
   readonly onClick?: string;
   readonly onUse?: string;
+}
+
+export type MouthShape = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'X';
+export interface VoiceSettings {
+  readonly voiceId: string;
+  readonly modelId: string;
+  readonly stability: number;
+  readonly similarityBoost: number;
+  readonly style: number;
+  readonly speed: number;
+  readonly useSpeakerBoost: boolean;
+}
+export interface LipSyncTrack {
+  readonly metadata: {
+    readonly duration: number;
+    readonly audioSha256?: string;
+  };
+  readonly mouthCues: readonly {
+    readonly start: number;
+    readonly end: number;
+    readonly value: MouthShape;
+  }[];
+}
+export interface DialogueSpeech {
+  readonly audio: string;
+  readonly lipSync?: string;
+  readonly text: string;
 }
 
 export type Condition =
@@ -116,6 +149,8 @@ export interface ItemDefinition {
 }
 
 export interface DialogueNode {
+  readonly actor?: { readonly sceneId: string; readonly hotspotId: string };
+  readonly speech?: DialogueSpeech;
   readonly id: string;
   readonly portrait?: string;
   readonly speaker: string;

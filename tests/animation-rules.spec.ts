@@ -421,6 +421,10 @@ test('local animation metadata rejects overlap, invalid regions, source overflow
   const configured = {
     ...clean,
     scenes: [{ ...clean.scenes[0]!, hotspots: [actor] }],
+    dialogues: clean.dialogues.map((d) => ({
+      ...d,
+      nodes: d.nodes.map((n) => ({ ...n, actor: undefined })),
+    })),
   };
   expect(validateProject(configured)).toEqual([]);
   for (const region of [

@@ -20,6 +20,8 @@ try {
     '/dev/animationImport.ts',
   );
   await validateAnimationAssets(path.resolve('src/assets'), content);
+  const { validateSpeechAssets } = await server.ssrLoadModule('/dev/speech.ts');
+  await validateSpeechAssets(path.resolve('src/assets'), content);
   process.stdout.write('Game content references are valid.\n');
 } finally {
   await server?.close();

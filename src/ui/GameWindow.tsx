@@ -7,6 +7,8 @@ import type {
   GameState,
   Hotspot,
 } from '../game/types';
+import { useDialogueAudio } from './DialogueAudio';
+import { getDialogueNode } from '../game/state';
 import { reduceGame } from '../game/state';
 import { SceneCursor, PickupFlight } from './SceneCursor';
 import type { Pickup } from './SceneCursor';
@@ -91,6 +93,25 @@ export function GameWindow({
     return () => observer.disconnect();
   }, []);
   const scene = content.scenes.find((entry) => entry.id === state.sceneId)!;
+  const dialogueNode = getDialogueNode(content, state);
+  const voiceActor = dialogueNode?.actor
+    ? content.scenes
+        .find((s) => s.id === dialogueNode.actor!.sceneId)
+        ?.hotspots.find((h) => h.id === dialogueNode.actor!.hotspotId)
+    : scene.hotspots.find(
+        (h) =>
+          h.animation?.dialogueId === state.dialogue?.id ||
+          h.onClick.some((r) =>
+            r.effects?.some(
+              (e) => e.type === 'dialogue' && e.id === state.dialogue?.id,
+            ),
+          ),
+      );
+  const dialogueAudio = useDialogueAudio(
+    dialogueNode,
+    voiceActor?.animation,
+    menu,
+  );
   const hotspots = scene.hotspots.filter((hotspot) =>
     matches(state, hotspot.visibleWhen),
   );
@@ -375,6 +396,7 @@ export function GameWindow({
           state={state}
           animations={content.animations}
           animationTrigger={animationTrigger}
+          speechPlayback={dialogueAudio.clock}
           onPickerReady={registerPicker}
           onHover={setHovered}
           onInteract={act}
@@ -419,7 +441,12 @@ export function GameWindow({
           </div>
         )}
         {state.dialogue && (
-          <DialoguePanel content={content} state={state} dispatch={dispatch} />
+          <DialoguePanel
+            content={content}
+            state={state}
+            dispatch={dispatch}
+            audio={dialogueAudio.controls}
+          />
         )}
         {objectsOpen && !state.dialogue && (
           <div className="objects-popover" aria-label="Predmety v miestnosti">

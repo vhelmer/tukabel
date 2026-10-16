@@ -2,6 +2,7 @@ import { Container, Graphics, Sprite } from 'pixi.js';
 import type { Texture } from 'pixi.js';
 import type {
   AnimationDefinition,
+  SceneSpeechPlayback,
   AnimationPreviewState,
   AnimationSample,
   AnimationRegion,
@@ -50,6 +51,21 @@ export function createScene(
   let paused = false;
   let preview: AnimationPreviewState | undefined;
   let blinkNonce = 0;
+  let speechPlayback: SceneSpeechPlayback | undefined;
+  const speechFor = (hotspot: Hotspot) => {
+    if (!speechPlayback)
+      return (
+        preview?.speech ?? (state ? isCharacterSpeaking(hotspot, state) : false)
+      );
+    const actor = speechPlayback.actor;
+    return (
+      actor
+        ? actor.sceneId === definition.id && actor.hotspotId === hotspot.id
+        : state && isCharacterSpeaking(hotspot, state)
+    )
+      ? speechPlayback.read()
+      : false;
+  };
   let pointer: Point | null = null;
   let hovered: Hotspot | null = null;
   const hover = (hotspot: Hotspot | null) => {
@@ -209,10 +225,7 @@ export function createScene(
         if (!regions.get(actor.hotspot.id)?.visible) continue;
         const sample =
           preview?.sample ??
-          actor.player.tick(
-            deltaMs,
-            preview?.speech ?? isCharacterSpeaking(actor.hotspot, state),
-          );
+          actor.player.tick(deltaMs, speechFor(actor.hotspot));
         apply(actor, sample);
         if (actor.hotspot.animation?.motion === 'breath')
           actor.visual.scale.y =
@@ -236,20 +249,18 @@ export function createScene(
       nextState: GameState,
       blocked = false,
       nextPreview?: AnimationPreviewState,
+      nextSpeech?: SceneSpeechPlayback,
     ) {
       state = nextState;
       preview = nextPreview;
+      speechPlayback = nextSpeech;
       for (const actor of actors) {
         actor.character.showRegions(preview?.showRegions ?? false);
         if (preview?.blinkNonce && preview.blinkNonce !== blinkNonce)
           actor.player.blink();
         apply(
           actor,
-          preview?.sample ??
-            actor.player.tick(
-              0,
-              preview?.speech ?? isCharacterSpeaking(actor.hotspot, state),
-            ),
+          preview?.sample ?? actor.player.tick(0, speechFor(actor.hotspot)),
         );
       }
       blinkNonce = preview?.blinkNonce ?? 0;

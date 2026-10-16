@@ -1,4 +1,5 @@
 import type { GameContent } from './types.ts';
+import { voiceIssue, mouthShapes } from './speech.ts';
 import { validateContent } from './validateContent.ts';
 
 const isObject = (value: unknown): value is Record<string, unknown> =>
@@ -209,6 +210,8 @@ export function validateProject(
       if (
         hotspot.animation !== undefined &&
         object(hotspot.animation, `${key}.animation`, [
+          'voice',
+          'mouthShapes',
           'idle',
           'idleLoop',
           'blink',
@@ -221,6 +224,36 @@ export function validateProject(
         ])
       ) {
         const binding = hotspot.animation;
+        if (binding.voice !== undefined) {
+          if (
+            object(binding.voice, `${key}.animation.voice`, [
+              'voiceId',
+              'modelId',
+              'stability',
+              'similarityBoost',
+              'style',
+              'speed',
+              'useSpeakerBoost',
+            ])
+          ) {
+            const issue = voiceIssue(binding.voice);
+            if (issue) errors.push(`${key}: ${issue}`);
+          }
+        }
+        if (
+          binding.mouthShapes !== undefined &&
+          object(
+            binding.mouthShapes,
+            `${key}.animation.mouthShapes`,
+            mouthShapes,
+          )
+        ) {
+          for (const index of Object.values(binding.mouthShapes))
+            if (!Number.isSafeInteger(index) || Number(index) < 0)
+              errors.push(
+                `${key}: mouth shape must be a zero-based frame index`,
+              );
+        }
         for (const field of [
           'idle',
           'blink',
@@ -354,11 +387,51 @@ export function validateProject(
     string(dialogue.id, `${path}.id`);
     string(dialogue.start, `${path}.start`);
     list(dialogue.nodes, `${path}.nodes`, (node, key) => {
-      if (!object(node, key, ['id', 'speaker', 'text', 'choices', 'portrait']))
+      if (
+        !object(node, key, [
+          'id',
+          'speaker',
+          'text',
+          'choices',
+          'portrait',
+          'actor',
+          'speech',
+        ])
+      )
         return;
       for (const field of ['id', 'speaker', 'text'])
         string(node[field], `${key}.${field}`);
       asset(node.portrait, `${key}.portrait`, true);
+      if (
+        node.actor !== undefined &&
+        object(node.actor, `${key}.actor`, ['sceneId', 'hotspotId'])
+      ) {
+        string(node.actor.sceneId, `${key}.actor.sceneId`);
+        string(node.actor.hotspotId, `${key}.actor.hotspotId`);
+      }
+      if (
+        node.speech !== undefined &&
+        object(node.speech, `${key}.speech`, ['audio', 'lipSync', 'text'])
+      ) {
+        string(node.speech.text, `${key}.speech.text`);
+        for (const field of ['audio', 'lipSync']) {
+          const id = node.speech[field];
+          if (field === 'lipSync' && id === undefined) continue;
+          if (
+            typeof id !== 'string' ||
+            !/^[a-zA-Z0-9_./-]+$/.test(id) ||
+            id.split('/').some((s) => !s || s === '..' || s === '.') ||
+            !(field === 'audio'
+              ? id.endsWith('.wav')
+              : id.endsWith('.lipsync.json'))
+          )
+            errors.push(
+              `${key}.speech.${field}: expected local ${field} asset`,
+            );
+          else if (assets && !assets.includes(id))
+            errors.push(`${key}.speech.${field}: missing asset "${id}"`);
+        }
+      }
       list(node.choices, `${key}.choices`, (choice, choicePath) => {
         if (
           !object(choice, choicePath, [

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 import { getDialogueNode, matches } from '../game/state';
 import type { GameAction, GameContent, GameState } from '../game/types';
 
@@ -6,10 +6,12 @@ export function DialoguePanel({
   content,
   state,
   dispatch,
+  audio,
 }: {
   content: GameContent;
   state: GameState;
   dispatch: (action: GameAction) => void;
+  audio?: ReactNode;
 }) {
   const panel = useRef<HTMLDivElement>(null);
   const node = getDialogueNode(content, state);
@@ -64,6 +66,7 @@ export function DialoguePanel({
       <p id="dialogue-text" key={node.id}>
         {node.text}
       </p>
+      {audio}
       <div className="dialogue-choices">
         {node.choices
           .filter((choice) => matches(state, choice.when))

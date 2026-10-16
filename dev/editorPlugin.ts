@@ -10,7 +10,14 @@ import {
 } from 'node:fs/promises';
 import path from 'node:path';
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import type { Plugin } from 'vite';
+import { loadEnv, type Plugin } from 'vite';
+import {
+  createSpeech,
+  analyzeSpeech,
+  speechCatalog,
+  speechStatus,
+  validateSpeechAssets,
+} from './speech.ts';
 import {
   importAnimation,
   validateAnimationAssets,
@@ -23,6 +30,7 @@ const API = '/__tukabel/editor';
 const hash = (text: string) => createHash('sha256').update(text).digest('hex');
 const loopback = (host: string) =>
   ['localhost', '127.0.0.1', '[::1]'].includes(host);
+const mediaPattern = /^[a-zA-Z0-9_./-]+\.(wav|lipsync\.json)$/;
 const imagePattern = /^[a-zA-Z0-9_/-]+\.(svg|png|jpe?g|webp|avif)$/;
 
 async function readJson(req: IncomingMessage): Promise<unknown> {
@@ -32,7 +40,16 @@ async function readJson(req: IncomingMessage): Promise<unknown> {
   let size = 0;
   for await (const chunk of req) {
     size += chunk.length;
-    if (size > (req.url?.endsWith('/animations/import') ? 48 : 9) * 1024 * 1024)
+    if (
+      size >
+      (req.url?.endsWith('/animations/import')
+        ? 48
+        : req.url?.endsWith('/speech/import')
+          ? 29
+          : 9) *
+        1024 *
+        1024
+    )
       throw new Error('Request is too large');
     chunks.push(Buffer.from(chunk));
   }
@@ -45,13 +62,17 @@ async function listAssets(directory: string, prefix = ''): Promise<string[]> {
       const id = `${prefix}${entry.name}`;
       if (entry.isDirectory())
         return listAssets(path.join(directory, entry.name), `${id}/`);
-      return entry.isFile() && imagePattern.test(id) ? [id] : [];
+      return entry.isFile() && (imagePattern.test(id) || mediaPattern.test(id))
+        ? [id]
+        : [];
     }),
   );
   return nested.flat().sort();
 }
 
-export function editorPlugin(): Plugin {
+export function editorPlugin(
+  options: { speech?: import('./speech.ts').SpeechOptions } = {},
+): Plugin {
   return {
     name: 'tukabel-local-editor',
     apply: 'serve',
@@ -64,6 +85,12 @@ export function editorPlugin(): Plugin {
         'src/game/content/project.json',
       );
       const assetsRoot = path.resolve(server.config.root, 'src/assets');
+      const env = loadEnv(server.config.mode, server.config.envDir, '');
+      const speechOptions = {
+        apiKey: process.env.ELEVENLABS_API_KEY || env.ELEVENLABS_API_KEY,
+        rhubarbBin: process.env.RHUBARB_BIN || env.RHUBARB_BIN,
+        ...options.speech,
+      };
       let queue = Promise.resolve();
       server.middlewares.use((req, res, next) => {
         if (!req.url?.startsWith(API)) {
@@ -98,6 +125,47 @@ export function editorPlugin(): Plugin {
           }
           const parsedUrl = new URL(req.url!, host);
           const endpoint = parsedUrl.pathname;
+          if (endpoint === `${API}/speech/status` && req.method === 'GET') {
+            respond(200, await speechStatus(speechOptions));
+            return;
+          }
+          if (endpoint === `${API}/speech/catalog` && req.method === 'POST') {
+            respond(200, await speechCatalog(speechOptions));
+            return;
+          }
+          if (
+            [
+              `${API}/speech/generate`,
+              `${API}/speech/import`,
+              `${API}/speech/analyze`,
+            ].includes(endpoint) &&
+            req.method === 'POST'
+          ) {
+            const input = await readJson(req);
+            if (
+              endpoint.endsWith('/generate') &&
+              input &&
+              typeof input === 'object' &&
+              'data' in input
+            )
+              throw new Error('Use speech/import for WAV uploads.');
+            if (
+              endpoint.endsWith('/import') &&
+              (!input || typeof input !== 'object' || !('data' in input))
+            )
+              throw new Error('WAV upload required.');
+            const result = endpoint.endsWith('/analyze')
+              ? await analyzeSpeech(assetsRoot, input, speechOptions)
+              : await createSpeech(assetsRoot, input, speechOptions);
+            const modules =
+              server.environments.client.moduleGraph.getModulesByFile(
+                path.resolve(server.config.root, 'src/game/assets.ts'),
+              );
+            for (const module of modules ?? [])
+              server.environments.client.moduleGraph.invalidateModule(module);
+            respond(201, { ...result, assets: await listAssets(assetsRoot) });
+            return;
+          }
           if (
             endpoint === `${API}/animations/import` &&
             req.method === 'POST'
@@ -147,6 +215,10 @@ export function editorPlugin(): Plugin {
               return;
             }
             await validateAnimationAssets(
+              assetsRoot,
+              body!.content as import('../src/game/types.ts').GameContent,
+            );
+            await validateSpeechAssets(
               assetsRoot,
               body!.content as import('../src/game/types.ts').GameContent,
             );
@@ -245,7 +317,8 @@ export function editorPlugin(): Plugin {
           context.file.endsWith('/src/game/content/project.json') ||
           (context.type === 'create' &&
             (context.file.includes('/src/assets/imported/') ||
-              context.file.includes('/src/assets/animations/')))
+              context.file.includes('/src/assets/animations/') ||
+              context.file.includes('/src/assets/speech/')))
         )
           return [];
       },

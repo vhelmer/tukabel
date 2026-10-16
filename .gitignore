@@ -10,3 +10,7 @@ playwright-report/
 
 # Pracovní adresáře importu; finální snímky a metadata se verzují.
 src/assets/animations/.*.tmp/
+src/assets/speech/.*.tmp/
+
+# Lokální nástroje pro tvorbu dabingu; produkce je nepotřebuje.
+.local-tools/
