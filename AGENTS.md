@@ -82,7 +82,13 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
 
 - Hotspot má jediná pravidla `onClick` a volitelné `uses` pro inventář. Žádná
   slovesa / hráčské režimy ani obrysy při hoveru. `onClick: []` je tichá kulisa;
-  `message` pravidla je volitelná. Kurzory a portréty se nastavují daty v editoru.
+  `message` pravidla je volitelná. Kurzory se nastavují daty v editoru.
+- Rozhovor začíná nabídkou startovního uzlu. `choice.next` přehraje cílovou repliku;
+  volby se vracejí až po konci audia/přeskočení, text bez audia čeká na Pokračovať.
+  Jednořádková ukázka bez navazující větve nabízí Porozprávať sa. `useConversation`
+  drží fázi, synchronní zámek a nonce mimo save. `choose.from` chrání před volbou
+  ze starého uzlu. Náhled dabingu v editoru má plné audio ovládání, hra jen malé
+  pauza/skip a titulky. Žádné portréty ani nativní audio přehrávač ve hře.
 - Inventární `item.image` je samostatná ikonka. Pickup efekt je pouze vizuální,
   spouští ho skutečné získání přes akci, nikoli load/reset nebo přepnutí režimu.
 

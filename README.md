@@ -108,20 +108,26 @@ hlavního okna. Na úzkém displeji má inventář horizontální posun. Celá s
   zobrazí jeho popis. Tab/Enter ovládá skutečná HTML tlačítka; **Objekty** nabízí
   přístupný seznam všech viditelných interaktivních oblastí včetně nepodstatných.
 - Reakce se zobrazují v kreslené bublině; prázdný komentář žádnou bublinu nevytvoří.
-  Dialog má portrét (`portrait` u uzlu), řečníka a větvené odpovědi na pergamenu
-  uvnitř scény. Portrét se nastavuje v editoru dialogů; není povinný.
+  Kliknutí na postavu otevře pouze dostupná témata na křivých dřevěných cedulích.
+  Výběr tématu přehraje repliku cílového uzlu; během ní nejsou vidět žádné volby.
+  Ve scéně zůstávají postava, titulky, malé ovládání pauzy/přeskočení a křížek.
+  Po dohrání nebo **Preskočiť repliku** se vrátí volby; replika bez audia čeká na
+  **Pokračovať**. Jednořádkové ukázky bez další větve začínají volbou **Porozprávať sa.**
+  Portréty se ve hře ani editoru nenabízejí; starší `portrait` JSON zůstává čitelný.
+  Herní menu používá stejné oprýskané cedule.
 - Escape ruší výběr/tah, zavírá menu nebo rozhovor. Dialog blokuje akce světa.
   Efekty a animace respektují reduced motion; drag/drop zůstává funkční.
 - **Menu** obsahuje ruční **Uložiť hru**, **Načítať hru** a **Nová hra**. Postup
   zůstává v jednom verzovaném localStorage slotu daného originu, oddělený od obsahu.
-  Načítá se až na požádání a obnovuje i rozmluvený dialog. Nová hra slot nemaže.
+  Načítá se až na požádání a obnovuje nabídku aktuálního dialogového uzlu. Nová hra slot nemaže.
   Poškozené, nekompatibilní či nedostupné úložiště nepřepíše aktuální postup.
 
 Ukázkový průchod: správce → dotaz na opravu → vyžádat pásku → ukončit rozhovor →
 sebrat kabel u židle → přetáhnout pásku na kabel → opravený kabel na router → dveře
-do dvora → tabule. Lze se vrátit; vyřešený stav zůstává. Jde o technickou hádanku
-se dvěma lokacemi, bez finálního příběhu a assetů. Chůze postavy a zvuk zatím chybí;
-mrkání, dialogové snímky a jemné idle pohyby lze přiřadit v editoru.
+do dvora → tabule. Textové repliky mezi volbami potvrď **Pokračovať**. Lze se vrátit;
+vyřešený stav zůstává. Jde o technickou hádanku
+se dvěma lokacemi, bez finálního příběhu a assetů. Chůze postavy zatím chybí;
+animace, dabing a lip-sync lze přiřadit v editoru podle návodu níže.
 
 ## Obsah a architektura
 
@@ -261,7 +267,7 @@ importují obrázek, vytvářejí dialogy, kontrolují JSON na disku, reload, ko
 a odmítnutí neplatného zápisu. Reálný projekt ani produkci nemění. Produkční test
 ověřuje nepřítomnost editoru i zápisového API. Screenshoty/trace jsou v ignorovaném
 `test-results/`, náhledy editoru a grafu také při úspěšném průchodu.
-Interakční testy ověřují let do inventáře, vlastní animovaný kurzor a portrét po
+Interakční testy ověřují let do inventáře, vlastní animovaný kurzor a dialog bez portrétu po
 uložení/reloadu; kontextový průchod zahrnuje i tichou kulisu.
 Transformační testy navíc ověřují PNG/WebP/SVG, rotaci, zamknuté proporce, explicitní
 deformaci, undo/redo a rušení tahů. Porovnávají obraz SVG editoru a Pixi i po změně
@@ -332,7 +338,7 @@ Instrukce pro agenty jsou v [AGENTS.md](AGENTS.md).
 
 První příklad: v editoru zvol lokaci **Animačný ateliér**, pak
 **Otestovať odtiaľto**. Postava z `woman.png` náhodně mrká po 3–6 s a mrkne také
-při kliknutí. Kliknutí spustí technický dialog s nezávislou animací úst;
+při kliknutí. V dialogu zvol **Porozprávať sa.** pro repliku s nezávislou animací úst;
 mrkání i idle pohyb pokračují. Dva nové lokální snímky úst reprodukuje
 `python3 experiments/woman-blink/generate_talk.py` (Pillow); zachovávají alfa kanál
 celého zdroje a pixely mimo ústa. Pět póz vychází z `experiments/woman-blink/output/`; shodné
@@ -477,8 +483,22 @@ odpovídající tvar; otevření menu nebo skrytí záložky pozastaví zvuk. P�
 konec nahrávky, změna uzlu, ukončení dialogu a opuštění režimu zastaví původní audio.
 Blokované automatické přehrání nabídne ruční spuštění; chybějící audio zachová text.
 Při chybě časování se použije běžná talk animace. Bez dabingu zůstává původní
-textový dialog. Audio playhead není součástí uloženého herního postupu; load začne
-repliku znovu. Reduced motion ponechá původní kresbu, audio se přehrává dál.
+textový dialog s potvrzením **Pokračovať**. Audio playhead ani fáze zobrazení nejsou
+součástí uloženého herního postupu; load obnoví nabídku uloženého uzlu. Reduced
+motion ponechá původní kresbu, audio se přehrává dál.
+
+`useConversation.ts` odděluje nabídku a přehrávání. Po otevření se zobrazí možnosti
+startovního uzlu, jeho úvodní text se automaticky nepřehrává. `choice.next` spustí
+repliku cíle; volba bez `next` ukončí rozhovor a zachová své efekty/zprávu. Bez
+navazujících větví nabízí vstupní fáze **Porozprávať sa.** k poslechu samotného uzlu.
+Vytváření témat i vazeb dál probíhá v **Dialógy**; není potřeba nový datový formát.
+Souběžné kliknutí spotřebuje synchronní zámek před React renderem, přechody mají
+180ms prodlevu proti dvojkliku a opakovanému Enteru. Akce `choose.from` navíc
+ověřuje původní dialog/uzel v reduceru. Každé přehrání má vlastní nonce, takže
+i smyčka na stejný uzel začne znovu a opožděný konec staré repliky nepřepne novou.
+Čekající nabídka zavírá ústa; oči a idle dál běží. Chybné nebo blokované audio
+ponechá čitelný text a možnost ručního spuštění/přeskočení. Escape/křížek ukončí
+rozhovor a zastaví audio; menu i skrytá záložka jej pozastaví.
 
 **Lokální ukázka:** Animačný ateliér obsahuje slovenskou nahrávku vytvořenou
 lokálně přes eSpeak NG, skutečnou analýzu Rhubarb 1.14.0 (34 cue / 4.67 s) a mapování

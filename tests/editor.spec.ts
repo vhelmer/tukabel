@@ -261,11 +261,14 @@ test('forms create linked locations, items, uploaded assets, branching dialogue 
   await ready(page);
   await expect(page.locator('.scene-title')).toHaveText('Testovací ateliér');
   await (await object(page, 'Testovací správca')).click();
-  await expect(page.getByRole('dialog')).toContainText('Tu je testovací žetón');
+  await expect(page.getByRole('dialog')).not.toContainText(
+    'Tu je testovací žetón',
+  );
   await page.getByRole('button', { name: 'Zobrať žetón', exact: true }).click();
   await expect(page.getByRole('dialog')).toContainText(
     'To je druhá vetva rozhovoru',
   );
+  await page.getByRole('button', { name: 'Pokračovať', exact: true }).click();
   await page.getByRole('button', { name: 'Dovidenia.', exact: true }).click();
   await expect(
     page.getByRole('button', { name: 'Testovací žetón', exact: true }),
