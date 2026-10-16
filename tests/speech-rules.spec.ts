@@ -383,3 +383,73 @@ test('ElevenLabs auth errors identify the required permission without echoing pr
     await rm(root, { recursive: true, force: true });
   }
 });
+
+test('ElevenLabs payment errors explain plan and quota limits without retries or leaked secrets', async () => {
+  const secret = 'private-payment-details-must-never-appear';
+  const root = await mkdtemp(path.join(tmpdir(), 'tukabel-tts-payment-'));
+  try {
+    for (const [body, expected] of [
+      [
+        JSON.stringify({
+          detail: { status: 'paid_plan_required', message: secret },
+        }),
+        'vyžaduje platený tarif',
+      ],
+      [
+        JSON.stringify({
+          detail: { status: 'payment_required', message: secret },
+        }),
+        'vyžaduje platbu',
+      ],
+      [
+        JSON.stringify({
+          detail: { status: 'quota_exceeded', message: secret },
+        }),
+        'kreditný limit',
+      ],
+      [
+        JSON.stringify({ detail: { status: secret, message: secret } }),
+        'vyžaduje platbu',
+      ],
+      [secret, 'vyžaduje platbu'],
+    ]) {
+      let generationCalls = 0;
+      let message = '';
+      try {
+        await createSpeech(
+          root,
+          {
+            text: 'Ahoj',
+            voice: { ...defaultVoice, voiceId: 'voice' },
+            confirmed: true,
+          },
+          {
+            apiKey: secret,
+            fetch: async (url) => {
+              if (String(url).endsWith('/models'))
+                return new Response(
+                  JSON.stringify([
+                    {
+                      model_id: defaultVoice.modelId,
+                      can_do_text_to_speech: true,
+                    },
+                  ]),
+                );
+              generationCalls += 1;
+              return new Response(body, { status: 402 });
+            },
+          },
+        );
+      } catch (error) {
+        message = (error as Error).message;
+      }
+      expect(message).toContain('HTTP 402');
+      expect(message).toContain(expected!);
+      expect(message).not.toContain(secret);
+      expect(generationCalls).toBe(1);
+      expect(await readdir(root)).toEqual([]);
+    }
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});

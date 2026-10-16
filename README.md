@@ -395,6 +395,8 @@ automaticky nemažou. `OPENAI_API_KEY` zůstává rezervovaný pro jiné budouc�
    Nastav stabilitu, podobnost, rychlost 0.7–1.2 a podle možností modelu výraznost
    a speaker boost. Eleven v3 používá stabilitu 0 / 0.5 / 1. Server před generováním
    ověří schopnosti modelu a odešle pouze podporované volitelné parametry.
+   Při 402 ověř tarif a kredity: [hlasy z Voice Library nejsou na bezplatném tarifu dostupné přes API](https://elevenlabs.io/docs/eleven-creative/voices/voice-library),
+   i když je lze přehrát na webu. Vyber hlas dostupný pro svůj tarif nebo importuj WAV.
 4. Otevři **Dabing a lip-sync**. Vyber repliku z existujících dialogů a uprav text
    (nové uzly a větvení dál vytvářej v **Dialógy**). Potvrď zaškrtávátko placeného
    generování této repliky a stiskni **Vygenerovať dabing ElevenLabs**. Po úspěchu

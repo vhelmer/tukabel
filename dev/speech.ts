@@ -199,6 +199,12 @@ async function eleven(
         'API kľúč je neplatný alebo zrušený. Nastav platný ELEVENLABS_API_KEY v .env.local a reštartuj Vite.';
     else if (code === 'quota_exceeded')
       explanation = 'Bol prekročený kreditný limit účtu alebo API kľúča.';
+    else if (code === 'paid_plan_required')
+      explanation =
+        'Vybraný hlas alebo model vyžaduje platený tarif. Hlasy z Voice Library nie sú cez API dostupné na bezplatnom tarife. Vyber hlas dostupný pre svoj tarif, zmeň predplatné v ElevenLabs alebo importuj vlastný WAV.';
+    else if (code === 'payment_required' || response.status === 402)
+      explanation =
+        'ElevenLabs vyžaduje platbu alebo vyšší tarif. Skontroluj predplatné a kredity účtu; hlasy z Voice Library nie sú cez API dostupné na bezplatnom tarife. Môžeš vybrať iný dostupný hlas alebo importovať vlastný WAV.';
     else if (response.status === 401 || response.status === 403)
       explanation = `Over API kľúč a jeho oprávnenie ${permission}. Po zmene .env.local reštartuj Vite.`;
     throw new Error(
