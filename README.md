@@ -379,7 +379,10 @@ automaticky nemažou. `OPENAI_API_KEY` zůstává rezervovaný pro jiné budouc�
 ### Dabing ElevenLabs a Rhubarb Lip Sync
 
 1. Do ignorovaného `.env.local` přidej `ELEVENLABS_API_KEY=...` a restartuj Vite.
-   Klíč musí mít přístup k text-to-speech, seznamu hlasů a modelů. Nikdy nepoužívej
+   Klíč potřebuje **Text to Speech** (`text_to_speech`), **Voices: Read**
+   (`voices_read`) a **Models: Read** (`models_read`). Při 401 `missing_permissions`
+   doplň oprávnění v ElevenLabs → Developers → API Keys → (…) → Edit.
+   Editor nyní ukáže konkrétní chybějící oprávnění. Nikdy nepoužívej
    prefix `VITE_`. Žádný klíč nepatří do projektového JSON ani do produkce.
 2. Stáhni a rozbal [Rhubarb Lip Sync](https://github.com/DanielSWolf/rhubarb-lip-sync/releases)
    pro svůj systém. Zachovej i jeho doprovodný adresář `res/`. Nastav

@@ -179,11 +179,32 @@ async function eleven(
       'ElevenLabs je nedostupný. Skontroluj pripojenie. Generovanie sa automaticky neopakuje.',
     );
   }
-  // Never return provider bodies or request headers: they can contain secrets.
-  if (!response.ok)
+  if (!response.ok) {
+    // Read only a known error code. Never echo provider messages, arbitrary
+    // codes, response bodies or headers: any of them could contain a secret.
+    const data: unknown = await response.json().catch(() => null);
+    const detail =
+      object(data) && object(data.detail) ? data.detail : undefined;
+    const code = detail?.status;
+    const permission = endpoint.startsWith('/v1/models')
+      ? 'Models: Read (models_read)'
+      : endpoint.startsWith('/v2/voices')
+        ? 'Voices: Read (voices_read)'
+        : 'Text to Speech (text_to_speech)';
+    let explanation = 'Skontroluj hlas, model, oprávnenia a kredity.';
+    if (code === 'missing_permissions' || code === 'insufficient_permissions')
+      explanation = `Kľúču chýba oprávnenie ${permission}. Povoľ ho v ElevenLabs → Developers → API Keys → Edit.`;
+    else if (code === 'invalid_api_key')
+      explanation =
+        'API kľúč je neplatný alebo zrušený. Nastav platný ELEVENLABS_API_KEY v .env.local a reštartuj Vite.';
+    else if (code === 'quota_exceeded')
+      explanation = 'Bol prekročený kreditný limit účtu alebo API kľúča.';
+    else if (response.status === 401 || response.status === 403)
+      explanation = `Over API kľúč a jeho oprávnenie ${permission}. Po zmene .env.local reštartuj Vite.`;
     throw new Error(
-      `ElevenLabs HTTP ${response.status}. Skontroluj hlas, model, oprávnenia a kredity. Požiadavka sa neopakuje.`,
+      `ElevenLabs HTTP ${response.status}: ${explanation} Požiadavka sa neopakuje.`,
     );
+  }
   return response;
 }
 interface ElevenModel {

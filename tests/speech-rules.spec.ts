@@ -292,3 +292,94 @@ test('ElevenLabs catalog returns only non-secret voice and TTS model metadata', 
   });
   expect(JSON.stringify(result)).not.toContain('private');
 });
+
+test('ElevenLabs auth errors identify the required permission without echoing provider secrets', async () => {
+  const secret = 'private-key-must-never-appear';
+  for (const [failingPath, permission] of [
+    ['/v1/models', 'models_read'],
+    ['/v2/voices', 'voices_read'],
+  ]) {
+    let message = '';
+    try {
+      await speechCatalog({
+        apiKey: secret,
+        fetch: async (url) =>
+          String(url).includes(failingPath!)
+            ? new Response(
+                JSON.stringify({
+                  detail: {
+                    status: 'missing_permissions',
+                    message: `Key ${secret} lacks permission`,
+                  },
+                }),
+                { status: 401 },
+              )
+            : new Response(
+                JSON.stringify(
+                  String(url).includes('/voices') ? { voices: [] } : [],
+                ),
+              ),
+      });
+    } catch (error) {
+      message = (error as Error).message;
+    }
+    expect(message).toContain('HTTP 401');
+    expect(message).toContain(permission!);
+    expect(message).not.toContain(secret);
+  }
+  for (const body of [
+    JSON.stringify({ detail: { status: 'invalid_api_key', message: secret } }),
+    JSON.stringify({ detail: { status: secret, message: secret } }),
+    secret,
+  ]) {
+    let message = '';
+    try {
+      await speechCatalog({
+        apiKey: secret,
+        fetch: async () => new Response(body, { status: 401 }),
+      });
+    } catch (error) {
+      message = (error as Error).message;
+    }
+    expect(message).toContain('HTTP 401');
+    expect(message).toContain(
+      body.includes('invalid_api_key') ? 'neplatný' : 'Over API kľúč',
+    );
+    expect(message).not.toContain(secret);
+  }
+  const root = await mkdtemp(path.join(tmpdir(), 'tukabel-tts-permission-'));
+  try {
+    await expect(
+      createSpeech(
+        root,
+        {
+          text: 'Ahoj',
+          voice: { ...defaultVoice, voiceId: 'voice' },
+          confirmed: true,
+        },
+        {
+          apiKey: secret,
+          fetch: async (url) =>
+            String(url).endsWith('/models')
+              ? new Response(
+                  JSON.stringify([
+                    {
+                      model_id: defaultVoice.modelId,
+                      can_do_text_to_speech: true,
+                    },
+                  ]),
+                )
+              : new Response(
+                  JSON.stringify({
+                    detail: { status: 'missing_permissions', message: secret },
+                  }),
+                  { status: 401 },
+                ),
+        },
+      ),
+    ).rejects.toThrow('text_to_speech');
+    expect(await readdir(root)).toEqual([]);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
