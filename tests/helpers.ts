@@ -4,6 +4,19 @@ import type { Locator, Page } from '@playwright/test';
 export async function ready(page: Page) {
   await expect(page.locator('.canvas-host canvas')).toHaveCount(1);
   await expect(page.locator('.scene-notice')).toHaveCount(0);
+  // The existing canvas remains mounted during resize/zoom. Wait for its
+  // ResizeObserver update before computing coordinates for a pointer action.
+  await expect
+    .poll(() =>
+      page.locator('.canvas-host canvas').evaluate((canvas) => {
+        const host = canvas.parentElement!;
+        return (
+          canvas.clientWidth === host.clientWidth &&
+          canvas.clientHeight === host.clientHeight
+        );
+      }),
+    )
+    .toBe(true);
 }
 export async function pointInScene(page: Page, x: number, y: number) {
   const box = await page.locator('.canvas-host canvas').boundingBox();

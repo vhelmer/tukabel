@@ -161,19 +161,43 @@ async function editorImage(page: Page) {
 }
 async function gameImage(page: Page) {
   await page.mouse.move(0, 0);
-  const canvas = page.locator('canvas'),
-    box = (await canvas.boundingBox())!;
-  const bytes = await canvas.screenshot({ animations: 'disabled' }),
-    meta = await sharp(bytes).metadata();
-  const scale = Math.min(box.width / 1280, box.height / 720),
-    resolution = meta.width! / box.width;
+  // ResizeObserver must settle after a viewport/browser-zoom change before
+  // measuring the canvas and cropping its screenshot with those dimensions.
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve) => {
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+      }),
+  );
+  const bytes = await page
+    .locator('canvas')
+    .screenshot({ animations: 'disabled' });
+  const { data, info } = await sharp(bytes)
+    .removeAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  // The fixture has a solid #172a35 background. Locate its rendered edges:
+  // fractional mobile CSS zoom can include a few border pixels in a screenshot,
+  // making a crop inferred from rounded DOM dimensions drift by several pixels.
+  let left = info.width,
+    top = info.height,
+    right = 0,
+    bottom = 0;
+  for (let y = 0; y < info.height; y++)
+    for (let x = 0; x < info.width; x++) {
+      const i = (y * info.width + x) * 3;
+      if (data[i] === 23 && data[i + 1] === 42 && data[i + 2] === 53) {
+        left = Math.min(left, x);
+        right = Math.max(right, x);
+        top = Math.min(top, y);
+        bottom = Math.max(bottom, y);
+      }
+    }
+  const width = right - left + 1,
+    height = bottom - top + 1;
+  expect(Math.abs(width / height - 1280 / 720)).toBeLessThan(0.02);
   return sharp(bytes)
-    .extract({
-      left: Math.round(((box.width - 1280 * scale) / 2) * resolution),
-      top: Math.round(((box.height - 720 * scale) / 2) * resolution),
-      width: Math.floor(1280 * scale * resolution),
-      height: Math.floor(720 * scale * resolution),
-    })
+    .extract({ left, top, width, height })
     .resize(1280, 720)
     .removeAlpha()
     .raw()

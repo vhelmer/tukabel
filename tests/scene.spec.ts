@@ -29,7 +29,7 @@ test('complete adventure supports real inventory drags, scene drops, transitions
     await page.mouse.move(point.x, point.y);
     await expect(page.locator('.scene-label')).toContainText('Router');
   }
-  await activate(page, 150, 620, isMobile);
+  await activate(page, 190, 630, isMobile);
   const cable = page.getByRole('button', {
     name: 'Poškodený kábel',
     exact: true,
@@ -84,7 +84,7 @@ test('complete adventure supports real inventory drags, scene drops, transitions
   await activate(page, 440, 480, isMobile);
   await expect(reaction(page)).toContainText('Router svieti');
   await menuAction(page, 'Nová hra');
-  await activate(page, 150, 620, isMobile);
+  await activate(page, 190, 630, isMobile);
   await expect(cable).toBeVisible();
   // The whole game, including inventory and overlays, fits one viewport.
   expect(
@@ -256,7 +256,7 @@ test('canceling drags never selects an item and menu keyboard focus stays contai
 }) => {
   await page.goto('/');
   await ready(page);
-  await activate(page, 150, 620, isMobile);
+  await activate(page, 190, 630, isMobile);
   const cable = page.getByRole('button', {
     name: 'Poškodený kábel',
     exact: true,

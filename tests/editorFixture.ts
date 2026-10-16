@@ -17,6 +17,9 @@ export const test = base.extend<{
     const root = await mkdtemp(
       path.join(tmpdir(), `tukabel-editor-${browserName}-`),
     );
+    const previousNodeEnv = process.env.NODE_ENV;
+    // Vite preview() sets NODE_ENV=production in reused Playwright workers.
+    process.env.NODE_ENV = 'development';
     let server: Awaited<ReturnType<typeof createServer>> | undefined;
     try {
       for (const file of [
@@ -59,6 +62,8 @@ export const test = base.extend<{
     } finally {
       await server?.close();
       await rm(root, { recursive: true, force: true });
+      if (previousNodeEnv === undefined) delete process.env.NODE_ENV;
+      else process.env.NODE_ENV = previousNodeEnv;
     }
   },
 });

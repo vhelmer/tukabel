@@ -19,7 +19,7 @@ test('visual edits save real JSON, survive reload, preview immediately and detec
   await page
     .getByLabel('Názov objektu', { exact: true })
     .fill('Skúšobný kábel');
-  const region = page.locator('[data-hotspot-id="cable"] .editor-region');
+  const region = page.locator('[data-move-id="cable"]');
   await region.scrollIntoViewIfNeeded();
   const box = (await region.boundingBox())!;
   await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);

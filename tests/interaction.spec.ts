@@ -32,7 +32,7 @@ test('pickup flies into a distinct inventory icon; hover shows a name and a conv
     );
     await page.mouse.move(0, 0);
   }
-  await activate(page, 150, 620, isMobile);
+  await activate(page, 190, 630, isMobile);
   await expect(page.locator('.pickup-flight')).toBeVisible();
   const flightSrc = await page
     .locator('.pickup-flight img')
@@ -110,8 +110,8 @@ test('editor saves silent click rules, custom cursor animation, inventory icon a
   if (!isMobile) {
     const p = await pointInScene(
       page,
-      mug.bounds.x + mug.bounds.width / 2,
-      mug.bounds.y + mug.bounds.height / 2,
+      mug.bounds.x + mug.bounds.width * (120 / 180),
+      mug.bounds.y + mug.bounds.height * (50 / 95),
     );
     await page.mouse.move(p.x, p.y);
     const cursor = page.locator('.scene-cursor img');
