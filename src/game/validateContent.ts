@@ -1,4 +1,5 @@
 import type { Condition, Effect, GameContent, Rule } from './types.ts';
+import { polygonIssue } from './polygon.ts';
 import { isInsideScene } from './transforms.ts';
 
 // TypeScript checks data shape; this pass checks references and authoring mistakes.
@@ -92,6 +93,23 @@ export function validateContent(content: GameContent): string[] {
         errors.push(`${path}: bounds outside scene`);
       else if (!isInsideScene(hotspot.bounds, scene, hotspot.rotation))
         errors.push(`${path}: rotated bounds outside scene`);
+      if (hotspot.polygon) {
+        const issue = polygonIssue(hotspot.polygon);
+        if (issue)
+          errors.push(
+            `${path}: invalid polygon (${issue}); use 3–128 distinct vertices without self-intersections`,
+          );
+        if (
+          hotspot.polygon.some(
+            (p) =>
+              p.x < x - 0.001 ||
+              p.y < y - 0.001 ||
+              p.x > x + width + 0.001 ||
+              p.y > y + height + 0.001,
+          )
+        )
+          errors.push(`${path}: polygon vertex outside bounds`);
+      }
       if (hotspot.cursorAnimation) {
         reference(animations, hotspot.cursorAnimation, `${path}/cursor`);
         const clip = content.animations?.find(

@@ -151,6 +151,7 @@ export function validateProject(
           'id',
           'label',
           'bounds',
+          'polygon',
           'visibleWhen',
           'onClick',
           'cursor',
@@ -171,6 +172,13 @@ export function validateProject(
         return;
       string(hotspot.id, `${key}.id`);
       string(hotspot.label, `${key}.label`);
+      if (hotspot.polygon !== undefined)
+        list(hotspot.polygon, `${key}.polygon`, (point, path) => {
+          if (object(point, path, ['x', 'y'])) {
+            number(point.x, `${path}.x`);
+            number(point.y, `${path}.y`);
+          }
+        });
       if (hotspot.rotation !== undefined) {
         number(hotspot.rotation, `${key}.rotation`);
         if (Number(hotspot.rotation) < -360 || Number(hotspot.rotation) > 360)

@@ -113,7 +113,10 @@ export default function DevWorkspace({
         ),
       });
   }
-  function createHotspot(bounds: Hotspot['bounds']) {
+  function createHotspot(
+    bounds: Hotspot['bounds'],
+    polygon?: Hotspot['polygon'],
+  ) {
     if (!scene) return;
     const id = nextId(
       'object',
@@ -127,6 +130,7 @@ export default function DevWorkspace({
           id,
           label: 'Nový objekt',
           bounds,
+          polygon,
           onClick: [{ message: 'Zatiaľ nenápadný objekt.' }],
         },
       ],

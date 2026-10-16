@@ -61,11 +61,17 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
   `bounds`; validátor hlídá i natočený rám. Zoom a úchyty nepatří do herního JSON.
 - Obrázkové hotspoty používají automatické alfa cílení (`hitTest.ts`, cache v
   `alphaMasks.ts`), výchozí `alphaThreshold` je 32/255. `hitTest: "bounds"` výslovně
-  zachová ruční obdélník; bez obrázku platí vždy rám. Pixi, inventární dropy i SVG
+  zachová ruční obdélník; bez obrázku a polygonu platí rám. Pixi, inventární dropy i SVG
   editor sdílejí stejnou masku a transformace. Rámy/pomocné popisky nesmějí blokovat
   průhledné části; samostatné transformační úchyty a výběr ze seznamu zůstávají.
   Animované cílení sleduje aktuální snímek a idle pohyb. Nečti pixely při pointer
   událostech a nepřidávej obdélníkový fallback pro chybějící masku.
+- `hotspot.polygon` obsahuje 3–128 různých bodů `{x,y}` v souřadnicích lokace
+  před rotací, uvnitř `bounds`. Má přednost před alfa maskou i `hitTest`; bez něj
+  zůstává původní chování. `polygon.ts` sdílí konkávní cílení a kontrolu křížení.
+  Změny rámu musí přepočítat body přes `polygonTools.ts`; při úpravě vrcholu
+  zachovej světové pozice ostatních bodů i při změně středu rotace. Ovládací
+  úchyty patří pouze do editoru, Game Mode žádný obrys polygonu nevykresluje.
 - Normální resize zachovává poměr stran i v číselných polích. Tah se ukládá jako
   jediná úprava; Escape/pointercancel nic nemění. Úchyty zobrazuj nad ostatními objekty.
 - Zápisy povol pouze v lokálním vývojovém Vite middleware: pevné cílové cesty,

@@ -1,3 +1,4 @@
+import { containsPolygon } from './polygon';
 import type { Hotspot } from './types';
 import { centre, imagePlacement, rotateAround } from './transforms';
 import type { Point } from './transforms';
@@ -19,6 +20,11 @@ export function hitTestLocal(
   pose?: { rotation: number; scaleX: number; scaleY: number },
 ): boolean {
   const { width, height } = hotspot.bounds;
+  if (hotspot.polygon)
+    return containsPolygon(hotspot.polygon, {
+      x: point.x + hotspot.bounds.x,
+      y: point.y + hotspot.bounds.y,
+    });
   if (!hotspot.image || hotspot.hitTest === 'bounds')
     return point.x >= 0 && point.y >= 0 && point.x < width && point.y < height;
   // A failed/pending image must never turn its transparent frame into a target.

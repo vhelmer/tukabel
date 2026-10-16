@@ -39,6 +39,15 @@ hostingu i v podadresáři. `file://` není podporované.
    objektů režim zase vypni. Myší používej posuvníky nebo kolečko.
    **Pomôcky scény** vypne rámy, popisky a úchyty pro kontrolu čistého obrázku.
    Editor ukazuje i podmíněně skryté objekty; editace nespouští herní akce.
+   **Nakresliť polygón** přidává vrcholy kliknutím nebo dotykem přímo nad pozadím.
+   Klik na první bod, Enter nebo **Dokončiť polygón** pod scénou uzavře tvar;
+   Backspace odebere poslední bod, Escape návrh zruší. Vrcholy lze táhnout,
+   **+** na hraně přidá nový bod a vybraný vrchol lze odebrat tlačítkem či Delete
+   (zůstávají alespoň tři). Tab a šipky umožňují úpravy klávesnicí, Shift posouvá
+   po deseti jednotkách. Tažení uvnitř přesune celý polygon; platí i stávající
+   úchyty přesunu, velikosti a rotace. **Previesť na polygón / Použiť obdĺžnik**
+   převede vybraný rám oběma směry. Křížící se hrany se neuloží. Jeden dokončený
+   tah nebo úprava bodů je jedna změna ve Späť/Znova.
 3. V inspektoru nastav jméno, obrázek, viditelnost a pravidla **Kliknutie na objekt**.
    Prázdný seznam je tichá interaktivní kulisa; komentář je volitelný.
    Podmínky i efekty mají formuláře a výběr existujících ID.
@@ -128,8 +137,9 @@ mrkání, dialogové snímky a jemné idle pohyby lze přiřadit v editoru.
 - `src/game/storage.ts` — save/load postupu; nikdy neukládá definice obsahu.
 - `src/game/createScene.ts` — Pixi pozadí, sprity, hotspoty a stavové indikátory.
 - `src/game/transforms.ts` — společné proporce, natočení a geometrie rámů.
-- `src/game/hitTest.ts`, `alphaMasks.ts` — sdílené alfa cílení a cache pixelů pro
-  Pixi, inventární dropy a SVG editor.
+- `src/game/hitTest.ts`, `alphaMasks.ts`, `polygon.ts` — společné cílení alfa masek
+  a polygonů, cache pixelů a kontrola geometrie pro Pixi, dropy a SVG editor.
+- `src/editor/polygonTools.ts`, `PolygonHandles.tsx` — úpravy geometrie a úchyty vrcholů.
 - `src/game/animation.ts` — vizuální hodiny, náhodné mrkání a priorita klipů.
 - `src/ui/` — herní okno, životní cyklus canvasu, dialogy, inventář a pointer drag/drop.
 - `src/editor/` — pouze vývojový editor, SVG autorování oblastí, formuláře a graf.
@@ -187,7 +197,7 @@ průhledné okraje, díry a volný prostor při `contain` propouštějí hover, 
 i dropy na další objekt pod nimi. To platí pro PNG/WebP i rasterizované SVG.
 V inspektoru **Klikateľná oblasť** přepíná automatickou masku a ruční obdélník:
 `hitTest: "bounds"` dává přednost celému autorskému `bounds` včetně rotace.
-Bez obrázku se používá obdélník vždy; `hitTest: "alpha"` nebo chybějící nastavení
+Bez obrázku a polygonu se používá obdélník; `hitTest: "alpha"` nebo chybějící nastavení
 volí automatickou masku. `alphaThreshold` lze nastavit na celé číslo 1–255.
 Editor používá stejnou detekci pro výběr i hover; rámy a popisky ji nepřekrývají,
 transformační úchyty jsou samostatné ovládací prvky. Ve hře maska sleduje právě
@@ -195,6 +205,20 @@ vykreslený snímek i procedurální pohyb. Alfa data se čtou jednou na URL, sd
 mezi režimy a drží v cache s limitem 32 MiB mimo reference aktivních scén.
 Čtení canvasu ani GPU neprobíhá při pointer událostech. Chyba načtení nikdy
 nezmění průhledný obrázek v obdélníkový cíl.
+
+Volitelný `hotspot.polygon` je pole `{ "x": 300, "y": 170 }` v původních
+souřadnicích lokace, před aplikací `rotation`. První bod se na konci neopakuje.
+`bounds` je transformační rám obsahující všechny body; editor jej při změně
+vrcholů oblasti bez obrázku dopočítá. Při přesunu či změně rozměrů rámu se body
+přepočítají společně, rotace zůstává kolem jeho středu. Změna vrcholu nemění
+polohu ostatních vrcholů ani u natočeného polygonu. U objektu s obrázkem zůstává
+obrazový rám při úpravě vrcholů zachovaný. Polygon má přednost před alfa maskou
+i `hitTest`; jde o pevnou ruční oblast, nikoli animovanou masku. Podporované jsou
+jednoduché konkávní i konvexní tvary se 3–128 různými body bez křížení a nulové
+plochy. Rám včetně rotace musí zůstat uvnitř lokace. Body se při editaci ukládají
+s přesností na tisíciny jednotky; zoom a velikost obrazovky JSON nikdy nemění.
+Pixi, editor i inventární drop používají stejný test; při překryvu vítězí poslední
+viditelný hotspot v poli. Game Mode žádné obrysy polygonů nekreslí.
 
 Inventární `image` je volitelný. `tintWhen`
 rozsvítí jednoduchý zelený indikátor. ID obrázků jsou cesty relativně k `src/assets/`.
@@ -242,6 +266,9 @@ obsahu používá vlastní dočasnou Vite cache, aby nenarušila současně bě�
 `tests/alpha.spec.ts` vytváří překryté PNG s velkými průhlednými okraji a několika
 úrovněmi alfa. Ověřuje hover, klik, inventární drop, práh po save/reloadu, ruční
 rám, zoom editoru, aktuální animační snímek i reduced motion na myši a dotyku.
+`tests/polygon.spec.ts` ověřuje kreslení a úpravy konkávních polygonů na myši
+i dotyku, undo/redo, rušení, konverzi obdélníku, zápis/reload, odmítnutí neplatné
+geometrie serverem, překryvy, hover, kliky a inventární dropy i po rotaci a zoomu.
 Animační testy importují skutečné Codex PNG i atlas, porovnávají všechny pixely,
 kontrolují velikosti pláten, časování, pořadí, chyby a atomický zápis. V prohlížeči
 ověřují náhled, reload, mrkání, interakční reakce a dialogové přehrávání v Pixi

@@ -579,3 +579,107 @@ test('alpha hits use source pixels, threshold, placement, rotation and the visua
   expect(hitTestLocal(hotspot, posed, mask, pose)).toBe(true);
   expect(hitTestLocal(hotspot, { x: -1, y: 30 }, mask)).toBe(false);
 });
+
+test('concave polygons share boundary, rotation, manual-alpha precedence and affine transforms', async () => {
+  const { containsPolygon, polygonIssue, rectanglePoints } =
+    await import('../src/game/polygon');
+  const { withHotspotBounds, movePolygonVertex } =
+    await import('../src/editor/polygonTools');
+  const points = [
+    { x: 10, y: 10 },
+    { x: 90, y: 10 },
+    { x: 90, y: 40 },
+    { x: 40, y: 40 },
+    { x: 40, y: 90 },
+    { x: 10, y: 90 },
+  ];
+  expect(polygonIssue(points)).toBeNull();
+  for (const outline of [points, [...points].reverse()]) {
+    expect(containsPolygon(outline, { x: 20, y: 70 })).toBe(true);
+    expect(containsPolygon(outline, { x: 70, y: 70 })).toBe(false);
+    expect(containsPolygon(outline, { x: 40, y: 70 })).toBe(true);
+    expect(containsPolygon(outline, { x: 90, y: 10 })).toBe(true);
+    expect(containsPolygon(outline, { x: 9.99, y: 10 })).toBe(false);
+  }
+  const hotspot: Hotspot = {
+    id: 'poly',
+    label: 'Poly',
+    bounds: { x: 10, y: 10, width: 80, height: 80 },
+    polygon: points,
+    rotation: 37,
+    image: 'empty.png',
+    onClick: [],
+  };
+  const world = (p: { x: number; y: number }) =>
+    rotateAround(p, centre(hotspot.bounds), 37);
+  expect(hitTestHotspot(hotspot, world({ x: 20, y: 70 }))).toBe(true);
+  expect(hitTestHotspot(hotspot, world({ x: 70, y: 70 }))).toBe(false);
+  const moved = withHotspotBounds(hotspot, {
+    x: 110,
+    y: 210,
+    width: 160,
+    height: 240,
+  });
+  expect(moved.polygon![3]).toEqual({ x: 170, y: 300 });
+  const background = { ...hotspot, image: undefined };
+  const edited = movePolygonVertex(background, 1, world({ x: 95, y: 5 }));
+  for (let i = 0; i < points.length; i++)
+    if (i !== 1) {
+      const actual = rotateAround(
+        edited.polygon![i]!,
+        centre(edited.bounds),
+        37,
+      );
+      expect(actual.x).toBeCloseTo(world(points[i]!).x, 2);
+      expect(actual.y).toBeCloseTo(world(points[i]!).y, 2);
+    }
+  expect(polygonIssue(rectanglePoints(hotspot.bounds))).toBeNull();
+  for (const invalid of [
+    points.slice(0, 2),
+    [...points, points[0]!],
+    [
+      { x: 0, y: 0 },
+      { x: 10, y: 10 },
+      { x: 0, y: 10 },
+      { x: 10, y: 0 },
+    ],
+    [
+      { x: 0, y: 0 },
+      { x: 10, y: 0 },
+      { x: 5, y: 0 },
+    ],
+    [...points.slice(0, 3), { x: 50, y: 10 }],
+  ])
+    expect(polygonIssue(invalid)).not.toBeNull();
+  const { validateProject } = await import('../src/game/validateProject');
+  const project = {
+    ...content,
+    scenes: content.scenes.map((scene) => ({
+      ...scene,
+      hotspots: [{ ...background, rotation: 0 }],
+      background: 'demo-room.svg',
+    })),
+  };
+  expect(validateProject(project)).toEqual([]);
+  for (const polygon of [
+    null,
+    [],
+    [{ x: '10', y: 10 }],
+    [...points, { x: 101, y: 40 }],
+    [
+      { x: 0, y: 0 },
+      { x: 10, y: 10 },
+      { x: 0, y: 10 },
+      { x: 10, y: 0 },
+    ],
+    Array.from({ length: 129 }, () => ({ x: 20, y: 20 })),
+  ])
+    expect(
+      validateProject({
+        ...project,
+        scenes: [
+          { ...project.scenes[0], hotspots: [{ ...background, polygon }] },
+        ],
+      }).length,
+    ).toBeGreaterThan(0);
+});

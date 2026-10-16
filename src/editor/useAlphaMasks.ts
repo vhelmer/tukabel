@@ -9,7 +9,7 @@ export function useAlphaMasks(scene: SceneDefinition) {
     [
       ...new Set(
         scene.hotspots.flatMap((hotspot) =>
-          hotspot.image && hotspot.hitTest !== 'bounds'
+          hotspot.image && !hotspot.polygon && hotspot.hitTest !== 'bounds'
             ? [assetUrl(hotspot.image)]
             : [],
         ),

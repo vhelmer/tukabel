@@ -44,6 +44,8 @@ export interface Hotspot {
   readonly id: string;
   readonly label: string;
   readonly bounds: { x: number; y: number; width: number; height: number };
+  // Original scene coordinates, before rotation about the bounds centre.
+  readonly polygon?: readonly { readonly x: number; readonly y: number }[];
   readonly visibleWhen?: Condition;
   // First matching click rule wins. Empty means an intentionally silent prop.
   readonly onClick: readonly Rule[];

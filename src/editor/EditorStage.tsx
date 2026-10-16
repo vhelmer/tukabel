@@ -3,15 +3,29 @@ import type { PointerEvent } from 'react';
 import { assetUrl } from '../game/assets';
 import { hitTestHotspot } from '../game/hitTest';
 import { useAlphaMasks } from './useAlphaMasks';
+import { PolygonHandles } from './PolygonHandles';
 import { SceneImage } from './SceneImage';
-import { centre, isInsideScene } from '../game/transforms';
+import {
+  polygonBounds,
+  polygonIssue,
+  rectanglePoints,
+  maxPolygonPoints,
+} from '../game/polygon';
+import {
+  withHotspotBounds,
+  withPolygon,
+  movePolygonVertex,
+} from './polygonTools';
+import { centre, isInsideScene, rotateAround } from '../game/transforms';
 import type { Bounds, Point } from '../game/transforms';
 import type { Hotspot, SceneDefinition } from '../game/types';
 import { moveBounds, resizeBounds, rotationFromDrag } from './transformTools';
 
 interface Gesture {
   pointerId: number;
-  mode: 'move' | 'resize' | 'draw' | 'rotate';
+  mode: 'move' | 'resize' | 'draw' | 'rotate' | 'vertex';
+  polygon?: Hotspot['polygon'];
+  vertexIndex?: number;
   id: string;
   start: Point;
   original: Bounds;
@@ -33,12 +47,18 @@ export function EditorStage({
   selectedId: string;
   onSelect: (id: string) => void;
   onHotspot: (hotspot: Hotspot) => void;
-  onCreate: (bounds: Bounds) => void;
+  onCreate: (bounds: Bounds, polygon?: Hotspot['polygon']) => void;
 }) {
   const svg = useRef<SVGSVGElement>(null);
   const gesture = useRef<Gesture | null>(null);
   const [preview, setPreview] = useState<Gesture | null>(null);
   const [drawing, setDrawing] = useState(false);
+  const [polygonDraft, setPolygonDraft] = useState<Point[] | null>(null);
+  const [draftCursor, setDraftCursor] = useState<Point | null>(null);
+  const [polygonError, setPolygonError] = useState('');
+  const [vertex, setVertex] = useState<{ id: string; index: number } | null>(
+    null,
+  );
   const [panning, setPanning] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [helpers, setHelpers] = useState(true);
@@ -77,6 +97,8 @@ export function EditorStage({
       gesture.current = null;
       setPreview(null);
       setDrawing(false);
+      setPolygonDraft(null);
+      setPolygonError('');
       if (current && svg.current?.hasPointerCapture(current.pointerId))
         svg.current.releasePointerCapture(current.pointerId);
     };
@@ -95,6 +117,7 @@ export function EditorStage({
     event: PointerEvent<SVGElement>,
     mode: Gesture['mode'],
     hotspot?: Hotspot,
+    vertexIndex?: number,
   ) {
     if (event.button !== 0 || gesture.current) return;
     const start = point(event);
@@ -118,6 +141,8 @@ export function EditorStage({
       bounds,
       originalRotation: hotspot?.rotation ?? 0,
       rotation: hotspot?.rotation ?? 0,
+      polygon: hotspot?.polygon,
+      vertexIndex,
       proportional: Boolean(hotspot?.image) && hotspot?.imageFit !== 'stretch',
     };
     setPreview({ ...gesture.current });
@@ -126,12 +151,24 @@ export function EditorStage({
     const current = gesture.current,
       end = point(event);
     if (!current) {
+      if (polygonDraft) {
+        setDraftCursor(end);
+        return;
+      }
       setHoveredId(end && !drawing && !panning ? (pick(end)?.id ?? '') : '');
       return;
     }
     if (current.pointerId !== event.pointerId || !end) return;
     const delta = { x: end.x - current.start.x, y: end.y - current.start.y };
-    if (current.mode === 'move')
+    if (current.mode === 'vertex') {
+      const original = scene.hotspots.find((h) => h.id === current.id)!;
+      const next = movePolygonVertex(original, current.vertexIndex!, {
+        x: clamp(end.x, 0, scene.width),
+        y: clamp(end.y, 0, scene.height),
+      });
+      current.bounds = next.bounds;
+      current.polygon = next.polygon;
+    } else if (current.mode === 'move')
       current.bounds = moveBounds(
         current.original,
         current.originalRotation,
@@ -182,12 +219,25 @@ export function EditorStage({
         setDrawing(false);
       } else if (current.mode !== 'draw') {
         const hotspot = scene.hotspots.find((h) => h.id === current.id);
-        if (hotspot)
-          onHotspot({
-            ...hotspot,
-            bounds: current.bounds,
+        if (hotspot) {
+          const next = {
+            ...withHotspotBounds(hotspot, current.bounds),
+            ...(current.mode === 'vertex' ? { polygon: current.polygon } : {}),
             rotation: current.rotation || undefined,
-          });
+          };
+          if (
+            next.polygon &&
+            (polygonIssue(next.polygon) ||
+              !isInsideScene(next.bounds, scene, next.rotation))
+          )
+            setPolygonError(
+              'Neplatná úprava sa neuložila. Vrcholy musia tvoriť jednoduchý polygón bez kríženia, s rámom v lokácii.',
+            );
+          else {
+            setPolygonError('');
+            onHotspot(next);
+          }
+        }
       }
     }
     if (svg.current?.hasPointerCapture(event.pointerId))
@@ -195,8 +245,13 @@ export function EditorStage({
   }
   const active = selected
     ? {
-        ...selected,
-        bounds: preview?.id === selected.id ? preview.bounds : selected.bounds,
+        ...withHotspotBounds(
+          selected,
+          preview?.id === selected.id ? preview.bounds : selected.bounds,
+        ),
+        ...(preview?.id === selected.id && preview.mode === 'vertex'
+          ? { polygon: preview.polygon }
+          : {}),
         rotation:
           preview?.id === selected.id
             ? preview.rotation
@@ -205,6 +260,55 @@ export function EditorStage({
     : undefined;
   const activePivot = active ? centre(active.bounds) : { x: 0, y: 0 };
   const handle = 28 / screenScale;
+  const selectedVertex =
+    vertex?.id === selectedId && vertex.index < (selected?.polygon?.length ?? 0)
+      ? vertex.index
+      : -1;
+  function completePolygon() {
+    if (!polygonDraft || polygonIssue(polygonDraft)) {
+      setPolygonError(
+        'Polygón potrebuje 3–128 rôznych bodov, plochu a hrany bez kríženia.',
+      );
+      return;
+    }
+    onCreate(polygonBounds(polygonDraft), polygonDraft);
+    setPolygonDraft(null);
+    setPolygonError('');
+  }
+  function commitPolygon(next: Hotspot) {
+    if (
+      !next.polygon ||
+      polygonIssue(next.polygon) ||
+      !isInsideScene(next.bounds, scene, next.rotation)
+    ) {
+      setPolygonError(
+        'Neplatná úprava sa neuložila. Hrany sa nesmú krížiť a rám musí zostať v lokácii.',
+      );
+      return;
+    }
+    setPolygonError('');
+    onHotspot(next);
+  }
+  function removeVertex(index: number) {
+    if (!selected?.polygon || selected.polygon.length <= 3) return;
+    commitPolygon(
+      withPolygon(
+        selected,
+        selected.polygon.filter((_, i) => i !== index),
+      ),
+    );
+    setVertex(null);
+  }
+  function addVertex(index: number) {
+    if (!selected?.polygon || selected.polygon.length >= maxPolygonPoints)
+      return;
+    const points = [...selected.polygon],
+      a = points[index]!,
+      b = points[(index + 1) % points.length]!;
+    points.splice(index + 1, 0, { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
+    commitPolygon(withPolygon(selected, points));
+    setVertex({ id: selected.id, index: index + 1 });
+  }
   return (
     <section className="editor-stage-panel">
       <div className="stage-toolbar">
@@ -243,6 +347,7 @@ export function EditorStage({
             onChange={(event) => {
               setPanning(event.target.checked);
               setDrawing(false);
+              setPolygonDraft(null);
             }}
           />
           Posun pohľadu
@@ -251,11 +356,26 @@ export function EditorStage({
           aria-pressed={drawing}
           onClick={() => {
             setDrawing(!drawing);
+            setPolygonDraft(null);
+            setPolygonError('');
             setPanning(false);
             setHelpers(true);
           }}
         >
           {drawing ? 'Zrušiť kreslenie' : 'Nakresliť hotspot'}
+        </button>
+        <button
+          aria-pressed={polygonDraft !== null}
+          onClick={() => {
+            setPolygonDraft(polygonDraft === null ? [] : null);
+            setPolygonError('');
+            setDrawing(false);
+            setPanning(false);
+            setHelpers(true);
+            svg.current?.focus();
+          }}
+        >
+          {polygonDraft !== null ? 'Zrušiť polygón' : 'Nakresliť polygón'}
         </button>
       </div>
       <div className="stage-transform-tool">
@@ -282,11 +402,13 @@ export function EditorStage({
         )}
       </div>
       <p className="field-note">
-        {drawing
-          ? 'Potiahni v scéne a vytvor novú oblasť.'
-          : panning
-            ? 'Na dotyku potiahni scénu pre posun zväčšeného výrezu. Myšou použi posuvníky alebo koliesko. Vypni Posun pohľadu pre úpravy objektov.'
-            : 'Ťahaj viditeľnú časť objektu. Ľavý horný úchyt presúva celý rám, pravý dolný mení veľkosť. Objekt môžeš vybrať aj zo zoznamu. Kruh nad rámom otáča; Shift zarovnáva po 15°. Escape zruší ťah. Pomôcky možno skryť pre čistý náhľad. Zobrazené sú aj podmienene skryté objekty.'}
+        {polygonDraft !== null
+          ? 'Klikaj alebo ťukaj pre pridanie bodov. Uzavri kliknutím na prvý bod, Enterom alebo tlačidlom Dokončiť polygón pod scénou. Backspace odoberie posledný bod, Escape zruší návrh.'
+          : drawing
+            ? 'Potiahni v scéne a vytvor novú oblasť.'
+            : panning
+              ? 'Na dotyku potiahni scénu pre posun zväčšeného výrezu. Myšou použi posuvníky alebo koliesko. Vypni Posun pohľadu pre úpravy objektov.'
+              : 'Ťahaj viditeľnú časť objektu. Ľavý horný úchyt presúva celý rám, pravý dolný mení veľkosť. Objekt môžeš vybrať aj zo zoznamu. Kruh nad rámom otáča; Shift zarovnáva po 15°. Escape zruší ťah. Pomôcky možno skryť pre čistý náhľad. Zobrazené sú aj podmienene skryté objekty.'}
       </p>
       {maskError ? (
         <p role="alert">Klikateľné pixely sa nepodarilo načítať: {maskError}</p>
@@ -308,7 +430,41 @@ export function EditorStage({
             }}
             data-hovered-id={hoveredId}
             aria-label="Vizuálny editor lokácie"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (polygonDraft === null || e.target !== svg.current) return;
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                completePolygon();
+              }
+              if (e.key === 'Backspace') {
+                e.preventDefault();
+                setPolygonDraft(polygonDraft.slice(0, -1));
+              }
+            }}
             onPointerDown={(e) => {
+              if (polygonDraft !== null && e.button === 0) {
+                e.preventDefault();
+                svg.current?.focus();
+                const p = point(e);
+                if (!p) return;
+                const next = {
+                  x: Math.round(clamp(p.x, 0, scene.width) * 1000) / 1000,
+                  y: Math.round(clamp(p.y, 0, scene.height) * 1000) / 1000,
+                };
+                if (
+                  polygonDraft.length >= 3 &&
+                  Math.hypot(
+                    next.x - polygonDraft[0]!.x,
+                    next.y - polygonDraft[0]!.y,
+                  ) <=
+                    12 / screenScale
+                )
+                  completePolygon();
+                else if (polygonDraft.length < maxPolygonPoints)
+                  setPolygonDraft([...polygonDraft, next]);
+                return;
+              }
               if (drawing) begin(e, 'draw');
               else if (!panning) {
                 const p = point(e);
@@ -328,8 +484,15 @@ export function EditorStage({
               fit="stretch"
             />
             {scene.hotspots.map((hotspot) => {
-              const b =
-                preview?.id === hotspot.id ? preview.bounds : hotspot.bounds;
+              const shown = withHotspotBounds(
+                hotspot,
+                preview?.id === hotspot.id ? preview.bounds : hotspot.bounds,
+              );
+              const polygon =
+                preview?.id === hotspot.id && preview.mode === 'vertex'
+                  ? preview.polygon
+                  : shown.polygon;
+              const b = shown.bounds;
               const angle =
                 preview?.id === hotspot.id
                   ? preview.rotation
@@ -348,20 +511,40 @@ export function EditorStage({
                       fit={hotspot.imageFit}
                     />
                   )}
-                  <rect
-                    {...b}
-                    className={
-                      selectedId === hotspot.id
-                        ? 'editor-region selected'
-                        : 'editor-region'
-                    }
-                    style={
-                      helpers
-                        ? undefined
-                        : { fill: 'transparent', stroke: 'none' }
-                    }
-                    pointerEvents="none"
-                  />
+                  {polygon ? (
+                    <polygon
+                      points={polygon.map((p) => `${p.x},${p.y}`).join(' ')}
+                      className={
+                        selectedId === hotspot.id
+                          ? 'editor-region selected'
+                          : 'editor-region'
+                      }
+                      style={
+                        helpers
+                          ? polygonIssue(polygon) ||
+                            !isInsideScene(b, scene, angle)
+                            ? { fill: '#f05a6220', stroke: '#f05a62' }
+                            : undefined
+                          : { fill: 'transparent', stroke: 'none' }
+                      }
+                      pointerEvents="none"
+                    />
+                  ) : (
+                    <rect
+                      {...b}
+                      className={
+                        selectedId === hotspot.id
+                          ? 'editor-region selected'
+                          : 'editor-region'
+                      }
+                      style={
+                        helpers
+                          ? undefined
+                          : { fill: 'transparent', stroke: 'none' }
+                      }
+                      pointerEvents="none"
+                    />
+                  )}
                   {helpers && (
                     <text
                       x={b.x + 8}
@@ -378,52 +561,123 @@ export function EditorStage({
                 </g>
               );
             })}
-            {helpers && active && !panning && (
-              <g
-                transform={`rotate(${active.rotation} ${activePivot.x} ${activePivot.y})`}
-              >
-                <rect
-                  x={active.bounds.x - handle / 2}
-                  y={active.bounds.y - handle / 2}
-                  width={handle}
-                  height={handle}
-                  className="resize-handle"
-                  style={{ cursor: 'move' }}
-                  data-move-id={active.id}
-                  aria-label="Presunúť vybraný objekt"
-                  onPointerDown={(e) => {
-                    if (!drawing) begin(e, 'move', active);
-                  }}
+            {helpers &&
+              active &&
+              !panning &&
+              !drawing &&
+              polygonDraft === null && (
+                <g
+                  transform={`rotate(${active.rotation} ${activePivot.x} ${activePivot.y})`}
+                >
+                  <rect
+                    x={
+                      active.bounds.x -
+                      handle / 2 -
+                      (active.polygon ? handle : 0)
+                    }
+                    y={active.bounds.y - handle / 2}
+                    width={handle}
+                    height={handle}
+                    className="resize-handle"
+                    style={{ cursor: 'move' }}
+                    data-move-id={active.id}
+                    aria-label="Presunúť vybraný objekt"
+                    onPointerDown={(e) => {
+                      if (!drawing) begin(e, 'move', active);
+                    }}
+                  />
+                  <rect
+                    x={
+                      active.bounds.x +
+                      active.bounds.width -
+                      handle / 2 +
+                      (active.polygon ? handle : 0)
+                    }
+                    y={
+                      active.bounds.y +
+                      active.bounds.height -
+                      handle / 2 +
+                      (active.polygon ? handle : 0)
+                    }
+                    width={handle}
+                    height={handle}
+                    className="resize-handle"
+                    data-resize-id={active.id}
+                    onPointerDown={(e) => {
+                      if (!drawing) begin(e, 'resize', active);
+                    }}
+                  />
+                  <line
+                    x1={activePivot.x}
+                    y1={active.bounds.y}
+                    x2={activePivot.x}
+                    y2={active.bounds.y - 36 / screenScale}
+                    className="rotation-stem"
+                    pointerEvents="none"
+                  />
+                  <circle
+                    cx={activePivot.x}
+                    cy={active.bounds.y - 36 / screenScale}
+                    r={handle / 2}
+                    className="rotation-handle"
+                    data-rotate-id={active.id}
+                    onPointerDown={(e) => {
+                      if (!drawing) begin(e, 'rotate', active);
+                    }}
+                  />
+                  {active.polygon && (
+                    <PolygonHandles
+                      points={active.polygon}
+                      screenScale={screenScale}
+                      selectedVertex={selectedVertex}
+                      onStart={(e, index) => {
+                        setVertex({ id: active.id, index });
+                        begin(e, 'vertex', active, index);
+                      }}
+                      onSelect={(index) => setVertex({ id: active.id, index })}
+                      onAdd={addVertex}
+                      onRemove={removeVertex}
+                      onNudge={(index, delta) => {
+                        const world = rotateAround(
+                          active.polygon![index]!,
+                          activePivot,
+                          active.rotation,
+                        );
+                        commitPolygon(
+                          movePolygonVertex(active, index, {
+                            x: world.x + delta.x,
+                            y: world.y + delta.y,
+                          }),
+                        );
+                      }}
+                    />
+                  )}
+                </g>
+              )}
+            {polygonDraft !== null && (
+              <g pointerEvents="none">
+                <polyline
+                  points={[
+                    ...polygonDraft,
+                    ...(draftCursor ? [draftCursor] : []),
+                  ]
+                    .map((p) => `${p.x},${p.y}`)
+                    .join(' ')}
+                  fill="none"
+                  stroke="#f1ce83"
+                  strokeWidth={2 / screenScale}
                 />
-                <rect
-                  x={active.bounds.x + active.bounds.width - handle / 2}
-                  y={active.bounds.y + active.bounds.height - handle / 2}
-                  width={handle}
-                  height={handle}
-                  className="resize-handle"
-                  data-resize-id={active.id}
-                  onPointerDown={(e) => {
-                    if (!drawing) begin(e, 'resize', active);
-                  }}
-                />
-                <line
-                  x1={activePivot.x}
-                  y1={active.bounds.y}
-                  x2={activePivot.x}
-                  y2={active.bounds.y - 36 / screenScale}
-                  className="rotation-stem"
-                  pointerEvents="none"
-                />
-                <circle
-                  cx={activePivot.x}
-                  cy={active.bounds.y - 36 / screenScale}
-                  r={handle / 2}
-                  className="rotation-handle"
-                  data-rotate-id={active.id}
-                  onPointerDown={(e) => {
-                    if (!drawing) begin(e, 'rotate', active);
-                  }}
-                />
+                {polygonDraft.map((p, i) => (
+                  <circle
+                    key={i}
+                    cx={p.x}
+                    cy={p.y}
+                    r={(i === 0 ? 10 : 5) / screenScale}
+                    fill={i === 0 ? '#f1ce83' : '#3e776c'}
+                    stroke="#fff0d4"
+                    strokeWidth={1 / screenScale}
+                  />
+                ))}
               </g>
             )}
             {preview?.mode === 'draw' && (
@@ -436,6 +690,60 @@ export function EditorStage({
           </svg>
         </div>
       </div>
+      <div className="stage-toolbar" aria-label="Nástroje polygónu">
+        {polygonDraft !== null ? (
+          <>
+            <span>
+              {polygonDraft.length} / {maxPolygonPoints} bodov
+            </span>
+            <button
+              disabled={polygonDraft.length < 3}
+              onClick={completePolygon}
+            >
+              Dokončiť polygón
+            </button>
+            <button
+              disabled={!polygonDraft.length}
+              onClick={() => setPolygonDraft(polygonDraft.slice(0, -1))}
+            >
+              Odobrať posledný bod
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              disabled={!selected}
+              onClick={() =>
+                selected &&
+                onHotspot({
+                  ...selected,
+                  polygon: selected.polygon
+                    ? undefined
+                    : rectanglePoints(selected.bounds),
+                  hitTest: selected.polygon ? 'bounds' : selected.hitTest,
+                })
+              }
+            >
+              {selected?.polygon ? 'Použiť obdĺžnik' : 'Previesť na polygón'}
+            </button>
+            <button
+              disabled={
+                selectedVertex < 0 ||
+                !selected?.polygon ||
+                selected.polygon.length <= 3
+              }
+              onClick={() => removeVertex(selectedVertex)}
+            >
+              Odstrániť vybraný vrchol
+            </button>
+            <span>
+              Ťahaj vrcholy; + pridá bod na hrane. Delete zmaže zameraný vrchol,
+              šípky ho posunú (Shift ×10).
+            </span>
+          </>
+        )}
+      </div>
+      {polygonError && <p role="alert">{polygonError}</p>}
     </section>
   );
 }

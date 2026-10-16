@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { AnimationPanel } from './AnimationPanel';
 import { useImageSize } from './useImageSize';
 import { imagePlacement } from '../game/transforms';
+import { rectanglePoints } from '../game/polygon';
+import { withHotspotBounds } from './polygonTools';
 import { editDimension } from './transformTools';
 import type {
   AnimationDefinition,
@@ -98,16 +100,18 @@ export function SceneInspector({
                   min={key === 'x' || key === 'y' ? 0 : 1}
                   value={hotspot.bounds[key]}
                   onChange={(value) =>
-                    onHotspot({
-                      ...hotspot,
-                      bounds: editDimension(
-                        hotspot.bounds,
-                        key,
-                        value,
-                        Boolean(hotspot.image) &&
-                          hotspot.imageFit !== 'stretch',
+                    onHotspot(
+                      withHotspotBounds(
+                        hotspot,
+                        editDimension(
+                          hotspot.bounds,
+                          key,
+                          value,
+                          Boolean(hotspot.image) &&
+                            hotspot.imageFit !== 'stretch',
+                        ),
                       ),
-                    })
+                    )
                   }
                 />
               </Field>
@@ -158,9 +162,11 @@ export function SceneInspector({
                 onClick={() =>
                   imageSize &&
                   onHotspot({
-                    ...hotspot,
+                    ...withHotspotBounds(
+                      hotspot,
+                      imagePlacement(hotspot.bounds, imageSize),
+                    ),
                     imageFit: undefined,
-                    bounds: imagePlacement(hotspot.bounds, imageSize),
                   })
                 }
               >
@@ -182,40 +188,50 @@ export function SceneInspector({
             Klikateľná oblasť
             <select
               aria-label="Klikateľná oblasť"
-              value={hotspot.hitTest ?? 'alpha'}
+              value={hotspot.polygon ? 'polygon' : (hotspot.hitTest ?? 'alpha')}
               onChange={(event) =>
                 onHotspot({
                   ...hotspot,
                   hitTest:
                     event.target.value === 'bounds' ? 'bounds' : undefined,
+                  polygon:
+                    event.target.value === 'polygon'
+                      ? rectanglePoints(hotspot.bounds)
+                      : undefined,
                 })
               }
             >
               <option value="alpha">
                 Automaticky · viditeľné pixely obrázka
               </option>
+              <option value="polygon">
+                Ručný polygón · úprava vrcholov v scéne
+              </option>
               <option value="bounds">Ručný obdĺžnik · celý rám hotspotu</option>
             </select>
           </label>
-          {hotspot.image && hotspot.hitTest !== 'bounds' && (
-            <label>
-              Prah nepriehľadnosti (1–255)
-              <input
-                type="number"
-                min={1}
-                max={255}
-                step={1}
-                value={hotspot.alphaThreshold ?? 32}
-                onChange={(event) => {
-                  const value = Number(event.target.value);
-                  if (Number.isInteger(value) && value >= 1 && value <= 255)
-                    onHotspot({ ...hotspot, alphaThreshold: value });
-                }}
-              />
-            </label>
-          )}
+          {hotspot.image &&
+            !hotspot.polygon &&
+            hotspot.hitTest !== 'bounds' && (
+              <label>
+                Prah nepriehľadnosti (1–255)
+                <input
+                  type="number"
+                  min={1}
+                  max={255}
+                  step={1}
+                  value={hotspot.alphaThreshold ?? 32}
+                  onChange={(event) => {
+                    const value = Number(event.target.value);
+                    if (Number.isInteger(value) && value >= 1 && value <= 255)
+                      onHotspot({ ...hotspot, alphaThreshold: value });
+                  }}
+                />
+              </label>
+            )}
           <p className="field-note">
-            Bez obrázka je klikateľný celý rám. Automatický režim prepúšťa
+            Ručný polygón má prednosť pred priehľadnosťou obrázka. Bez obrázka a
+            polygónu je klikateľný celý rám. Automatický režim prepúšťa
             priehľadné pixely na objekty pod nimi; predvolený prah je 32/255.
             Ručný obdĺžnik má prednosť pred priehľadnosťou.
           </p>
