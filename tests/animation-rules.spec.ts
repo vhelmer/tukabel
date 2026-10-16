@@ -342,3 +342,128 @@ test('real Codex blink atlas imports all five source-sized frames without pixel 
     await rm(root, { recursive: true, force: true });
   }
 });
+
+test('regional eyes and mouth keep independent clocks above a full-frame idle and accept an audio playhead', () => {
+  const eyes = {
+    ...clip('eyes', 'blink', ['open', 'half', 'closed']),
+    region: { x: 2, y: 2, width: 6, height: 3 },
+  };
+  const mouth = {
+    ...clip('mouth', 'talk', ['m0', 'm1', 'm2']),
+    region: { x: 3, y: 10, width: 4, height: 3 },
+  };
+  const body = clip('body', 'idle', ['body0', 'body1']);
+  const player = createAnimationPlayer(
+    {
+      blink: eyes.id,
+      talk: mouth.id,
+      idle: body.id,
+      blinkIntervalMs: [100, 100],
+    },
+    [eyes, mouth, body],
+    () => 0,
+  );
+  expect(player.tick(100, false).layers?.map((l) => l.frame)).toEqual(['open']);
+  const both = player.tick(100, true);
+  expect(both.layers?.map((l) => l.frame)).toEqual(['half', 'm0']);
+  expect(both.frame).toBe('body0');
+  expect(player.tick(100, true).layers?.map((l) => l.frame)).toEqual([
+    'closed',
+    'm1',
+  ]);
+  // Seeking speech changes only the mouth; it does not reset the blink.
+  expect(
+    player.tick(0, { active: true, timeMs: 250 }).layers?.map((l) => l.frame),
+  ).toEqual(['closed', 'm2']);
+  expect(
+    player
+      .tick(0, { active: true, timeMs: 0, frameIndex: 1 })
+      .layers?.map((l) => l.frame),
+  ).toEqual(['closed', 'm1']);
+  expect(player.tick(0, false).layers?.map((l) => l.frame)).toEqual(['closed']);
+  player.blink();
+  expect(player.tick(0, true).layers?.map((l) => l.frame)).toEqual([
+    'open',
+    'm0',
+  ]);
+});
+
+test('local animation metadata rejects overlap, invalid regions, source overflow and unsafe detection paths', async () => {
+  const project = JSON.parse(
+    await readFile('src/game/content/project.json', 'utf8'),
+  ) as GameContent;
+  const eyes = {
+    ...clip('test-eyes', 'blink', ['woman.png']),
+    source: 'woman.png',
+    region: { x: 394, y: 173, width: 100, height: 36 },
+  };
+  const mouth = {
+    ...clip('test-mouth', 'talk', ['woman.png']),
+    source: 'woman.png',
+    region: { x: 429, y: 271, width: 58, height: 31 },
+  };
+  const clean = {
+    ...project,
+    animations: [eyes, mouth],
+    scenes: project.scenes.map((s) => ({
+      ...s,
+      hotspots: s.hotspots.map((h) => ({ ...h, animation: undefined })),
+    })),
+  };
+  const actor = {
+    id: 'layered',
+    label: 'Layered',
+    image: 'woman.png',
+    bounds: { x: 100, y: 10, width: 200, height: 400 },
+    onClick: [],
+    animation: { blink: eyes.id, talk: mouth.id },
+  };
+  const configured = {
+    ...clean,
+    scenes: [{ ...clean.scenes[0]!, hotspots: [actor] }],
+  };
+  expect(validateProject(configured)).toEqual([]);
+  for (const region of [
+    { x: 394, y: 173, width: 10, height: 10 },
+    { x: 0, y: 0, width: 0, height: 10 },
+    { x: -1, y: 2, width: 10, height: 10 },
+    { x: 0.5, y: 0, width: 10, height: 10 },
+  ])
+    expect(
+      validateProject({
+        ...configured,
+        animations: [eyes, { ...mouth, region }],
+      }).length,
+    ).toBeGreaterThan(0);
+  const { detectAnimationRegion } = await import('../dev/animationImport');
+  const root = path.resolve('src/assets');
+  expect(
+    await detectAnimationRegion(root, {
+      source: 'woman.png',
+      frames: [
+        'woman.png',
+        'animations/woman-blink/frame-02.png',
+        'animations/woman-blink/frame-03.png',
+      ],
+    }),
+  ).toEqual(eyes.region);
+  expect(
+    await detectAnimationRegion(root, {
+      source: 'woman.png',
+      frames: ['woman.png'],
+    }),
+  ).toBeUndefined();
+  await expect(
+    detectAnimationRegion(root, {
+      source: '../package.json',
+      frames: ['woman.png'],
+    }),
+  ).rejects.toThrow();
+  await expect(
+    validateAnimationAssets(root, {
+      animations: [
+        { ...eyes, region: { x: 1080, y: 0, width: 20, height: 10 } },
+      ],
+    }),
+  ).rejects.toThrow('mimo');
+});

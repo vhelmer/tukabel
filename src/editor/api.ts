@@ -64,3 +64,10 @@ export async function importAnimationFiles(input: {
     assets: string[];
   }>('animations/import', 'POST', { ...input, files });
 }
+
+export const detectRegion = (source: string, frames: readonly string[]) =>
+  request<{ region: import('../game/types').AnimationRegion | null }>(
+    'animations/region',
+    'POST',
+    { source, frames },
+  );

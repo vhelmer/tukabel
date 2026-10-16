@@ -7,6 +7,7 @@ import type { ScenePicker } from '../game/hitTest';
 import { createScene } from '../game/createScene';
 import type {
   AnimationDefinition,
+  AnimationPreviewState,
   AnimationTrigger,
   GameState,
   SceneCallbacks,
@@ -19,6 +20,7 @@ interface GameCanvasProps extends SceneCallbacks {
   animations?: readonly AnimationDefinition[];
   blocked?: boolean;
   animationTrigger?: AnimationTrigger | null;
+  animationPreview?: AnimationPreviewState;
   onPickerReady?: (picker: ScenePicker | null) => void;
 }
 
@@ -34,14 +36,15 @@ function MountedCanvas({
   animations = noAnimations,
   blocked = false,
   animationTrigger,
+  animationPreview,
   onHover,
   onInteract,
   onPickerReady,
 }: GameCanvasProps) {
-  const currentState = useRef({ state, blocked });
+  const currentState = useRef({ state, blocked, animationPreview });
   useEffect(() => {
-    currentState.current = { state, blocked };
-  }, [state, blocked]);
+    currentState.current = { state, blocked, animationPreview };
+  }, [state, blocked, animationPreview]);
   const lastTrigger = useRef(0);
   const callbacks = useRef({ onHover, onInteract });
   useEffect(() => {
@@ -154,6 +157,35 @@ function MountedCanvas({
         ]);
         const textures = new Map(loaded);
         const texture = textures.get(scene.background)!;
+        for (const clip of animations) {
+          const source = textures.get(clip.source),
+            r = clip.region;
+          if (
+            source &&
+            r &&
+            (r.x < 0 ||
+              r.y < 0 ||
+              r.width <= 0 ||
+              r.height <= 0 ||
+              r.x + r.width > source.orig.width ||
+              r.y + r.height > source.orig.height)
+          )
+            throw new Error(
+              `${clip.label}: animation region outside source canvas`,
+            );
+          if (
+            source &&
+            clip.frames.some((frame) => {
+              const current = textures.get(frame);
+              return (
+                current &&
+                (current.orig.width !== source.orig.width ||
+                  current.orig.height !== source.orig.height)
+              );
+            })
+          )
+            throw new Error(`${clip.label}: frame canvas differs from source`);
+        }
         if (disposed) return;
         const mountedScene = createScene(
           scene,
@@ -170,6 +202,7 @@ function MountedCanvas({
         mountedScene.update(
           currentState.current.state,
           currentState.current.blocked,
+          currentState.current.animationPreview,
         );
         onPickerReady?.(mountedScene.pick);
         pickerPublished = true;
@@ -244,6 +277,7 @@ function MountedCanvas({
         observer = new ResizeObserver(resize);
         observer.observe(host);
         resize();
+        syncPlayback();
         setStatus('ready');
       } catch (error) {
         destroy();
@@ -264,10 +298,10 @@ function MountedCanvas({
 
   useEffect(() => {
     if (status === 'ready') {
-      sceneRef.current?.update(state, blocked);
+      sceneRef.current?.update(state, blocked, animationPreview);
       playbackRef.current?.();
     }
-  }, [status, state, blocked]);
+  }, [status, state, blocked, animationPreview]);
 
   useEffect(() => {
     if (

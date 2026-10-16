@@ -1,5 +1,5 @@
 import { containsPolygon } from './polygon';
-import type { Hotspot } from './types';
+import type { Hotspot, AnimationRegion } from './types';
 import { centre, imagePlacement, rotateAround } from './transforms';
 import type { Point } from './transforms';
 
@@ -18,6 +18,7 @@ export function hitTestLocal(
   point: Point,
   mask?: AlphaMask,
   pose?: { rotation: number; scaleX: number; scaleY: number },
+  layers: readonly { region: AnimationRegion; mask: AlphaMask }[] = [],
 ): boolean {
   const { width, height } = hotspot.bounds;
   if (hotspot.polygon)
@@ -46,12 +47,19 @@ export function hitTestLocal(
   );
   const x = Math.floor(((p.x - placement.x) / placement.width) * mask.width);
   const y = Math.floor(((p.y - placement.y) / placement.height) * mask.height);
+  const selected =
+    [...layers]
+      .reverse()
+      .find(
+        ({ region: r }) =>
+          x >= r.x && y >= r.y && x < r.x + r.width && y < r.y + r.height,
+      )?.mask ?? mask;
   return (
     x >= 0 &&
     x < mask.width &&
     y >= 0 &&
     y < mask.height &&
-    mask.alpha[y * mask.width + x]! >=
+    selected.alpha[y * selected.width + x]! >=
       (hotspot.alphaThreshold ?? defaultAlphaThreshold)
   );
 }

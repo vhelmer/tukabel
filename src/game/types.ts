@@ -1,4 +1,34 @@
 export type AnimationKind = 'blink' | 'talk' | 'expression' | 'idle';
+export interface AnimationRegion {
+  readonly x: number;
+  readonly y: number;
+  readonly width: number;
+  readonly height: number;
+}
+// Ephemeral playback input. A future audio adapter supplies currentTime/viseme;
+// no audio clock or visual pose is serialized with player progress.
+export interface SpeechPlayback {
+  readonly active: boolean;
+  readonly timeMs: number;
+  readonly frameIndex?: number;
+}
+export interface AnimationLayer {
+  readonly clipId: string;
+  readonly frame: string;
+  readonly region: AnimationRegion;
+}
+export interface AnimationSample {
+  readonly frame?: string;
+  readonly layers?: readonly AnimationLayer[];
+  readonly elapsedMs: number;
+  readonly priority: 'base' | 'idle' | 'blink' | 'talk' | 'interaction';
+}
+export interface AnimationPreviewState {
+  readonly speech?: boolean | SpeechPlayback;
+  readonly sample?: AnimationSample;
+  readonly blinkNonce?: number;
+  readonly showRegions?: boolean;
+}
 export interface AnimationDefinition {
   readonly id: string;
   readonly label: string;
@@ -6,6 +36,7 @@ export interface AnimationDefinition {
   readonly kind: AnimationKind;
   readonly frames: readonly string[];
   readonly fps: number;
+  readonly region?: AnimationRegion;
   readonly durationsMs?: readonly number[];
   readonly speed?: number;
   readonly loop?: boolean;

@@ -305,6 +305,7 @@ export function validateProject(
           'frames',
           'fps',
           'durationsMs',
+          'region',
           'speed',
           'loop',
         ])
@@ -323,6 +324,17 @@ export function validateProject(
         asset(frame, key),
       );
       number(animation.fps, `${path}.fps`);
+      if (
+        animation.region !== undefined &&
+        object(animation.region, `${path}.region`, [
+          'x',
+          'y',
+          'width',
+          'height',
+        ])
+      )
+        for (const key of ['x', 'y', 'width', 'height'])
+          number(animation.region[key], `${path}.region.${key}`);
       if (animation.durationsMs !== undefined)
         list(animation.durationsMs, `${path}.durationsMs`, number);
       if (animation.speed !== undefined)

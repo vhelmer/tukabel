@@ -11,7 +11,11 @@ import {
 import path from 'node:path';
 import sharp from 'sharp';
 import { format } from 'prettier';
-import type { AnimationDefinition, GameContent } from '../src/game/types.ts';
+import type {
+  AnimationDefinition,
+  AnimationRegion,
+  GameContent,
+} from '../src/game/types.ts';
 
 const MAX_BYTES = 32 * 1024 * 1024;
 const MAX_PIXELS = 64 * 1024 * 1024;
@@ -56,6 +60,14 @@ export async function validateAnimationAssets(
   };
   for (const clip of project.animations ?? []) {
     const source = await size(clip.source);
+    if (
+      clip.region &&
+      (clip.region.x + clip.region.width > source.width ||
+        clip.region.y + clip.region.height > source.height)
+    )
+      throw new Error(
+        `${clip.label}: oblasť animácie je mimo pôvodného obrázka.`,
+      );
     for (const frame of clip.frames) {
       const current = await size(frame);
       if (current.width !== source.width || current.height !== source.height)
@@ -64,6 +76,81 @@ export async function validateAnimationAssets(
         );
     }
   }
+}
+
+async function rgba(bytes: Buffer) {
+  return sharp(bytes, { limitInputPixels: MAX_PIXELS })
+    .toColourspace('srgb')
+    .ensureAlpha()
+    .raw()
+    .toBuffer();
+}
+function extendDifference(
+  base: Buffer,
+  frame: Buffer,
+  width: number,
+  box: { left: number; top: number; right: number; bottom: number },
+) {
+  for (let i = 0; i < base.length; i += 4) {
+    if (!base[i + 3] && !frame[i + 3]) continue;
+    if (
+      base[i] === frame[i] &&
+      base[i + 1] === frame[i + 1] &&
+      base[i + 2] === frame[i + 2] &&
+      base[i + 3] === frame[i + 3]
+    )
+      continue;
+    const pixel = i / 4,
+      x = pixel % width,
+      y = Math.floor(pixel / width);
+    box.left = Math.min(box.left, x);
+    box.right = Math.max(box.right, x);
+    box.top = Math.min(box.top, y);
+    box.bottom = Math.max(box.bottom, y);
+  }
+}
+function asRegion(box: {
+  left: number;
+  top: number;
+  right: number;
+  bottom: number;
+}): AnimationRegion | undefined {
+  return box.right < box.left
+    ? undefined
+    : {
+        x: box.left,
+        y: box.top,
+        width: box.right - box.left + 1,
+        height: box.bottom - box.top + 1,
+      };
+}
+export async function detectAnimationRegion(
+  root: string,
+  input: unknown,
+): Promise<AnimationRegion | undefined> {
+  if (
+    !object(input) ||
+    typeof input.source !== 'string' ||
+    !Array.isArray(input.frames) ||
+    !input.frames.length ||
+    input.frames.length > 120 ||
+    !input.frames.every((id) => typeof id === 'string')
+  )
+    throw new Error('Vyber zdroj a 1–120 lokálnych snímkov.');
+  const original = await localAsset(root, input.source),
+    source = await dimensions(original);
+  if (source.width * source.height * input.frames.length > MAX_PIXELS)
+    throw new Error('Animácia má priveľa pixelov.');
+  const base = await rgba(original),
+    box = { left: source.width, top: source.height, right: -1, bottom: -1 };
+  for (const id of input.frames) {
+    const bytes = await localAsset(root, id),
+      size = await dimensions(bytes);
+    if (size.width !== source.width || size.height !== source.height)
+      throw new Error('Snímky musia mať rovnaké plátno ako zdroj.');
+    extendDifference(base, await rgba(bytes), source.width, box);
+  }
+  return asRegion(box);
 }
 
 interface AtlasFrame {
@@ -173,6 +260,15 @@ export async function importAnimation(
   const staging = path.join(parent, `.${id}.tmp`);
   await mkdir(staging);
   try {
+    const base = ['blink', 'talk'].includes(String(input.kind))
+      ? await rgba(original)
+      : undefined;
+    const changed = {
+      left: source.width,
+      top: source.height,
+      right: -1,
+      bottom: -1,
+    };
     const names: string[] = [];
     const durations: number[] = [];
     const sheet = atlas ? await dimensions(uploads[0]!.bytes) : undefined;
@@ -259,6 +355,8 @@ export async function importAnimation(
             `Snímka ${i + 1} musí byť PNG ${source.width} × ${source.height} ako zdroj. Zarovnaj plátno, nie veľkosť postavy.`,
           );
       }
+      if (base)
+        extendDifference(base, await rgba(bytes), source.width, changed);
       const name = `frame-${String(i + 1).padStart(3, '0')}.png`;
       await writeFile(path.join(staging, name), bytes, { flag: 'wx' });
       names.push(`animations/${id}/${name}`);
@@ -272,7 +370,13 @@ export async function importAnimation(
       frames: names,
       ...(atlas ? { durationsMs: durations } : {}),
       loop: true,
+      ...(base && asRegion(changed) ? { region: asRegion(changed) } : {}),
     };
+    if (
+      clip.region?.width === source.width &&
+      clip.region.height === source.height
+    )
+      delete (clip as { region?: AnimationRegion }).region;
     // Archive the original atlas for future editing; never needed at runtime.
     if (atlas) {
       await writeFile(path.join(staging, 'atlas.png'), uploads[0]!.bytes);

@@ -147,6 +147,23 @@ export function validateContent(content: GameContent): string[] {
           )
             errors.push(`${path}/${key}: expected ${key} clip`);
         }
+        const localClips = (content.animations ?? []).filter(
+          (clip) => Object.values(bindings).includes(clip.id) && clip.region,
+        );
+        for (let i = 0; i < localClips.length; i++)
+          for (let j = i + 1; j < localClips.length; j++) {
+            const a = localClips[i]!.region!,
+              b = localClips[j]!.region!;
+            if (
+              a.x < b.x + b.width &&
+              a.x + a.width > b.x &&
+              a.y < b.y + b.height &&
+              a.y + a.height > b.y
+            )
+              errors.push(
+                `${path}: animation regions overlap (${localClips[i]!.id}, ${localClips[j]!.id}); use separate eyes/mouth areas`,
+              );
+          }
         if (hotspot.animation.dialogueId)
           reference(
             dialogues,
@@ -164,6 +181,19 @@ export function validateContent(content: GameContent): string[] {
     }
   }
   for (const animation of content.animations ?? []) {
+    if (animation.region) {
+      const r = animation.region;
+      if (
+        ![r.x, r.y, r.width, r.height].every(Number.isSafeInteger) ||
+        r.x < 0 ||
+        r.y < 0 ||
+        r.width <= 0 ||
+        r.height <= 0
+      )
+        errors.push(
+          `${animation.id}: region must be a positive pixel rectangle`,
+        );
+    }
     if (
       animation.durationsMs &&
       (animation.durationsMs.length !== animation.frames.length ||

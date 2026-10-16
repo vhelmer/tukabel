@@ -2,11 +2,15 @@ import { Container, Graphics, Sprite } from 'pixi.js';
 import type { Texture } from 'pixi.js';
 import type {
   AnimationDefinition,
+  AnimationPreviewState,
+  AnimationSample,
+  AnimationRegion,
   GameState,
   Hotspot,
   SceneCallbacks,
   SceneDefinition,
 } from './types';
+import { createCharacterVisual, characterClips } from './characterVisual';
 import { matches } from './state';
 import { createAnimationPlayer, isCharacterSpeaking } from './animation';
 import { hitTestLocal, hotspotLocalPoint } from './hitTest';
@@ -33,15 +37,19 @@ export function createScene(
 
   const actors: {
     hotspot: Hotspot;
-    sprite: Sprite;
+    character: ReturnType<typeof createCharacterVisual>;
     visual: Container;
     player: ReturnType<typeof createAnimationPlayer>;
-    lastFrame: string;
-    placement: ReturnType<typeof imagePlacement>;
-    hit: { frame: string; visual?: Container };
+    hit: {
+      frame: string;
+      layers: readonly { region: AnimationRegion; mask: AlphaMask }[];
+      visual?: Container;
+    };
   }[] = [];
   let state: GameState | null = null;
   let paused = false;
+  let preview: AnimationPreviewState | undefined;
+  let blinkNonce = 0;
   let pointer: Point | null = null;
   let hovered: Hotspot | null = null;
   const hover = (hotspot: Hotspot | null) => {
@@ -63,8 +71,13 @@ export function createScene(
     region.rotation = radians(hotspot.rotation ?? 0);
     region.eventMode = 'static';
     region.cursor = 'none';
-    const hit: { frame: string; visual?: Container } = {
+    const hit: {
+      frame: string;
+      layers: readonly { region: AnimationRegion; mask: AlphaMask }[];
+      visual?: Container;
+    } = {
       frame: hotspot.image ?? '',
+      layers: [],
     };
     const hitArea = {
       contains: (x: number, y: number) =>
@@ -79,28 +92,35 @@ export function createScene(
                 scaleY: hit.visual.scale.y,
               }
             : undefined,
+          hit.layers,
         ),
     };
     region.hitArea = hitArea;
     hits.set(hotspot.id, hitArea);
 
     if (hotspot.image) {
-      const sprite = new Sprite(textures.get(hotspot.image));
+      const base = textures.get(hotspot.image)!;
+      const character = createCharacterVisual(
+        hotspot.image,
+        textures,
+        characterClips(hotspot.animation, animations),
+      );
       const placement = imagePlacement(
         { x: 0, y: 0, width, height },
-        sprite.texture.orig,
+        base.orig,
         hotspot.imageFit,
       );
-      sprite.position.set(placement.x, placement.y);
-      sprite.width = placement.width;
-      sprite.height = placement.height;
-      sprite.eventMode = 'none';
+      character.root.position.set(placement.x, placement.y);
+      character.root.scale.set(
+        placement.width / base.orig.width,
+        placement.height / base.orig.height,
+      );
       const visual = new Container();
       visual.pivot.set(width / 2, height);
       visual.position.set(width / 2, height);
       hit.visual = visual;
       visual.eventMode = 'none';
-      visual.addChild(sprite);
+      visual.addChild(character.root);
       region.addChild(visual);
       if (
         hotspot.animation &&
@@ -115,11 +135,9 @@ export function createScene(
       )
         actors.push({
           hotspot,
-          sprite,
+          character,
           visual,
           player: createAnimationPlayer(hotspot.animation, animations),
-          lastFrame: hotspot.image,
-          placement,
           hit,
         });
     }
@@ -141,6 +159,14 @@ export function createScene(
     root.addChild(region);
   }
 
+  function apply(actor: (typeof actors)[number], sample: AnimationSample) {
+    actor.character.apply(sample);
+    actor.hit.frame = sample.frame ?? actor.hotspot.image!;
+    actor.hit.layers = (sample.layers ?? []).flatMap((layer) => {
+      const mask = masks.get(layer.frame);
+      return mask ? [{ region: layer.region, mask }] : [];
+    });
+  }
   // The same predicate serves Pixi, inventory drops and stationary hover.
   function pick(point: Point): Hotspot | null {
     if (!state || state.dialogue) return null;
@@ -181,26 +207,13 @@ export function createScene(
       if (!state || paused) return;
       for (const actor of actors) {
         if (!regions.get(actor.hotspot.id)?.visible) continue;
-        const sample = actor.player.tick(
-          deltaMs,
-          isCharacterSpeaking(actor.hotspot, state),
-        );
-        const frame = sample.frame ?? actor.hotspot.image!;
-        if (frame !== actor.lastFrame) {
-          const next = textures.get(frame);
-          const base = textures.get(actor.hotspot.image!)!;
-          actor.sprite.texture =
-            next &&
-            next.orig.width === base.orig.width &&
-            next.orig.height === base.orig.height
-              ? next
-              : base;
-          actor.sprite.width = actor.placement.width;
-          actor.sprite.height = actor.placement.height;
-          actor.hit.frame =
-            actor.sprite.texture === next ? frame : actor.hotspot.image!;
-          actor.lastFrame = frame;
-        }
+        const sample =
+          preview?.sample ??
+          actor.player.tick(
+            deltaMs,
+            preview?.speech ?? isCharacterSpeaking(actor.hotspot, state),
+          );
+        apply(actor, sample);
         if (actor.hotspot.animation?.motion === 'breath')
           actor.visual.scale.y =
             1 + Math.sin((sample.elapsedMs * Math.PI * 2) / 3200) * 0.012;
@@ -214,17 +227,32 @@ export function createScene(
       for (const actor of actors) {
         actor.visual.scale.set(1);
         actor.visual.rotation = 0;
-        actor.sprite.texture = textures.get(actor.hotspot.image!)!;
-        actor.sprite.width = actor.placement.width;
-        actor.sprite.height = actor.placement.height;
-        actor.lastFrame = actor.hotspot.image!;
-        actor.hit.frame = actor.hotspot.image!;
+        apply(actor, preview?.sample ?? { elapsedMs: 0, priority: 'base' });
       }
       syncHover();
       render();
     },
-    update(nextState: GameState, blocked = false) {
+    update(
+      nextState: GameState,
+      blocked = false,
+      nextPreview?: AnimationPreviewState,
+    ) {
       state = nextState;
+      preview = nextPreview;
+      for (const actor of actors) {
+        actor.character.showRegions(preview?.showRegions ?? false);
+        if (preview?.blinkNonce && preview.blinkNonce !== blinkNonce)
+          actor.player.blink();
+        apply(
+          actor,
+          preview?.sample ??
+            actor.player.tick(
+              0,
+              preview?.speech ?? isCharacterSpeaking(actor.hotspot, state),
+            ),
+        );
+      }
+      blinkNonce = preview?.blinkNonce ?? 0;
       paused = blocked;
       for (const hotspot of definition.hotspots) {
         const region = regions.get(hotspot.id)!;

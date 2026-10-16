@@ -11,7 +11,11 @@ import {
 import path from 'node:path';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import type { Plugin } from 'vite';
-import { importAnimation, validateAnimationAssets } from './animationImport.ts';
+import {
+  importAnimation,
+  validateAnimationAssets,
+  detectAnimationRegion,
+} from './animationImport.ts';
 import { format, resolveConfig } from 'prettier';
 import { validateProject } from '../src/game/validateProject.ts';
 
@@ -109,6 +113,17 @@ export function editorPlugin(): Plugin {
             for (const module of modules ?? [])
               server.environments.client.moduleGraph.invalidateModule(module);
             respond(201, { animation, assets: await listAssets(assetsRoot) });
+            return;
+          }
+          if (
+            endpoint === `${API}/animations/region` &&
+            req.method === 'POST'
+          ) {
+            const region = await detectAnimationRegion(
+              assetsRoot,
+              await readJson(req),
+            );
+            respond(200, { region: region ?? null });
             return;
           }
           if (endpoint === `${API}/project` && req.method === 'GET') {

@@ -3,6 +3,9 @@ import type {
   CharacterAnimation,
   Hotspot,
   GameState,
+  AnimationSample,
+  AnimationLayer,
+  SpeechPlayback,
 } from './types';
 
 export function frameDuration(
@@ -48,7 +51,7 @@ export function isCharacterSpeaking(
 }
 
 // Visual state only. This clock never mutates or gets serialized with player progress.
-export function createAnimationPlayer(
+function createLegacyPlayer(
   binding: CharacterAnimation,
   clips: readonly AnimationDefinition[],
   random = Math.random,
@@ -66,6 +69,12 @@ export function createAnimationPlayer(
   let wasSpeaking = false;
   let interaction: { clip: AnimationDefinition; time: number } | null = null;
   return {
+    blink() {
+      if (blink) {
+        blinkTime = 0;
+        untilBlink = delay();
+      }
+    },
     trigger(kind: 'click' | 'use') {
       const clip = find(kind === 'click' ? binding.onClick : binding.onUse);
       if (clip) {
@@ -132,6 +141,110 @@ export function createAnimationPlayer(
         priority: idle ? 'idle' : 'base',
         elapsedMs: idleTime,
       };
+    },
+  };
+}
+
+// Local clips have separate clocks. Full-frame legacy clips remain a base layer;
+// they cannot erase regional eyes/mouth, which are composed above that base.
+export function createAnimationPlayer(
+  binding: CharacterAnimation,
+  clips: readonly AnimationDefinition[],
+  random = Math.random,
+) {
+  const find = (id?: string) => clips.find((clip) => clip.id === id);
+  const regional = (id?: string) => {
+    const clip = find(id);
+    return clip?.region ? clip : undefined;
+  };
+  const baseBinding = { ...binding };
+  for (const key of ['idle', 'blink', 'talk', 'onClick', 'onUse'] as const)
+    if (regional(binding[key])) delete baseBinding[key];
+  const base = createLegacyPlayer(baseBinding, clips, random);
+  const blink = regional(binding.blink),
+    talk = regional(binding.talk),
+    idle = regional(binding.idle);
+  const interval = binding.blinkIntervalMs ?? [3000, 7000];
+  const delay = () => interval[0] + random() * (interval[1] - interval[0]);
+  let elapsed = 0,
+    talkTime = 0,
+    wasSpeaking = false,
+    blinkTime: number | null = null,
+    untilBlink = delay();
+  let reaction: { clip: AnimationDefinition; time: number } | null = null;
+  return {
+    blink() {
+      if (blink) blinkTime = 0;
+      else base.blink();
+    },
+    trigger(kind: 'click' | 'use') {
+      const clip = regional(kind === 'click' ? binding.onClick : binding.onUse);
+      if (clip) reaction = { clip, time: 0 };
+      else base.trigger(kind);
+    },
+    tick(deltaMs: number, speech: boolean | SpeechPlayback): AnimationSample {
+      const speaking = typeof speech === 'boolean' ? speech : speech.active;
+      const sample = base.tick(deltaMs, speaking);
+      elapsed += deltaMs;
+      const layers: AnimationLayer[] = [];
+      const add = (
+        clip: AnimationDefinition,
+        time: number,
+        loop?: boolean,
+        frameIndex?: number,
+      ) =>
+        layers.push({
+          clipId: clip.id,
+          region: clip.region!,
+          frame:
+            frameIndex === undefined
+              ? frameAt(clip, time, loop)
+              : clip.frames[
+                  Math.max(
+                    0,
+                    Math.min(clip.frames.length - 1, Math.floor(frameIndex)),
+                  )
+                ]!,
+        });
+      if (idle) add(idle, elapsed, binding.idleLoop ?? idle.loop ?? true);
+      if (blinkTime !== null && blink) {
+        blinkTime += deltaMs;
+        if (blinkTime >= clipDuration(blink)) {
+          blinkTime = null;
+          untilBlink = delay();
+        }
+      } else if (blink) {
+        untilBlink -= deltaMs;
+        if (untilBlink <= 0) blinkTime = 0;
+      }
+      if (blink && blinkTime !== null) add(blink, blinkTime, false);
+      if (speaking) {
+        talkTime = wasSpeaking ? talkTime + deltaMs : 0;
+        const time =
+          typeof speech === 'boolean' ? talkTime : Math.max(0, speech.timeMs);
+        const index =
+          typeof speech === 'boolean' ? undefined : speech.frameIndex;
+        if (talk) add(talk, time, undefined, index);
+        else if (sample.priority === 'talk' && typeof speech !== 'boolean') {
+          const full = find(binding.talk)!;
+          sample.frame =
+            index === undefined
+              ? frameAt(full, time)
+              : full.frames[
+                  Math.max(
+                    0,
+                    Math.min(full.frames.length - 1, Math.floor(index)),
+                  )
+                ]!;
+        }
+      }
+      wasSpeaking = speaking;
+      if (reaction) {
+        reaction.time += deltaMs;
+        if (reaction.time >= clipDuration(reaction.clip)) reaction = null;
+        else add(reaction.clip, reaction.time, false);
+      }
+      return { ...sample, layers, elapsedMs: elapsed };
     },
   };
 }
