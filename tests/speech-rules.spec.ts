@@ -567,8 +567,8 @@ test('expressive TTS preserves tags, omits unsupported settings and archives ver
                 model_id: 'eleven_v3',
                 can_do_text_to_speech: true,
                 maximum_text_length_per_request: 5000,
-                can_use_style: true,
-                can_use_speaker_boost: true,
+                can_use_style: false,
+                can_use_speaker_boost: false,
               },
             ]);
           paidCalls++;

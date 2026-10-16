@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { lipSyncIssue, mouthFrame, mouthShapeAt } from '../game/speech';
+import { useSubtitles } from './useSubtitles';
 import type {
   CharacterAnimation,
   DialogueNode,
@@ -25,9 +26,12 @@ export function useDialogueAudio(
     resume = useRef(false);
   const [status, setStatus] = useState('');
   const speech = node?.speech?.text === node?.text ? node?.speech : undefined;
+  const audioUrl = speech?.audio,
+    lipSyncUrl = speech?.lipSync;
+  const subtitles = useSubtitles(node, speech, ref, enabled, utteranceKey);
   useEffect(() => {
     const audio = ref.current;
-    if (!audio || !speech || !enabled) return;
+    if (!audio || !audioUrl || !enabled) return;
     const abort = new AbortController();
     track.current = null;
     started.current = false;
@@ -35,9 +39,9 @@ export function useDialogueAudio(
     failed.current = false;
     resume.current = false;
     setStatus('');
-    audio.src = speech.audio;
-    if (speech.lipSync)
-      void fetch(speech.lipSync, { signal: abort.signal })
+    audio.src = audioUrl;
+    if (lipSyncUrl)
+      void fetch(lipSyncUrl, { signal: abort.signal })
         .then(async (response) => {
           if (!response.ok) throw Error();
           const data: unknown = await response.json();
@@ -62,7 +66,7 @@ export function useDialogueAudio(
       audio.load();
       track.current = null;
     };
-  }, [speech, enabled, autoplay, utteranceKey]);
+  }, [audioUrl, lipSyncUrl, enabled, autoplay, utteranceKey]);
   useEffect(() => {
     const audio = ref.current;
     if (!audio) return;
@@ -144,5 +148,5 @@ export function useDialogueAudio(
         {status && <p role="status">{status}</p>}
       </div>
     ) : null;
-  return { clock, controls };
+  return { clock, controls, ...subtitles };
 }

@@ -774,6 +774,44 @@
   overflow-y: auto;
   min-height: 0;
 }
+.speech-caption {
+  margin: 16px;
+  min-height: 3lh;
+  padding: 16px 22px;
+  border-radius: 12px;
+  background: #101b18;
+  color: #fff1c9;
+  text-align: center;
+  font-size: clamp(16px, 1.5vw, 22px);
+  overflow-wrap: anywhere;
+}
+.subtitle-editor {
+  margin-top: 20px;
+  border-top: 1px solid #ffffff30;
+  padding-top: 12px;
+}
+.subtitle-cues {
+  list-style: none;
+  padding: 0;
+}
+.subtitle-cues li {
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid #ffffff30;
+  border-radius: 8px;
+}
+.subtitle-cues li.is-current {
+  border-color: #e8bd69;
+  background: #e8bd690c;
+}
+.subtitle-cue-times {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.subtitle-cues textarea {
+  min-height: 64px;
+}
 .speech-preview-pane .combined-preview,
 .speech-studio .speech-preview-pane .character-preview {
   display: block;

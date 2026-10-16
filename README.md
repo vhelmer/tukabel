@@ -389,12 +389,17 @@ automaticky nemažou. `OPENAI_API_KEY` zůstává rezervovaný pro jiné budouc�
    `RHUBARB_BIN=/absolutni/cesta/rhubarb` (Windows: `rhubarb.exe`), nebo jej přidej
    do PATH; restartuj Vite. Ověřeno s 1.14.0. Binárku lze držet v ignorovaném `.local-tools/`; necommituje se a produkce ji nepotřebuje.
 3. V **Animácie** vyber postavu. Vlevo otevři **Hlas ElevenLabs**, stiskni
-   **Načítať hlasy a modely** a přiřaď Voice ID a Model ID. ID lze vložit i přímo;
-   katalog vrací prvních 100 hlasů. Výchozí model je `eleven_multilingual_v2`,
-   dostupný je i např. `eleven_flash_v2_5`. Vyber model/hlas vhodný pro slovenštinu.
+   **Načítať hlasy a modely** a přiřaď Voice ID a vyber **Model ElevenLabs**.
+   Seznam obsahuje všechny TTS modely vrácené `/v1/models`; ID lze vložit i přímo.
+   Bez API jsou k dispozici označené předvolby, jejich dostupnost ověří server.
+   Katalog vrací prvních 100 hlasů. Vyber model/hlas vhodný pro slovenštinu.
+   [Eleven v3, v4 a v4 Turbo podporují audio tagy](https://elevenlabs.io/docs/help-center/product/core-capabilities/text-to-speech/how-do-audio-tags-work-with-eleven-v3-and-v4)
+   jako `[laughs]`, `[crying]` a `[whispers]`; editor je označuje v seznamu.
    Nastav stabilitu, podobnost, rychlost 0.7–1.2 a podle možností modelu výraznost
    a speaker boost. Eleven v3 používá stabilitu 0 / 0.5 / 1. Server před generováním
    ověří schopnosti modelu a odešle pouze podporované volitelné parametry.
+   U v3/v4 se neposílá speed; style a speaker boost řídí schopnosti vrácené API.
+   Nedostupná pole jsou vypnutá.
    Při 402 ověř tarif a kredity: [hlasy z Voice Library nejsou na bezplatném tarifu dostupné přes API](https://elevenlabs.io/docs/eleven-creative/voices/voice-library),
    i když je lze přehrát na webu. Vyber hlas dostupný pro svůj tarif nebo importuj WAV.
 4. Otevři **Dabing a lip-sync**. Vyber repliku z existujících dialogů a uprav text
@@ -417,6 +422,31 @@ automaticky nemažou. `OPENAI_API_KEY` zůstává rezervovaný pro jiné budouc�
 8. Přehrávej/pozastavuj audio v náhledu, posouvej jeho čas a přibliž tvář. Oči
    náhodně mrkají a idle pokračuje nezávisle. **Uložiť do projektu** zapíše vazby,
    hlas a mapování do JSON. **Game Mode** okamžitě přehraje tentýž návrh.
+
+**Titulky** se upravují ve stejném panelu pod správou dabingu. `text` uzlu je
+původní text pro TTS včetně tagů. Hráč ve výchozím stavu vidí text bez hranatých
+závorek a jejich obsahu (včetně vnořených tagů). Volitelné **Vlastný text titulkov**
+(`subtitle` uzlu, také v záložce Dialógy) jej nahradí; prázdné pole obnoví automatiku.
+Změna titulků neznehodnotí audio ani lip-sync.
+
+Nové generování používá [Create speech with timing](https://elevenlabs.io/docs/api-reference/text-to-speech/convert-with-timestamps)
+a uloží `alignment.json` s časy znaků a SHA-256 audia. Titulky se dělí podle
+interpunkce a celých slov do úseků přibližně do 78 znaků. Pokud očištěný text odpovídá
+zarovnání, úseky sledují skutečné časy řeči včetně přestávek. Importované/starší WAV,
+chybějící zarovnání nebo odlišný vlastní přepis používají **označený odhad** podle
+délky textu; nejde o rozpoznání řeči. Nové audio kvůli titulkům automaticky nevzniká.
+
+V seznamu úseků můžeš změnit text, začátek/konec v sekundách a posunout náhled.
+**Rozdeliť úsek** dělí v pozici kurzoru v textu, jinak u nejbližšího prostředního
+slova; **Zlúčiť** spojí následující úsek. **Obnoviť automatické titulky** zahodí ruční
+časování a přepočte úseky lokálně. Poté použij **Uložiť do projektu**. Úseky jsou
+v `speech.subtitles` (`text` je otisk výchozího zobrazeného textu, `timing` původ
+časování, `cues` obsahuje `start`, `end`, `text`). Změna celého textu titulků dočasně
+použije nové automatické úseky místo starých ručních; pro jejich zápis stiskni obnovu.
+Save/check odmítne překryvy a časy mimo skutečnou délku WAV, stejně jako zarovnání
+patřící k jinému audiu. Pozice titulků i úst sleduje stejné `audio.currentTime`:
+pauza, seek, menu, přeskočení a změna repliky zůstávají synchronní. Na konci nebo po
+přeskočení zůstane poslední úsek, při chybě zvuku je dostupný celý očištěný text.
 
 Audio a archivní údaje generování vznikají atomicky v `src/assets/speech/<uuid>/`.
 Analýza ukládá nový `track.lipsync.json`; původní asset se nepřepisuje. Commitni nové

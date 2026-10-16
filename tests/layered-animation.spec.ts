@@ -287,6 +287,21 @@ test('existing Codex blink and mouth demo run simultaneously in a dialogue', asy
     JSON.stringify({
       ...project,
       startScene: 'animation-lab',
+      // This visual test exercises unsynchronized talk layering. Speech timing
+      // and edited subtitle content are covered separately in speech.spec.ts.
+      dialogues: project.dialogues.map((d) =>
+        d.id === 'animation-demo'
+          ? {
+              ...d,
+              nodes: d.nodes.map((n) => ({
+                ...n,
+                text: 'Oči a ústa fungujú nezávisle.',
+                subtitle: undefined,
+                speech: undefined,
+              })),
+            }
+          : d,
+      ),
       scenes: project.scenes.map((s) => ({
         ...s,
         hotspots: s.hotspots.map((h) =>
@@ -295,6 +310,7 @@ test('existing Codex blink and mouth demo run simultaneously in a dialogue', asy
                 ...h,
                 animation: {
                   ...h.animation,
+                  talk: 'woman-talk',
                   motion: undefined,
                   blinkIntervalMs: [100, 100],
                 },

@@ -13,6 +13,7 @@ import {
   SelectId,
 } from './fields';
 import { nextId, replaceAt } from './model';
+import { SubtitleTextField } from './SubtitleEditor';
 
 interface Props {
   content: GameContent;
@@ -295,6 +296,7 @@ export function DialoguesPanel({
                   }
                 />
               </Field>
+              <SubtitleTextField node={node} onChange={updateNode} />
               {node.speech && (
                 <p className="field-note">
                   Dabing:{' '}

@@ -111,6 +111,9 @@ export function GameWindow({
     dialogueNode,
     voiceActor?.animation,
     menu,
+    true,
+    true,
+    `${state.dialogue?.id}/${dialogueNode?.id}`,
   );
   const hotspots = scene.hotspots.filter((hotspot) =>
     matches(state, hotspot.visibleWhen),
@@ -446,6 +449,7 @@ export function GameWindow({
             state={state}
             dispatch={dispatch}
             audio={dialogueAudio.controls}
+            subtitle={dialogueAudio.subtitle}
           />
         )}
         {objectsOpen && !state.dialogue && (

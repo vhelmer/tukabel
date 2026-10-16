@@ -1,17 +1,20 @@
 import { useEffect, useRef, type ReactNode } from 'react';
 import { getDialogueNode, matches } from '../game/state';
 import type { GameAction, GameContent, GameState } from '../game/types';
+import { subtitleText } from '../game/subtitles';
 
 export function DialoguePanel({
   content,
   state,
   dispatch,
   audio,
+  subtitle,
 }: {
   content: GameContent;
   state: GameState;
   dispatch: (action: GameAction) => void;
   audio?: ReactNode;
+  subtitle?: string;
 }) {
   const panel = useRef<HTMLDivElement>(null);
   const node = getDialogueNode(content, state);
@@ -63,8 +66,8 @@ export function DialoguePanel({
           </p>
         </div>
       </div>
-      <p id="dialogue-text" key={node.id}>
-        {node.text}
+      <p id="dialogue-text" key={node.id} aria-live="polite" aria-atomic="true">
+        {subtitle ?? subtitleText(node)}
       </p>
       {audio}
       <div className="dialogue-choices">

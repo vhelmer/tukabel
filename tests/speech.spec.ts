@@ -45,8 +45,27 @@ const test = base.extend<{
           url: String(url),
           body: init?.body ? JSON.parse(String(init.body)) : undefined,
         });
-        if (String(url).includes('/text-to-speech/'))
-          return new Response(new Uint8Array(4 * 22050 * 2), { status: 200 });
+        if (String(url).includes('/text-to-speech/')) {
+          const text = String(JSON.parse(String(init?.body)).text),
+            characters = [...text];
+          const pivot = text.indexOf('Druhá');
+          const duration = pivot > 0 ? 15 : 4;
+          const starts = characters.map((_, i) =>
+            pivot > 0
+              ? i < pivot
+                ? (i / pivot) * 3
+                : 8 + ((i - pivot) / (characters.length - pivot)) * 6
+              : (i / characters.length) * 3.5,
+          );
+          return Response.json({
+            audio_base64: Buffer.alloc(duration * 22050 * 2).toString('base64'),
+            alignment: {
+              characters,
+              character_start_times_seconds: starts,
+              character_end_times_seconds: starts.map((t) => t + 0.01),
+            },
+          });
+        }
         return new Response(
           JSON.stringify(
             String(url).includes('/voices')
@@ -58,6 +77,20 @@ const test = base.extend<{
                     can_do_text_to_speech: true,
                     can_use_style: true,
                     can_use_speaker_boost: true,
+                    languages: [{ language_id: 'sk' }],
+                  },
+                  {
+                    model_id: 'eleven_v3',
+                    name: 'Eleven v3',
+                    can_do_text_to_speech: true,
+                    can_use_style: false,
+                    can_use_speaker_boost: false,
+                    languages: [{ language_id: 'sk' }],
+                  },
+                  {
+                    model_id: 'eleven_v4',
+                    name: 'Eleven v4',
+                    can_do_text_to_speech: true,
                     languages: [{ language_id: 'sk' }],
                   },
                 ],
@@ -413,3 +446,177 @@ base(
     ).toBe(true);
   },
 );
+
+test('models and editable subtitle segments survive save/reload and follow the audio playhead in both modes', async ({
+  page,
+  workspace,
+  speechMock,
+}, testInfo) => {
+  await studio(page, workspace.url);
+  await page.locator('.voice-settings summary').click();
+  await page
+    .getByRole('button', { name: 'Načítať hlasy a modely', exact: true })
+    .click();
+  await expect(page.locator('.voice-settings')).toContainText(
+    'Modely načítané z API',
+  );
+  await page
+    .getByLabel('ElevenLabs Voice ID', { exact: true })
+    .fill('mock-voice');
+  await page
+    .getByLabel('Model ElevenLabs', { exact: true })
+    .selectOption('eleven_v3');
+  await expect(page.locator('.voice-settings')).toContainText(
+    'Podporuje [laughs]',
+  );
+  await expect(
+    page.getByLabel('Rýchlosť reči', { exact: true }),
+  ).toBeDisabled();
+  await page
+    .getByRole('button', { name: 'Dabing a lip-sync', exact: true })
+    .click();
+  const raw =
+    '[laughs] Prvá dlhšia veta má jasný začiatok aj koniec. [whispers] Druhá dlhšia veta prichádza po krátkej prestávke. Tretia veta pokračuje úplne pokojným hlasom. Štvrtá veta tento skúšobný rozhovor uzatvára.';
+  await page.getByLabel('Text dabovanej repliky', { exact: true }).fill(raw);
+  await page
+    .getByLabel('Potvrdzujem platené generovanie tejto repliky', {
+      exact: true,
+    })
+    .check();
+  await page
+    .getByRole('button', { name: 'Vygenerovať dabing ElevenLabs', exact: true })
+    .click();
+  await expect(
+    page.getByRole('status', { name: 'Stav dabingu' }),
+  ).toContainText('Hotovo');
+  await expect(
+    page.getByRole('status', { name: 'Časovanie titulkov' }),
+  ).toContainText('podľa ElevenLabs');
+  const editor = page.getByRole('region', { name: 'Editor titulkov' });
+  await expect(editor.locator('li')).toHaveCount(4);
+  const preview = page.getByRole('status', { name: 'Náhľad titulkov' });
+  const audio = page.locator('.speech-studio audio');
+  await audioAt(audio, 0.9);
+  await expect(preview).toContainText('Prvá dlhšia veta');
+  await expect(preview).not.toContainText('[laughs]');
+  await expect(preview).not.toContainText('Druhá');
+  await audioAt(audio, 5);
+  await expect(preview).toHaveText('');
+  await audioAt(audio, 8.5);
+  await expect(preview).toContainText('Druhá dlhšia veta');
+  const custom =
+    'Prvá dlhšia veta má jasný začiatok aj koniec. Druhá vlastná veta prichádza po krátkej prestávke. Tretia veta pokračuje úplne pokojným hlasom. Štvrtá veta tento skúšobný rozhovor uzatvára.';
+  await page
+    .getByLabel('Vlastný text titulkov (voliteľné)', { exact: true })
+    .fill(custom);
+  await expect(
+    page.getByRole('status', { name: 'Časovanie titulkov' }),
+  ).toContainText('Odhad');
+  await expect
+    .poll(() => audio.evaluate((el) => (el as HTMLAudioElement).currentTime))
+    .toBeCloseTo(8.5, 1);
+  await page
+    .getByRole('button', { name: 'Obnoviť automatické titulky', exact: true })
+    .click();
+  await page
+    .getByLabel('Text titulku 2', { exact: true })
+    .fill('Druhá upravená veta pre hráča.');
+  await page
+    .getByRole('button', { name: 'Rozdeliť úsek 2', exact: true })
+    .click();
+  await expect(editor.locator('li')).toHaveCount(5);
+  await page
+    .getByRole('button', { name: 'Zlúčiť úsek 2 s ďalším', exact: true })
+    .click();
+  await expect(editor.locator('li')).toHaveCount(4);
+  await page.getByLabel('Začiatok titulku 2', { exact: true }).fill('4.5');
+  await page.getByLabel('Koniec titulku 2', { exact: true }).fill('7.5');
+  await page
+    .getByRole('button', { name: 'Náhľad úseku 2', exact: true })
+    .click();
+  await expect(preview).toHaveText('Druhá upravená veta pre hráča.');
+  const paid = speechMock.requests.filter((r) =>
+    r.url.includes('/text-to-speech/'),
+  );
+  expect(paid).toHaveLength(1);
+  expect(paid[0]!.body).toMatchObject({ text: raw, model_id: 'eleven_v3' });
+  expect(
+    (paid[0]!.body as { voice_settings: object }).voice_settings,
+  ).not.toHaveProperty('speed');
+  await save(page);
+  const disk = JSON.parse(
+    await readFile(workspace.source, 'utf8'),
+  ) as GameContent;
+  const saved = disk.dialogues.find((d) => d.id === 'animation-demo')!
+    .nodes[0]!;
+  expect(saved.text).toBe(raw);
+  expect(saved.subtitle).toBe(custom);
+  expect(saved.speech!.subtitles!.timing).toBe('manual');
+  expect(saved.speech!.subtitles!.cues[1]).toEqual({
+    start: 4.5,
+    end: 7.5,
+    text: 'Druhá upravená veta pre hráča.',
+  });
+  expect(
+    JSON.parse(
+      await readFile(
+        path.join(workspace.root, 'src/assets', saved.speech!.alignment!),
+        'utf8',
+      ),
+    ).characters.join(''),
+  ).toBe(raw);
+  await page.screenshot({ path: testInfo.outputPath('subtitle-editor.png') });
+  await page.reload();
+  await ready(page);
+  await studio(page, workspace.url);
+  await page.locator('.voice-settings summary').click();
+  await expect(
+    page.getByLabel('Model ElevenLabs', { exact: true }),
+  ).toHaveValue('eleven_v3');
+  await page
+    .getByRole('button', { name: 'Dabing a lip-sync', exact: true })
+    .click();
+  await expect(
+    page.getByLabel('Vlastný text titulkov (voliteľné)', { exact: true }),
+  ).toHaveValue(custom);
+  await expect(page.getByLabel('Text titulku 2', { exact: true })).toHaveValue(
+    'Druhá upravená veta pre hráča.',
+  );
+  await page.getByRole('button', { name: 'Game Mode', exact: true }).click();
+  await ready(page);
+  await (await object(page, 'Skúšobná postava')).click();
+  const gameAudio = page.locator('.dialogue-panel audio');
+  await audioAt(gameAudio, 6.5);
+  await expect(page.locator('#dialogue-text')).toHaveText(
+    'Druhá upravená veta pre hráča.',
+  );
+  await page.waitForTimeout(150);
+  await expect(page.locator('#dialogue-text')).toHaveText(
+    'Druhá upravená veta pre hráča.',
+  );
+  await gameAudio.evaluate((el) => void (el as HTMLAudioElement).play());
+  await page.getByRole('button', { name: 'Menu', exact: true }).click();
+  await expect
+    .poll(() => gameAudio.evaluate((el) => (el as HTMLAudioElement).paused))
+    .toBe(true);
+  await expect(page.locator('#dialogue-text')).toHaveText(
+    'Druhá upravená veta pre hráča.',
+  );
+  await page
+    .getByRole('button', { name: 'Pokračovať v hre', exact: true })
+    .click();
+  await audioAt(gameAudio, 0.9);
+  await expect(page.locator('#dialogue-text')).toContainText(
+    'Prvá dlhšia veta',
+  );
+  await expect(page.getByRole('dialog')).not.toContainText('[laughs]');
+  await page
+    .getByRole('button', { name: 'Preskočiť dabing', exact: true })
+    .click();
+  await expect(page.locator('#dialogue-text')).toContainText('Štvrtá veta');
+  await page.screenshot({ path: testInfo.outputPath('subtitles-in-game.png') });
+  await page
+    .getByRole('button', { name: 'Ukončiť rozhovor', exact: true })
+    .click();
+  await expect(page.locator('audio')).toHaveCount(0);
+});

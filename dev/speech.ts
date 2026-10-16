@@ -323,10 +323,9 @@ export async function createSpeech(
       throw new Error(
         `Model povoľuje najviac ${model.maximum_text_length_per_request} znakov.`,
       );
-    if (model.can_use_speaker_boost && !features.expressive)
+    if (model.can_use_speaker_boost)
       settings.use_speaker_boost = voice.useSpeakerBoost;
-    if (model.can_use_style && !features.expressive)
-      settings.style = voice.style;
+    if (model.can_use_style) settings.style = voice.style;
     const response = await eleven(
       options,
       `/v1/text-to-speech/${encodeURIComponent(voice.voiceId)}/with-timestamps?output_format=pcm_22050`,

@@ -5,11 +5,17 @@ import type {
   Hotspot,
   VoiceSettings,
 } from '../game/types';
-import { defaultVoice, mouthShapes } from '../game/speech';
+import {
+  defaultVoice,
+  modelFeatures,
+  mouthShapes,
+  suggestedModels,
+} from '../game/speech';
 import { assetUrl } from '../game/assets';
 import { useDialogueAudio } from '../ui/DialogueAudio';
 import { CombinedPreview } from './CharacterPreview';
 import { Field, SelectId } from './fields';
+import { SubtitleEditor } from './SubtitleEditor';
 import {
   analyzeSpeech,
   generateSpeech,
@@ -40,6 +46,16 @@ export function VoicePanel({
   }, []);
   const voice = hotspot.animation?.voice ?? defaultVoice;
   const model = catalog?.models.find((m) => m.id === voice.modelId);
+  const features = modelFeatures(voice.modelId);
+  const models = catalog?.models ?? suggestedModels;
+  const selectModel = (id: string) =>
+    update({
+      ...voice,
+      modelId: id,
+      stability: modelFeatures(id).discreteStability
+        ? Math.round(voice.stability * 2) / 2
+        : voice.stability,
+    });
   const update = (next: VoiceSettings) =>
     onHotspot({
       ...hotspot,
@@ -95,27 +111,45 @@ export function VoicePanel({
             </option>
           ))}
         </datalist>
-        <Field label="ElevenLabs Model ID">
-          <input
-            list="eleven-models"
+        <Field label="Model ElevenLabs">
+          <select
             value={voice.modelId}
             disabled={!voice.voiceId}
-            onChange={(e) => update({ ...voice, modelId: e.target.value })}
+            onChange={(e) => selectModel(e.target.value)}
+          >
+            {!models.some((m) => m.id === voice.modelId) && (
+              <option value={voice.modelId}>
+                {voice.modelId} (vlastné ID)
+              </option>
+            )}
+            {models.map((m) => (
+              <option key={m.id} value={m.id}>
+                {m.label}
+                {modelFeatures(m.id).audioTags ? ' · audio tagy' : ''}
+              </option>
+            ))}
+          </select>
+        </Field>
+        <p className="field-note">
+          {catalog
+            ? 'Modely načítané z API.'
+            : 'Predvoľby; dostupnosť overí API pri generovaní.'}{' '}
+          {features.audioTags
+            ? 'Podporuje [laughs], [crying], [whispers].'
+            : 'Podpora emočných audio tagov nie je potvrdená; pre tagy vyber Eleven v3 alebo v4.'}
+        </p>
+        <Field label="ElevenLabs Model ID">
+          <input
+            value={voice.modelId}
+            disabled={!voice.voiceId}
+            onChange={(e) => selectModel(e.target.value)}
           />
         </Field>
-        <datalist id="eleven-models">
-          {(
-            catalog?.models ?? [
-              { id: 'eleven_multilingual_v2', label: 'Multilingual v2' },
-              { id: 'eleven_flash_v2_5', label: 'Flash v2.5' },
-              { id: 'eleven_v3', label: 'Eleven v3' },
-            ]
-          ).map((m) => (
-            <option key={m.id} value={m.id}>
-              {m.label}
-            </option>
-          ))}
-        </datalist>
+        {model?.maxCharacters && (
+          <p className="field-note">
+            Limit modelu: {model.maxCharacters} znakov (editor najviac 5000).
+          </p>
+        )}
         {model && !model.languages.includes('sk') && (
           <p className="field-note">
             Model neuvádza slovenčinu. Vyber model s podporou sk.
@@ -139,16 +173,13 @@ export function VoicePanel({
                 min={key === 'speed' ? 0.7 : 0}
                 max={key === 'speed' ? 1.2 : 1}
                 step={
-                  voice.modelId.startsWith('eleven_v3') && key === 'stability'
-                    ? 0.5
-                    : 0.05
+                  features.discreteStability && key === 'stability' ? 0.5 : 0.05
                 }
                 disabled={
                   !voice.voiceId ||
+                  (key === 'speed' && !(model?.speed ?? features.speed)) ||
                   (key === 'style' &&
-                    (model
-                      ? !model.style
-                      : /^eleven_v[34]/.test(voice.modelId)))
+                    (model ? !model.style : features.expressive))
                 }
                 value={voice[key]}
                 onChange={(e) =>
@@ -163,9 +194,7 @@ export function VoicePanel({
             type="checkbox"
             disabled={
               !voice.voiceId ||
-              (model
-                ? !model.speakerBoost
-                : /^eleven_v[34]/.test(voice.modelId))
+              (model ? !model.speakerBoost : features.expressive)
             }
             checked={voice.useSpeakerBoost}
             onChange={(e) =>
@@ -288,6 +317,9 @@ export function SpeechPanel({
             speech: {
               ...node.speech,
               audio: assetUrl(node.speech.audio),
+              alignment: node.speech.alignment
+                ? assetUrl(node.speech.alignment)
+                : undefined,
               lipSync: node.speech.lipSync
                 ? assetUrl(node.speech.lipSync)
                 : undefined,
@@ -303,6 +335,7 @@ export function SpeechPanel({
     previewPaused,
     active,
     false,
+    `${entry?.dialogue}/${node?.id}`,
   );
   async function run(kind: 'generate' | 'upload' | 'analyze', file?: File) {
     if (!node || !entry) return;
@@ -315,8 +348,12 @@ export function SpeechPanel({
         kind === 'analyze'
           ? await analyzeSpeech(node.speech!.audio)
           : kind === 'upload'
-            ? await uploadSpeech(node.text, file!)
-            : await generateSpeech(node.text, hotspot.animation!.voice!);
+            ? await uploadSpeech(node.text, file!, node.subtitle)
+            : await generateSpeech(
+                node.text,
+                hotspot.animation!.voice!,
+                node.subtitle,
+              );
       if (!mounted.current) return;
       latest.current.onAssets(result.assets);
       latest.current.onNode(entry.dialogue, {
@@ -324,7 +361,12 @@ export function SpeechPanel({
         actor: { sceneId, hotspotId: hotspot.id },
         speech:
           'audio' in result
-            ? { audio: result.audio, text: result.text }
+            ? {
+                audio: result.audio,
+                text: result.text,
+                alignment: result.alignment,
+                subtitles: result.subtitles,
+              }
             : { ...node.speech!, lipSync: result.lipSync },
       });
       setConfirmed(false);
@@ -342,6 +384,13 @@ export function SpeechPanel({
     <div className="speech-studio">
       <div className="speech-preview-pane">
         {audio.controls}
+        <div
+          className="speech-caption"
+          role="status"
+          aria-label="Náhľad titulkov"
+        >
+          {audio.subtitle || '\u00a0'}
+        </div>
         <div className="speech-character-preview">
           <CombinedPreview
             active={active}
@@ -374,6 +423,11 @@ export function SpeechPanel({
                   }
                 />
               </Field>
+              <p className="field-note">
+                Text dabingu môže obsahovať audio tagy, napr. [laughs] alebo
+                [whispers], ak ich vybraný model podporuje. Hra ich automaticky
+                skryje v titulkoch.
+              </p>
               <p className="field-note">
                 {node.text.length} znakov. Hlas nastav vľavo v Hlas ElevenLabs.{' '}
                 {status &&
@@ -455,6 +509,15 @@ export function SpeechPanel({
                     'Časovanie úst ešte nie je vytvorené.'}
                 </p>
               )}
+              <SubtitleEditor
+                node={node}
+                track={audio.subtitleTrack}
+                automatic={audio.automaticSubtitles}
+                duration={audio.duration}
+                caption={audio.subtitle}
+                onSeek={audio.seek}
+                onChange={(next) => onNode(entry!.dialogue, next)}
+              />
             </>
           )}
         </fieldset>

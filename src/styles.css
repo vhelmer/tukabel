@@ -698,6 +698,8 @@ body {
 .dialogue-panel #dialogue-text {
   font-weight: 600;
   font-size: clamp(13px, 1.2vw, 17px);
+  min-height: 2.8em;
+  overflow-wrap: anywhere;
 }
 .dialogue-choices {
   counter-reset: reply;

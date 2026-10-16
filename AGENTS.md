@@ -137,6 +137,16 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
   pozastav při menu/skrytí a respektuj blokovaný autoplay. Playhead neukládej do save.
 - Dabing rozšiřuje existující animační studio. Import/generace zapisuje assety;
   vazby na repliky, hlasy a mapy se zapíší až přes Uložiť do projektu.
+- `DialogueNode.text` zachovává TTS tagy. `subtitle` je volitelný přepis; bez něj
+  `subtitles.ts` odstraní hranaté závorky i jejich obsah. TTS používá endpoint
+  `with-timestamps`; `speech.alignment` odkazuje na místní `alignment.json` s vazbou
+  SHA-256 na WAV. `speech.subtitles` drží upravitelné úseky a otisk zobrazeného textu.
+  Přepis titulků nesmí restartovat audio ani zneplatnit Rhubarb. Cizojazyčný přepis
+  nebo WAV bez zarovnání používá označený odhad; neprezentuj jej jako přesné časování.
+  Save/check kontroluje překryvy i délku WAV. Hraní i náhled čtou `audio.currentTime`.
+- Modely TTS načítej z `/v1/models`; chybějící metadata podpory tagů/rychlosti
+  doplňuje malá sdílená tabulka `modelFeatures` v `speech.ts`. Neznámým modelům
+  neslibuj audio tagy. Generování ani hledání zarovnání nikdy automaticky neopakuj.
 
 ## Aktuální rozsah
 

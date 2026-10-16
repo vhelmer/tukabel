@@ -30,7 +30,8 @@ const API = '/__tukabel/editor';
 const hash = (text: string) => createHash('sha256').update(text).digest('hex');
 const loopback = (host: string) =>
   ['localhost', '127.0.0.1', '[::1]'].includes(host);
-const mediaPattern = /^[a-zA-Z0-9_./-]+\.(wav|lipsync\.json)$/;
+const mediaPattern =
+  /^[a-zA-Z0-9_./-]+(?:\.wav|\.lipsync\.json|\/alignment\.json)$/;
 const imagePattern = /^[a-zA-Z0-9_/-]+\.(svg|png|jpe?g|webp|avif)$/;
 
 async function readJson(req: IncomingMessage): Promise<unknown> {
