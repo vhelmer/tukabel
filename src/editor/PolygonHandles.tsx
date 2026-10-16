@@ -5,6 +5,7 @@ import { maxPolygonPoints } from '../game/polygon';
 export function PolygonHandles({
   points,
   screenScale,
+  rotation,
   selectedVertex,
   onStart,
   onSelect,
@@ -14,6 +15,7 @@ export function PolygonHandles({
 }: {
   points: readonly Point[];
   screenScale: number;
+  rotation: number;
   selectedVertex: number;
   onStart: (event: PointerEvent<SVGElement>, index: number) => void;
   onSelect: (index: number) => void;
@@ -59,6 +61,7 @@ export function PolygonHandles({
                 <text
                   x={(p.x + next.x) / 2}
                   y={(p.y + next.y) / 2}
+                  transform={`rotate(${-rotation} ${(p.x + next.x) / 2} ${(p.y + next.y) / 2})`}
                   textAnchor="middle"
                   dominantBaseline="central"
                   fill="#f1ce83"

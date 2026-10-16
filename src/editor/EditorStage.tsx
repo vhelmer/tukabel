@@ -51,6 +51,7 @@ export function EditorStage({
 }) {
   const svg = useRef<SVGSVGElement>(null);
   const gesture = useRef<Gesture | null>(null);
+  const draftPointer = useRef<number | null>(null);
   const [preview, setPreview] = useState<Gesture | null>(null);
   const [drawing, setDrawing] = useState(false);
   const [polygonDraft, setPolygonDraft] = useState<Point[] | null>(null);
@@ -99,13 +100,15 @@ export function EditorStage({
       setDrawing(false);
       setPolygonDraft(null);
       setPolygonError('');
-      if (current && svg.current?.hasPointerCapture(current.pointerId))
-        svg.current.releasePointerCapture(current.pointerId);
+      const pointerId = current?.pointerId ?? draftPointer.current;
+      draftPointer.current = null;
+      if (pointerId !== null && svg.current?.hasPointerCapture(pointerId))
+        svg.current.releasePointerCapture(pointerId);
     };
     window.addEventListener('keydown', cancel);
     return () => window.removeEventListener('keydown', cancel);
   }, []);
-  const point = (event: PointerEvent<SVGElement>): Point | null => {
+  const point = (event: { clientX: number; clientY: number }): Point | null => {
     const matrix = svg.current?.getScreenCTM();
     if (!matrix) return null;
     const p = new DOMPoint(event.clientX, event.clientY).matrixTransform(
@@ -442,27 +445,43 @@ export function EditorStage({
                 setPolygonDraft(polygonDraft.slice(0, -1));
               }
             }}
+            onPointerUp={(e) => {
+              if (
+                polygonDraft === null ||
+                draftPointer.current !== e.pointerId
+              ) {
+                finish(e);
+                return;
+              }
+              draftPointer.current = null;
+              if (svg.current?.hasPointerCapture(e.pointerId))
+                svg.current.releasePointerCapture(e.pointerId);
+              const p = point(e);
+              if (!p) return;
+              const next = {
+                x: Math.round(clamp(p.x, 0, scene.width) * 1000) / 1000,
+                y: Math.round(clamp(p.y, 0, scene.height) * 1000) / 1000,
+              };
+              if (
+                polygonDraft.length >= 3 &&
+                Math.hypot(
+                  next.x - polygonDraft[0]!.x,
+                  next.y - polygonDraft[0]!.y,
+                ) <=
+                  12 / screenScale
+              )
+                completePolygon();
+              else if (polygonDraft.length < maxPolygonPoints)
+                setPolygonDraft([...polygonDraft, next]);
+            }}
             onPointerDown={(e) => {
-              if (polygonDraft !== null && e.button === 0) {
-                e.preventDefault();
-                svg.current?.focus();
-                const p = point(e);
-                if (!p) return;
-                const next = {
-                  x: Math.round(clamp(p.x, 0, scene.width) * 1000) / 1000,
-                  y: Math.round(clamp(p.y, 0, scene.height) * 1000) / 1000,
-                };
-                if (
-                  polygonDraft.length >= 3 &&
-                  Math.hypot(
-                    next.x - polygonDraft[0]!.x,
-                    next.y - polygonDraft[0]!.y,
-                  ) <=
-                    12 / screenScale
-                )
-                  completePolygon();
-                else if (polygonDraft.length < maxPolygonPoints)
-                  setPolygonDraft([...polygonDraft, next]);
+              if (polygonDraft !== null) {
+                if (e.button === 0) {
+                  e.preventDefault();
+                  svg.current?.focus();
+                  draftPointer.current = e.pointerId;
+                  svg.current?.setPointerCapture(e.pointerId);
+                }
                 return;
               }
               if (drawing) begin(e, 'draw');
@@ -474,9 +493,14 @@ export function EditorStage({
             }}
             onPointerMove={move}
             onPointerLeave={() => setHoveredId('')}
-            onPointerUp={(e) => finish(e)}
-            onPointerCancel={(e) => finish(e, true)}
-            onLostPointerCapture={(e) => finish(e, true)}
+            onPointerCancel={(e) => {
+              draftPointer.current = null;
+              finish(e, true);
+            }}
+            onLostPointerCapture={(e) => {
+              draftPointer.current = null;
+              finish(e, true);
+            }}
           >
             <SceneImage
               asset={scene.background}
@@ -521,8 +545,9 @@ export function EditorStage({
                       }
                       style={
                         helpers
-                          ? polygonIssue(polygon) ||
-                            !isInsideScene(b, scene, angle)
+                          ? preview?.id === hotspot.id &&
+                            (polygonIssue(polygon) ||
+                              !isInsideScene(b, scene, angle))
                             ? { fill: '#f05a6220', stroke: '#f05a62' }
                             : undefined
                           : { fill: 'transparent', stroke: 'none' }
@@ -629,6 +654,7 @@ export function EditorStage({
                     <PolygonHandles
                       points={active.polygon}
                       screenScale={screenScale}
+                      rotation={active.rotation}
                       selectedVertex={selectedVertex}
                       onStart={(e, index) => {
                         setVertex({ id: active.id, index });
