@@ -1,0 +1,136 @@
+{
+  "source": "src/assets/woman.png",
+  "sourceSha256": "70ce25a5dbf8bf1be42fdaa65294e69add29762da9e8796b75c89649218eace4",
+  "size": [1086, 1448],
+  "allowedMouthBox": [429, 256, 489, 309],
+  "allowedMouthPixels": 2094,
+  "frames": [
+    {
+      "frame": "frame-01-neutral.png",
+      "changedPixels": 1829,
+      "changedOutsideMouth": 0,
+      "alphaIdentical": true,
+      "changedBounds": [431, 257, 486, 306],
+      "sha256": "72772160e59d145174cad0b75e4b8e05c09ffd6ce36ff65bb99e4680beae4cc2"
+    },
+    {
+      "frame": "frame-02-slight.png",
+      "changedPixels": 1828,
+      "changedOutsideMouth": 0,
+      "alphaIdentical": true,
+      "changedBounds": [431, 257, 486, 306],
+      "sha256": "31a0c47e1299650cf0d4d9ee13326d2e8e27768c126e4d5f9be43f8324daf3d9"
+    },
+    {
+      "frame": "frame-03-medium.png",
+      "changedPixels": 0,
+      "changedOutsideMouth": 0,
+      "alphaIdentical": true,
+      "changedBounds": null,
+      "sha256": "70ce25a5dbf8bf1be42fdaa65294e69add29762da9e8796b75c89649218eace4"
+    },
+    {
+      "frame": "frame-04-open.png",
+      "changedPixels": 2007,
+      "changedOutsideMouth": 0,
+      "alphaIdentical": true,
+      "changedBounds": [431, 257, 486, 308],
+      "sha256": "347bd46036ba019b37de7c04d8bfec479e26ca596ad0bf481d0dfb981fc3d316"
+    },
+    {
+      "frame": "frame-05-rounded.png",
+      "changedPixels": 1856,
+      "changedOutsideMouth": 0,
+      "alphaIdentical": true,
+      "changedBounds": [431, 257, 486, 306],
+      "sha256": "d194e3feecdbdab6a31db2d40d2a084b554f2a2fba890eb4fce5d5479c106ee3"
+    },
+    {
+      "frame": "frame-06-pursed.png",
+      "changedPixels": 1830,
+      "changedOutsideMouth": 0,
+      "alphaIdentical": true,
+      "changedBounds": [431, 257, 486, 306],
+      "sha256": "ea5a78a438d9dc03d7b1961f528e4715b366a85d42dc05273f85310ba6053f49"
+    }
+  ],
+  "pairwiseDifferences": [
+    {
+      "a": "neutral",
+      "b": "slight",
+      "differentPixels": 1256
+    },
+    {
+      "a": "neutral",
+      "b": "medium",
+      "differentPixels": 1829
+    },
+    {
+      "a": "neutral",
+      "b": "open",
+      "differentPixels": 1683
+    },
+    {
+      "a": "neutral",
+      "b": "rounded",
+      "differentPixels": 1321
+    },
+    {
+      "a": "neutral",
+      "b": "pursed",
+      "differentPixels": 1052
+    },
+    {
+      "a": "slight",
+      "b": "medium",
+      "differentPixels": 1828
+    },
+    {
+      "a": "slight",
+      "b": "open",
+      "differentPixels": 1555
+    },
+    {
+      "a": "slight",
+      "b": "rounded",
+      "differentPixels": 1371
+    },
+    {
+      "a": "slight",
+      "b": "pursed",
+      "differentPixels": 1215
+    },
+    {
+      "a": "medium",
+      "b": "open",
+      "differentPixels": 2007
+    },
+    {
+      "a": "medium",
+      "b": "rounded",
+      "differentPixels": 1856
+    },
+    {
+      "a": "medium",
+      "b": "pursed",
+      "differentPixels": 1830
+    },
+    {
+      "a": "open",
+      "b": "rounded",
+      "differentPixels": 1620
+    },
+    {
+      "a": "open",
+      "b": "pursed",
+      "differentPixels": 1596
+    },
+    {
+      "a": "rounded",
+      "b": "pursed",
+      "differentPixels": 1024
+    }
+  ],
+  "spritesheetTilesIdentical": true,
+  "gifFrames": 13
+}

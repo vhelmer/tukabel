@@ -1,0 +1,158 @@
+{
+  "frames": {
+    "frame-01-neutral.png": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 1086,
+        "h": 1448
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 1086,
+        "h": 1448
+      },
+      "sourceSize": {
+        "w": 1086,
+        "h": 1448
+      }
+    },
+    "frame-02-slight.png": {
+      "frame": {
+        "x": 1086,
+        "y": 0,
+        "w": 1086,
+        "h": 1448
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 1086,
+        "h": 1448
+      },
+      "sourceSize": {
+        "w": 1086,
+        "h": 1448
+      }
+    },
+    "frame-03-medium.png": {
+      "frame": {
+        "x": 2172,
+        "y": 0,
+        "w": 1086,
+        "h": 1448
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 1086,
+        "h": 1448
+      },
+      "sourceSize": {
+        "w": 1086,
+        "h": 1448
+      }
+    },
+    "frame-04-open.png": {
+      "frame": {
+        "x": 0,
+        "y": 1448,
+        "w": 1086,
+        "h": 1448
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 1086,
+        "h": 1448
+      },
+      "sourceSize": {
+        "w": 1086,
+        "h": 1448
+      }
+    },
+    "frame-05-rounded.png": {
+      "frame": {
+        "x": 1086,
+        "y": 1448,
+        "w": 1086,
+        "h": 1448
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 1086,
+        "h": 1448
+      },
+      "sourceSize": {
+        "w": 1086,
+        "h": 1448
+      }
+    },
+    "frame-06-pursed.png": {
+      "frame": {
+        "x": 2172,
+        "y": 1448,
+        "w": 1086,
+        "h": 1448
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 1086,
+        "h": 1448
+      },
+      "sourceSize": {
+        "w": 1086,
+        "h": 1448
+      }
+    }
+  },
+  "animations": {
+    "mouthShapes": [
+      "frame-01-neutral.png",
+      "frame-02-slight.png",
+      "frame-03-medium.png",
+      "frame-04-open.png",
+      "frame-05-rounded.png",
+      "frame-06-pursed.png"
+    ],
+    "talk": [
+      "frame-01-neutral.png",
+      "frame-02-slight.png",
+      "frame-03-medium.png",
+      "frame-04-open.png",
+      "frame-03-medium.png",
+      "frame-02-slight.png",
+      "frame-01-neutral.png",
+      "frame-05-rounded.png",
+      "frame-06-pursed.png",
+      "frame-05-rounded.png",
+      "frame-03-medium.png",
+      "frame-02-slight.png",
+      "frame-01-neutral.png"
+    ]
+  },
+  "meta": {
+    "image": "spritesheet.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 3258,
+      "h": 2896
+    },
+    "scale": "1"
+  }
+}

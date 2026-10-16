@@ -1,0 +1,33 @@
+{
+  "source": "woman.png",
+  "region": {
+    "x": 429,
+    "y": 256,
+    "width": 60,
+    "height": 53
+  },
+  "frames": [
+    "frame-01-neutral.png",
+    "frame-02-slight.png",
+    "frame-03-medium.png",
+    "frame-04-open.png",
+    "frame-05-rounded.png",
+    "frame-06-pursed.png"
+  ],
+  "mouthShapes": {
+    "X": 0,
+    "A": 0,
+    "B": 1,
+    "C": 2,
+    "D": 3,
+    "E": 4,
+    "F": 5,
+    "G": 1,
+    "H": 2
+  },
+  "previewSequence": [0, 1, 2, 3, 2, 1, 0, 4, 5, 4, 2, 1, 0],
+  "previewDurationsMs": [
+    360, 100, 110, 100, 90, 100, 180, 110, 140, 90, 100, 90, 500
+  ],
+  "note": "Experiment only. Import mouthShapes atlas sequence to preserve zero-based mapping. Medium is original; other poses modify mouth only."
+}

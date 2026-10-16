@@ -457,6 +457,34 @@ API vychází z oficiálního [TTS rozhraní ElevenLabs](https://elevenlabs.io/d
 [katalogu modelů](https://elevenlabs.io/docs/api-reference/models/list) a
 [CLI Rhubarbu](https://github.com/DanielSWolf/rhubarb-lip-sync#command-line-options).
 
+### Izolovaný experiment: šest póz mluvení `woman.png`
+
+`experiments/woman-speech/output/` obsahuje šest transparentních PNG 1086 × 1448:
+zavřená, lehce pootevřená, střední (bajtově původní obrázek), výrazně otevřená,
+zaoblená O a našpulená U. Pět nových póz přebírá původní nepravidelné zuby a spodní
+ret jako oddělené vrstvy; otvor úst a kontury jsou kreslené 8× větší a vyhlazené.
+Horní zuby zůstávají ukotvené, dolní se pohybují s čelistí. Při zaoblení rty zuby
+zakrývají. Neškáluje se celá hlava ani původní ústa. Skript je určený pro tento asset.
+
+```sh
+python3 experiments/woman-speech/generate.py                # Pillow, bez API
+python3 experiments/woman-speech/generate.py --verify-only --self-test
+```
+
+`contact.png` ukazuje všechny tváře, `mouth-contact.png` detaily a `preview.gif`
+mluvení se společnou paletou a neprůhledným pozadím (GIF neumí částečné alfa).
+PNG a atlas zachovávají **celý alfa kanál originálu**. `mouth-mask.png` je pevná
+povolená oblast úprav; mimo ni se kontrolují všechny čtyři kanály, včetně RGB
+průhledných pixelů. `validation.json` obsahuje SHA-256, počty změn a porovnání póz.
+Kontrola navíc ověřuje shodu atlasových políček s PNG a časování GIFu; negativní
+kontroly musí odmítnout změnu oka nebo alfa kanálu.
+
+`spritesheet.png` (3 × 2 políčka, 3258 × 2896) + `spritesheet.json` mají neřezaná
+Pixi/TexturePacker metadata. Pro budoucí import tvarů vyber sekvenci **mouthShapes**;
+`poses.json` navrhuje nulové indexy X/A=0, B=1, C=2, D=3, E=4, F=5 a fallback G=1,
+H=2. Sekvence **talk** slouží jako pohybový náhled. Není to úplná sada přesných
+fonémů. Experiment zatím nemění registr animací, herní JSON ani předchozí demo.
+
 ### Izolovaný experiment: programové mrknutí `woman.png`
 
 `experiments/woman-blink/` obsahuje samostatný reprodukční skript. Nemění herní
