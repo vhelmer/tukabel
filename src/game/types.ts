@@ -83,7 +83,29 @@ export interface LipSyncTrack {
 export interface DialogueSpeech {
   readonly audio: string;
   readonly lipSync?: string;
+  readonly alignment?: string;
+  readonly subtitles?: SubtitleTrack;
   readonly text: string;
+}
+export interface SubtitleCue {
+  readonly start: number;
+  readonly end: number;
+  readonly text: string;
+}
+export interface SubtitleTrack {
+  // Snapshot of the displayed text: edits invalidate old manual timing, not audio.
+  readonly text: string;
+  readonly timing: 'alignment' | 'estimated' | 'manual';
+  readonly cues: readonly SubtitleCue[];
+}
+export interface SpeechAlignment {
+  readonly metadata: {
+    readonly duration: number;
+    readonly audioSha256?: string;
+  };
+  readonly characters: readonly string[];
+  readonly character_start_times_seconds: readonly number[];
+  readonly character_end_times_seconds: readonly number[];
 }
 
 export type Condition =
@@ -155,6 +177,7 @@ export interface DialogueNode {
   readonly portrait?: string;
   readonly speaker: string;
   readonly text: string;
+  readonly subtitle?: string;
   readonly choices: readonly {
     id: string;
     text: string;

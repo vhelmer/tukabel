@@ -14,12 +14,19 @@ import {
 import path from 'node:path';
 import { format } from 'prettier';
 import { tmpdir } from 'node:os';
-import { lipSyncIssue, voiceIssue } from '../src/game/speech.ts';
+import { lipSyncIssue, modelFeatures, voiceIssue } from '../src/game/speech.ts';
+import {
+  alignmentIssue,
+  buildSubtitles,
+  subtitleText,
+  subtitleTrackIssue,
+} from '../src/game/subtitles.ts';
 import type {
   DialogueSpeech,
   GameContent,
   LipSyncTrack,
   VoiceSettings,
+  SpeechAlignment,
 } from '../src/game/types.ts';
 
 const execute = promisify(execFile);
@@ -220,6 +227,7 @@ interface ElevenModel {
   can_use_style?: boolean;
   can_use_speaker_boost?: boolean;
   languages?: { language_id: string }[];
+  maximum_text_length_per_request?: number;
 }
 async function elevenModels(options: SpeechOptions): Promise<ElevenModel[]> {
   return (await eleven(options, '/v1/models')).json();
@@ -245,6 +253,9 @@ export async function speechCatalog(options: SpeechOptions) {
         style: Boolean(x.can_use_style),
         speakerBoost: Boolean(x.can_use_speaker_boost),
         languages: x.languages?.map((l) => l.language_id) ?? [],
+        audioTags: modelFeatures(x.model_id).audioTags,
+        speed: modelFeatures(x.model_id).speed,
+        maxCharacters: x.maximum_text_length_per_request ?? null,
       })),
   };
 }
@@ -273,7 +284,13 @@ export async function createSpeech(
     input.text.length > 5000
   )
     throw new Error('Replika musí mať 1–5000 znakov.');
+  if (
+    input.subtitle !== undefined &&
+    (typeof input.subtitle !== 'string' || input.subtitle.length > 10000)
+  )
+    throw new Error('Neplatný text titulkov.');
   let bytes: Buffer;
+  let alignment: SpeechAlignment | undefined;
   const archive: Record<string, unknown> = { text: input.text };
   if (input.data !== undefined) {
     if (typeof input.data !== 'string' || input.data.length > MAX_BYTES * 1.4)
@@ -289,8 +306,9 @@ export async function createSpeech(
     const settings: Record<string, unknown> = {
       stability: voice.stability,
       similarity_boost: voice.similarityBoost,
-      speed: voice.speed,
     };
+    const features = modelFeatures(voice.modelId);
+    if (features.speed) settings.speed = voice.speed;
     const model = (await elevenModels(options)).find(
       (m) => m.model_id === voice.modelId && m.can_do_text_to_speech,
     );
@@ -298,23 +316,69 @@ export async function createSpeech(
       throw new Error(
         'Model nepodporuje text-to-speech alebo nie je dostupný pre tento účet.',
       );
-    if (model.can_use_speaker_boost)
+    if (
+      model.maximum_text_length_per_request &&
+      input.text.length > model.maximum_text_length_per_request
+    )
+      throw new Error(
+        `Model povoľuje najviac ${model.maximum_text_length_per_request} znakov.`,
+      );
+    if (model.can_use_speaker_boost && !features.expressive)
       settings.use_speaker_boost = voice.useSpeakerBoost;
-    if (model.can_use_style) settings.style = voice.style;
+    if (model.can_use_style && !features.expressive)
+      settings.style = voice.style;
     const response = await eleven(
       options,
-      `/v1/text-to-speech/${encodeURIComponent(voice.voiceId)}?output_format=pcm_22050`,
+      `/v1/text-to-speech/${encodeURIComponent(voice.voiceId)}/with-timestamps?output_format=pcm_22050`,
       { text: input.text, model_id: voice.modelId, voice_settings: settings },
     );
     const length = Number(response.headers.get('content-length'));
-    if (length > MAX_BYTES) throw new Error('Nahrávka je príliš veľká.');
-    bytes = pcmWave(Buffer.from(await response.arrayBuffer()));
+    if (length > MAX_BYTES * 1.4 + 2 * 1024 * 1024)
+      throw new Error('Nahrávka je príliš veľká.');
+    const result: unknown = await response.json().catch(() => null);
+    if (
+      !object(result) ||
+      typeof result.audio_base64 !== 'string' ||
+      result.audio_base64.length > MAX_BYTES * 1.4 ||
+      !/^[A-Za-z0-9+/]+={0,2}$/.test(result.audio_base64)
+    )
+      throw new Error(
+        'ElevenLabs vrátil neplatný zvuk s časovaním. Požiadavka sa neopakuje.',
+      );
+    bytes = pcmWave(Buffer.from(result.audio_base64, 'base64'));
+    // Prefer original text timing, so pronunciation normalization does not move
+    // captions or accidentally display audio tags. Null/invalid timing uses an
+    // explicitly labelled estimate; audio is never generated a second time.
+    for (const candidate of [result.alignment, result.normalized_alignment]) {
+      if (!object(candidate)) continue;
+      const proposed = {
+        characters: candidate.characters,
+        character_start_times_seconds: candidate.character_start_times_seconds,
+        character_end_times_seconds: candidate.character_end_times_seconds,
+        metadata: { duration: waveDuration(bytes), audioSha256: digest(bytes) },
+      };
+      if (!alignmentIssue(proposed)) {
+        alignment = proposed as unknown as SpeechAlignment;
+        break;
+      }
+    }
     archive.provider = 'elevenlabs';
     archive.voice = voice;
   }
   const duration = waveDuration(bytes);
+  const subtitles = buildSubtitles(
+    subtitleText({
+      text: input.text,
+      subtitle: input.subtitle as string | undefined,
+    }),
+    duration,
+    alignment,
+  );
   const folder = await publish(root, {
     'audio.wav': bytes,
+    ...(alignment
+      ? { 'alignment.json': JSON.stringify(alignment, null, 2) + '\n' }
+      : {}),
     'record.json':
       JSON.stringify(
         { ...archive, duration, audioSha256: digest(bytes) },
@@ -322,7 +386,12 @@ export async function createSpeech(
         2,
       ) + '\n',
   });
-  return { audio: `${folder}/audio.wav`, text: input.text };
+  return {
+    audio: `${folder}/audio.wav`,
+    text: input.text,
+    subtitles,
+    ...(alignment ? { alignment: `${folder}/alignment.json` } : {}),
+  };
 }
 export async function analyzeSpeech(
   root: string,
@@ -374,6 +443,24 @@ export async function validateSpeechAssets(root: string, project: GameContent) {
       if (node.speech) {
         const bytes = await local(root, node.speech.audio, 'wav'),
           duration = waveDuration(bytes);
+        if (node.speech.subtitles) {
+          const issue = subtitleTrackIssue(node.speech.subtitles, duration);
+          if (issue) throw new Error(`${dialogue.id}/${node.id}: ${issue}`);
+        }
+        if (node.speech.alignment) {
+          const alignment = JSON.parse(
+            (await local(root, node.speech.alignment, 'json')).toString('utf8'),
+          ) as SpeechAlignment;
+          const issue = alignmentIssue(alignment);
+          if (
+            issue ||
+            Math.abs(alignment.metadata.duration - duration) > 0.1 ||
+            alignment.metadata.audioSha256 !== digest(bytes)
+          )
+            throw new Error(
+              `${dialogue.id}/${node.id}: neplatné zarovnanie titulkov alebo iné audio.`,
+            );
+        }
         if (node.speech.lipSync) {
           const track = JSON.parse(
             (await local(root, node.speech.lipSync, 'json')).toString('utf8'),

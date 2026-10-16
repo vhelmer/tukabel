@@ -1,6 +1,7 @@
 import type { GameContent } from './types.ts';
 import { voiceIssue, mouthShapes } from './speech.ts';
 import { validateContent } from './validateContent.ts';
+import { subtitleTrackIssue } from './subtitles.ts';
 
 const isObject = (value: unknown): value is Record<string, unknown> =>
   value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -396,11 +397,15 @@ export function validateProject(
           'portrait',
           'actor',
           'speech',
+          'subtitle',
         ])
       )
         return;
       for (const field of ['id', 'speaker', 'text'])
         string(node[field], `${key}.${field}`);
+      optionalString(node, 'subtitle', key);
+      if (typeof node.subtitle === 'string' && node.subtitle.length > 10000)
+        errors.push(`${key}.subtitle: text too long`);
       asset(node.portrait, `${key}.portrait`, true);
       if (
         node.actor !== undefined &&
@@ -411,19 +416,31 @@ export function validateProject(
       }
       if (
         node.speech !== undefined &&
-        object(node.speech, `${key}.speech`, ['audio', 'lipSync', 'text'])
+        object(node.speech, `${key}.speech`, [
+          'audio',
+          'lipSync',
+          'text',
+          'alignment',
+          'subtitles',
+        ])
       ) {
         string(node.speech.text, `${key}.speech.text`);
-        for (const field of ['audio', 'lipSync']) {
+        if (node.speech.subtitles !== undefined) {
+          const issue = subtitleTrackIssue(node.speech.subtitles);
+          if (issue) errors.push(`${key}.speech.subtitles: ${issue}`);
+        }
+        for (const field of ['audio', 'lipSync', 'alignment']) {
           const id = node.speech[field];
-          if (field === 'lipSync' && id === undefined) continue;
+          if (field !== 'audio' && id === undefined) continue;
           if (
             typeof id !== 'string' ||
             !/^[a-zA-Z0-9_./-]+$/.test(id) ||
             id.split('/').some((s) => !s || s === '..' || s === '.') ||
             !(field === 'audio'
               ? id.endsWith('.wav')
-              : id.endsWith('.lipsync.json'))
+              : field === 'lipSync'
+                ? id.endsWith('.lipsync.json')
+                : id.endsWith('/alignment.json'))
           )
             errors.push(
               `${key}.speech.${field}: expected local ${field} asset`,

@@ -23,7 +23,17 @@ import {
   mouthShapeAt,
   defaultVoice,
   voiceIssue,
+  modelFeatures,
 } from '../src/game/speech';
+import {
+  alignmentIssue,
+  buildSubtitles,
+  stripAudioTags,
+  subtitleText,
+  subtitleAt,
+  subtitleTrackIssue,
+  splitSubtitle,
+} from '../src/game/subtitles';
 import { validateProject } from '../src/game/validateProject';
 import type { GameContent, LipSyncTrack } from '../src/game/types';
 
@@ -77,7 +87,7 @@ test('ElevenLabs requires deliberate confirmation, sends server-only credentials
       );
     calls++;
     expect(String(input)).toBe(
-      'https://api.elevenlabs.io/v1/text-to-speech/voice-123?output_format=pcm_22050',
+      'https://api.elevenlabs.io/v1/text-to-speech/voice-123/with-timestamps?output_format=pcm_22050',
     );
     expect((init!.headers as Record<string, string>)['xi-api-key']).toBe(
       'secret-for-test',
@@ -93,7 +103,12 @@ test('ElevenLabs requires deliberate confirmation, sends server-only credentials
         use_speaker_boost: true,
       },
     });
-    return new Response(new Uint8Array(44100), { status: 200 });
+    return new Response(
+      JSON.stringify({
+        audio_base64: Buffer.alloc(44100).toString('base64'),
+        alignment: null,
+      }),
+    );
   };
   try {
     await expect(
@@ -287,6 +302,9 @@ test('ElevenLabs catalog returns only non-secret voice and TTS model metadata', 
         style: true,
         speakerBoost: false,
         languages: ['sk'],
+        audioTags: false,
+        speed: true,
+        maxCharacters: null,
       },
     ],
   });
@@ -449,6 +467,170 @@ test('ElevenLabs payment errors explain plan and quota limits without retries or
       expect(generationCalls).toBe(1);
       expect(await readdir(root)).toEqual([]);
     }
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test('subtitles remove nested audio directions and follow actual character timing including pauses', () => {
+  const text =
+    '[laughs] Prvá veta je pomerne dlhá. [whispers] Druhá veta už príde oveľa neskôr.';
+  const chars = [...text],
+    next = text.indexOf('Druhá');
+  const starts = chars.map((_, i) =>
+    i < next ? i * 0.03 : 8 + (i - next) * 0.06,
+  );
+  const alignment = {
+    metadata: { duration: 15 },
+    characters: chars,
+    character_start_times_seconds: starts,
+    character_end_times_seconds: starts.map((t) => t + 0.03),
+  };
+  expect(alignmentIssue(alignment)).toBeUndefined();
+  expect(stripAudioTags(' A [smích [nahlas]]  veta [crying]. ')).toBe(
+    'A veta.',
+  );
+  expect(stripAudioTags('[laughs][crying]')).toBe('');
+  const clean = subtitleText({ text });
+  expect(subtitleText({ text, subtitle: 'Vlastný preklad.' })).toBe(
+    'Vlastný preklad.',
+  );
+  expect(subtitleText({ text, subtitle: '  ' })).toBe(clean);
+  const track = buildSubtitles(clean, 15, alignment);
+  expect(track.timing).toBe('alignment');
+  expect(track.cues).toHaveLength(2);
+  expect(track.cues[0]!.end).toBeLessThan(3);
+  expect(track.cues[1]!.start).toBe(8);
+  expect(subtitleAt(track.cues, 5)).toBe('');
+  expect(subtitleAt(track.cues, 8)).toContain('Druhá');
+  expect(subtitleAt(track.cues, track.cues[1]!.end)).toBe('');
+  expect(subtitleTrackIssue(track, 15)).toBeUndefined();
+  expect(
+    buildSubtitles('Iný preklad s iným počtom slov.', 15, alignment).timing,
+  ).toBe('estimated');
+  expect(buildSubtitles('', 15).cues).toEqual([]);
+  const estimate = buildSubtitles('Toto je oveľa dlhší text. '.repeat(10), 15);
+  expect(estimate.cues.length).toBeGreaterThan(3);
+  expect(estimate.cues.at(-1)!.end).toBeCloseTo(15);
+  const split = splitSubtitle({
+    start: 1,
+    end: 5,
+    text: 'Prvá polovica druhá polovica',
+  });
+  expect(split).toHaveLength(2);
+  expect(split[0]!.end).toBe(split[1]!.start);
+  expect(split[0]!.text + ' ' + split[1]!.text).toBe(
+    'Prvá polovica druhá polovica',
+  );
+  expect(
+    subtitleTrackIssue({ ...track, cues: [{ start: 2, end: 1, text: 'Zle' }] }),
+  ).toBeTruthy();
+  expect(
+    subtitleTrackIssue(
+      { ...track, cues: [{ start: 0, end: 16, text: 'Zle' }] },
+      15,
+    ),
+  ).toBeTruthy();
+  expect(
+    subtitleTrackIssue({ ...track, cues: [track.cues[0], track.cues[0]] }),
+  ).toBeTruthy();
+  expect(
+    alignmentIssue({ ...alignment, character_end_times_seconds: [1] }),
+  ).toBeTruthy();
+  expect(
+    alignmentIssue({
+      ...alignment,
+      character_start_times_seconds: starts.map(() => -1),
+    }),
+  ).toBeTruthy();
+});
+
+test('expressive TTS preserves tags, omits unsupported settings and archives verifiable timing without another paid request', async () => {
+  const root = await mkdtemp(path.join(tmpdir(), 'tukabel-tts-alignment-'));
+  const text = '[laughs] Ahoj!',
+    characters = [...text];
+  let paidCalls = 0;
+  try {
+    const speech = await createSpeech(
+      root,
+      {
+        text,
+        voice: { ...defaultVoice, voiceId: 'voice', modelId: 'eleven_v3' },
+        confirmed: true,
+      },
+      {
+        apiKey: 'private',
+        fetch: async (url, init) => {
+          if (String(url).endsWith('/models'))
+            return Response.json([
+              {
+                model_id: 'eleven_v3',
+                can_do_text_to_speech: true,
+                maximum_text_length_per_request: 5000,
+                can_use_style: true,
+                can_use_speaker_boost: true,
+              },
+            ]);
+          paidCalls++;
+          const body = JSON.parse(String(init!.body));
+          expect(body.text).toBe(text);
+          expect(body.voice_settings).toEqual({
+            stability: 0.5,
+            similarity_boost: 0.75,
+          });
+          return Response.json({
+            audio_base64: Buffer.alloc(44100).toString('base64'),
+            alignment: {
+              characters,
+              character_start_times_seconds: characters.map((_, i) => i * 0.05),
+              character_end_times_seconds: characters.map(
+                (_, i) => i * 0.05 + 0.04,
+              ),
+            },
+          });
+        },
+      },
+    );
+    expect(paidCalls).toBe(1);
+    expect(speech.text).toBe(text);
+    expect(speech.subtitles?.text).toBe('Ahoj!');
+    expect(speech.subtitles?.timing).toBe('alignment');
+    expect(speech.alignment).toBeTruthy();
+    const project = {
+      dialogues: [{ id: 'test', nodes: [{ id: 'one', speech }] }],
+    } as unknown as GameContent;
+    await validateSpeechAssets(root, project);
+    await expect(
+      validateSpeechAssets(root, {
+        dialogues: [
+          {
+            id: 'test',
+            nodes: [
+              {
+                id: 'one',
+                speech: {
+                  ...speech,
+                  subtitles: {
+                    ...speech.subtitles!,
+                    cues: [{ start: 0, end: 2, text: 'Zle' }],
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      } as unknown as GameContent),
+    ).rejects.toThrow('subtitle');
+    const alignmentFile = path.join(root, speech.alignment!);
+    const data = JSON.parse(await readFile(alignmentFile, 'utf8'));
+    data.metadata.audioSha256 = 'wrong';
+    await writeFile(alignmentFile, JSON.stringify(data));
+    await expect(validateSpeechAssets(root, project)).rejects.toThrow(
+      'zarovnanie',
+    );
+    expect(modelFeatures('eleven_v4').audioTags).toBe(true);
+    expect(modelFeatures('eleven_v4_turbo').speed).toBe(false);
+    expect(modelFeatures('eleven_flash_v2_5').audioTags).toBe(false);
   } finally {
     await rm(root, { recursive: true, force: true });
   }

@@ -20,6 +20,30 @@ export const defaultVoice = {
   speed: 1,
   useSpeakerBoost: true,
 };
+// /v1/models exposes style/boost/languages, but not audio-tag or speed support.
+// These documented exceptions are shared by the editor and server.
+export function modelFeatures(id: string) {
+  const expressive = /^eleven_v[34](?:_|$)/.test(id);
+  return {
+    audioTags: [
+      'eleven_v3',
+      'eleven_v4',
+      'eleven_v4_turbo',
+      'eleven_v3_conversational',
+    ].includes(id),
+    speed: !expressive,
+    discreteStability: id.startsWith('eleven_v3'),
+    expressive,
+  };
+}
+export const suggestedModels = [
+  { id: 'eleven_v4', label: 'Eleven v4' },
+  { id: 'eleven_v4_turbo', label: 'Eleven v4 Turbo' },
+  { id: 'eleven_v3', label: 'Eleven v3' },
+  { id: 'eleven_multilingual_v2', label: 'Multilingual v2' },
+  { id: 'eleven_flash_v2_5', label: 'Flash v2.5' },
+  { id: 'eleven_turbo_v2_5', label: 'Turbo v2.5' },
+];
 export function lipSyncIssue(value: unknown): string | undefined {
   if (!value || typeof value !== 'object') return 'Expected Rhubarb JSON';
   const track = value as LipSyncTrack;

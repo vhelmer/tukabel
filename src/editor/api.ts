@@ -81,6 +81,9 @@ export interface SpeechCatalog {
     style: boolean;
     speakerBoost: boolean;
     languages: string[];
+    audioTags: boolean;
+    speed: boolean;
+    maxCharacters: number | null;
   }[];
 }
 export const getSpeechStatus = () =>
@@ -90,17 +93,22 @@ export const getSpeechCatalog = () =>
 export const generateSpeech = (
   text: string,
   voice: import('../game/types').VoiceSettings,
+  subtitle?: string,
 ) =>
   request<import('../game/types').DialogueSpeech & { assets: string[] }>(
     'speech/generate',
     'POST',
-    { text, voice, confirmed: true },
+    { text, voice, subtitle, confirmed: true },
   );
 export const analyzeSpeech = (audio: string) =>
   request<{ lipSync: string; assets: string[] }>('speech/analyze', 'POST', {
     audio,
   });
-export async function uploadSpeech(text: string, file: File) {
+export async function uploadSpeech(
+  text: string,
+  file: File,
+  subtitle?: string,
+) {
   if (file.size > 20 * 1024 * 1024)
     throw new Error('WAV môže mať najviac 20 MB.');
   const bytes = new Uint8Array(await file.arrayBuffer());
@@ -110,6 +118,6 @@ export async function uploadSpeech(text: string, file: File) {
   return request<import('../game/types').DialogueSpeech & { assets: string[] }>(
     'speech/import',
     'POST',
-    { text, data: btoa(binary) },
+    { text, subtitle, data: btoa(binary) },
   );
 }

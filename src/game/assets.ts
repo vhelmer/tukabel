@@ -49,6 +49,9 @@ export function resolveAssets(content: GameContent): GameContent {
           ? {
               ...node.speech,
               audio: assetUrl(node.speech.audio),
+              alignment: node.speech.alignment
+                ? assetUrl(node.speech.alignment)
+                : undefined,
               lipSync: node.speech.lipSync
                 ? assetUrl(node.speech.lipSync)
                 : undefined,
