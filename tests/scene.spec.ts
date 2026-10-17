@@ -139,11 +139,11 @@ test('context clicks, silent props, keyboard dialogue and resizing remain usable
     page.getByRole('button', { name: 'Môžem si vziať pásku?' }),
   ).toBeFocused();
   await menuAction(page, 'Uložiť hru');
-  await page.keyboard.press('Escape');
+  await page.getByRole('button', { name: 'Idem na to.', exact: true }).click();
   await expect(page.getByRole('dialog')).toHaveCount(0);
   await menuAction(page, 'Načítať hru');
   await expect(page.getByRole('dialog')).toContainText('Môžem si vziať pásku?');
-  await page.keyboard.press('Escape');
+  await page.getByRole('button', { name: 'Idem na to.', exact: true }).click();
   await (await object(page, 'Kábel pri stoličke')).focus();
   await page.keyboard.press('Enter');
   const cable = page.getByRole('button', {

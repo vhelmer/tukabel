@@ -110,12 +110,14 @@ hlavního okna. Na úzkém displeji má inventář horizontální posun. Celá s
 - Reakce se zobrazují v kreslené bublině; prázdný komentář žádnou bublinu nevytvoří.
   Kliknutí na postavu otevře pouze dostupná témata na křivých dřevěných cedulích.
   Výběr tématu přehraje repliku cílového uzlu; během ní nejsou vidět žádné volby.
-  Ve scéně zůstávají postava, titulky, malé ovládání pauzy/přeskočení a křížek.
-  Po dohrání nebo **Preskočiť repliku** se vrátí volby; replika bez audia čeká na
-  **Pokračovať**. Jednořádkové ukázky bez další větve začínají volbou **Porozprávať sa.**
+  Ve scéně zůstávají postava a titulky. Kliknutí/tapnutí kamkoli do titulkové
+  plochy okamžitě dokončí repliku a zastaví dabing i ústa; fungují také Enter a
+  mezerník. Po dohrání nebo přeskočení se vrátí volby; bez audia text čeká na
+  stejné potvrzení titulkové plochy. Jednořádkové ukázky bez další větve začínají volbou **Porozprávať sa.**
   Portréty se ve hře ani editoru nenabízejí; starší `portrait` JSON zůstává čitelný.
   Herní menu používá stejné oprýskané cedule.
-- Escape ruší výběr/tah, zavírá menu nebo rozhovor. Dialog blokuje akce světa.
+- Escape ruší výběr/tah nebo zavírá menu. Rozhovor ukončuje jeho autorská volba
+  bez `next`; Escape jej nezavírá. Dialog blokuje akce světa.
   Efekty a animace respektují reduced motion; drag/drop zůstává funkční.
 - **Menu** obsahuje ruční **Uložiť hru**, **Načítať hru** a **Nová hra**. Postup
   zůstává v jednom verzovaném localStorage slotu daného originu, oddělený od obsahu.
@@ -124,7 +126,7 @@ hlavního okna. Na úzkém displeji má inventář horizontální posun. Celá s
 
 Ukázkový průchod: správce → dotaz na opravu → vyžádat pásku → ukončit rozhovor →
 sebrat kabel u židle → přetáhnout pásku na kabel → opravený kabel na router → dveře
-do dvora → tabule. Textové repliky mezi volbami potvrď **Pokračovať**. Lze se vrátit;
+do dvora → tabule. Textové repliky mezi volbami potvrď kliknutím na titulky. Lze se vrátit;
 vyřešený stav zůstává. Jde o technickou hádanku
 se dvěma lokacemi, bez finálního příběhu a assetů. Chůze postavy zatím chybí;
 animace, dabing a lip-sync lze přiřadit v editoru podle návodu níže.
@@ -481,9 +483,10 @@ SHA-256 vazbu synchronizačního souboru na audio, lokální cesty, postavu a in
 Nevznikají druhé hodiny úst ani React render pro každý snímek. Pauza a seek drží
 odpovídající tvar; otevření menu nebo skrytí záložky pozastaví zvuk. Přeskočení,
 konec nahrávky, změna uzlu, ukončení dialogu a opuštění režimu zastaví původní audio.
-Blokované automatické přehrání nabídne ruční spuštění; chybějící audio zachová text.
-Při chybě časování se použije běžná talk animace. Bez dabingu zůstává původní
-textový dialog s potvrzením **Pokračovať**. Audio playhead ani fáze zobrazení nejsou
+Blokované nebo chybějící audio zachová celý čitelný text, který lze dokončit
+kliknutím na titulky. V editorovém náhledu zůstává plný audio přehrávač pro ruční
+spuštění. Při chybě časování se použije běžná talk animace. Bez dabingu se text
+potvrdí stejnou titulkovou plochou. Audio playhead ani fáze zobrazení nejsou
 součástí uloženého herního postupu; load obnoví nabídku uloženého uzlu. Reduced
 motion ponechá původní kresbu, audio se přehrává dál.
 
@@ -493,12 +496,15 @@ repliku cíle; volba bez `next` ukončí rozhovor a zachová své efekty/zprávu
 navazujících větví nabízí vstupní fáze **Porozprávať sa.** k poslechu samotného uzlu.
 Vytváření témat i vazeb dál probíhá v **Dialógy**; není potřeba nový datový formát.
 Souběžné kliknutí spotřebuje synchronní zámek před React renderem, přechody mají
-180ms prodlevu proti dvojkliku a opakovanému Enteru. Akce `choose.from` navíc
+300ms prodlevu proti dvojkliku/dvojitému tapnutí, která se při dalších tapnutích
+prodlouží až do klidu vstupu; opakování držených kláves
+Enter/mezerník se ignoruje. Prodleva platí i po návratu z herního menu. Akce `choose.from` navíc
 ověřuje původní dialog/uzel v reduceru. Každé přehrání má vlastní nonce, takže
 i smyčka na stejný uzel začne znovu a opožděný konec staré repliky nepřepne novou.
-Čekající nabídka zavírá ústa; oči a idle dál běží. Chybné nebo blokované audio
-ponechá čitelný text a možnost ručního spuštění/přeskočení. Escape/křížek ukončí
-rozhovor a zastaví audio; menu i skrytá záložka jej pozastaví.
+Čekající nabídka zavírá ústa; oči a idle dál běží. Kliknutí na titulky zastaví audio
+i lip-sync ještě před přechodem do nabídky. Rozhovor se ukončuje autorskou volbou
+bez `next`; nemá křížek ani tlačítka pauzy/přeskočení. Když po replice nejsou
+žádné dostupné volby, rozhovor skončí. Menu i skrytá záložka pozastaví dabing.
 
 **Lokální ukázka:** Animačný ateliér obsahuje slovenskou nahrávku vytvořenou
 lokálně přes eSpeak NG, skutečnou analýzu Rhubarb 1.14.0 (34 cue / 4.67 s) a mapování

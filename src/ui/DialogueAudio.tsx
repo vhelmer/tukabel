@@ -26,7 +26,7 @@ export function useDialogueAudio(
     failed = useRef(false),
     resume = useRef(false);
   const [status, setStatus] = useState('');
-  const [playing, setPlaying] = useState(false);
+  const [unavailable, setUnavailable] = useState(false);
   const completed = useRef(false);
   const speech = node?.speech?.text === node?.text ? node?.speech : undefined;
   const audioUrl = speech?.audio,
@@ -42,7 +42,7 @@ export function useDialogueAudio(
     failed.current = false;
     resume.current = false;
     completed.current = false;
-    setPlaying(false);
+    setUnavailable(false);
     setStatus('');
     audio.src = audioUrl;
     if (lipSyncUrl)
@@ -61,12 +61,15 @@ export function useDialogueAudio(
         });
     if (autoplay)
       void audio.play().catch(() => {
-        if (!abort.signal.aborted)
+        if (!abort.signal.aborted) {
+          setUnavailable(true);
+          failed.current = true;
           setStatus(
-            audio.error || failed.current
+            audio.error
               ? 'Dabing sa nepodarilo prehrať. Text zostáva dostupný.'
               : 'Spusti dabing tlačidlom Prehrať.',
           );
+        }
       });
     return () => {
       abort.abort();
@@ -85,7 +88,11 @@ export function useDialogueAudio(
         audio.pause();
       } else if (resume.current) {
         resume.current = false;
-        void audio.play().catch(() => setStatus('Pokračuj tlačidlom Prehrať.'));
+        void audio.play().catch(() => {
+          failed.current = true;
+          setUnavailable(true);
+          setStatus('Pokračuj tlačidlom Prehrať.');
+        });
       }
     };
     document.addEventListener('visibilitychange', sync);
@@ -126,7 +133,7 @@ export function useDialogueAudio(
     completed.current = true;
     options.onComplete?.();
   };
-  const skip = () => {
+  const stop = () => {
     const audio = ref.current;
     if (audio) {
       skipped.current = true;
@@ -134,6 +141,9 @@ export function useDialogueAudio(
       audio.pause();
       if (Number.isFinite(audio.duration)) audio.currentTime = audio.duration;
     }
+  };
+  const skip = () => {
+    stop();
     finish();
   };
   const controls =
@@ -152,45 +162,29 @@ export function useDialogueAudio(
           onPlay={() => {
             started.current = true;
             skipped.current = false;
-            setPlaying(true);
+            failed.current = false;
+            setUnavailable(false);
           }}
-          onPause={() => setPlaying(false)}
           onEnded={finish}
           onError={() => {
             failed.current = true;
+            setUnavailable(true);
             setStatus('Dabing sa nepodarilo prehrať. Text zostáva dostupný.');
           }}
         />
-        {options.compact && (
-          <button
-            type="button"
-            className="speech-toggle"
-            aria-label={playing ? 'Pozastaviť repliku' : 'Prehrať repliku'}
-            title={playing ? 'Pozastaviť repliku' : 'Prehrať repliku'}
-            onClick={() => {
-              const audio = ref.current;
-              if (!audio) return;
-              if (playing) {
-                resume.current = false;
-                audio.pause();
-              } else
-                void audio
-                  .play()
-                  .catch(() =>
-                    setStatus(
-                      'Zvuk sa nepodarilo prehrať. Repliku môžeš preskočiť.',
-                    ),
-                  );
-            }}
-          >
-            {playing ? 'Ⅱ' : '▶'}
+        {!options.compact && (
+          <button type="button" onClick={skip}>
+            Preskočiť dabing
           </button>
         )}
-        <button type="button" onClick={skip}>
-          {options.compact ? 'Preskočiť repliku' : 'Preskočiť dabing'}
-        </button>
-        {status && <p role="status">{status}</p>}
+        {options.compact
+          ? unavailable && (
+              <p role="status">
+                Dabing nie je dostupný. Pokračuj kliknutím na titulky.
+              </p>
+            )
+          : status && <p role="status">{status}</p>}
       </div>
     ) : null;
-  return { clock, controls, ...subtitles };
+  return { clock, controls, stop, unavailable, ...subtitles };
 }

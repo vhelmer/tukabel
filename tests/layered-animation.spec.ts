@@ -242,7 +242,9 @@ test('independent regional playback preserves alpha, ignores unrelated frame edi
   const game = page.locator('.canvas-host canvas');
   await color(game, 1280, 720, 560, 200, [20, 40, 160]);
   await color(game, 1280, 720, 560, 320, [16, 16, 16]);
-  await page.getByRole('button', { name: 'Pokračovať', exact: true }).click();
+  await page
+    .getByRole('button', { name: 'Dokončiť repliku', exact: true })
+    .click();
   await page.getByRole('button', { name: 'Koniec', exact: true }).click();
   await page.getByRole('button', { name: 'Dev Mode', exact: true }).click();
   await page

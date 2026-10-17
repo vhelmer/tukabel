@@ -299,7 +299,10 @@ test('Codex atlas retains timing, supports dialogue playback, and works as a sta
   await expect
     .poll(async () => (await actorPixels(page)).equals(neutral))
     .toBe(false);
-  await page.keyboard.press('Escape');
+  await page
+    .getByRole('button', { name: 'Dokončiť repliku', exact: true })
+    .click();
+  await page.getByRole('button', { name: 'Idem na to.', exact: true }).click();
   await expect
     .poll(async () => (await actorPixels(page)).equals(neutral))
     .toBe(true);

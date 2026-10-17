@@ -59,18 +59,15 @@ export async function getTape(page: Page) {
     page.getByRole('button', { name: 'Izolačná páska', exact: true }),
   ).toBeVisible();
 }
-export async function finishLine(page: Page) {
+export async function finishLine(page: Page, touch = false) {
   const panel = page.locator('.dialogue-panel');
   await expect(panel).toHaveClass(/is-speaking/);
-  const skip = panel.getByRole('button', {
-    name: 'Preskočiť repliku',
+  const caption = panel.getByRole('button', {
+    name: 'Dokončiť repliku',
     exact: true,
   });
-  if (await skip.count()) await skip.click();
-  else
-    await panel
-      .getByRole('button', { name: 'Pokračovať', exact: true })
-      .click();
+  if (touch) await caption.tap();
+  else await caption.click();
   await expect(panel).toHaveClass(/is-choosing/);
 }
 export async function dragItem(

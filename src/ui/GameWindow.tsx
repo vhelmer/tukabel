@@ -9,6 +9,7 @@ import type {
 } from '../game/types';
 import { useDialogueAudio } from './DialogueAudio';
 import { useConversation } from './useConversation';
+import { subtitleText } from '../game/subtitles';
 import { getDialogueNode } from '../game/state';
 import { reduceGame } from '../game/state';
 import { SceneCursor, PickupFlight } from './SceneCursor';
@@ -195,7 +196,7 @@ export function GameWindow({
     [dispatchGame, content, state],
   );
   const conversation = useConversation(content, state, dispatch, menu);
-  const { close: closeConversation, reset: resetConversation } = conversation;
+  const { reset: resetConversation } = conversation;
   const dialogueAudio = useDialogueAudio(
     dialogueNode,
     voiceActor?.animation,
@@ -211,9 +212,6 @@ export function GameWindow({
   );
   const speechPlayback =
     conversation.phase === 'speech' ? dialogueAudio.clock : silentPlayback;
-  const hasSpeech = Boolean(
-    dialogueNode?.speech && dialogueNode.speech.text === dialogueNode.text,
-  );
   const act = useCallback(
     (hotspot: Hotspot) => {
       dispatch({
@@ -246,7 +244,6 @@ export function GameWindow({
         setSelectedItem(null);
         setMenu(false);
         setObjectsOpen(false);
-        closeConversation();
       }
     };
     const onBlur = () => finishDrag();
@@ -256,7 +253,7 @@ export function GameWindow({
       window.removeEventListener('keydown', onKey);
       window.removeEventListener('blur', onBlur);
     };
-  }, [closeConversation, finishDrag, menu]);
+  }, [finishDrag, menu]);
   // Pointer capture keeps both mouse and touch drags alive across the canvas.
   useEffect(() => {
     const targetAt = (event: PointerEvent): Target | null => {
@@ -461,8 +458,12 @@ export function GameWindow({
           <DialoguePanel
             conversation={conversation}
             audio={dialogueAudio.controls}
-            subtitle={dialogueAudio.subtitle}
-            hasSpeech={hasSpeech}
+            subtitle={
+              dialogueAudio.unavailable && dialogueNode
+                ? subtitleText(dialogueNode)
+                : dialogueAudio.subtitle
+            }
+            onAdvance={() => conversation.advance(dialogueAudio.stop)}
           />
         )}
         {objectsOpen && !state.dialogue && (

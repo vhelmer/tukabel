@@ -31,7 +31,12 @@ async function seed(source: string, voiced = true) {
         when: { not: { flag: 'tapeGiven' } },
       },
       { id: 'again', text: 'Povedz to ešte raz.', next: 'reply' },
-      { id: 'bye', text: 'Už musím ísť.' },
+      {
+        id: 'bye',
+        text: 'Už musím ísť.',
+        effects: [{ type: 'flag', id: 'powered', value: true }],
+        message: 'Autorské ukončenie.',
+      },
     ],
   };
   await writeFile(
@@ -78,9 +83,10 @@ async function burst(button: Locator) {
   });
 }
 
-test('choices and voiced replies alternate, resist spam, pause, end naturally and close without leaving audio', async ({
+test('subtitle clicks finish voiced replies while authored choices control branching and exit', async ({
   page,
   workspace,
+  isMobile,
 }, testInfo) => {
   await seed(workspace.source);
   await page.goto(workspace.url);
@@ -111,22 +117,10 @@ test('choices and voiced replies alternate, resist spam, pause, end naturally an
   await expect(
     page.getByRole('button', { name: 'Vezmem si pásku.', exact: true }),
   ).toHaveCount(0);
-  await page
-    .getByRole('button', { name: 'Pozastaviť repliku', exact: true })
-    .click();
-  await expect
-    .poll(() => audio.evaluate((el) => (el as HTMLAudioElement).paused))
-    .toBe(true);
-  const position = await audio.evaluate(
-    (el) => (el as HTMLAudioElement).currentTime,
-  );
-  await page.waitForTimeout(150);
-  expect(
-    await audio.evaluate((el) => (el as HTMLAudioElement).currentTime),
-  ).toBeCloseTo(position, 2);
-  await page
-    .getByRole('button', { name: 'Prehrať repliku', exact: true })
-    .click();
+  await expect(panel.locator('button')).toHaveCount(1);
+  await expect(panel.locator('.dialogue-close,.speech-toggle')).toHaveCount(0);
+  await page.keyboard.press('Escape');
+  await expect(panel).toHaveClass(/is-speaking/);
   await page.getByRole('button', { name: 'Menu', exact: true }).click();
   await expect
     .poll(() => audio.evaluate((el) => (el as HTMLAudioElement).paused))
@@ -159,7 +153,7 @@ test('choices and voiced replies alternate, resist spam, pause, end naturally an
     path: testInfo.outputPath('conversation-subtitles.png'),
   });
   await burst(
-    page.getByRole('button', { name: 'Preskočiť repliku', exact: true }),
+    page.getByRole('button', { name: 'Dokončiť repliku', exact: true }),
   );
   await expect(panel).toHaveClass(/is-choosing/);
   await expect(
@@ -173,16 +167,23 @@ test('choices and voiced replies alternate, resist spam, pause, end naturally an
     .poll(() => audio.evaluate((el) => (el as HTMLAudioElement).currentTime))
     .toBeLessThan(1);
   const lastAudio = await audio.elementHandle();
+  await finishLine(page, isMobile);
   await page
-    .getByRole('button', { name: 'Ukončiť rozhovor', exact: true })
+    .getByRole('button', { name: 'Už musím ísť.', exact: true })
     .click();
   await expect(panel).toHaveCount(0);
+  await expect(page.getByRole('status', { name: 'Reakcia' })).toContainText(
+    'Autorské ukončenie.',
+  );
   expect(
     await lastAudio!.evaluate((el) => (el as HTMLAudioElement).paused),
   ).toBe(true);
   await (await object(page, 'Skúšobná postava')).click();
   await expect(panel).toHaveClass(/is-choosing/);
   await expect(panel.locator('audio')).toHaveCount(0);
+  await expect(
+    page.getByRole('button', { name: 'Tajná téma.', exact: true }),
+  ).toBeVisible();
   await page.getByRole('button', { name: 'Odísť.', exact: true }).click();
   await expect(panel).toHaveCount(0);
 });
@@ -206,7 +207,7 @@ test('text-only replies wait for confirmation, preserve branches and remain usab
   await expect(panel.locator('.dialogue-choices')).toHaveCount(0);
   await expect(panel.locator('#dialogue-text')).toContainText('Oči a ústa');
   await expect(panel.locator('audio')).toHaveCount(0);
-  await finishLine(page);
+  await finishLine(page, isMobile);
   await expect(
     page.getByRole('button', { name: 'Vezmem si pásku.', exact: true }),
   ).toBeEnabled();
@@ -218,6 +219,10 @@ test('text-only replies wait for confirmation, preserve branches and remain usab
     path: testInfo.outputPath('small-conversation.png'),
   });
   await page.keyboard.press('Escape');
+  await expect(panel).toHaveClass(/is-choosing/);
+  await page
+    .getByRole('button', { name: 'Už musím ísť.', exact: true })
+    .click();
   await expect(panel).toHaveCount(0);
 });
 
@@ -238,10 +243,127 @@ test('missing voice audio keeps readable subtitles and a working skip path', asy
     .getByRole('button', { name: 'Opýtať sa na kábel.', exact: true })
     .click();
   const panel = page.locator('.dialogue-panel');
-  await expect(panel).toContainText('Dabing sa nepodarilo prehrať');
+  await expect(panel).toContainText('Dabing nie je dostupný');
   await expect(panel.locator('#dialogue-text')).toContainText('Oči a ústa');
   await finishLine(page);
   await expect(
     page.getByRole('button', { name: 'Povedz to ešte raz.', exact: true }),
   ).toBeVisible();
+});
+
+test('rapid subtitle taps and held keys cannot skip into another branch', async ({
+  page,
+  workspace,
+  isMobile,
+}) => {
+  await seed(workspace.source);
+  await page.goto(workspace.url);
+  await ready(page);
+  await (await object(page, 'Skúšobná postava')).click();
+  await page
+    .getByRole('button', { name: 'Opýtať sa na kábel.', exact: true })
+    .click();
+  const panel = page.locator('.dialogue-panel'),
+    caption = panel.getByRole('button', {
+      name: 'Dokončiť repliku',
+      exact: true,
+    });
+  const oldAudio = await panel.locator('audio').elementHandle();
+  await finishLine(page, isMobile);
+  const reward = page.getByRole('button', {
+    name: 'Vezmem si pásku.',
+    exact: true,
+  });
+  const box = (await reward.boundingBox())!;
+  // Keep tapping longer than the initial lock: no tail tap may select a choice.
+  for (let i = 0; i < 8; i++) {
+    if (isMobile)
+      await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2);
+    else
+      await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2, {
+        clickCount: i + 2,
+      });
+    await page.waitForTimeout(80);
+  }
+  await expect(panel).toHaveClass(/is-choosing/);
+  await expect(panel.locator('audio')).toHaveCount(0);
+  expect(
+    await oldAudio!.evaluate((el) => (el as HTMLAudioElement).paused),
+  ).toBe(true);
+  await expect(
+    page.getByRole('button', { name: 'Izolačná páska', exact: true }),
+  ).toHaveCount(0);
+  await expect(reward).toBeEnabled();
+  if (isMobile) await reward.tap();
+  else await reward.click();
+  await expect(panel).toHaveClass(/is-speaking/);
+  await expect(caption).toBeEnabled();
+  await caption.focus();
+  await page.keyboard.down('Enter');
+  await expect(panel).toHaveClass(/is-choosing/);
+  await expect(
+    page.getByRole('button', { name: 'Povedz to ešte raz.', exact: true }),
+  ).toBeEnabled();
+  await page.keyboard.down('Enter'); // repeat=true while the key remains held
+  await page.keyboard.up('Enter');
+  await expect(panel).toHaveClass(/is-choosing/);
+  await expect(panel.locator('audio')).toHaveCount(0);
+  await page
+    .getByRole('button', { name: 'Povedz to ešte raz.', exact: true })
+    .click();
+  await expect(caption).toBeEnabled();
+  await caption.focus();
+  await page.keyboard.press('Space');
+  await expect(panel).toHaveClass(/is-choosing/);
+  await page
+    .getByRole('button', { name: 'Už musím ísť.', exact: true })
+    .click();
+  await expect(panel).toHaveCount(0);
+});
+
+test('a reply with no available choices finishes without an injected close control', async ({
+  page,
+  workspace,
+}) => {
+  await seed(workspace.source, false);
+  const project = JSON.parse(
+    await readFile(workspace.source, 'utf8'),
+  ) as GameContent;
+  await writeFile(
+    workspace.source,
+    JSON.stringify({
+      ...project,
+      dialogues: project.dialogues.map((d) =>
+        d.id === 'animation-demo'
+          ? {
+              ...d,
+              nodes: d.nodes.map((n) =>
+                n.id === 'reply'
+                  ? {
+                      ...n,
+                      choices: [
+                        {
+                          id: 'hidden',
+                          text: 'Skrytá voľba.',
+                          when: { flag: 'powered' },
+                        },
+                      ],
+                    }
+                  : n,
+              ),
+            }
+          : d,
+      ),
+    }),
+  );
+  await page.goto(workspace.url);
+  await ready(page);
+  await (await object(page, 'Skúšobná postava')).click();
+  await page
+    .getByRole('button', { name: 'Opýtať sa na kábel.', exact: true })
+    .click();
+  await burst(
+    page.getByRole('button', { name: 'Dokončiť repliku', exact: true }),
+  );
+  await expect(page.locator('.dialogue-panel')).toHaveCount(0);
 });

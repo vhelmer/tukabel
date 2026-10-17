@@ -84,11 +84,15 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
   slovesa / hráčské režimy ani obrysy při hoveru. `onClick: []` je tichá kulisa;
   `message` pravidla je volitelná. Kurzory se nastavují daty v editoru.
 - Rozhovor začíná nabídkou startovního uzlu. `choice.next` přehraje cílovou repliku;
-  volby se vracejí až po konci audia/přeskočení, text bez audia čeká na Pokračovať.
+  volby se vracejí až po konci audia nebo kliknutí/tapnutí na titulkovou plochu
+  (také Enter/mezerník). Stejná plocha potvrzuje text bez audia a hned zastaví lip-sync.
   Jednořádková ukázka bez navazující větve nabízí Porozprávať sa. `useConversation`
   drží fázi, synchronní zámek a nonce mimo save. `choose.from` chrání před volbou
-  ze starého uzlu. Náhled dabingu v editoru má plné audio ovládání, hra jen malé
-  pauza/skip a titulky. Žádné portréty ani nativní audio přehrávač ve hře.
+  ze starého uzlu. Přechody včetně návratu z menu mají 300ms zámek proti dvojkliku
+  a dvojitému tapnutí; další tapnutí během zámku jej prodlouží až do klidu vstupu.
+  Ignoruj opakování drženého Enteru/mezerníku. Ukončení řídí
+  autorská volba bez `next`, nikoli Escape/křížek. Náhled dabingu v editoru má plné
+  audio ovládání; hra pouze klikací titulky bez pauza/skip tlačítek a portrétů.
 - Inventární `item.image` je samostatná ikonka. Pickup efekt je pouze vizuální,
   spouští ho skutečné získání přes akci, nikoli load/reset nebo přepnutí režimu.
 

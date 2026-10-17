@@ -265,7 +265,7 @@ test('studio explicitly generates, analyzes, previews, saves and reloads speech 
   const oldAudio = await gameAudio.elementHandle();
   await finishLine(page);
   await page
-    .getByRole('button', { name: 'Ukončiť rozhovor', exact: true })
+    .getByRole('button', { name: 'Ukončiť skúšku animácií.', exact: true })
     .click();
   await expect(page.locator('audio')).toHaveCount(0);
   expect(
@@ -465,8 +465,9 @@ base(
       .poll(() => audio.evaluate((el) => (el as HTMLAudioElement).currentTime))
       .toBeLessThan(0.5);
     const handle = await audio.elementHandle();
+    await finishLine(page);
     await page
-      .getByRole('button', { name: 'Ukončiť rozhovor', exact: true })
+      .getByRole('button', { name: 'Ukončiť skúšku animácií.', exact: true })
       .click();
     await expect(page.locator('audio')).toHaveCount(0);
     expect(
@@ -645,7 +646,7 @@ test('models and editable subtitle segments survive save/reload and follow the a
   await finishLine(page);
   await expect(page.locator('#dialogue-text')).toHaveCount(0);
   await page
-    .getByRole('button', { name: 'Ukončiť rozhovor', exact: true })
+    .getByRole('button', { name: 'Ukončiť skúšku animácií.', exact: true })
     .click();
   await expect(page.locator('audio')).toHaveCount(0);
 });

@@ -6,12 +6,12 @@ export function DialoguePanel({
   conversation,
   audio,
   subtitle,
-  hasSpeech,
+  onAdvance,
 }: {
   conversation: ReturnType<typeof useConversation>;
   audio?: ReactNode;
   subtitle?: string;
-  hasSpeech: boolean;
+  onAdvance: () => void;
 }) {
   const panel = useRef<HTMLDivElement>(null);
   const { node, phase, choices, ready } = conversation;
@@ -39,6 +39,7 @@ export function DialoguePanel({
       inert={conversation.paused}
       aria-hidden={conversation.paused}
       ref={panel}
+      onPointerDownCapture={conversation.guardRepeatedPointer}
       onKeyDown={(event) => {
         if (event.repeat && (event.key === 'Enter' || event.key === ' ')) {
           event.preventDefault();
@@ -61,20 +62,21 @@ export function DialoguePanel({
     >
       {speaking ? (
         <>
-          <div className="dialogue-caption">
+          <button
+            type="button"
+            className="dialogue-caption"
+            aria-label="Dokončiť repliku"
+            aria-describedby="dialogue-text"
+            title="Kliknutím alebo dotykom dokončíš repliku"
+            disabled={!ready}
+            onClick={onAdvance}
+          >
             <span className="dialogue-speaker">{node.speaker}</span>
-            <p id="dialogue-text" aria-live="polite" aria-atomic="true">
+            <span id="dialogue-text" aria-live="polite" aria-atomic="true">
               {subtitle ?? subtitleText(node)}
-            </p>
-          </div>
-          <div className="dialogue-line-controls" inert={!ready}>
-            {audio}
-            {!hasSpeech && (
-              <button disabled={!ready} onClick={conversation.finish}>
-                Pokračovať
-              </button>
-            )}
-          </div>
+            </span>
+          </button>
+          {audio}
         </>
       ) : (
         <div className="dialogue-choices" aria-label="Možnosti rozhovoru">
@@ -92,9 +94,7 @@ export function DialoguePanel({
                 key={choice.id}
                 className="dialogue-choice"
                 disabled={!ready}
-                onClick={(event) => {
-                  if (event.detail <= 1) conversation.choose(choice.id);
-                }}
+                onClick={() => conversation.choose(choice.id)}
               >
                 <span className="choice-mark" aria-hidden="true">
                   {String(index + 1).padStart(2, '0')}
@@ -103,25 +103,8 @@ export function DialoguePanel({
               </button>
             ))
           )}
-          {!conversation.intro && !choices.length && (
-            <button
-              className="dialogue-choice"
-              disabled={!ready}
-              onClick={conversation.close}
-            >
-              Rozlúčiť sa.
-            </button>
-          )}
         </div>
       )}
-      <button
-        className="dialogue-close"
-        aria-label="Ukončiť rozhovor"
-        title="Ukončiť rozhovor (Esc)"
-        onClick={conversation.close}
-      >
-        ×
-      </button>
     </div>
   );
 }

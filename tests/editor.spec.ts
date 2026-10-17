@@ -268,7 +268,9 @@ test('forms create linked locations, items, uploaded assets, branching dialogue 
   await expect(page.getByRole('dialog')).toContainText(
     'To je druhá vetva rozhovoru',
   );
-  await page.getByRole('button', { name: 'Pokračovať', exact: true }).click();
+  await page
+    .getByRole('button', { name: 'Dokončiť repliku', exact: true })
+    .click();
   await page.getByRole('button', { name: 'Dovidenia.', exact: true }).click();
   await expect(
     page.getByRole('button', { name: 'Testovací žetón', exact: true }),
