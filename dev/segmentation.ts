@@ -66,6 +66,8 @@ export async function segmentObject(
     throw Error('Neplatný segmentačný nástroj.');
   if (input.refineEdges !== undefined && typeof input.refineEdges !== 'boolean')
     throw Error('Neplatné nastavenie spresnenia obrysov.');
+  if (input.detailPass !== undefined && typeof input.detailPass !== 'boolean')
+    throw Error('Neplatné nastavenie detailného prechodu.');
   if (running)
     throw Error('Segmentácia už beží. Počkaj na dokončenie; nič sa neopakuje.');
   running = true;
@@ -104,8 +106,9 @@ export async function segmentObject(
           directory,
           String(input.method),
           input.refineEdges !== false ? 'source-edges' : 'none',
+          input.detailPass === true ? 'detail' : 'standard',
         ],
-        { timeout: 90000, maxBuffer: 32768, env: environment(options) },
+        { timeout: 300000, maxBuffer: 32768, env: environment(options) },
       );
     } catch {
       throw Error(
@@ -128,6 +131,8 @@ export async function segmentObject(
       method: input.method as 'grabcut' | 'sam2',
       refineEdges:
         input.method === 'sam2' ? input.refineEdges !== false : undefined,
+      detailPass:
+        input.method === 'sam2' ? input.detailPass === true : undefined,
     };
   } finally {
     running = false;

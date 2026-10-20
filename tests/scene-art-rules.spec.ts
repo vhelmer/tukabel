@@ -113,6 +113,7 @@ test('masked AI extraction uses a server-only key, repairs only selected pixels 
         operation: 'extract',
         selection: rectangle,
         prompt: 'Remove the table.',
+        repairPadding: 0,
         confirmed: true,
       },
       {

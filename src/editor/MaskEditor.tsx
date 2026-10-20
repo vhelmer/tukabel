@@ -10,6 +10,7 @@ type Snapshot = {
   seeds: Uint8Array;
   method: ObjectMask['method'];
   refineEdges?: boolean;
+  detailPass?: boolean;
 };
 export function MaskEditor({
   source,
@@ -37,6 +38,7 @@ export function MaskEditor({
         seeds: Uint8Array;
         method: ObjectMask['method'];
         refineEdges?: boolean;
+        detailPass?: boolean;
       }
     | undefined
   >(undefined);
@@ -67,6 +69,7 @@ export function MaskEditor({
     available?.sam2 ? 'sam2' : 'grabcut',
   );
   const [refineEdges, setRefineEdges] = useState(initial?.refineEdges ?? true);
+  const [detailPass, setDetailPass] = useState(initial?.detailPass ?? false);
   useEffect(() => {
     const el = dialog.current!;
     el.showModal();
@@ -131,6 +134,7 @@ export function MaskEditor({
           seeds: new Uint8Array(pixels.length),
           method: initial?.method ?? 'manual',
           refineEdges: initial?.refineEdges,
+          detailPass: initial?.detailPass,
         };
         setSize(original);
         setReady(true);
@@ -229,6 +233,7 @@ export function MaskEditor({
       seeds: d.seeds.slice(),
       method: d.method,
       refineEdges: d.refineEdges,
+      detailPass: d.detailPass,
     };
   }
   function remember(before: Snapshot) {
@@ -265,6 +270,7 @@ export function MaskEditor({
     );
     d.method = 'manual';
     d.refineEdges = undefined;
+    d.detailPass = undefined;
   }
   async function refine() {
     const d = working.current;
@@ -285,6 +291,7 @@ export function MaskEditor({
         maskBase64(d.seeds, d.source.width, d.source.height),
         method,
         refineEdges,
+        detailPass,
       );
       const pixels = await pngPixels(result.data, result.width, result.height);
       if (!alive.current) return;
@@ -292,6 +299,7 @@ export function MaskEditor({
       d.pixels = pixels;
       d.method = result.method;
       d.refineEdges = result.refineEdges;
+      d.detailPass = result.detailPass;
       setRevision((v) => v + 1);
       setView('cutout');
       setMessage(
@@ -474,6 +482,7 @@ export function MaskEditor({
               d.seeds.fill(0);
               d.method = 'manual';
               d.refineEdges = undefined;
+              d.detailPass = undefined;
               setRevision((v) => v + 1);
               setView('cutout');
               setMessage(
@@ -507,6 +516,17 @@ export function MaskEditor({
           <label className="mask-edge-toggle">
             <input
               type="checkbox"
+              checked={detailPass}
+              disabled={busy}
+              onChange={(e) => setDetailPass(e.target.checked)}
+            />{' '}
+            Detailný prechod · experimentálny
+          </label>
+        )}
+        {method === 'sam2' && (
+          <label className="mask-edge-toggle">
+            <input
+              type="checkbox"
               checked={refineEdges}
               disabled={busy}
               onChange={(e) => setRefineEdges(e.target.checked)}
@@ -534,6 +554,7 @@ export function MaskEditor({
               data: maskBase64(d.pixels, d.source.width, d.source.height),
               method: d.method,
               refineEdges: d.refineEdges,
+              detailPass: d.detailPass,
             });
           }}
         >

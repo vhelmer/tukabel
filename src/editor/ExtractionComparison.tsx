@@ -13,6 +13,7 @@ export function ExtractionComparison({ result }: { result: ArtworkResult }) {
     difference: result.difference,
     background: result.image,
     cutout: result.cutout,
+    repair: result.repairMask,
   }[view];
   return (
     <section
@@ -21,10 +22,17 @@ export function ExtractionComparison({ result }: { result: ArtworkResult }) {
     >
       <h3>Kontrola presného zarovnania</h3>
       <p>
-        {result.reconstruction?.changedPixels === 0
-          ? 'Zloženie späť: 0 zmenených viditeľných pixelov oproti rastrovému originálu.'
+        {(result.reconstruction?.unexpectedPixels ??
+          result.reconstruction?.changedPixels) === 0
+          ? 'Výrez: 0 chýb pri zachovaní pôvodných pixelov a zarovnania.'
           : 'Skontroluj výsledok oproti originálu.'}
       </p>
+      {!!result.reconstruction?.cleanupPixels && (
+        <p>
+          Pozadie v opravnom presahu: {result.reconstruction.cleanupPixels}{' '}
+          zámerne upravených pixelov. Zlatá v rozdiele označuje toto dočistenie.
+        </p>
+      )}
       <Field label="Porovnanie výrezu">
         <select value={view} onChange={(e) => setView(e.target.value)}>
           <option value="compare">
@@ -33,7 +41,14 @@ export function ExtractionComparison({ result }: { result: ArtworkResult }) {
           <option value="original">Pôvodný obrázok</option>
           <option value="cutout">Výrez na šachovnici</option>
           <option value="background">Opravené pozadie bez objektu</option>
-          <option value="difference">Rozdiel · čierna = bez zmien</option>
+          {result.repairMask && (
+            <option value="repair">
+              Maska opravy pozadia · biela = oprava
+            </option>
+          )}
+          <option value="difference">
+            Rozdiel · zlatá = dočistenie, červená = chyba
+          </option>
         </select>
       </Field>
       {view === 'compare' && (

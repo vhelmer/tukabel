@@ -121,22 +121,28 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
 - Oddělení vlastní pixely binární `object-mask.png`: RGB kopíruj ze zdroje,
   zachovej jeho alfa, rozměry a umístění. Nepoužívej vyhlazenou polygonovou masku
   zároveň pro background blend a cutout source-over; mění to obrys při složení.
-  Opravná maska pro AI je samostatná a může mít přesah, ale publikované pozadí
-  měň jen pod objektem. Částečně průhledné pixely výřezu nesmějí dostat druhou
-  vrstvu původní alfa. Před publikací ověř reassembly proti rasterizovanému zdroji.
+  Opravná maska pro AI je samostatná: publikuj i její explicitní přesah kolem
+  objektu, jinak se vracejí zbytky původních obrysů. Mimo opravný přesah nic neměň.
+  Částečně průhledné pixely výřezu nesmějí dostat druhou vrstvu původní alfa. Před publikací ověř reassembly proti rasterizovanému zdroji.
+  `cleanupPixels` jsou úmyslné změny pozadí mimo objekt v opravném přesahu;
+  `unexpectedPixels` musí zůstat nula (objekt i vzdálené okolí jsou přesné).
 - `dev/artSource.ts` sdílí bezpečné načtení/normalizaci; `dev/objectMask.ts` ověřuje
   binární PNG a SHA-256 zdroje před placeným voláním. `dev/segmentation.ts` spouští
-  jen pevný lokální Python helper bez shellu, timeout 90 s a dočasné soubory uklízí.
+  jen pevný lokální Python helper bez shellu, timeout 300 s a dočasné soubory uklízí.
   GrabCut i volitelný SAM 2 mění pouze masku, nikdy původní RGB. Žádné automatické
   stahování modelů; váhy a Python patří do ignorovaného `.local-tools/`.
 - SAM dostává celý zdroj kvůli kontextu; výchozí `refineEdges` dotáhne jeho masku
   GrabCutem jen v pásmu 12 původních pixelů kolem hranice. Eroze/dilatace tvoří
   pouze pomocný trimap, ne výslednou masku. Tahy štětce jsou vždy pevné podmínky;
-  nevyplňuj automaticky díry ani nepřidávej měkkou alfu. Volbu archivuj v recipe.
+  nevyplňuj automaticky díry ani nepřidávej měkkou alfu výřezu. `detailPass`
+  přidává druhou analýzu kontextového výřezu; nesouvisející masku odmítne podle
+  překryvu s celou scénou. Volby archivuj v recipe. Vyhlazení švu patří jen
+  do opravné masky pozadí, nikoli do binární masky objektu.
 - `MaskEditor` upravuje pixely zdroje nezávisle na zoomu, tahy tvoří celé undo kroky;
   pointercancel/Escape rozpracovaný tah vrátí. Import PNG masky i ruční štětec mají
   fungovat bez Pythonu. Náhled oddělení ukazuje šachovnici, originál/reassembly a diff;
-  nulový diff dokazuje věrnost pixelů, nikoli sémanticky správnou segmentaci.
+  nulový počet neočekávaných změn dokazuje věrnost pixelů, nikoli sémanticky
+  správnou segmentaci. Změny v opravném přesahu vykazuj odděleně.
 
 - Grafické operace a textová réžie používají `/jobs` a `dev/editorJobs.ts`: nejvýše
   20 úloh, jeden runner současně, mimo zámek projektových revizí. Fronta v paměti

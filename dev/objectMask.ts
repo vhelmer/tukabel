@@ -64,7 +64,9 @@ export async function readObjectMask(
     input.height !== source.height ||
     input.sourceSha256 !== source.sourceSha256 ||
     !['manual', 'grabcut', 'sam2'].includes(String(input.method)) ||
-    (input.refineEdges !== undefined && typeof input.refineEdges !== 'boolean')
+    (input.refineEdges !== undefined &&
+      typeof input.refineEdges !== 'boolean') ||
+    (input.detailPass !== undefined && typeof input.detailPass !== 'boolean')
   )
     throw Error(
       'Maska patrí k inému alebo zmenenému zdroju. Priprav ju znovu.',
@@ -75,5 +77,6 @@ export async function readObjectMask(
     pixels,
     method: input.method as ObjectMask['method'],
     refineEdges: input.refineEdges as boolean | undefined,
+    detailPass: input.detailPass as boolean | undefined,
   };
 }

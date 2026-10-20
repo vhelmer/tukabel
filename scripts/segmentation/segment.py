@@ -22,6 +22,7 @@ cv.setNumThreads(1)
 cv.setRNGSeed(7)
 folder, method = sys.argv[1:3]
 refine_edges = len(sys.argv) < 4 or sys.argv[3] == "source-edges"
+detail_pass = len(sys.argv) > 4 and sys.argv[4] == "detail"
 image = cv.imread(os.path.join(folder, "source.png"), cv.IMREAD_COLOR)
 prior = cv.imread(os.path.join(folder, "prior.png"), cv.IMREAD_GRAYSCALE)
 seeds = cv.imread(os.path.join(folder, "seeds.png"), cv.IMREAD_GRAYSCALE)
@@ -70,6 +71,14 @@ def source_edges(image, mask, seeds):
     cv.grabCut(image[y0:y1, x0:x1].copy(), region, None, np.zeros((1, 65), np.float64), np.zeros((1, 65), np.float64), 5, cv.GC_INIT_WITH_MASK)
     result = np.zeros_like(mask)
     result[y0:y1, x0:x1] = (region == cv.GC_FGD) | (region == cv.GC_PR_FGD)
+    # Color refinement can grow unrelated dark specks/lines near the object.
+    # Keep disconnected parts already recognized by SAM or explicitly painted,
+    # but discard entirely new islands with no connection to either anchor.
+    count, components = cv.connectedComponents(result.astype(np.uint8), connectivity=8)
+    keep = np.zeros(count, dtype=bool)
+    keep[np.unique(components[mask | (seeds == 255)])] = True
+    keep[0] = False
+    result = keep[components]
     return result
 
 
@@ -108,6 +117,24 @@ elif method == "sam2":
         predictor.set_image(cv.cvtColor(roi, cv.COLOR_BGR2RGB))
         masks, scores, _ = predictor.predict(point_coords=np.asarray(points, dtype=np.float32) if points else None, point_labels=np.asarray(labels, dtype=np.int32) if points else None, box=np.array([xs.min() - x0, ys.min() - y0, xs.max() - x0, ys.max() - y0], dtype=np.float32), multimask_output=True)
         mask = masks[int(np.argmax(scores))].astype(bool)
+        if detail_pass:
+            # A second embedding allocates more model pixels to the object, with
+            # ample context (not the tight GrabCut ROI). Coordinates stay native.
+            pad = max(96, int(max(xs.max() - xs.min(), ys.max() - ys.min()) * 0.35))
+            cx0, cy0 = max(0, int(xs.min()) - pad), max(0, int(ys.min()) - pad)
+            cx1, cy1 = min(image.shape[1], int(xs.max()) + pad + 1), min(image.shape[0], int(ys.max()) + pad + 1)
+            predictor.set_image(cv.cvtColor(image[cy0:cy1, cx0:cx1], cv.COLOR_BGR2RGB))
+            local_points = np.asarray(points, dtype=np.float32) - [cx0, cy0] if points else None
+            local, quality, _ = predictor.predict(point_coords=local_points, point_labels=np.asarray(labels, dtype=np.int32) if points else None, box=np.array([xs.min() - cx0, ys.min() - cy0, xs.max() - cx0, ys.max() - cy0], dtype=np.float32), multimask_output=True)
+            # Reject unrelated/partial crop interpretations. Confidence scores
+            # are compared only within the same image embedding.
+            for i in np.argsort(quality)[::-1]:
+                candidate = np.zeros_like(mask)
+                candidate[cy0:cy1, cx0:cx1] = local[i]
+                union = np.count_nonzero(candidate | mask)
+                if union and np.count_nonzero(candidate & mask) / union > 0.6:
+                    mask = candidate
+                    break
     if refine_edges:
         mask = source_edges(image, mask, seeds)
 else:

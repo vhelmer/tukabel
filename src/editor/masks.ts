@@ -5,6 +5,7 @@ export interface ObjectMask {
   sourceSha256: string;
   method: 'manual' | 'grabcut' | 'sam2';
   refineEdges?: boolean; // SAM followed by a source-resolution boundary fit.
+  detailPass?: boolean; // Full scene + contextual crop at higher object resolution.
 }
 export interface MaskSource {
   data: string;

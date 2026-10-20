@@ -98,7 +98,7 @@ test('source-pixel masks support real segmentation, manual touchups, zoom, compa
   workspace,
   isMobile,
 }, info) => {
-  test.setTimeout(60000);
+  test.setTimeout(120000);
   const project = JSON.parse(
     await readFile(workspace.source, 'utf8'),
   ) as GameContent;
@@ -123,6 +123,11 @@ test('source-pixel masks support real segmentation, manual touchups, zoom, compa
   await art
     .getByLabel('Názov výslednej vrstvy alebo lokácie', { exact: true })
     .fill('Presné hodiny');
+  const cleanup = art.getByLabel('Dočistenie pozadia za obrysom (px zdroja)', {
+    exact: true,
+  });
+  await expect(cleanup).toHaveValue('12');
+  await cleanup.fill('10');
   await selectClock(page, isMobile);
   await art
     .getByRole('button', {
@@ -170,6 +175,12 @@ test('source-pixel masks support real segmentation, manual touchups, zoom, compa
   const available = segmentation.grabcut;
   const method = segmentation.sam2 ? 'sam2' : 'grabcut';
   if (segmentation.sam2) {
+    const detail = editor.getByRole('checkbox', {
+      name: 'Detailný prechod · experimentálny',
+      exact: true,
+    });
+    await expect(detail).not.toBeChecked();
+    await detail.check();
     const edges = editor.getByRole('checkbox', {
       name: 'Dotiahnuť obrysy a tenké časti',
       exact: true,
@@ -185,9 +196,11 @@ test('source-pixel masks support real segmentation, manual touchups, zoom, compa
       (r) => r.url().endsWith('/art/segment') && r.method() === 'POST',
     );
     await refine.click();
-    expect((await request).postDataJSON().refineEdges).toBe(true);
+    const sent = (await request).postDataJSON();
+    expect(sent.refineEdges).toBe(true);
+    expect(sent.detailPass).toBe(segmentation.sam2);
     await expect(editor.getByRole('status')).toContainText('Skontroluj obrys', {
-      timeout: 20000,
+      timeout: 90000,
     });
   } else {
     await expect(refine).toBeDisabled();
@@ -215,7 +228,9 @@ test('source-pixel masks support real segmentation, manual touchups, zoom, compa
     art.getByRole('status', { name: 'Stav grafickej operácie' }),
   ).toContainText('Assety sú uložené');
   const comparison = art.getByRole('region', { name: 'Porovnanie oddelenia' });
-  await expect(comparison).toContainText('0 zmenených viditeľných pixelov');
+  await expect(comparison).toContainText(
+    '0 chýb pri zachovaní pôvodných pixelov',
+  );
   await comparison
     .getByLabel('Posuvník porovnania', { exact: true })
     .fill('70');
@@ -225,6 +240,9 @@ test('source-pixel masks support real segmentation, manual touchups, zoom, compa
   await comparison
     .getByLabel('Porovnanie výrezu', { exact: true })
     .selectOption('difference');
+  await comparison
+    .getByLabel('Porovnanie výrezu', { exact: true })
+    .selectOption('repair');
   const jobs = (
     await (
       await page.request.get(`${workspace.url}__tukabel/editor/jobs`)
@@ -239,13 +257,29 @@ test('source-pixel masks support real segmentation, manual touchups, zoom, compa
     .ensureAlpha()
     .raw()
     .toBuffer();
-  expect(
-    await sharp(asset(result.reassembled!)).ensureAlpha().raw().toBuffer(),
-  ).toEqual(original);
+  const combined = await sharp(asset(result.reassembled!))
+    .ensureAlpha()
+    .raw()
+    .toBuffer();
+  const repair = await sharp(asset(result.repairMask!))
+    .greyscale()
+    .raw()
+    .toBuffer();
   const mask = await sharp(asset(result.objectMask!))
     .greyscale()
     .raw()
     .toBuffer();
+  let unexpected = 0;
+  for (let p = 0; p < mask.length; p++)
+    if (
+      (mask[p] || !repair[p]) &&
+      !combined
+        .subarray(p * 4, p * 4 + 4)
+        .equals(original.subarray(p * 4, p * 4 + 4))
+    )
+      unexpected++;
+  expect(unexpected).toBe(0);
+  expect(result.reconstruction?.cleanupPixels).toBeGreaterThan(0);
   if (available) {
     expect(mask[60 * 1280 + 835]).toBe(0);
     expect(mask[105 * 1280 + 905]).toBe(255);
@@ -292,7 +326,8 @@ test('source-pixel masks support real segmentation, manual touchups, zoom, compa
     decorative: true,
   });
   const recipe = JSON.parse(await readFile(asset(result.manifest), 'utf8'));
-  expect(recipe.reconstruction.changedPixels).toBe(0);
+  expect(recipe.reconstruction.unexpectedPixels).toBe(0);
+  expect(recipe.repairPadding).toBe(10);
   expect(recipe.objectMask.method).toBe(available ? method : 'manual');
   if (segmentation.sam2) expect(recipe.objectMask.refineEdges).toBe(true);
   await page

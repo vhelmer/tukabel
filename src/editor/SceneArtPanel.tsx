@@ -75,6 +75,7 @@ export function SceneArtPanel({
   const target =
     targetChoice.jobId === selectedJob ? targetChoice.value : jobTarget;
   const [prompt, setPrompt] = useState('');
+  const [repairPadding, setRepairPadding] = useState(12);
   const [label, setLabel] = useState('Nový výrez');
   const [motion, setMotion] = useState('water');
   const [amplitude, setAmplitude] = useState(4),
@@ -237,6 +238,7 @@ export function SceneArtPanel({
             : undefined,
           prompt: ai ? prompt : undefined,
           confirmed: ai ? true : undefined,
+          repairPadding,
           motion,
           amplitude,
           fps,
@@ -500,6 +502,29 @@ export function SceneArtPanel({
         )}
         {ai && (
           <>
+            {['extract', 'remove'].includes(operation) && (
+              <Field label="Dočistenie pozadia za obrysom (px zdroja)">
+                <input
+                  type="number"
+                  aria-label="Dočistenie pozadia za obrysom (px zdroja)"
+                  min={0}
+                  max={64}
+                  value={repairPadding}
+                  onChange={(e) =>
+                    setRepairPadding(
+                      Math.max(
+                        0,
+                        Math.min(64, Math.round(Number(e.target.value) || 0)),
+                      ),
+                    )
+                  }
+                />
+                <span className="field-note">
+                  Odstráni aj zvyšky čiar a tieňa okolo objektu. Mení pozadie v
+                  tomto presahu, veľkosť výrezu zostáva pôvodná.
+                </span>
+              </Field>
+            )}
             <Field label="Pokyny pre AI">
               <textarea
                 maxLength={4000}
@@ -512,8 +537,11 @@ export function SceneArtPanel({
               {status?.configured
                 ? `OpenAI · ${status.model} · odosiela sa celý zdroj a maska výberu. Spustenie spotrebuje API kredit.`
                 : 'AI vyžaduje OPENAI_API_KEY v .env.local a reštart Vite. Lokálne výrezy a slučky ho nepotrebujú.'}{' '}
-              Mimo výberu zostanú pôvodné pixely. Úprava obrázka odpojí jeho
-              staré animácie.
+              Mimo výberu
+              {['extract', 'remove'].includes(operation)
+                ? ' a opravného presahu'
+                : ''}{' '}
+              zostanú pôvodné pixely. Úprava obrázka odpojí jeho staré animácie.
             </p>
           </>
         )}

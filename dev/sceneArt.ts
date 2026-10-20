@@ -37,7 +37,13 @@ export interface ArtResult {
   original?: string;
   reassembled?: string;
   difference?: string;
-  reconstruction?: { changedPixels: number; selectedPixels: number };
+  repairMask?: string;
+  reconstruction?: {
+    changedPixels: number;
+    selectedPixels: number;
+    cleanupPixels: number;
+    unexpectedPixels: number;
+  };
 }
 const MAX_PIXELS = ART_MAX_PIXELS;
 const MAX_BYTES = 24 * 1024 * 1024;
@@ -221,25 +227,42 @@ export async function createArtwork(
   const objectPixels = Buffer.alloc(width * height);
   for (let p = 0; p < objectPixels.length; p++)
     objectPixels[p] = coverage[p * 4 + 3]!;
-  const repairPadding =
-    operation === 'extract' ? (input.repairPadding ?? 6) : 0;
+  const repairPadding = ['extract', 'remove'].includes(operation)
+    ? (input.repairPadding ?? 12)
+    : 0;
   if (
     !Number.isInteger(repairPadding) ||
     Number(repairPadding) < 0 ||
-    Number(repairPadding) > 32
+    Number(repairPadding) > 64
   )
-    throw Error('Presah opravy musí byť 0–32 px.');
-  // Give inpainting extra context/outline clearance, but never enlarge the asset
-  // or overwrite scenery outside the actual object when publishing the repair.
+    throw Error('Presah opravy musí byť 0–64 px.');
+  // The repair owns its own margin. Clipping it back to the cutout restores
+  // missed outlines from the original image and leaves a ghost of the object.
   const providerMask = Number(repairPadding)
     ? await sharp(objectPixels, { raw: { width, height, channels: 1 } })
         // libvips morphology treats black as foreground: erode expands our
         // white selected pixels (verified by the repair-margin test).
-        .erode(Number(repairPadding))
+        .erode(Number(repairPadding) * 2 + 1)
         .greyscale()
         .raw()
         .toBuffer()
     : objectPixels;
+  const repairCoverage = Buffer.from(providerMask);
+  if (Number(repairPadding) > 0) {
+    const soft = await sharp(providerMask, {
+      raw: { width, height, channels: 1 },
+    })
+      .blur(1)
+      .greyscale()
+      .raw()
+      .toBuffer();
+    for (let p = 0; p < repairCoverage.length; p++)
+      // Feather only inside the permitted repair; never soften the cutout.
+      repairCoverage[p] = Math.max(
+        objectPixels[p]!,
+        Math.min(providerMask[p]!, soft[p]!),
+      );
+  }
   const cutoutRaw = Buffer.from(raw);
   const maskRaw = Buffer.alloc(raw.length, 255);
   for (let i = 0; i < raw.length; i += 4) {
@@ -287,7 +310,7 @@ export async function createArtwork(
         : undefined;
     const instruction =
       operation === 'remove' || operation === 'extract'
-        ? 'Remove the selected object completely. Reconstruct the scenery behind it seamlessly. Do not leave a duplicate or a silhouette. '
+        ? 'Remove the selected object completely, including thin protrusions, outline strokes, contact shadows and detached remnants within the repair mask. Reconstruct continuous scenery and line work behind it seamlessly. Do not leave a duplicate or a silhouette. '
         : operation === 'generate'
           ? 'Create a new 2D adventure location using the reference ONLY for its drawing style, palette and line work. '
           : 'Edit only the selected area. ';
@@ -314,13 +337,15 @@ export async function createArtwork(
       .toBuffer();
     if (points || suppliedMask) {
       const merged = Buffer.from(raw);
-      for (let i = 0; i < raw.length; i += 4)
+      for (let i = 0; i < raw.length; i += 4) {
+        const weight = ['extract', 'remove'].includes(operation)
+          ? repairCoverage[i / 4]!
+          : coverage[i + 3]!;
         for (let c = 0; c < 4; c++)
           merged[i + c] = Math.round(
-            (raw[i + c]! * (255 - coverage[i + 3]!) +
-              result[i + c]! * coverage[i + 3]!) /
-              255,
+            (raw[i + c]! * (255 - weight) + result[i + c]! * weight) / 255,
           );
+      }
       if (operation === 'extract') {
         for (let i = 0; i < raw.length; i += 4) {
           if (coverage[i + 3] && raw[i + 3]! < 255) merged.fill(0, i, i + 4);
@@ -341,6 +366,12 @@ export async function createArtwork(
     await writeFile(path.join(staging, 'source.png'), source, { flag: 'wx' });
     await writeFile(path.join(staging, 'mask.png'), mask, { flag: 'wx' });
     await writeFile(path.join(staging, 'image.png'), image, { flag: 'wx' });
+    if (['extract', 'remove'].includes(operation))
+      await writeFile(
+        path.join(staging, 'repair-mask.png'),
+        await maskPng(repairCoverage, width, height),
+        { flag: 'wx' },
+      );
     let reconstruction: ArtResult['reconstruction'];
     if (exact)
       await writeFile(
@@ -354,7 +385,9 @@ export async function createArtwork(
       const combined = Buffer.from(background),
         difference = Buffer.alloc(raw.length, 0);
       let changedPixels = 0,
-        selectedPixels = 0;
+        selectedPixels = 0,
+        cleanupPixels = 0,
+        unexpectedPixels = 0;
       for (let i = 0; i < raw.length; i += 4) {
         if (objectPixels[i / 4]) selectedPixels++;
         const a = cutoutRaw[i + 3]! / 255,
@@ -373,11 +406,21 @@ export async function createArtwork(
           ((raw[i + 3] || combined[i + 3]) &&
             [0, 1, 2].some((c) => raw[i + c] !== combined[i + c]));
         if (changed) changedPixels++;
+        const cleanup =
+          changed && !objectPixels[i / 4] && repairCoverage[i / 4]! > 0;
+        if (cleanup) cleanupPixels++;
+        if (changed && !cleanup) unexpectedPixels++;
         difference[i] = changed ? 255 : 0;
+        difference[i + 1] = cleanup ? 170 : 0;
         difference[i + 3] = 255;
       }
-      reconstruction = { changedPixels, selectedPixels };
-      if (changedPixels)
+      reconstruction = {
+        changedPixels,
+        selectedPixels,
+        cleanupPixels,
+        unexpectedPixels,
+      };
+      if (unexpectedPixels)
         throw Error(
           'Kontrola zloženia zistila zmenené pixely. Výsledok sa nepublikoval.',
         );
@@ -516,10 +559,14 @@ export async function createArtwork(
             file: 'object-mask.png',
             method: suppliedMask?.method ?? 'polygon',
             refineEdges: suppliedMask?.refineEdges,
+            detailPass: suppliedMask?.detailPass,
             pixelOwnership: 'binary',
           }
         : undefined,
       repairPadding,
+      repairMask: ['extract', 'remove'].includes(operation)
+        ? 'repair-mask.png'
+        : undefined,
       reconstruction,
       prompt: ai ? input.prompt : undefined,
       model: ai ? artStatus(options).model : undefined,
@@ -556,6 +603,9 @@ export async function createArtwork(
       original: `${prefix}/source.png`,
       reassembled: reconstruction ? `${prefix}/reassembled.png` : undefined,
       difference: reconstruction ? `${prefix}/difference.png` : undefined,
+      repairMask: ['extract', 'remove'].includes(operation)
+        ? `${prefix}/repair-mask.png`
+        : undefined,
       reconstruction,
     };
   } catch (error) {

@@ -146,13 +146,20 @@ herní hover, kliknutí i drop na objekty pod nimi. Zamknutí nemění chování
    objekt**, zoom až 8×, původní obrázek, barevná maska a šachovnice pomohou odhalit
    chybějící čáry. **Späť v maske** vrací celé tahy i segmentaci; přerušený tah nic
    neukládá. Hotovou černobílou PNG masku lze také načíst tlačítkem **Načítať PNG masku**.
-4. **Použiť masku** vrátí schválenou masku do grafického panelu. Teprve **Spustiť AI
+4. U oddělení/odstranění nastav **Dočistenie pozadia za obrysom** (výchozí 12 px,
+   rozsah 0–64 v původních pixelech). Odstraní i zbytky obrysů nebo stínu mimo
+   masku objektu; přesah se skutečně použije na publikované pozadí a šev se
+   uvnitř něj jemně spojí. Hodnota 0 zachová původní pozadí přesně mimo objekt.
+   Náhled **Maska opravy pozadia** ukazuje dovolený rozsah změn.
+   **Použiť masku** vrátí schválenou masku do grafického panelu. Teprve **Spustiť AI
    úpravu (API kredit)** pošle zdroj a samostatnou opravnou masku službě pro doplnění
    pozadí. Objekt se nikdy negeneruje. Bez placeného API lze místo oddělení zvolit
    **Kópia výberu → transparentná vrstva**, která použije tutéž masku a původní pixely.
 5. V náhledu porovnej originál s opraveným pozadím a vráceným objektem pomocí
    posuvníku. Lze zobrazit také samotný výřez, pozadí nebo rozdílový obraz. Kontrola
-   musí hlásit **0 zmenených viditeľných pixelov** při složení v původním rozlišení.
+   musí hlásit **0 chýb pri zachovaní pôvodných pixelov a zarovnania**.
+   Zlatý rozdíl označuje úmyslné dočištění pozadí v opravném přesahu; červený by
+   znamenal chybu objektu nebo změnu vzdáleného okolí a nesmí se publikovat.
    To ověřuje zachování pixelů a zarovnání; správné rozpoznání objektu je potřeba
    zkontrolovat na šachovnici. Přesné složení samo nepozná omylem přibalené pozadí.
 6. **Použiť výsledok v scéne → Uložiť do projektu** nahradí pozadí a přidá oddělenou
@@ -185,11 +192,25 @@ souboru; `SAM2_CONFIG=configs/sam2.1/sam2.1_hiera_t.yaml`. Pokud nepoužíváš 
 uvedený interpreter, nastav i `SEGMENTATION_PYTHON`. Restartuj `npm run dev`.
 V okně **Spresniť / upraviť masku objektu → Segmentácia hraníc** se zpřístupní
 **SAM 2 · lokálny AI model**; vyber ho a klikni **Spresniť hranice objektu**.
+Volitelný experimentální **Detailný prechod** analyzuje navíc kontextový výřez, takže má model
+k dispozici více pixelů samotného objektu. Odlišnou interpretaci výřezu odmítne;
+oba průchody i finální maska respektují explicitní tahy štětce. Výřez nemusí
+být lepší pro každý objekt, proto je výchozí vypnutý.
 Výsledek zkontroluj na šachovnici, případně oprav zeleným/červeným štětcem a zopakuj.
 Model dostává celý zdroj kvůli kontextu, rám výběru a body odvozené z tahů štětce;
 výsledná maska vybírá původní pixely, objekt se negeneruje znovu.
+Pro vyšší kapacitu modelu je lokálně ověřený také **SAM 2.1 Large** (898 MB vah).
+Používá stejnou instalaci Pythonu. [Oficiální checkpoint](https://huggingface.co/facebook/sam2.1-hiera-large)
+stáhni do `.local-tools/models/sam2.1_hiera_large.pt`, nastav jeho absolutní cestu
+v `SAM2_CHECKPOINT` a `SAM2_CONFIG=configs/sam2.1/sam2.1_hiera_l.yaml`.
+SHA-256 vah je `2647878d5dfa5098f2f8649825738a9345572bae2d4350a2468587ece47dd318`.
+Po změně `.env.local` restartuj Vite. Na routeru se osvědčil Large s celou scénou
+s následným dotažením hran; větší model sám nezaručuje přesnou segmentaci.
+
 Výchozí dotažení hran používá GrabCut v původním rozlišení pouze v pásmu 12 px
-okolo odhadu SAM; vnitřek a vzdálené pozadí zůstávají pevné. Maska se nerozmazává
+okolo odhadu SAM; vnitřek a vzdálené pozadí zůstávají pevné. Nové oddělené
+ostrůvky vytvořené jen barevným dotažením bez vazby na původní masku nebo zelený
+štětec se zahodí; již rozpoznané oddělené části se zachovají. Maska se nerozmazává
 ani plošně nezvětšuje. Zelené/červené tahy jsou pevná pravidla pro oba kroky.
 Pokud chybí celá tenká část, projdi ji zeleným štětcem a pozadí kolem ní červeným;
 automatické dotažení není záruka perfektního obrysu. Ve zvětšení alespoň 1:1 se
@@ -207,10 +228,10 @@ projektového save, bez shellu a s timeoutem.
 
 Všechny nové soubory jsou v `src/assets/scene-art/<uuid>/`: normalizovaný rastrový
 `source.png`, opravná `mask.png` (průhledná uvnitř oblasti povolené pro AI), výsledek,
-případný `cutout.png` a snímky. Přesné výřezy mají `object-mask.png` (bílá = ponechat
+případný `cutout.png`, `repair-mask.png` (skutečný rozsah opravy pozadí) a snímky. Přesné výřezy mají `object-mask.png` (bílá = ponechat
 původní pixel, černá = průhlednost); oddělení navíc `reassembled.png` a `difference.png`.
 `recipe.json` archivuje SHA-256 zdroje, polygon nebo metodu masky (u SAM také
-`refineEdges`, zda se dotahovaly obrysy), prompt/model,
+`refineEdges` a `detailPass`), prompt/model,
 přesah opravné masky a výsledek pixelové kontroly. Je to záznam výroby; jedinou definicí
 herního obsahu zůstává projektový JSON. Masku lze načíst znovu do editoru nad původním
 zdrojem. Rozpracovaná maska je vázaná na hash i rozměry zdroje. Při výslovném
@@ -218,11 +239,14 @@ importu samotného PNG se ověřují rozměry; příslušný původní obrázek 
 
 Maska objektu vlastní celé původní pixely (0/255), nerozmazává se. RGB se nekreslí ani
 nepřepočítává, alfa vybraných pixelů zůstává původní. AI dostává opravnou masku s malým
-přesahem (výchozí 6 px) pro odstranění obrysů, ale z jejího výsledku se přebírá pouze
-oblast pod objektem; mimo ni zůstává původní pozadí. Dvě masky se nesmějí zaměnit.
+přesahem (výchozí 12 px) pro odstranění obrysů. Z jejího výsledku se převezme
+i tento přesah s jemným vnitřním přechodem, jinak by se za objektem vracely staré
+čáry. Mimo opravnou masku zůstává původní pozadí. Dvě masky se nesmějí zaměnit.
 Výřez má celé původní plátno, nikoli nové ořezání či měřítko. U částečně průhledného
 zdroje zůstává pod těmito pixely průhlednost, aby se alfa neaplikovala dvakrát.
-Server před publikováním ověří složení pixel po pixelu a neshodný výsledek odmítne.
+Server před publikováním ověří složení pixel po pixelu: chyby pod objektem nebo
+mimo opravu odmítne, povolené dočištění okolí vykáže samostatně. Starší již
+vytvořené PNG se nemění; oddělení je potřeba z původního zdroje spustit znovu.
 SVG se pro tuto kontrolu nejprve rasterizuje přes Sharp; rastrový originál v náhledu
 je skutečný zdroj výřezu. Při zmenšení ve hře se uplatní běžné filtrování textur.
 Zachování RGB záměrně neodbarvuje vyhlazené pixely původního pozadí; při přesunu na

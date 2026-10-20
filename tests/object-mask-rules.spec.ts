@@ -21,7 +21,7 @@ async function fixture(run: (root: string) => Promise<void>) {
   }
 }
 
-test('extraction preserves every source RGB/alpha sample and reassembles without changing even antialiased outlines or holes', async () => {
+test('extraction keeps source pixels exact and publishes the repair margin instead of restoring missed outlines', async () => {
   await fixture(async (root) => {
     const width = 96,
       height = 64;
@@ -85,24 +85,41 @@ test('extraction preserves every source RGB/alpha sample and reassembles without
     for (let p = 0; p < pixels.length; p++)
       expectedCutout[p * 4 + 3] = pixels[p] ? source.raw[p * 4 + 3]! : 0;
     expect(cutout).toEqual(expectedCutout);
-    expect(await rgba(path.join(root, result.reassembled!))).toEqual(
-      source.raw,
-    );
-    expect(result.reconstruction).toEqual({
-      changedPixels: 0,
+    expect(result.reconstruction?.cleanupPixels).toBeGreaterThan(0);
+    expect(result.reconstruction).toMatchObject({
+      unexpectedPixels: 0,
       selectedPixels: pixels.filter((v) => v === 255).length,
     });
     const background = await rgba(path.join(root, result.image));
+    const repair = await sharp(path.join(root, result.repairMask!))
+      .greyscale()
+      .raw()
+      .toBuffer();
+    const combined = await rgba(path.join(root, result.reassembled!));
     let outsideChanges = 0;
     for (let p = 0; p < pixels.length; p++)
       if (
-        !pixels[p] &&
+        !repair[p] &&
         !background
           .subarray(p * 4, p * 4 + 4)
           .equals(source.raw.subarray(p * 4, p * 4 + 4))
       )
         outsideChanges++;
     expect(outsideChanges).toBe(0);
+    // The missed antialiased outline at x=9 used to be copied back from the source.
+    expect(
+      background.subarray((25 * width + 9) * 4, (25 * width + 9) * 4 + 4),
+    ).toEqual(Buffer.from([73, 117, 100, 255]));
+    let incorrect = 0;
+    for (let p = 0; p < pixels.length; p++)
+      if (
+        (pixels[p] || !repair[p]) &&
+        !combined
+          .subarray(p * 4, p * 4 + 4)
+          .equals(source.raw.subarray(p * 4, p * 4 + 4))
+      )
+        incorrect++;
+    expect(incorrect).toBe(0);
     expect(calls).toBe(1);
     expect(observedMaskAlpha).toBe(0);
     expect(
@@ -115,7 +132,7 @@ test('extraction preserves every source RGB/alpha sample and reassembles without
         pixelOwnership: 'binary',
       },
       repairPadding: 5,
-      reconstruction: { changedPixels: 0 },
+      reconstruction: { unexpectedPixels: 0 },
     });
   });
 });
@@ -149,6 +166,7 @@ test('transparent source edge alpha is retained and stale, soft, colored or mis-
         objectMask: mask,
         confirmed: true,
         prompt: 'Repair.',
+        repairPadding: 0,
       },
       {
         apiKey: 'secret',
@@ -247,6 +265,8 @@ for (const method of ['grabcut', 'sam2'] as const) {
     test.setTimeout(120000);
     const options = {
       python,
+      modelConfig:
+        process.env.SAM2_CONFIG || 'configs/sam2.1/sam2.1_hiera_t.yaml',
       checkpoint:
         process.env.SAM2_CHECKPOINT ||
         path.resolve('.local-tools/models/sam2.1_hiera_tiny.pt'),
@@ -334,9 +354,7 @@ test('SAM source-edge refinement recovers both router antennae and keeps cutout 
   const info = test.info();
   const options = {
     python,
-    checkpoint:
-      process.env.SAM2_CHECKPOINT ||
-      path.resolve('.local-tools/models/sam2.1_hiera_tiny.pt'),
+    checkpoint: path.resolve('.local-tools/models/sam2.1_hiera_tiny.pt'),
   };
   test.skip(
     !(await segmentationStatus(options)).sam2,
@@ -387,10 +405,12 @@ test('SAM source-edge refinement recovers both router antennae and keeps cutout 
       ).toString('base64'),
     };
     const overlaps: number[] = [];
-    for (const refineEdges of [false, true]) {
+    for (const mode of ['raw', 'edges', 'detail'] as const) {
+      const refineEdges = mode !== 'raw';
+      const detailPass = mode === 'detail';
       const result = await segmentObject(
         root,
-        { ...input, refineEdges },
+        { ...input, refineEdges, detailPass },
         options,
       );
       expect(result.refineEdges).toBe(refineEdges);
@@ -420,18 +440,77 @@ test('SAM source-edge refinement recovers both router antennae and keeps cutout 
           expect(retained / expected).toBeGreaterThan(0.985);
         }
       }
+      if (detailPass) {
+        // A provider oracle removes only the router from the actual SVG. This
+        // reproduces the publication bug without spending external API credits.
+        const cleanSvg = svg.replace(drawing, '');
+        const clean = await rgba(
+          await sharp(Buffer.from(cleanSvg)).png().toBuffer(),
+        );
+        const repaired = await createArtwork(
+          root,
+          {
+            source: 'source.png',
+            operation: 'extract',
+            objectMask: result,
+            repairPadding: 12,
+            confirmed: true,
+            prompt: 'Remove the router and its outlines.',
+          },
+          {
+            apiKey: 'mock',
+            fetch: (async (_url, init) => {
+              const [width, height] = JSON.parse(init!.body as string)
+                .size.split('x')
+                .map(Number);
+              return Response.json({
+                data: [
+                  {
+                    b64_json: (
+                      await sharp(Buffer.from(cleanSvg))
+                        .resize(width, height, {
+                          fit: 'contain',
+                          background: '#281e2b',
+                        })
+                        .png()
+                        .toBuffer()
+                    ).toString('base64'),
+                  },
+                ],
+              });
+            }) as typeof fetch,
+          },
+        );
+        const backgroundBytes = await readFile(path.join(root, repaired.image));
+        await writeFile(
+          info.outputPath('router-clean-background.png'),
+          backgroundBytes,
+        );
+        const background = await rgba(backgroundBytes);
+        let previousGhosts = 0,
+          remainingGhosts = 0;
+        for (let p = 0; p < mask.length; p++) {
+          if (mask[p]) continue;
+          const i = p * 4;
+          const delta = (a: Buffer, b: Buffer) =>
+            Math.max(...[0, 1, 2].map((c) => Math.abs(a[i + c]! - b[i + c]!)));
+          if (delta(source.raw, clean) > 60) {
+            previousGhosts++;
+            if (delta(background, source.raw) < delta(background, clean))
+              remainingGhosts++;
+          }
+        }
+        expect(previousGhosts).toBeGreaterThan(0);
+        expect(remainingGhosts).toBeLessThan(previousGhosts * 0.1);
+        expect(repaired.reconstruction?.unexpectedPixels).toBe(0);
+      }
       const cutout = await createArtwork(root, {
         source: 'source.png',
         operation: 'cutout',
         objectMask: result,
       });
       const bytes = await readFile(path.join(root, cutout.image));
-      await writeFile(
-        info.outputPath(
-          refineEdges ? 'router-refined.png' : 'router-raw-sam.png',
-        ),
-        bytes,
-      );
+      await writeFile(info.outputPath(`router-${mode}.png`), bytes);
       const raw = await rgba(bytes);
       let alteredPixels = 0;
       for (let p = 0; p < mask.length; p++) {
@@ -451,5 +530,6 @@ test('SAM source-edge refinement recovers both router antennae and keeps cutout 
     }
     expect(overlaps[1]!).toBeGreaterThan(0.96);
     expect(overlaps[1]! - overlaps[0]!).toBeGreaterThan(0.06);
+    expect(overlaps[2]!).toBeGreaterThan(0.97);
   });
 });

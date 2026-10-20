@@ -135,7 +135,13 @@ export interface ArtworkResult {
   original?: string;
   reassembled?: string;
   difference?: string;
-  reconstruction?: { changedPixels: number; selectedPixels: number };
+  repairMask?: string;
+  reconstruction?: {
+    changedPixels: number;
+    selectedPixels: number;
+    cleanupPixels?: number;
+    unexpectedPixels?: number;
+  };
   assets: string[];
 }
 export const getArtStatus = () =>
@@ -167,6 +173,7 @@ export const segmentMask = (
   seeds: string,
   method: 'grabcut' | 'sam2',
   refineEdges = true,
+  detailPass = false,
 ) =>
   request<import('./masks').ObjectMask>('art/segment', 'POST', {
     source,
@@ -174,4 +181,5 @@ export const segmentMask = (
     seeds,
     method,
     refineEdges,
+    detailPass,
   });
