@@ -113,7 +113,7 @@ herní hover, kliknutí i drop na objekty pod nimi. Zamknutí nemění chování
      zachová původní výřez jako samostatnou transparentní vrstvu.
    - **AI nová lokácia** použije současné pozadí jako stylovou referenci a vytvoří
      další lokaci, aniž přepíše současnou.
-4. **Vytvoriť lokálny asset** nebo výslovné **Spustiť AI úpravu (API kredit)** uloží
+4. **Vytvoriť lokálny asset** nebo výslovné **Spustiť AI úpravu (API kredit)**
    založí úlohu na pozadí. Můžeš mezitím upravovat i ukládat projekt, měnit
    záložku nebo přejít do Game Mode. Přehled **Úlohy na pozadí** ukazuje kroky
    a nabízí **Otvoriť výsledok**, které obnoví správnou lokaci a zdroj.
@@ -126,12 +126,74 @@ herní hover, kliknutí i drop na objekty pod nimi. Zamknutí nemění chování
    **Otestovať odtiaľto ↗** otevře interaktivní Game Mode. **Uložiť do projektu**
    zapíše pořadí, vlastnosti, vazby i klipy do `src/game/content/project.json`.
 
-Všechny nové soubory jsou v `src/assets/scene-art/<uuid>/`: normalizovaný originál,
-PNG maska (průhledná uvnitř výběru), výsledek, případný výřez a snímky. `recipe.json`
-archivuje původní ID a SHA-256, polygon v původních pixelech, prompt/model nebo
-parametry místní smyčky. Je to záznam výroby; jedinou definicí herního obsahu zůstává
-projektový JSON. Originály se nepřepisují. Zahazování náhledu ani Undo nemažou již
-vytvořené soubory, takže nepotřebné varianty lze později odstranit v Gitu.
+### Přesné oddělení objektu a oprava pozadí
+
+1. Vyber **Zdroj grafickej úpravy → Pozadie lokácie** a operaci
+   **AI · oddeliť objekt + opraviť pozadie**. Nad scénou zvol **Vybrať obdĺžnik**
+   nebo **Vybrať polygón** a volně obkresli celý objekt včetně obrysu.
+2. Klikni na **Spresniť / upraviť masku objektu**. Zelený štětec ponechává pixely
+   objektu, červený odstraňuje pozadí a umí vytvořit i otvory uvnitř objektu.
+   Tyto tahy zároveň určují jisté popředí/pozadí pro segmentaci. Označ několik
+   charakteristických barev a také tenké černé obrysy, které mají zůstat.
+3. **Spresniť hranice objektu** spustí lokální GrabCut podle skutečných barev a hran.
+   Výsledek zkontroluj a případně uprav štětcem nebo segmentaci zopakuj. **Priblížiť
+   objekt**, zoom až 8×, původní obrázek, barevná maska a šachovnice pomohou odhalit
+   chybějící čáry. **Späť v maske** vrací celé tahy i segmentaci; přerušený tah nic
+   neukládá. Hotovou černobílou PNG masku lze také načíst tlačítkem **Načítať PNG masku**.
+4. **Použiť masku** vrátí schválenou masku do grafického panelu. Teprve **Spustiť AI
+   úpravu (API kredit)** pošle zdroj a samostatnou opravnou masku službě pro doplnění
+   pozadí. Objekt se nikdy negeneruje. Bez placeného API lze místo oddělení zvolit
+   **Kópia výberu → transparentná vrstva**, která použije tutéž masku a původní pixely.
+5. V náhledu porovnej originál s opraveným pozadím a vráceným objektem pomocí
+   posuvníku. Lze zobrazit také samotný výřez, pozadí nebo rozdílový obraz. Kontrola
+   musí hlásit **0 zmenených viditeľných pixelov** při složení v původním rozlišení.
+   To ověřuje zachování pixelů a zarovnání; správné rozpoznání objektu je potřeba
+   zkontrolovat na šachovnici. Přesné složení samo nepozná omylem přibalené pozadí.
+6. **Použiť výsledok v scéne → Uložiť do projektu** nahradí pozadí a přidá oddělenou
+   vrstvu na původní místo. Scéna proto může vypadat stejně. Novou vrstvu skryj nebo
+   přesuň, abys viděl opravené pozadí. Konfigurace a assety lze běžně commitnout.
+
+Lokální automatické spřesnění nainstaluj jednou pomocí **`npm run setup:segmentation`**
+(Python 3 s podporou `venv`; vytvoří ignorované `.local-tools/segmentation/` s připnutými
+OpenCV a NumPy). Pak restartuj Vite. Ruční maskování a import PNG masky fungují i bez
+Pythonu. Jiný lokální interpreter lze zadat serverovým `SEGMENTATION_PYTHON`.
+[GrabCut](https://docs.opencv.org/4.x/d8/d83/tutorial_py_grabcut.html) není sémantický
+model: při podobných barvách objektu a pozadí potřebuje více tahů nebo ruční opravu.
+
+Volitelně podporujeme **[SAM 2](https://github.com/facebookresearch/sam2)** přes stejný
+editor. Nainstaluj oficiální SAM 2 a kompatibilní CPU PyTorch do zvoleného Pythonu,
+ulož checkpoint lokálně a nastav `SAM2_CHECKPOINT`, případně odpovídající `SAM2_CONFIG`
+v `.env.local`. Výchozí konfigurace je `configs/sam2.1/sam2.1_hiera_t.yaml` a potřebuje
+odpovídající tiny checkpoint. Modely ani kód se za běhu automaticky nestahují.
+SAM 2 běží na CPU s boxem a pozitivními/negativními tahy; nedostupná volba je vypnutá.
+Lokálně a v testech jsme ověřili skutečný GrabCut; SAM 2 vyžaduje samostatnou instalaci
+vah a jeho kvalita zde nebyla prakticky ověřena. Produkční hra nepotřebuje ani Python,
+ani modely, ani API. Segmentace běží mimo zámek projektového save, bez shellu a s timeoutem.
+
+Všechny nové soubory jsou v `src/assets/scene-art/<uuid>/`: normalizovaný rastrový
+`source.png`, opravná `mask.png` (průhledná uvnitř oblasti povolené pro AI), výsledek,
+případný `cutout.png` a snímky. Přesné výřezy mají `object-mask.png` (bílá = ponechat
+původní pixel, černá = průhlednost); oddělení navíc `reassembled.png` a `difference.png`.
+`recipe.json` archivuje SHA-256 zdroje, polygon nebo metodu masky, prompt/model,
+přesah opravné masky a výsledek pixelové kontroly. Je to záznam výroby; jedinou definicí
+herního obsahu zůstává projektový JSON. Masku lze načíst znovu do editoru nad původním
+zdrojem. Rozpracovaná maska je vázaná na hash i rozměry zdroje. Při výslovném
+importu samotného PNG se ověřují rozměry; příslušný původní obrázek vybírá autor.
+
+Maska objektu vlastní celé původní pixely (0/255), nerozmazává se. RGB se nekreslí ani
+nepřepočítává, alfa vybraných pixelů zůstává původní. AI dostává opravnou masku s malým
+přesahem (výchozí 6 px) pro odstranění obrysů, ale z jejího výsledku se přebírá pouze
+oblast pod objektem; mimo ni zůstává původní pozadí. Dvě masky se nesmějí zaměnit.
+Výřez má celé původní plátno, nikoli nové ořezání či měřítko. U částečně průhledného
+zdroje zůstává pod těmito pixely průhlednost, aby se alfa neaplikovala dvakrát.
+Server před publikováním ověří složení pixel po pixelu a neshodný výsledek odmítne.
+SVG se pro tuto kontrolu nejprve rasterizuje přes Sharp; rastrový originál v náhledu
+je skutečný zdroj výřezu. Při zmenšení ve hře se uplatní běžné filtrování textur.
+Zachování RGB záměrně neodbarvuje vyhlazené pixely původního pozadí; při přesunu na
+zcela jinou barvu je případný barevný lem potřeba odstranit úpravou masky.
+
+Originály se nepřepisují. Zahazování náhledu ani Undo nemažou již vytvořené soubory,
+takže nepotřebné varianty lze později odstranit v Gitu.
 
 Pro AI nastav serverové `OPENAI_API_KEY` a volitelně `OPENAI_IMAGE_MODEL` v ignorovaném
 `.env.local`, pak restartuj Vite. Výchozí adaptér v `dev/sceneArt.ts` používá
@@ -261,6 +323,10 @@ animace, dabing a lip-sync lze přiřadit v editoru podle návodu níže.
   `SceneImage.tsx` používá stejnou geometrii jako Pixi; `transformTools.ts` počítá
   proporcionální tahy a limity scény. Zoom, pomůcky a rozpracovaný tah jsou jen UI stav.
 - `dev/editorPlugin.ts` — lokální Vite middleware pro načtení/zápis a import assetů.
+- `src/editor/MaskEditor.tsx`, `ExtractionComparison.tsx` — štětcové masky a kontrola složení.
+- `dev/artSource.ts`, `objectMask.ts`, `segmentation.ts` — bezpečný rastrový zdroj,
+  validace masek a lokální OpenCV / volitelný SAM 2. `sceneArt.ts` publikuje původní
+  výřez, samostatnou opravu pozadí a pixelovou kontrolu.
 - `dev/animationImport.ts` — lokální import PNG sekvencí a atlasů přes Sharp, obnova
   plátna oříznutých snímků, atomický zápis a kontrola rozměrů. Bez runtime závislosti.
 - `dev/speech.ts` — vývojové ElevenLabs TTS, WAV import, Rhubarb a validace souborů.

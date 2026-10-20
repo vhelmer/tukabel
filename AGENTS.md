@@ -118,6 +118,22 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
   až vědomou akcí; starý výsledek nesmí přepsat změněný zdroj/transformaci nebo souřadnice lokace.
   Úpravy nesouvisejících objektů a názvu lokace mají zůstat zachované.
 
+- Oddělení vlastní pixely binární `object-mask.png`: RGB kopíruj ze zdroje,
+  zachovej jeho alfa, rozměry a umístění. Nepoužívej vyhlazenou polygonovou masku
+  zároveň pro background blend a cutout source-over; mění to obrys při složení.
+  Opravná maska pro AI je samostatná a může mít přesah, ale publikované pozadí
+  měň jen pod objektem. Částečně průhledné pixely výřezu nesmějí dostat druhou
+  vrstvu původní alfa. Před publikací ověř reassembly proti rasterizovanému zdroji.
+- `dev/artSource.ts` sdílí bezpečné načtení/normalizaci; `dev/objectMask.ts` ověřuje
+  binární PNG a SHA-256 zdroje před placeným voláním. `dev/segmentation.ts` spouští
+  jen pevný lokální Python helper bez shellu, timeout 90 s a dočasné soubory uklízí.
+  GrabCut i volitelný SAM 2 mění pouze masku, nikdy původní RGB. Žádné automatické
+  stahování modelů; váhy a Python patří do ignorovaného `.local-tools/`.
+- `MaskEditor` upravuje pixely zdroje nezávisle na zoomu, tahy tvoří celé undo kroky;
+  pointercancel/Escape rozpracovaný tah vrátí. Import PNG masky i ruční štětec mají
+  fungovat bez Pythonu. Náhled oddělení ukazuje šachovnici, originál/reassembly a diff;
+  nulový diff dokazuje věrnost pixelů, nikoli sémanticky správnou segmentaci.
+
 - Grafické operace a textová réžie používají `/jobs` a `dev/editorJobs.ts`: nejvýše
   20 úloh, jeden runner současně, mimo zámek projektových revizí. Fronta v paměti
   Vite přežije reload klienta, nikoli restart serveru; žádné automatické retry.

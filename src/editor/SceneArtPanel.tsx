@@ -7,6 +7,9 @@ import { polygonIssue } from '../game/polygon';
 import { useImageSize } from './useImageSize';
 import { submitEditorJob, getArtStatus } from './api';
 import type { ArtworkResult } from './api';
+import { MaskEditor } from './MaskEditor';
+import { ExtractionComparison } from './ExtractionComparison';
+import type { ObjectMask } from './masks';
 import { AnimationPreview } from './AnimationPreview';
 import { Field } from './fields';
 import { artFingerprint } from './jobs';
@@ -67,6 +70,7 @@ export function SceneArtPanel({
   const [status, setStatus] = useState<{
     configured: boolean;
     model: string;
+    segmentation?: { grabcut: boolean; sam2: boolean };
   }>();
   const mounted = useRef(false),
     applied = useRef('');
@@ -76,6 +80,14 @@ export function SceneArtPanel({
       mounted.current = false;
     };
   }, []);
+  const [maskDraft, setMaskDraft] = useState<{
+    scope: string;
+    points?: readonly Point[];
+  }>();
+  const [objectMask, setObjectMask] = useState<{
+    scope: string;
+    mask: ObjectMask;
+  }>();
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
   const [index, setIndex] = useState(0),
@@ -83,6 +95,15 @@ export function SceneArtPanel({
   const object =
     target === 'object' && operation !== 'generate' ? hotspot : undefined;
   const source = object?.image ?? scene.background;
+  const maskScope = JSON.stringify([
+    source,
+    object?.bounds,
+    object?.rotation,
+    object?.imageFit,
+    selection,
+  ]);
+  const preparedMask =
+    objectMask?.scope === maskScope ? objectMask.mask : undefined;
   const candidates = jobs.filter(
     (job): job is Extract<EditorJob, { kind: 'art' }> =>
       job.kind === 'art' &&
@@ -116,8 +137,8 @@ export function SceneArtPanel({
       disposed = true;
     };
   }, []);
-  async function run() {
-    if (!size || busy) return;
+  function sourceSelection() {
+    if (!size) throw Error('Počkaj na načítanie zdroja.');
     const placement: Pick<Hotspot, 'bounds' | 'rotation' | 'imageFit'> =
       object ?? {
         bounds: { x: 0, y: 0, width: scene.width, height: scene.height },
@@ -147,16 +168,27 @@ export function SceneArtPanel({
         ) ||
         polygonIssue(points)
       ) {
-        setMessage(
+        throw Error(
           'Výber musí celý ležať na zdrojovom obrázku. Zohľadňuje sa aj otočenie a priehľadný rám.',
         );
-        return;
       }
       points = points.map((p) => ({
         x: Math.max(0, Math.min(size.width, p.x)),
         y: Math.max(0, Math.min(size.height, p.y)),
       }));
     }
+    return { placement, points };
+  }
+  async function run() {
+    if (!size || busy) return;
+    let geometry: ReturnType<typeof sourceSelection>;
+    try {
+      geometry = sourceSelection();
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Neplatný výber.');
+      return;
+    }
+    const { placement, points } = geometry;
     setBusy(true);
     setPlaying(false);
 
@@ -184,6 +216,11 @@ export function SceneArtPanel({
           source,
           operation,
           selection: points,
+          objectMask: ['cutout', 'extract', 'remove', 'edit'].includes(
+            operation,
+          )
+            ? preparedMask
+            : undefined,
           prompt: ai ? prompt : undefined,
           confirmed: ai ? true : undefined,
           motion,
@@ -356,6 +393,40 @@ export function SceneArtPanel({
           Zdroj: {source} {size && `· ${size.width} × ${size.height} px`} ·{' '}
           {selection ? `${selection.length} bodov výberu` : 'celý obrázok'}
         </p>
+        {['cutout', 'extract', 'remove', 'edit'].includes(operation) && (
+          <div className="mask-launcher">
+            <button
+              disabled={!size}
+              onClick={() => {
+                try {
+                  setMaskDraft({
+                    scope: maskScope,
+                    points: sourceSelection().points,
+                  });
+                } catch (e) {
+                  setMessage(
+                    e instanceof Error ? e.message : 'Neplatný výber.',
+                  );
+                }
+              }}
+            >
+              Spresniť / upraviť masku objektu
+            </button>
+            {preparedMask && (
+              <>
+                <span>✓ Maska pripravená · {preparedMask.method}</span>
+                <button onClick={() => setObjectMask(undefined)}>
+                  Zrušiť masku
+                </button>
+              </>
+            )}
+            <p className="field-note">
+              Najprv približne označ objekt, potom spresni hranice a oprav ich
+              štetcom. Maska vyberá pôvodné pixely vrátane čiernych obrysov; AI
+              generuje iba pozadie.
+            </p>
+          </div>
+        )}
         {operation === 'loop' && (
           <div className="art-settings">
             <Field label="Pohyb prostredia">
@@ -425,7 +496,7 @@ export function SceneArtPanel({
             className="primary-button"
             disabled={
               !size ||
-              (needsSelection && !selection) ||
+              (needsSelection && !selection && !preparedMask) ||
               (ai && (!status?.configured || !prompt.trim()))
             }
             onClick={() => void run()}
@@ -446,6 +517,22 @@ export function SceneArtPanel({
               ? job.stage
               : message))}
       </p>
+      {maskDraft && (
+        <MaskEditor
+          source={source}
+          selection={maskDraft.points}
+          initial={preparedMask}
+          available={status?.segmentation}
+          onClose={() => setMaskDraft(undefined)}
+          onDone={(mask) => {
+            setObjectMask({ scope: maskDraft.scope, mask });
+            setMaskDraft(undefined);
+            setMessage(
+              'Maska je pripravená. Spusti vytvorenie výrezu alebo oddelenie s opravou pozadia.',
+            );
+          }}
+        />
+      )}
       {result && (
         <div className="art-result">
           <h3>Náhľad výsledku</h3>
@@ -487,6 +574,7 @@ export function SceneArtPanel({
               )}
             </div>
           )}
+          <ExtractionComparison result={result.data} />
           <p className="field-note">
             Originál, maska a recept: {result.data.manifest}
           </p>

@@ -1058,3 +1058,99 @@
 .animation-direction .character-preview-canvas {
   height: min(65dvh, 560px);
 }
+
+.mask-editor {
+  width: min(1200px, 96vw);
+  max-height: 94dvh;
+  overflow: auto;
+  color: var(--text);
+  background: #172c27;
+  border: 2px solid #749887;
+  border-radius: 12px;
+  padding: 1rem;
+}
+.mask-editor::backdrop {
+  background: #000b;
+}
+.mask-editor header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.mask-editor h2 {
+  margin-top: 0;
+}
+.mask-editor fieldset {
+  border: 0;
+  padding: 0;
+  min-width: 0;
+}
+.mask-toolbar,
+.mask-launcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  align-items: center;
+}
+.mask-launcher {
+  margin-block: 1rem;
+}
+.mask-launcher .field-note {
+  flex-basis: 100%;
+}
+.mask-toolbar .editor-field {
+  flex: 1 1 180px;
+  margin-bottom: 0.5rem;
+}
+.mask-toolbar select,
+.mask-toolbar input {
+  width: 100%;
+}
+.mask-viewport {
+  overflow: auto;
+  max-height: 65dvh;
+  border: 1px solid #749887;
+  background: #101a17;
+}
+.mask-viewport canvas {
+  display: block;
+  background-color: #ddd;
+  background-image: conic-gradient(#999 25%, #ddd 0 50%, #999 0 75%, #ddd 0);
+  background-size: 20px 20px;
+}
+.checkerboard {
+  background: conic-gradient(#888 25%, #ccc 0 50%, #888 0 75%, #ccc 0) 0 0 /
+    20px 20px;
+}
+.extraction-stack {
+  position: relative;
+  max-width: 100%;
+}
+.extraction-stack img {
+  width: 100%;
+  display: block;
+}
+.extraction-stack .extraction-overlay {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+}
+.comparison-divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-left: 2px solid #f4d69d;
+  pointer-events: none;
+}
+.extraction-comparison {
+  margin-top: 1rem;
+}
+.mask-editor header {
+  position: sticky;
+  top: -1rem;
+  z-index: 2;
+  padding-block: 0.75rem;
+  background: #172c27;
+  border-bottom: 1px solid #749887;
+}
