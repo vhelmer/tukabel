@@ -242,74 +242,85 @@ test('mask brush clips at canvas edges and supports foreground, background and s
   expect(seeds[0]).toBe(128);
 });
 
-test('real local GrabCut finds a cartoon clock from a loose selection, retains outline seeds and holes, and yields original-pixel assets', async () => {
-  const info = test.info();
-  const status = await segmentationStatus({ python });
-  test.skip(
-    !status.grabcut,
-    'Install local OpenCV with npm run setup:segmentation',
-  );
-  await fixture(async (root) => {
-    await writeFile(
-      path.join(root, 'source.png'),
-      await sharp('src/assets/demo-room.svg').png().toBuffer(),
+for (const method of ['grabcut', 'sam2'] as const) {
+  test(`real local ${method} finds a cartoon clock and yields original-pixel assets`, async () => {
+    test.setTimeout(120000);
+    const options = {
+      python,
+      checkpoint:
+        process.env.SAM2_CHECKPOINT ||
+        path.resolve('.local-tools/models/sam2.1_hiera_tiny.pt'),
+    };
+    const info = test.info();
+    const status = await segmentationStatus(options);
+    test.skip(
+      !status[method],
+      method === 'sam2'
+        ? 'Install SAM 2 and its local checkpoint; see README'
+        : 'Install local OpenCV with npm run setup:segmentation',
     );
-    const source = await readArtSource(root, 'source.png'),
-      pixels = Buffer.alloc(source.width * source.height),
-      seeds = Buffer.alloc(pixels.length);
-    for (let y = 55; y < 195; y++)
-      for (let x = 830; x < 975; x++) pixels[y * source.width + x] = 255;
-    // A few face/outline samples, no manually traced silhouette.
-    paintMask(pixels, seeds, source.width, source.height, 905, 105, 8, true);
-    paintMask(pixels, seeds, source.width, source.height, 849, 120, 2, true);
-    paintMask(pixels, seeds, source.width, source.height, 965, 180, 4, false);
-    const result = await segmentObject(
-      root,
-      {
-        source: 'source.png',
-        method: 'grabcut',
-        mask: {
-          width: source.width,
-          height: source.height,
-          sourceSha256: source.sourceSha256,
-          data: (await maskPng(pixels, source.width, source.height)).toString(
+    await fixture(async (root) => {
+      await writeFile(
+        path.join(root, 'source.png'),
+        await sharp('src/assets/demo-room.svg').png().toBuffer(),
+      );
+      const source = await readArtSource(root, 'source.png'),
+        pixels = Buffer.alloc(source.width * source.height),
+        seeds = Buffer.alloc(pixels.length);
+      for (let y = 55; y < 195; y++)
+        for (let x = 830; x < 975; x++) pixels[y * source.width + x] = 255;
+      // A few face/outline samples, no manually traced silhouette.
+      paintMask(pixels, seeds, source.width, source.height, 905, 105, 8, true);
+      paintMask(pixels, seeds, source.width, source.height, 849, 120, 2, true);
+      paintMask(pixels, seeds, source.width, source.height, 965, 180, 4, false);
+      const result = await segmentObject(
+        root,
+        {
+          source: 'source.png',
+          method,
+          mask: {
+            width: source.width,
+            height: source.height,
+            sourceSha256: source.sourceSha256,
+            data: (await maskPng(pixels, source.width, source.height)).toString(
+              'base64',
+            ),
+            method: 'manual',
+          },
+          seeds: (await maskPng(seeds, source.width, source.height)).toString(
             'base64',
           ),
-          method: 'manual',
         },
-        seeds: (await maskPng(seeds, source.width, source.height)).toString(
-          'base64',
-        ),
-      },
-      { python },
-    );
-    const mask = await readObjectMask(result, source);
-    expect(mask.pixels[105 * source.width + 905]).toBe(255);
-    expect(mask.pixels[120 * source.width + 849]).toBe(255);
-    expect(mask.pixels[60 * source.width + 835]).toBe(0);
-    expect(mask.pixels[180 * source.width + 965]).toBe(0);
-    const area = mask.pixels.filter((v) => v === 255).length;
-    expect(area).toBeGreaterThan(7000);
-    expect(area).toBeLessThan(16000);
-    const cutout = await createArtwork(root, {
-      source: 'source.png',
-      operation: 'cutout',
-      objectMask: result,
+        options,
+      );
+      const mask = await readObjectMask(result, source);
+      expect(mask.pixels[105 * source.width + 905]).toBe(255);
+      expect(mask.pixels[120 * source.width + 849]).toBe(255);
+      expect(mask.pixels[60 * source.width + 835]).toBe(0);
+      expect(mask.pixels[180 * source.width + 965]).toBe(0);
+      const area = mask.pixels.filter((v) => v === 255).length;
+      const cutout = await createArtwork(root, {
+        source: 'source.png',
+        operation: 'cutout',
+        objectMask: result,
+      });
+      await writeFile(
+        info.outputPath(`${method}-clock-cutout.png`),
+        await readFile(path.join(root, cutout.image)),
+      );
+      const image = await rgba(path.join(root, cutout.image));
+      let changed = 0;
+      for (let p = 0; p < mask.pixels.length; p++)
+        if (
+          mask.pixels[p] &&
+          !image
+            .subarray(p * 4, p * 4 + 4)
+            .equals(source.raw.subarray(p * 4, p * 4 + 4))
+        )
+          changed++;
+      expect(changed).toBe(0);
+      expect(area).toBeGreaterThan(7000);
+      expect(area).toBeLessThan(16000);
     });
-    await writeFile(
-      info.outputPath('clock-cutout.png'),
-      await readFile(path.join(root, cutout.image)),
-    );
-    const image = await rgba(path.join(root, cutout.image));
-    let changed = 0;
-    for (let p = 0; p < mask.pixels.length; p++)
-      if (
-        mask.pixels[p] &&
-        !image
-          .subarray(p * 4, p * 4 + 4)
-          .equals(source.raw.subarray(p * 4, p * 4 + 4))
-      )
-        changed++;
-    expect(changed).toBe(0);
   });
-});
+}

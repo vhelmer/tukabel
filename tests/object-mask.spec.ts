@@ -166,7 +166,9 @@ test('source-pixel masks support real segmentation, manual touchups, zoom, compa
   const status = await page.request.get(
     `${workspace.url}__tukabel/editor/art/status`,
   );
-  const available = (await status.json()).segmentation.grabcut;
+  const segmentation = (await status.json()).segmentation;
+  const available = segmentation.grabcut;
+  const method = segmentation.sam2 ? 'sam2' : 'grabcut';
   if (available) {
     await expect(refine).toBeEnabled();
     await refine.click();
@@ -277,7 +279,7 @@ test('source-pixel masks support real segmentation, manual touchups, zoom, compa
   });
   const recipe = JSON.parse(await readFile(asset(result.manifest), 'utf8'));
   expect(recipe.reconstruction.changedPixels).toBe(0);
-  expect(recipe.objectMask.method).toBe(available ? 'grabcut' : 'manual');
+  expect(recipe.objectMask.method).toBe(available ? method : 'manual');
   await page
     .getByRole('button', { name: 'Otestovať odtiaľto ↗', exact: true })
     .click();

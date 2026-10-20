@@ -162,15 +162,36 @@ Pythonu. Jiný lokální interpreter lze zadat serverovým `SEGMENTATION_PYTHON`
 [GrabCut](https://docs.opencv.org/4.x/d8/d83/tutorial_py_grabcut.html) není sémantický
 model: při podobných barvách objektu a pozadí potřebuje více tahů nebo ruční opravu.
 
-Volitelně podporujeme **[SAM 2](https://github.com/facebookresearch/sam2)** přes stejný
-editor. Nainstaluj oficiální SAM 2 a kompatibilní CPU PyTorch do zvoleného Pythonu,
-ulož checkpoint lokálně a nastav `SAM2_CHECKPOINT`, případně odpovídající `SAM2_CONFIG`
-v `.env.local`. Výchozí konfigurace je `configs/sam2.1/sam2.1_hiera_t.yaml` a potřebuje
-odpovídající tiny checkpoint. Modely ani kód se za běhu automaticky nestahují.
-SAM 2 běží na CPU s boxem a pozitivními/negativními tahy; nedostupná volba je vypnutá.
-Lokálně a v testech jsme ověřili skutečný GrabCut; SAM 2 vyžaduje samostatnou instalaci
-vah a jeho kvalita zde nebyla prakticky ověřena. Produkční hra nepotřebuje ani Python,
-ani modely, ani API. Segmentace běží mimo zámek projektového save, bez shellu a s timeoutem.
+Volitelně podporujeme **[SAM 2.1 Tiny](https://github.com/facebookresearch/sam2)**
+na CPU přes stejný editor. Instalace do stejného izolovaného prostředí (Linux,
+Python 3.10+, `git`, přibližně 2 GB místa; stahování se spustí pouze těmito příkazy):
+
+```bash
+npm run setup:segmentation
+.local-tools/segmentation/bin/python -m pip install --no-cache-dir torch==2.5.1 torchvision==0.20.1 --index-url https://download.pytorch.org/whl/cpu
+SAM2_BUILD_CUDA=0 .local-tools/segmentation/bin/python -m pip install --no-cache-dir --no-build-isolation wheel 'git+https://github.com/facebookresearch/sam2.git@2b90b9f5ceec907a1c18123530e92e794ad901a4'
+mkdir -p .local-tools/models
+curl -fL --output .local-tools/models/sam2.1_hiera_tiny.pt https://dl.fbaipublicfiles.com/segment_anything_2/092824/sam2.1_hiera_tiny.pt
+```
+
+Checkpoint má 156 008 466 bajtů a SHA-256
+`7402e0d864fa82708a20fbd15bc84245c2f26dff0eb43a4b5b93452deb34be69`.
+Do ignorovaného `.env.local` nastav `SAM2_CHECKPOINT` na absolutní cestu k tomuto
+souboru; `SAM2_CONFIG=configs/sam2.1/sam2.1_hiera_t.yaml`. Pokud nepoužíváš výše
+uvedený interpreter, nastav i `SEGMENTATION_PYTHON`. Restartuj `npm run dev`.
+V okně **Spresniť / upraviť masku objektu → Segmentácia hraníc** se zpřístupní
+**SAM 2 · lokálny AI model**; vyber ho a klikni **Spresniť hranice objektu**.
+Výsledek zkontroluj na šachovnici, případně oprav zeleným/červeným štětcem a zopakuj.
+Model dostává celý zdroj kvůli kontextu, rám výběru a body odvozené z tahů štětce;
+výsledná maska vybírá původní pixely, objekt se negeneruje znovu.
+
+Skutečné lokální inference GrabCut i SAM 2 jsou ověřené na kreslených hodinách
+v `tests/object-mask-rules.spec.ts`, včetně zachování RGB/alpha původního objektu.
+Test SAM se přeskočí, pokud chybí instalace nebo checkpoint (výše uvedená cesta,
+případně `SAM2_CHECKPOINT`). Browserový test masky použije SAM, pokud je nastavený
+`SAM2_CHECKPOINT`, jinak GrabCut. Modely ani kód se za běhu automaticky nestahují.
+Produkční hra nepotřebuje Python, modely ani API. Segmentace běží mimo zámek
+projektového save, bez shellu a s timeoutem.
 
 Všechny nové soubory jsou v `src/assets/scene-art/<uuid>/`: normalizovaný rastrový
 `source.png`, opravná `mask.png` (průhledná uvnitř oblasti povolené pro AI), výsledek,

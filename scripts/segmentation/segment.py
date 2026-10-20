@@ -48,16 +48,26 @@ if method == "grabcut":
 elif method == "sam2":
     # Optional official SAM 2 installation and a local checkpoint. Never fetch
     # weights, execute model-provided code or use a cloud endpoint here.
+    # SAM needs scene context: a tight GrabCut ROI can turn a whole object into
+    # disconnected details. Keep its box and brush prompts in source pixels.
+    x0, y0 = 0, 0
+    x1, y1 = image.shape[1], image.shape[0]
+    roi, s = image, seeds
     from sam2.build_sam import build_sam2
     from sam2.sam2_image_predictor import SAM2ImagePredictor
     import torch
     points, labels = [], []
     for value, label in ((255, 1), (128, 0)):
-        yy, xx = np.where(s == value)
-        if len(xx):
-            for i in np.linspace(0, len(xx) - 1, min(64, len(xx)), dtype=int):
-                points.append([xx[i], yy[i]])
-                labels.append(label)
+        # SAM point prompts represent clicks, not densely sampled brush pixels.
+        # Repeating dozens of adjacent points can select the wall instead of the
+        # object. Use one actual brush pixel per connected stroke, near its center.
+        count, components, stats, centers = cv.connectedComponentsWithStats((s == value).astype(np.uint8), 8)
+        for component in sorted(range(1, count), key=lambda c: -stats[c, cv.CC_STAT_AREA])[:64]:
+            yy, xx = np.where(components == component)
+            center = centers[component]
+            i = np.argmin((xx - center[0]) ** 2 + (yy - center[1]) ** 2)
+            points.append([xx[i], yy[i]])
+            labels.append(label)
     with torch.inference_mode():
         predictor = SAM2ImagePredictor(build_sam2(os.environ.get("TUKABEL_SAM2_CONFIG", "configs/sam2.1/sam2.1_hiera_t.yaml"), os.environ["TUKABEL_SAM2_CHECKPOINT"], device="cpu", apply_postprocessing=False))
         predictor.set_image(cv.cvtColor(roi, cv.COLOR_BGR2RGB))
