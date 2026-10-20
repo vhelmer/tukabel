@@ -84,6 +84,62 @@ na disku i při vrácení úpravy; nepoužité případně ručně odstraň. SVG
 přímo do repozitáře. Názvy assetů používej bez mezer a diakritiky (`a-z`, číslice,
 `_`, `-`, podadresáře). Assety se při buildu importují přes Vite; žádné CDN.
 
+## Vrstvy a grafické úpravy lokací
+
+V **Dev Mode → Lokácie** zůstává scéna rozložená na pozadí a samostatné vrstvy.
+Seznam **Vrstvy** ukazuje přední objekty nahoře. Šipky mění pořadí vykreslování;
+oko nastavuje viditelnost i ve hře, zámek chrání editorové tahy a vlastnosti.
+Krytí se ukládá jako 0–1. **+ Obrázková vrstva** přidá dekoraci; její PNG/WebP/JPEG
+lze importovat přímo v poli **Obrázok vrstvy**. Vyber ji ze seznamu nebo za viditelné
+pixely a přesuň/zvětši/otoč existujícími úchyty. **Interaktívny objekt** zapne běžné
+hotspotové reakce a inventární pravidla v pravém inspektoru. Dekorace propouštějí
+herní hover, kliknutí i drop na objekty pod nimi. Zamknutí nemění chování hry.
+
+1. V **Zdroj grafickej úpravy** vyber pozadí nebo právě vybranou obrázkovou vrstvu.
+2. Nad scénou zvol **Vybrať obdĺžnik** a táhni, nebo **Vybrať polygón** a přidávej body.
+   Polygon uzavři Enterem, prvním bodem nebo **Dokončiť polygón**. Escape ruší návrh.
+   Oblast není nový herní hotspot. Výběr se převádí přes zoom, natočení a contain-fit
+   do původních pixelů konkrétního obrázku; část mimo něj se odmítne.
+3. V **Výber a grafika** zvol operaci a název výsledku:
+   - **Kópia výberu** zkopíruje původní pixely do transparentního PNG. Pro přesný
+     tvar objektu obkresli polygon; obdélník zachová i pozadí uvnitř obdélníku.
+     Zdroj se při této místní operaci nemaže ani neopravuje.
+   - **Plynulá PNG slučka** vytvoří 4–24 stejně zarovnaných snímků. Voda vlní texturu,
+     mraky ji posouvají tam a zpět, kouř ji jemně vlní a posouvá svisle. Jde o
+     periodické deformace původních pixelů s pevnými okraji, nikoli AI video nebo
+     simulaci kapaliny. Nastav sílu v pixelech zdroje, počet snímků a fps.
+   - **AI upraviť** upraví vybranou oblast; bez výběru celý zdroj. **AI odstrániť**
+     doplní pozadí za výběrem. **AI oddeliť** provede stejnou opravu a současně
+     zachová původní výřez jako samostatnou transparentní vrstvu.
+   - **AI nová lokácia** použije současné pozadí jako stylovou referenci a vytvoří
+     další lokaci, aniž přepíše současnou.
+4. **Vytvoriť lokálny asset** nebo výslovné **Spustiť AI úpravu (API kredit)** uloží
+   nové soubory a zobrazí náhled. Smyčku lze přehrát i procházet po snímcích.
+   **Použiť výsledok v scéne** teprve přiřadí assety a případný animační klip.
+   Operace tvoří jeden krok **Späť**. Pokud mezitím změníš scénu, starý náhled
+   nelze použít přes novější úpravy. Změna obrázku odpojí jeho původní animace.
+5. **Živý náhľad animácií** přepne pracovní plochu na stejný Pixi renderer jako hra.
+   **Otestovať odtiaľto ↗** otevře interaktivní Game Mode. **Uložiť do projektu**
+   zapíše pořadí, vlastnosti, vazby i klipy do `src/game/content/project.json`.
+
+Všechny nové soubory jsou v `src/assets/scene-art/<uuid>/`: normalizovaný originál,
+PNG maska (průhledná uvnitř výběru), výsledek, případný výřez a snímky. `recipe.json`
+archivuje původní ID a SHA-256, polygon v původních pixelech, prompt/model nebo
+parametry místní smyčky. Je to záznam výroby; jedinou definicí herního obsahu zůstává
+projektový JSON. Originály se nepřepisují. Zahazování náhledu ani Undo nemažou již
+vytvořené soubory, takže nepotřebné varianty lze později odstranit v Gitu.
+
+Pro AI nastav serverové `OPENAI_API_KEY` a volitelně `OPENAI_IMAGE_MODEL` v ignorovaném
+`.env.local`, pak restartuj Vite. Výchozí adaptér v `dev/sceneArt.ts` používá
+[OpenAI Images edit API](https://developers.openai.com/api/reference/resources/images/methods/edit)
+a model `gpt-image-1.5`. Jiný provider lze zapojit v jediné funkci `editImage`;
+výběry, archivace, PNG smyčky a herní renderer na něm nezávisí. Klient dostává pouze
+stav dostupnosti a ID modelu. Každá AI operace odešle celý zdroj a případnou masku,
+provede nejvýše jedno volání a nikdy automaticky neopakuje požadavek. Mimo výběr
+server vrací původní pixely; kvalitu doplněného pozadí je potřeba zkontrolovat v náhledu.
+Bez klíče fungují vrstvy, import, výběry a místní efekty. Produkce neobsahuje grafické
+editorové API ani AI klíč a přehrává pouze lokální PNG. Testy provider mockují.
+
 ## Game Mode
 
 Herní okno se vejde do viewportu: nahoře je název lokace a menu, uprostřed scéna
@@ -239,7 +295,7 @@ Dialog má `start` a uzly `id/speaker/text/choices`; odpověď má `id/text`, p�
 
 Validátor kontroluje tvar JSON, neznámá pole, lokální assety, stabilní/duplicitní ID,
 neexistující odkazy, kurzory, dialogové uzly, kombinace, zastíněná pravidla
-a hotspoty mimo scénu. Řešitelnost se ověřuje průchodem. Při nekompatibilní změně
+a hotspoty mimo scénu. Vrstvy rozšiřují stejné pole `hotspots`: pořadí pole je pořadí kreslení, `decorative` vypíná herní interakce, `hidden` skrývá, `locked` chrání editor a `opacity` nastavuje krytí. `backgroundHidden` skryje základní pozadí. Řešitelnost se ověřuje průchodem. Při nekompatibilní změně
 obsahu změň `id` projektu; strukturu uložených pozic verzuj v `storage.ts`.
 Starší nekompatibilní pozice se odmítají, migrace zatím nejsou implementované.
 
@@ -382,7 +438,7 @@ Ticker respektuje pauzu, skrytou záložku a reduced motion.
 
 Animace obrázků nepoužívají AI služby, video ani FFmpeg. Produkce přehrává místní
 obrázky, audio a časování bez editoru a zápisového API. Staré archivní soubory se
-automaticky nemažou. `OPENAI_API_KEY` zůstává rezervovaný pro jiné budoucí funkce.
+automaticky nemažou. `OPENAI_API_KEY` lze použít pro volitelné grafické úpravy lokací v Dev Mode, nikoli pro generování animací postav.
 
 ### Dabing ElevenLabs a Rhubarb Lip Sync
 

@@ -11,6 +11,7 @@ import {
 import path from 'node:path';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { loadEnv, type Plugin } from 'vite';
+import { artStatus, createArtwork, type ArtOptions } from './sceneArt.ts';
 import {
   createSpeech,
   analyzeSpeech,
@@ -72,7 +73,10 @@ async function listAssets(directory: string, prefix = ''): Promise<string[]> {
 }
 
 export function editorPlugin(
-  options: { speech?: import('./speech.ts').SpeechOptions } = {},
+  options: {
+    speech?: import('./speech.ts').SpeechOptions;
+    art?: ArtOptions;
+  } = {},
 ): Plugin {
   return {
     name: 'tukabel-local-editor',
@@ -91,6 +95,11 @@ export function editorPlugin(
         apiKey: process.env.ELEVENLABS_API_KEY || env.ELEVENLABS_API_KEY,
         rhubarbBin: process.env.RHUBARB_BIN || env.RHUBARB_BIN,
         ...options.speech,
+      };
+      const artOptions: ArtOptions = {
+        apiKey: process.env.OPENAI_API_KEY || env.OPENAI_API_KEY,
+        model: process.env.OPENAI_IMAGE_MODEL || env.OPENAI_IMAGE_MODEL,
+        ...options.art,
       };
       let queue = Promise.resolve();
       server.middlewares.use((req, res, next) => {
@@ -126,6 +135,25 @@ export function editorPlugin(
           }
           const parsedUrl = new URL(req.url!, host);
           const endpoint = parsedUrl.pathname;
+          if (endpoint === `${API}/art/status` && req.method === 'GET') {
+            respond(200, artStatus(artOptions));
+            return;
+          }
+          if (endpoint === `${API}/art/create` && req.method === 'POST') {
+            const result = await createArtwork(
+              assetsRoot,
+              await readJson(req),
+              artOptions,
+            );
+            const modules =
+              server.environments.client.moduleGraph.getModulesByFile(
+                path.resolve(server.config.root, 'src/game/assets.ts'),
+              );
+            for (const module of modules ?? [])
+              server.environments.client.moduleGraph.invalidateModule(module);
+            respond(201, { ...result, assets: await listAssets(assetsRoot) });
+            return;
+          }
           if (endpoint === `${API}/speech/status` && req.method === 'GET') {
             respond(200, await speechStatus(speechOptions));
             return;
@@ -316,6 +344,9 @@ export function editorPlugin(
         // project saves. Vite still invalidates modules for the next page load.
         if (
           context.file.endsWith('/src/game/content/project.json') ||
+          // Atomic folder publication can be reported as update/delete as well
+          // as create; none may refresh away the current artwork draft.
+          context.file.includes('/src/assets/scene-art/') ||
           (context.type === 'create' &&
             (context.file.includes('/src/assets/imported/') ||
               context.file.includes('/src/assets/animations/') ||

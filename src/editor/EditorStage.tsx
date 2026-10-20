@@ -42,18 +42,23 @@ export function EditorStage({
   onSelect,
   onHotspot,
   onCreate,
+  selection,
+  onSelection,
 }: {
   scene: SceneDefinition;
   selectedId: string;
   onSelect: (id: string) => void;
   onHotspot: (hotspot: Hotspot) => void;
   onCreate: (bounds: Bounds, polygon?: Hotspot['polygon']) => void;
+  selection?: readonly Point[];
+  onSelection?: (points: readonly Point[]) => void;
 }) {
   const svg = useRef<SVGSVGElement>(null);
   const gesture = useRef<Gesture | null>(null);
   const draftPointer = useRef<number | null>(null);
   const [preview, setPreview] = useState<Gesture | null>(null);
   const [drawing, setDrawing] = useState(false);
+  const [selecting, setSelecting] = useState(false);
   const [polygonDraft, setPolygonDraft] = useState<Point[] | null>(null);
   const [draftCursor, setDraftCursor] = useState<Point | null>(null);
   const [polygonError, setPolygonError] = useState('');
@@ -69,12 +74,16 @@ export function EditorStage({
   const pick = (p: Point) =>
     [...scene.hotspots]
       .reverse()
-      .find((hotspot) =>
-        hitTestHotspot(
-          hotspot,
-          p,
-          hotspot.image ? masks?.get(assetUrl(hotspot.image)) : undefined,
-        ),
+      .find(
+        (hotspot) =>
+          !hotspot.hidden &&
+          (hotspot.opacity ?? 1) > 0 &&
+          !hotspot.locked &&
+          hitTestHotspot(
+            hotspot,
+            p,
+            hotspot.image ? masks?.get(assetUrl(hotspot.image)) : undefined,
+          ),
       );
   const selected = scene.hotspots.find((h) => h.id === selectedId);
   useEffect(() => {
@@ -98,6 +107,7 @@ export function EditorStage({
       gesture.current = null;
       setPreview(null);
       setDrawing(false);
+      setSelecting(false);
       setPolygonDraft(null);
       setPolygonError('');
       const pointerId = current?.pointerId ?? draftPointer.current;
@@ -122,7 +132,7 @@ export function EditorStage({
     hotspot?: Hotspot,
     vertexIndex?: number,
   ) {
-    if (event.button !== 0 || gesture.current) return;
+    if (event.button !== 0 || gesture.current || hotspot?.locked) return;
     const start = point(event);
     if (!start) return;
     event.stopPropagation();
@@ -218,7 +228,10 @@ export function EditorStage({
         current.bounds.width >= 8 &&
         current.bounds.height >= 8
       ) {
-        onCreate(current.bounds);
+        if (selecting && onSelection)
+          onSelection(rectanglePoints(current.bounds));
+        else onCreate(current.bounds);
+        setSelecting(false);
         setDrawing(false);
       } else if (current.mode !== 'draw') {
         const hotspot = scene.hotspots.find((h) => h.id === current.id);
@@ -274,7 +287,9 @@ export function EditorStage({
       );
       return;
     }
-    onCreate(polygonBounds(polygonDraft), polygonDraft);
+    if (selecting && onSelection) onSelection(polygonDraft);
+    else onCreate(polygonBounds(polygonDraft), polygonDraft);
+    setSelecting(false);
     setPolygonDraft(null);
     setPolygonError('');
   }
@@ -356,8 +371,9 @@ export function EditorStage({
           Posun pohľadu
         </label>
         <button
-          aria-pressed={drawing}
+          aria-pressed={drawing && !selecting}
           onClick={() => {
+            setSelecting(false);
             setDrawing(!drawing);
             setPolygonDraft(null);
             setPolygonError('');
@@ -365,11 +381,12 @@ export function EditorStage({
             setHelpers(true);
           }}
         >
-          {drawing ? 'Zrušiť kreslenie' : 'Nakresliť hotspot'}
+          {drawing && !selecting ? 'Zrušiť kreslenie' : 'Nakresliť hotspot'}
         </button>
         <button
-          aria-pressed={polygonDraft !== null}
+          aria-pressed={polygonDraft !== null && !selecting}
           onClick={() => {
+            setSelecting(false);
             setPolygonDraft(polygonDraft === null ? [] : null);
             setPolygonError('');
             setDrawing(false);
@@ -378,8 +395,33 @@ export function EditorStage({
             svg.current?.focus();
           }}
         >
-          {polygonDraft !== null ? 'Zrušiť polygón' : 'Nakresliť polygón'}
+          {polygonDraft !== null && !selecting
+            ? 'Zrušiť polygón'
+            : 'Nakresliť polygón'}
         </button>
+        {onSelection &&
+          (['rectangle', 'polygon'] as const).map((tool) => (
+            <button
+              key={tool}
+              aria-pressed={
+                selecting &&
+                (tool === 'rectangle' ? drawing : polygonDraft !== null)
+              }
+              onClick={() => {
+                const cancel =
+                  selecting &&
+                  (tool === 'rectangle' ? drawing : polygonDraft !== null);
+                setSelecting(!cancel);
+                setDrawing(!cancel && tool === 'rectangle');
+                setPolygonDraft(!cancel && tool === 'polygon' ? [] : null);
+                setPanning(false);
+                setPolygonError('');
+                svg.current?.focus();
+              }}
+            >
+              {tool === 'rectangle' ? 'Vybrať obdĺžnik' : 'Vybrať polygón'}
+            </button>
+          ))}
       </div>
       <div className="stage-transform-tool">
         <label>
@@ -502,11 +544,18 @@ export function EditorStage({
               finish(e, true);
             }}
           >
-            <SceneImage
-              asset={scene.background}
-              bounds={{ x: 0, y: 0, width: scene.width, height: scene.height }}
-              fit="stretch"
-            />
+            {!scene.backgroundHidden && (
+              <SceneImage
+                asset={scene.background}
+                bounds={{
+                  x: 0,
+                  y: 0,
+                  width: scene.width,
+                  height: scene.height,
+                }}
+                fit="stretch"
+              />
+            )}
             {scene.hotspots.map((hotspot) => {
               const shown = withHotspotBounds(
                 hotspot,
@@ -526,6 +575,13 @@ export function EditorStage({
                 <g
                   key={hotspot.id}
                   data-hotspot-id={hotspot.id}
+                  opacity={
+                    hotspot.hidden
+                      ? helpers
+                        ? 0.18
+                        : 0
+                      : (hotspot.opacity ?? 1)
+                  }
                   transform={`rotate(${angle} ${pivot.x} ${pivot.y})`}
                 >
                   {hotspot.image && (
@@ -588,6 +644,7 @@ export function EditorStage({
             })}
             {helpers &&
               active &&
+              !active.locked &&
               !panning &&
               !drawing &&
               polygonDraft === null && (
@@ -705,6 +762,17 @@ export function EditorStage({
                   />
                 ))}
               </g>
+            )}
+            {selection && selection.length >= 3 && (
+              <polygon
+                data-art-selection="true"
+                points={selection.map((p) => `${p.x},${p.y}`).join(' ')}
+                fill="#58c8c52a"
+                stroke="#84ffed"
+                strokeWidth={2 / screenScale}
+                strokeDasharray={`${6 / screenScale} ${4 / screenScale}`}
+                pointerEvents="none"
+              />
             )}
             {preview?.mode === 'draw' && (
               <rect

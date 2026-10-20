@@ -7,16 +7,19 @@ import react from '@vitejs/plugin-react';
 import sharp from 'sharp';
 import { editorPlugin } from '../dev/editorPlugin';
 import type { SpeechOptions } from '../dev/speech';
+import type { ArtOptions } from '../dev/sceneArt';
 import { ready } from './helpers';
 
 // Every test gets an isolated source checkout. Browser saves never touch the real
 // project, developer notes, or another test's JSON/assets.
 export const test = base.extend<{
   speechTools: SpeechOptions;
+  artTools: ArtOptions;
   workspace: { url: string; source: string; root: string };
 }>({
   speechTools: [{}, { option: true }],
-  workspace: async ({ browserName, speechTools }, use) => {
+  artTools: [{ apiKey: '' }, { option: true }],
+  workspace: async ({ browserName, speechTools, artTools }, use) => {
     const root = await mkdtemp(
       path.join(tmpdir(), `tukabel-editor-${browserName}-`),
     );
@@ -49,7 +52,10 @@ export const test = base.extend<{
       );
       server = await createServer({
         configFile: false,
-        plugins: [react(), editorPlugin({ speech: speechTools })],
+        plugins: [
+          react(),
+          editorPlugin({ speech: speechTools, art: artTools }),
+        ],
         base: './',
         root,
         cacheDir: path.join(root, '.vite-cache'),

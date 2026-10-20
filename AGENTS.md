@@ -96,6 +96,27 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
 - Inventární `item.image` je samostatná ikonka. Pickup efekt je pouze vizuální,
   spouští ho skutečné získání přes akci, nikoli load/reset nebo přepnutí režimu.
 
+## Vrstvy a grafické operace
+
+- `scene.hotspots` je zároveň zásobník vrstev zezadu dopředu; nedrž druhou kolekci
+  transformací. `decorative: true` s obrázkem vykresluj, ale vynech ze všech herních
+  interakcí, seznamu objektů i dropů. `hidden` platí i ve hře, `opacity` je 0–1;
+  nulové krytí neinteraguje. `locked` chrání pouze editor, nikoli herní logiku.
+  Pozadí je spodní vrstva s volitelným `backgroundHidden`.
+- `SceneArtPanel` používá výběr z `EditorStage`. Souřadnice výběru převáděj přes
+  původní obrázek, contain/stretch a inverzní rotaci; mimo obrázek výběr odmítni.
+  Výběr nepatří do hráčského save. Živý náhled používá původní `GameCanvas`.
+- `dev/sceneArt.ts` je lokální pipeline: transparentní výřez, periodická deformace
+  textury do PNG sekvence, volitelná AI úprava/odstranění/oddělení/nová lokace.
+  AI jen po výslovném spuštění, serverové `OPENAI_API_KEY` / `OPENAI_IMAGE_MODEL`,
+  jeden požadavek bez retry; provider je oddělený ve `editImage`. Testy mockují fetch.
+  Produkce žádné grafické API nepotřebuje ani nevystavuje.
+- Nové soubory publikuj atomicky do `src/assets/scene-art/<uuid>/`. Původní soubor
+  nepřepisuj; archivuj source, masku a recipe JSON s otiskem zdroje a parametry.
+  Recept není druhá definice herního obsahu. Vazby a klipy zapisuje projektový save.
+  Mimo masku musí AI výsledek zůstat pixelově shodný se zdrojem. Náhled se použije
+  až vědomou akcí; starý výsledek nesmí přepsat mezitím změněnou scénu.
+
 ## Animace postav
 
 - Registr `animations` je volitelnou součástí JSON projektu. Klipy odkazují na
@@ -124,7 +145,7 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
   adaptérem. Seek řeči nesmí restartovat oči. Vizuální požadavky ani hodiny
   nepatří do uloženého postupu hráče. Při skrytí Dev Mode odpoj jeho Pixi canvas.
 - Animace nepoužívají externí AI API ani video pipeline. `OPENAI_API_KEY` zůstává
-  rezervovaný pro budoucí jiné funkce, pouze v prostředí serveru / `.env.local`.
+  pouze pro grafické úpravy lokací, v prostředí serveru / `.env.local`.
   Klíče nikdy do `VITE_`, klienta nebo autorského JSON.
 
 ## Dabing a lip-sync

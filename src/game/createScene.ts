@@ -34,6 +34,7 @@ export function createScene(
   background.width = definition.width;
   background.height = definition.height;
   background.eventMode = 'none';
+  background.visible = !definition.backgroundHidden;
   root.addChild(background);
 
   const actors: {
@@ -85,7 +86,8 @@ export function createScene(
     region.pivot.set(width / 2, height / 2);
     region.position.set(x + width / 2, y + height / 2);
     region.rotation = radians(hotspot.rotation ?? 0);
-    region.eventMode = 'static';
+    region.eventMode = hotspot.decorative ? 'none' : 'static';
+    region.alpha = hotspot.opacity ?? 1;
     region.cursor = 'none';
     const hit: {
       frame: string;
@@ -188,7 +190,7 @@ export function createScene(
     if (!state || state.dialogue) return null;
     for (let i = definition.hotspots.length - 1; i >= 0; i--) {
       const hotspot = definition.hotspots[i]!;
-      if (!regions.get(hotspot.id)?.visible) continue;
+      if (hotspot.decorative || !regions.get(hotspot.id)?.visible) continue;
       const local = hotspotLocalPoint(hotspot, point);
       if (hits.get(hotspot.id)!.contains(local.x, local.y)) return hotspot;
     }
@@ -267,8 +269,12 @@ export function createScene(
       paused = blocked;
       for (const hotspot of definition.hotspots) {
         const region = regions.get(hotspot.id)!;
-        region.visible = matches(state, hotspot.visibleWhen);
-        region.eventMode = state.dialogue || blocked ? 'none' : 'static';
+        region.visible =
+          !hotspot.hidden &&
+          (hotspot.opacity ?? 1) > 0 &&
+          matches(state, hotspot.visibleWhen);
+        region.eventMode =
+          state.dialogue || blocked || hotspot.decorative ? 'none' : 'static';
         const indicator = indicators.get(hotspot.id);
         if (indicator) indicator.visible = matches(state, hotspot.tintWhen);
       }

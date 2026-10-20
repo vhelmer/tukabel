@@ -7,6 +7,7 @@ export default defineConfig({
     'rules.spec.ts',
     'animation-rules.spec.ts',
     'speech-rules.spec.ts',
+    'scene-art-rules.spec.ts',
   ],
   reporter: 'list',
 });

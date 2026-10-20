@@ -121,3 +121,28 @@ export async function uploadSpeech(
     { text, subtitle, data: btoa(binary) },
   );
 }
+
+export interface ArtworkResult {
+  operation: 'cutout' | 'loop' | 'edit' | 'extract' | 'remove' | 'generate';
+  source: string;
+  image: string;
+  cutout?: string;
+  animation?: import('../game/types').AnimationDefinition;
+  width: number;
+  height: number;
+  manifest: string;
+  assets: string[];
+}
+export const getArtStatus = () =>
+  request<{ configured: boolean; model: string }>('art/status');
+export const createArtwork = (input: {
+  source: string;
+  operation: ArtworkResult['operation'];
+  selection?: readonly import('../game/transforms').Point[];
+  prompt?: string;
+  confirmed?: boolean;
+  motion?: string;
+  amplitude?: number;
+  fps?: number;
+  frameCount?: number;
+}) => request<ArtworkResult>('art/create', 'POST', input);

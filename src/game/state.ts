@@ -142,7 +142,11 @@ export function reduceGame(
   const scene = content.scenes.find((entry) => entry.id === state.sceneId)!;
   const hotspot = scene.hotspots.find(
     (entry) =>
-      entry.id === action.hotspotId && matches(state, entry.visibleWhen),
+      entry.id === action.hotspotId &&
+      !entry.hidden &&
+      (entry.opacity ?? 1) > 0 &&
+      !entry.decorative &&
+      matches(state, entry.visibleWhen),
   );
   if (!hotspot) return state;
   if (action.itemId) {

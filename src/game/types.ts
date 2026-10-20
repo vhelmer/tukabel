@@ -127,6 +127,11 @@ export interface Rule {
 }
 
 export interface Hotspot {
+  // Array order is paint order. Decorative layers never capture game input.
+  readonly decorative?: boolean;
+  readonly hidden?: boolean;
+  readonly locked?: boolean;
+  readonly opacity?: number;
   readonly id: string;
   readonly label: string;
   readonly bounds: { x: number; y: number; width: number; height: number };
@@ -159,6 +164,7 @@ export interface SceneDefinition {
   readonly width: number;
   readonly height: number;
   readonly background: string;
+  readonly backgroundHidden?: boolean;
   readonly hotspots: readonly Hotspot[];
 }
 

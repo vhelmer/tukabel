@@ -109,8 +109,12 @@ export function GameWindow({
             ),
           ),
       );
-  const hotspots = scene.hotspots.filter((hotspot) =>
-    matches(state, hotspot.visibleWhen),
+  const hotspots = scene.hotspots.filter(
+    (hotspot) =>
+      !hotspot.hidden &&
+      (hotspot.opacity ?? 1) > 0 &&
+      !hotspot.decorative &&
+      matches(state, hotspot.visibleWhen),
   );
   const selected =
     selectedItem && state.inventory.includes(selectedItem)
@@ -129,7 +133,12 @@ export function GameWindow({
           (entry) => entry.id === state.sceneId,
         )!;
         const actor = scene.hotspots.find(
-          (h) => h.id === action.hotspotId && matches(state, h.visibleWhen),
+          (h) =>
+            h.id === action.hotspotId &&
+            !h.hidden &&
+            (h.opacity ?? 1) > 0 &&
+            !h.decorative &&
+            matches(state, h.visibleWhen),
         );
         if (actor)
           setAnimationTrigger((previous) => ({

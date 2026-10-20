@@ -241,9 +241,11 @@ test('proportional handles, numeric edits, zoom and explicit distortion persist 
     await readFile(workspace.source, 'utf8'),
   ) as GameContent;
   const runtime = await gameImage(page);
+  // The layer dock reduces the desktop SVG raster size. Allow 5/255 mean colour
+  // error after resampling its antialiased edges to the game's larger canvas.
   for (const hotspot of project.scenes[0]!.hotspots)
     expect(difference(baseline, runtime, hotspot)).toBeLessThan(
-      isMobile ? 7 : 4,
+      isMobile ? 7 : 5,
     );
   await page.getByRole('button', { name: 'Dev Mode', exact: true }).click();
   await page
@@ -325,7 +327,7 @@ test('proportional handles, numeric edits, zoom and explicit distortion persist 
   await page.getByRole('button', { name: 'Game Mode', exact: true }).click();
   await ready(page);
   expect(difference(editor, await gameImage(page), actor)).toBeLessThan(
-    isMobile ? 7 : 4,
+    isMobile ? 7 : 5,
   );
   await page.setViewportSize(
     isMobile ? { width: 740, height: 390 } : { width: 980, height: 760 },

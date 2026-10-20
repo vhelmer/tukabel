@@ -138,6 +138,7 @@ export function validateProject(
         'width',
         'height',
         'background',
+        'backgroundHidden',
         'hotspots',
       ])
     )
@@ -147,11 +148,20 @@ export function validateProject(
     number(scene.width, `${path}.width`);
     number(scene.height, `${path}.height`);
     asset(scene.background, `${path}.background`);
+    if (
+      scene.backgroundHidden !== undefined &&
+      typeof scene.backgroundHidden !== 'boolean'
+    )
+      errors.push(`${path}: backgroundHidden must be boolean`);
     list(scene.hotspots, `${path}.hotspots`, (hotspot, key) => {
       if (
         !object(hotspot, key, [
           'id',
           'label',
+          'decorative',
+          'hidden',
+          'locked',
+          'opacity',
           'bounds',
           'polygon',
           'visibleWhen',
@@ -174,6 +184,16 @@ export function validateProject(
         return;
       string(hotspot.id, `${key}.id`);
       string(hotspot.label, `${key}.label`);
+      for (const field of ['decorative', 'hidden', 'locked'])
+        if (hotspot[field] !== undefined && typeof hotspot[field] !== 'boolean')
+          errors.push(`${key}.${field}: expected boolean`);
+      if (hotspot.opacity !== undefined) {
+        number(hotspot.opacity, `${key}.opacity`);
+        if (Number(hotspot.opacity) < 0 || Number(hotspot.opacity) > 1)
+          errors.push(`${key}: opacity must be within 0–1`);
+      }
+      if (hotspot.decorative && !hotspot.image)
+        errors.push(`${key}: decorative layer needs an image`);
       if (hotspot.polygon !== undefined)
         list(hotspot.polygon, `${key}.polygon`, (point, path) => {
           if (object(point, path, ['x', 'y'])) {

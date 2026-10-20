@@ -129,6 +129,7 @@ function MountedCanvas({
         const maskUrls = new Set(
           scene.hotspots.flatMap((hotspot) => {
             if (
+              hotspot.decorative ||
               !hotspot.image ||
               hotspot.polygon ||
               hotspot.hitTest === 'bounds'

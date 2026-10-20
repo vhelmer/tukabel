@@ -16,6 +16,10 @@ import { EditorStage } from './EditorStage';
 import { SceneInspector } from './SceneInspector';
 import { DialoguesPanel, ItemsPanel, PuzzlesPanel } from './ContentPanels';
 import { LogicGraph } from './LogicGraph';
+import { LayerPanel } from './LayerPanel';
+import { SceneArtPanel } from './SceneArtPanel';
+import { SceneLivePreview } from './SceneLivePreview';
+import type { Point } from '../game/transforms';
 import type { GraphTarget } from './LogicGraph';
 import './editor.css';
 
@@ -51,6 +55,11 @@ export default function DevWorkspace({
   const [tab, setTab] = useState<Tab>('scenes');
   const [graphNodeId, setGraphNodeId] = useState('');
   const [hotspotId, setHotspotId] = useState('');
+  const [artSelection, setArtSelection] = useState<{
+    scope: string;
+    points: readonly Point[];
+  }>();
+  const [livePreview, setLivePreview] = useState(false);
   const [dialogueId, setDialogueId] = useState(document.dialogues[0]?.id ?? '');
   const [assets, setAssets] = useState<string[]>(assetIds);
   const [revision, setRevision] = useState<string | null>(null);
@@ -65,6 +74,11 @@ export default function DevWorkspace({
   const scene =
     document.scenes.find((entry) => entry.id === sceneId) ?? document.scenes[0];
   const hotspot = scene?.hotspots.find((entry) => entry.id === hotspotId);
+  const artScope = `${scene?.id}/${hotspot?.id ?? ''}`;
+  const selection =
+    artSelection?.scope === artScope ? artSelection.points : undefined;
+  const selectArea = (points?: readonly Point[]) =>
+    setArtSelection(points ? { scope: artScope, points } : undefined);
   const errors = useMemo(
     () => validateProject(document, assets),
     [document, assets],
@@ -357,16 +371,42 @@ export default function DevWorkspace({
               </button>
             </div>
             {scene && (
-              <div className="scene-editor-layout">
-                <div>
-                  <EditorStage
-                    key={scene.id}
-                    scene={scene}
-                    selectedId={hotspotId}
-                    onSelect={setHotspotId}
-                    onHotspot={updateHotspot}
-                    onCreate={createHotspot}
-                  />
+              <div className="scene-editor-layout with-layers">
+                <LayerPanel
+                  scene={scene}
+                  selectedId={hotspotId}
+                  assets={assets}
+                  onAssets={setAssets}
+                  onSelect={setHotspotId}
+                  onChange={updateScene}
+                />
+                <div className="scene-art-canvas">
+                  <div className="row-actions scene-view-switch">
+                    <button
+                      aria-pressed={livePreview}
+                      onClick={() => setLivePreview(!livePreview)}
+                    >
+                      {livePreview
+                        ? 'Späť na úpravy vrstiev'
+                        : 'Živý náhľad animácií'}
+                    </button>
+                  </div>
+                  {livePreview ? (
+                    active && (
+                      <SceneLivePreview content={document} sceneId={scene.id} />
+                    )
+                  ) : (
+                    <EditorStage
+                      key={scene.id}
+                      scene={scene}
+                      selectedId={hotspotId}
+                      onSelect={setHotspotId}
+                      onHotspot={updateHotspot}
+                      onCreate={createHotspot}
+                      selection={selection}
+                      onSelection={selectArea}
+                    />
+                  )}
                   <div className="hotspot-list">
                     <Field label="Vybraný objekt">
                       <select
@@ -396,6 +436,19 @@ export default function DevWorkspace({
                       + Objekt
                     </button>
                   </div>
+                  <SceneArtPanel
+                    key={`${artScope}/${hotspot?.image ?? ''}`}
+                    active={active}
+                    content={document}
+                    scene={scene}
+                    hotspot={hotspot}
+                    selection={selection}
+                    onSelection={selectArea}
+                    onChange={change}
+                    onAssets={setAssets}
+                    onScene={onScene}
+                    onSelect={setHotspotId}
+                  />
                   <p className="field-note">
                     Súradnice patria k pôvodnej veľkosti lokácie. Obrázky a
                     hotspoty sa pri hraní škálujú spolu. ID objektov sú stabilné
@@ -406,25 +459,28 @@ export default function DevWorkspace({
                   className="editor-inspector"
                   aria-label="Vlastnosti lokácie a objektu"
                 >
-                  <SceneInspector
-                    key={`${scene.id}/${hotspot?.id ?? ''}`}
-                    scene={scene}
-                    hotspot={hotspot}
-                    content={document}
-                    assets={assets}
-                    onAssets={setAssets}
-                    onScene={updateScene}
-                    onHotspot={updateHotspot}
-                    onOpenAnimations={() => setTab('animations')}
-                    onDelete={() =>
-                      updateScene({
-                        ...scene,
-                        hotspots: scene.hotspots.filter(
-                          (entry) => entry.id !== hotspotId,
-                        ),
-                      })
-                    }
-                  />
+                  <fieldset disabled={hotspot?.locked}>
+                    <legend className="sr-only">Vlastnosti vrstvy</legend>
+                    <SceneInspector
+                      key={`${scene.id}/${hotspot?.id ?? ''}`}
+                      scene={scene}
+                      hotspot={hotspot}
+                      content={document}
+                      assets={assets}
+                      onAssets={setAssets}
+                      onScene={updateScene}
+                      onHotspot={updateHotspot}
+                      onOpenAnimations={() => setTab('animations')}
+                      onDelete={() =>
+                        updateScene({
+                          ...scene,
+                          hotspots: scene.hotspots.filter(
+                            (entry) => entry.id !== hotspotId,
+                          ),
+                        })
+                      }
+                    />
+                  </fieldset>
                 </aside>
               </div>
             )}

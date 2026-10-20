@@ -70,6 +70,20 @@ test('production serves a static game without editor code or write endpoints', a
       data: { content: JSON.parse(source), revision: 'unused' },
     });
     expect(write.status()).toBe(404);
+    const artWrite = await page.request.post(
+      new URL('__tukabel/editor/art/create', url).href,
+      {
+        headers: { Origin: new URL(url).origin, 'X-Tukabel-Editor': '1' },
+        data: { confirmed: true },
+      },
+    );
+    expect(artWrite.status()).toBe(404);
+    const artStatus = await page.request.get(
+      new URL('__tukabel/editor/art/status', url).href,
+    );
+    expect(artStatus.headers()['content-type']).not.toContain(
+      'application/json',
+    );
     const animationEndpoint = new URL('__tukabel/editor/animations/import', url)
       .href;
     const animationWrite = await page.request.post(animationEndpoint, {
