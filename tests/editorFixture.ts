@@ -37,6 +37,7 @@ export const test = base.extend<{
       for (const file of [
         'src',
         'dev',
+        'scripts',
         'index.html',
         'package.json',
         'vite.config.ts',

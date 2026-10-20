@@ -1,6 +1,5 @@
-import { createHash, randomUUID } from 'node:crypto';
+import { randomUUID } from 'node:crypto';
 import {
-  lstat,
   mkdir,
   readFile,
   realpath,
@@ -11,6 +10,8 @@ import {
 import path from 'node:path';
 import { setImmediate as yieldToEditor } from 'node:timers/promises';
 import sharp from 'sharp';
+import { readArtSource, ART_MAX_PIXELS, artHash as hash } from './artSource.ts';
+import { readObjectMask, maskPng } from './objectMask.ts';
 import { polygonBounds, polygonIssue } from '../src/game/polygon.ts';
 import type { AnimationDefinition } from '../src/game/types.ts';
 import type { Point } from '../src/game/transforms.ts';
@@ -32,11 +33,14 @@ export interface ArtResult {
   width: number;
   height: number;
   manifest: string;
+  objectMask?: string;
+  original?: string;
+  reassembled?: string;
+  difference?: string;
+  reconstruction?: { changedPixels: number; selectedPixels: number };
 }
-const MAX_PIXELS = 8 * 1024 * 1024;
+const MAX_PIXELS = ART_MAX_PIXELS;
 const MAX_BYTES = 24 * 1024 * 1024;
-const hash = (bytes: Buffer) =>
-  createHash('sha256').update(bytes).digest('hex');
 const object = (v: unknown): v is Record<string, unknown> =>
   v !== null && typeof v === 'object' && !Array.isArray(v);
 const aiOperations = ['edit', 'extract', 'remove', 'generate'];
@@ -45,23 +49,6 @@ export const artStatus = (options: ArtOptions) => ({
   model: options.model || 'gpt-image-1.5',
 });
 
-async function sourceFile(root: string, id: string) {
-  if (
-    !/^[a-zA-Z0-9_/-]+\.(png|webp|jpe?g|svg|avif)$/.test(id) ||
-    id.split('/').includes('..')
-  )
-    throw Error('Vyber lokálny obrázok zo src/assets/.');
-  const filename = path.resolve(root, id);
-  if (
-    !filename.startsWith(path.resolve(root) + path.sep) ||
-    (await realpath(filename)) !== filename
-  )
-    throw Error('Obrázok nesmie používať symbolické odkazy.');
-  const stat = await lstat(filename);
-  if (!stat.isFile() || stat.size > MAX_BYTES)
-    throw Error('Obrázok môže mať najviac 24 MB.');
-  return { filename, bytes: await readFile(filename) };
-}
 // Single provider boundary. It returns pixels, never project paths or credentials.
 async function editImage(
   image: Buffer,
@@ -167,22 +154,17 @@ export async function createArtwork(
   )
     throw Error('Zadaj pokyny pre AI (najviac 4000 znakov).');
   options.onStage?.('Načítavam zdroj a pripravujem výber');
-  const original = await sourceFile(root, input.source);
-  const metadata = await sharp(original.bytes, {
-    limitInputPixels: MAX_PIXELS,
-  }).metadata();
-  if ((metadata.pages ?? 1) !== 1)
-    throw Error('Vyber statický obrázok, nie animovaný súbor.');
-  const decoded = await sharp(original.bytes, { limitInputPixels: MAX_PIXELS })
-    .toColourspace('srgb')
-    .ensureAlpha()
-    .raw()
-    .toBuffer({ resolveWithObject: true });
-  const { width, height } = decoded.info;
-  const raw = decoded.data;
-  const source = await sharp(raw, { raw: { width, height, channels: 4 } })
-    .png()
-    .toBuffer();
+  const original = await readArtSource(root, input.source);
+  const { width, height, raw, source } = original;
+  const suppliedMask =
+    input.objectMask === undefined
+      ? undefined
+      : await readObjectMask(input.objectMask, original);
+  if (
+    suppliedMask &&
+    !['cutout', 'extract', 'remove', 'edit'].includes(operation)
+  )
+    throw Error('Maska nie je podporovaná pre túto operáciu.');
   let points: Point[] | undefined;
   if (input.selection !== undefined) {
     if (
@@ -207,7 +189,11 @@ export async function createArtwork(
     if (polygonIssue(points))
       throw Error('Výber sa nesmie krížiť a musí mať plochu.');
   }
-  if (['cutout', 'loop', 'extract', 'remove'].includes(operation) && !points)
+  if (
+    ['cutout', 'loop', 'extract', 'remove'].includes(operation) &&
+    !points &&
+    !suppliedMask
+  )
     throw Error('Najprv vyber oblasť obrázka.');
   if (operation === 'generate') points = undefined;
   const coverage = points
@@ -220,11 +206,45 @@ export async function createArtwork(
         .raw()
         .toBuffer()
     : Buffer.alloc(width * height * 4, 255);
+  // Extraction uses a binary pixel ownership mask. Soft polygon coverage used
+  // twice (repair + source-over) changes the original outlines on reassembly.
+  const exact =
+    operation === 'extract' || operation === 'cutout' || !!suppliedMask;
+  if (exact) {
+    for (let p = 0; p < width * height; p++)
+      coverage[p * 4 + 3] = suppliedMask
+        ? suppliedMask.pixels[p]!
+        : coverage[p * 4 + 3]! >= 128
+          ? 255
+          : 0;
+  }
+  const objectPixels = Buffer.alloc(width * height);
+  for (let p = 0; p < objectPixels.length; p++)
+    objectPixels[p] = coverage[p * 4 + 3]!;
+  const repairPadding =
+    operation === 'extract' ? (input.repairPadding ?? 6) : 0;
+  if (
+    !Number.isInteger(repairPadding) ||
+    Number(repairPadding) < 0 ||
+    Number(repairPadding) > 32
+  )
+    throw Error('Presah opravy musí byť 0–32 px.');
+  // Give inpainting extra context/outline clearance, but never enlarge the asset
+  // or overwrite scenery outside the actual object when publishing the repair.
+  const providerMask = Number(repairPadding)
+    ? await sharp(objectPixels, { raw: { width, height, channels: 1 } })
+        // libvips morphology treats black as foreground: erode expands our
+        // white selected pixels (verified by the repair-margin test).
+        .erode(Number(repairPadding))
+        .greyscale()
+        .raw()
+        .toBuffer()
+    : objectPixels;
   const cutoutRaw = Buffer.from(raw);
   const maskRaw = Buffer.alloc(raw.length, 255);
   for (let i = 0; i < raw.length; i += 4) {
     cutoutRaw[i + 3] = Math.round((raw[i + 3]! * coverage[i + 3]!) / 255);
-    maskRaw[i + 3] = 255 - coverage[i + 3]!;
+    maskRaw[i + 3] = 255 - providerMask[i / 4]!;
   }
   const png = (data: Buffer) =>
     sharp(data, { raw: { width, height, channels: 4 } })
@@ -257,13 +277,14 @@ export async function createArtwork(
       .extend({ ...extent, background: '#281e2b' })
       .png()
       .toBuffer();
-    const workingMask = points
-      ? await sharp(mask)
-          .resize(w, h)
-          .extend({ ...extent, background: '#ffffff' })
-          .png()
-          .toBuffer()
-      : undefined;
+    const workingMask =
+      points || suppliedMask
+        ? await sharp(mask)
+            .resize(w, h, { kernel: 'nearest' })
+            .extend({ ...extent, background: '#ffffff' })
+            .png()
+            .toBuffer()
+        : undefined;
     const instruction =
       operation === 'remove' || operation === 'extract'
         ? 'Remove the selected object completely. Reconstruct the scenery behind it seamlessly. Do not leave a duplicate or a silhouette. '
@@ -291,7 +312,7 @@ export async function createArtwork(
       .ensureAlpha()
       .raw()
       .toBuffer();
-    if (points) {
+    if (points || suppliedMask) {
       const merged = Buffer.from(raw);
       for (let i = 0; i < raw.length; i += 4)
         for (let c = 0; c < 4; c++)
@@ -300,6 +321,11 @@ export async function createArtwork(
               result[i + c]! * coverage[i + 3]!) /
               255,
           );
+      if (operation === 'extract') {
+        for (let i = 0; i < raw.length; i += 4) {
+          if (coverage[i + 3] && raw[i + 3]! < 255) merged.fill(0, i, i + 4);
+        }
+      }
       image = await png(merged);
     } else image = await png(result);
   }
@@ -315,8 +341,57 @@ export async function createArtwork(
     await writeFile(path.join(staging, 'source.png'), source, { flag: 'wx' });
     await writeFile(path.join(staging, 'mask.png'), mask, { flag: 'wx' });
     await writeFile(path.join(staging, 'image.png'), image, { flag: 'wx' });
-    if (operation === 'extract')
+    let reconstruction: ArtResult['reconstruction'];
+    if (exact)
+      await writeFile(
+        path.join(staging, 'object-mask.png'),
+        await maskPng(objectPixels, width, height),
+        { flag: 'wx' },
+      );
+    if (operation === 'extract') {
       await writeFile(path.join(staging, 'cutout.png'), cutout, { flag: 'wx' });
+      const background = await sharp(image).ensureAlpha().raw().toBuffer();
+      const combined = Buffer.from(background),
+        difference = Buffer.alloc(raw.length, 0);
+      let changedPixels = 0,
+        selectedPixels = 0;
+      for (let i = 0; i < raw.length; i += 4) {
+        if (objectPixels[i / 4]) selectedPixels++;
+        const a = cutoutRaw[i + 3]! / 255,
+          b = background[i + 3]! / 255;
+        const alpha = a + b * (1 - a);
+        for (let c = 0; c < 3; c++)
+          combined[i + c] = alpha
+            ? Math.round(
+                (cutoutRaw[i + c]! * a + background[i + c]! * b * (1 - a)) /
+                  alpha,
+              )
+            : 0;
+        combined[i + 3] = Math.round(alpha * 255);
+        const changed =
+          raw[i + 3] !== combined[i + 3] ||
+          ((raw[i + 3] || combined[i + 3]) &&
+            [0, 1, 2].some((c) => raw[i + c] !== combined[i + c]));
+        if (changed) changedPixels++;
+        difference[i] = changed ? 255 : 0;
+        difference[i + 3] = 255;
+      }
+      reconstruction = { changedPixels, selectedPixels };
+      if (changedPixels)
+        throw Error(
+          'Kontrola zloženia zistila zmenené pixely. Výsledok sa nepublikoval.',
+        );
+      await writeFile(
+        path.join(staging, 'reassembled.png'),
+        await png(combined),
+        { flag: 'wx' },
+      );
+      await writeFile(
+        path.join(staging, 'difference.png'),
+        await png(difference),
+        { flag: 'wx' },
+      );
+    }
     let animation: AnimationDefinition | undefined;
     if (operation === 'loop') {
       const count = input.frameCount ?? 16,
@@ -431,11 +506,20 @@ export async function createArtwork(
       };
     }
     const manifest = {
-      version: 1,
+      version: 2,
       source: input.source,
       sourceSha256: hash(original.bytes),
       operation,
       selection: points,
+      objectMask: exact
+        ? {
+            file: 'object-mask.png',
+            method: suppliedMask?.method ?? 'polygon',
+            pixelOwnership: 'binary',
+          }
+        : undefined,
+      repairPadding,
+      reconstruction,
       prompt: ai ? input.prompt : undefined,
       model: ai ? artStatus(options).model : undefined,
       motion:
@@ -467,6 +551,11 @@ export async function createArtwork(
       width,
       height,
       manifest: `${prefix}/recipe.json`,
+      objectMask: exact ? `${prefix}/object-mask.png` : undefined,
+      original: `${prefix}/source.png`,
+      reassembled: reconstruction ? `${prefix}/reassembled.png` : undefined,
+      difference: reconstruction ? `${prefix}/difference.png` : undefined,
+      reconstruction,
     };
   } catch (error) {
     await rm(staging, { recursive: true, force: true });

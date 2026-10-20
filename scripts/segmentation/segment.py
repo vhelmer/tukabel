@@ -1,0 +1,75 @@
+"""Local, non-generative mask inference. No model downloads or image resampling."""
+import importlib.util
+import json
+import os
+import sys
+
+
+def capabilities():
+    grabcut = all(importlib.util.find_spec(m) for m in ("cv2", "numpy"))
+    sam2 = grabcut and importlib.util.find_spec("sam2") is not None and os.path.isfile(os.environ.get("TUKABEL_SAM2_CHECKPOINT", ""))
+    return {"grabcut": bool(grabcut), "sam2": bool(sam2)}
+
+
+if sys.argv[1:] == ["--status"]:
+    print(json.dumps(capabilities()))
+    sys.exit(0)
+
+import cv2 as cv
+import numpy as np
+
+cv.setNumThreads(1)
+cv.setRNGSeed(7)
+folder, method = sys.argv[1:]
+image = cv.imread(os.path.join(folder, "source.png"), cv.IMREAD_COLOR)
+prior = cv.imread(os.path.join(folder, "prior.png"), cv.IMREAD_GRAYSCALE)
+seeds = cv.imread(os.path.join(folder, "seeds.png"), cv.IMREAD_GRAYSCALE)
+assert image is not None and prior is not None and seeds is not None
+assert image.shape[:2] == prior.shape == seeds.shape
+inside = prior >= 128
+# Explicit strokes can recover details outside the original coarse polygon.
+inside[seeds == 255] = True
+inside[seeds == 128] = False
+assert np.any(inside), "empty mask"
+ys, xs = np.where(inside)
+x0, x1 = max(0, int(xs.min()) - 24), min(image.shape[1], int(xs.max()) + 25)
+y0, y1 = max(0, int(ys.min()) - 24), min(image.shape[0], int(ys.max()) + 25)
+roi = image[y0:y1, x0:x1].copy()
+p = inside[y0:y1, x0:x1]
+s = seeds[y0:y1, x0:x1]
+
+if method == "grabcut":
+    labels = np.where(p, cv.GC_PR_FGD, cv.GC_BGD).astype(np.uint8)
+    labels[s == 255] = cv.GC_FGD
+    labels[s == 128] = cv.GC_BGD
+    assert np.any(labels == cv.GC_BGD), "mark some background"
+    cv.grabCut(roi, labels, None, np.zeros((1, 65), np.float64), np.zeros((1, 65), np.float64), 5, cv.GC_INIT_WITH_MASK)
+    mask = (labels == cv.GC_FGD) | (labels == cv.GC_PR_FGD)
+elif method == "sam2":
+    # Optional official SAM 2 installation and a local checkpoint. Never fetch
+    # weights, execute model-provided code or use a cloud endpoint here.
+    from sam2.build_sam import build_sam2
+    from sam2.sam2_image_predictor import SAM2ImagePredictor
+    import torch
+    points, labels = [], []
+    for value, label in ((255, 1), (128, 0)):
+        yy, xx = np.where(s == value)
+        if len(xx):
+            for i in np.linspace(0, len(xx) - 1, min(64, len(xx)), dtype=int):
+                points.append([xx[i], yy[i]])
+                labels.append(label)
+    with torch.inference_mode():
+        predictor = SAM2ImagePredictor(build_sam2(os.environ.get("TUKABEL_SAM2_CONFIG", "configs/sam2.1/sam2.1_hiera_t.yaml"), os.environ["TUKABEL_SAM2_CHECKPOINT"], device="cpu", apply_postprocessing=False))
+        predictor.set_image(cv.cvtColor(roi, cv.COLOR_BGR2RGB))
+        masks, scores, _ = predictor.predict(point_coords=np.asarray(points, dtype=np.float32) if points else None, point_labels=np.asarray(labels, dtype=np.int32) if points else None, box=np.array([xs.min() - x0, ys.min() - y0, xs.max() - x0, ys.max() - y0], dtype=np.float32), multimask_output=True)
+        mask = masks[int(np.argmax(scores))].astype(bool)
+else:
+    raise ValueError("unknown method")
+
+mask[s == 255] = True
+mask[s == 128] = False
+out = np.zeros(prior.shape, dtype=np.uint8)
+out[y0:y1, x0:x1] = mask.astype(np.uint8) * 255
+assert np.any(out), "no foreground found; add foreground strokes"
+assert cv.imwrite(os.path.join(folder, "result.png"), out)
+print(json.dumps({"method": method}))

@@ -17,7 +17,8 @@
     "check": "npm run lint && npm run format:check && npm run validate:content && npm run test:rules && npm run build",
     "test:e2e": "npm run build && playwright test",
     "validate:content": "node scripts/validate-content.mjs",
-    "test:rules": "playwright test --config playwright.rules.config.ts"
+    "test:rules": "playwright test --config playwright.rules.config.ts",
+    "setup:segmentation": "node scripts/setup-segmentation.mjs"
   },
   "dependencies": {
     "pixi.js": "^8.22.0",

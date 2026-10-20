@@ -131,10 +131,19 @@ export interface ArtworkResult {
   width: number;
   height: number;
   manifest: string;
+  objectMask?: string;
+  original?: string;
+  reassembled?: string;
+  difference?: string;
+  reconstruction?: { changedPixels: number; selectedPixels: number };
   assets: string[];
 }
 export const getArtStatus = () =>
-  request<{ configured: boolean; model: string }>('art/status');
+  request<{
+    configured: boolean;
+    model: string;
+    segmentation: { grabcut: boolean; sam2: boolean };
+  }>('art/status');
 export const listEditorJobs = () =>
   request<{ jobs: import('./jobs').EditorJob[] }>('jobs');
 export const submitEditorJob = (input: {
@@ -149,3 +158,18 @@ export const getDirectionStatus = () =>
   request<{ configured: boolean; model: string }>(
     'animations/direction/status',
   );
+
+export const getMaskSource = (source: string) =>
+  request<import('./masks').MaskSource>('art/source', 'POST', { source });
+export const segmentMask = (
+  source: string,
+  mask: import('./masks').ObjectMask,
+  seeds: string,
+  method: 'grabcut' | 'sam2',
+) =>
+  request<import('./masks').ObjectMask>('art/segment', 'POST', {
+    source,
+    mask,
+    seeds,
+    method,
+  });

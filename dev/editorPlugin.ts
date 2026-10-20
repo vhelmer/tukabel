@@ -11,6 +11,12 @@ import {
 import path from 'node:path';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { loadEnv, type Plugin } from 'vite';
+import {
+  maskSource,
+  segmentObject,
+  segmentationStatus,
+  type SegmentationOptions,
+} from './segmentation.ts';
 import { createEditorJobs } from './editorJobs.ts';
 import {
   directionInput,
@@ -54,11 +60,13 @@ async function readJson(req: IncomingMessage): Promise<unknown> {
       size >
       (req.url?.endsWith('/animations/import')
         ? 48
-        : req.url?.includes('/jobs')
-          ? 0.25
-          : req.url?.endsWith('/speech/import')
-            ? 29
-            : 9) *
+        : req.url?.endsWith('/art/segment')
+          ? 13
+          : req.url?.includes('/jobs')
+            ? 7
+            : req.url?.endsWith('/speech/import')
+              ? 29
+              : 9) *
         1024 *
         1024
     )
@@ -90,6 +98,7 @@ export function editorPlugin(
     speech?: import('./speech.ts').SpeechOptions;
     art?: ArtOptions;
     direction?: DirectionOptions;
+    segmentation?: SegmentationOptions;
   } = {},
 ): Plugin {
   return {
@@ -119,6 +128,12 @@ export function editorPlugin(
         apiKey: process.env.OPENAI_API_KEY || env.OPENAI_API_KEY,
         model: process.env.OPENAI_ANIMATION_MODEL || env.OPENAI_ANIMATION_MODEL,
         ...options.direction,
+      };
+      const segmentationOptions: SegmentationOptions = {
+        python: process.env.SEGMENTATION_PYTHON || env.SEGMENTATION_PYTHON,
+        checkpoint: process.env.SAM2_CHECKPOINT || env.SAM2_CHECKPOINT,
+        modelConfig: process.env.SAM2_CONFIG || env.SAM2_CONFIG,
+        ...options.segmentation,
       };
       const jobs = createEditorJobs();
       server.httpServer?.once('close', () => jobs.close());
@@ -157,7 +172,25 @@ export function editorPlugin(
           const parsedUrl = new URL(req.url!, host);
           const endpoint = parsedUrl.pathname;
           if (endpoint === `${API}/art/status` && req.method === 'GET') {
-            respond(200, artStatus(artOptions));
+            respond(200, {
+              ...artStatus(artOptions),
+              segmentation: await segmentationStatus(segmentationOptions),
+            });
+            return;
+          }
+          if (endpoint === `${API}/art/source` && req.method === 'POST') {
+            respond(200, await maskSource(assetsRoot, await readJson(req)));
+            return;
+          }
+          if (endpoint === `${API}/art/segment` && req.method === 'POST') {
+            respond(
+              200,
+              await segmentObject(
+                assetsRoot,
+                await readJson(req),
+                segmentationOptions,
+              ),
+            );
             return;
           }
           if (
@@ -419,7 +452,9 @@ export function editorPlugin(
         };
         // Serialize writes and reads so two tabs cannot both overwrite the same revision.
         const pending =
-          req.url?.startsWith(`${API}/jobs`) || req.url?.endsWith('/status')
+          req.url?.startsWith(`${API}/jobs`) ||
+          req.url?.startsWith(`${API}/art/`) ||
+          req.url?.endsWith('/status')
             ? run()
             : (queue = queue.then(run));
         const handled = pending.catch((error: unknown) => {

@@ -6,3 +6,6 @@ playwright-report
 .codex
 # Deterministické binární exporty a metadata izolovaného experimentu.
 experiments/woman-blink/output/
+
+# Volitelné lokální Python prostředí a modely.
+.local-tools

@@ -98,6 +98,16 @@ test('production serves a static game without editor code or write endpoints', a
     expect(jobsRead.headers()['content-type']).not.toContain(
       'application/json',
     );
+    for (const operation of ['source', 'segment']) {
+      const response = await page.request.post(
+        new URL(`__tukabel/editor/art/${operation}`, url).href,
+        {
+          headers: { Origin: new URL(url).origin, 'X-Tukabel-Editor': '1' },
+          data: {},
+        },
+      );
+      expect(response.status()).toBe(404);
+    }
     const animationEndpoint = new URL('__tukabel/editor/animations/import', url)
       .href;
     const animationWrite = await page.request.post(animationEndpoint, {
@@ -133,6 +143,9 @@ test('production serves a static game without editor code or write endpoints', a
           'api.openai.com/v1/images',
           'api.openai.com/v1/responses',
           'OPENAI_ANIMATION_MODEL',
+          'SAM2_CHECKPOINT',
+          'SEGMENTATION_PYTHON',
+          'segment.py',
         ])
           expect(bundle).not.toContain(serverOnly);
       }

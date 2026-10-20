@@ -12,5 +12,8 @@ playwright-report/
 src/assets/animations/.*.tmp/
 src/assets/speech/.*.tmp/
 
-# Lokální nástroje pro tvorbu dabingu; produkce je nepotřebuje.
+# Lokální nástroje a modely pro tvorbu obsahu; produkce je nepotřebuje.
 .local-tools/
+
+# Python cache pomocných segmentačních nástrojů.
+__pycache__/
