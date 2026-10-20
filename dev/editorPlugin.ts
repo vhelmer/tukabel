@@ -123,6 +123,7 @@ export function editorPlugin(
       const artOptions: ArtOptions = {
         apiKey: process.env.OPENAI_API_KEY || env.OPENAI_API_KEY,
         model: process.env.OPENAI_IMAGE_MODEL || env.OPENAI_IMAGE_MODEL,
+        quality: process.env.OPENAI_IMAGE_QUALITY || env.OPENAI_IMAGE_QUALITY,
         ...options.art,
       };
       const directionOptions: DirectionOptions = {

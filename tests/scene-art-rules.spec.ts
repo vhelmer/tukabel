@@ -125,7 +125,11 @@ test('masked AI extraction uses a server-only key, repairs only selected pixels 
           );
           const body = JSON.parse(init!.body as string);
           expect(body.n).toBe(1);
-          expect(body.input_fidelity).toBe('high');
+          expect(body.model).toBe('gpt-image-2.5-sunburst');
+          expect(body.quality).toBe('high');
+          expect(body).not.toHaveProperty('input_fidelity');
+          expect(body.output_format).toBe('png');
+          expect(body).not.toHaveProperty('response_format');
           expect(body.prompt).toContain('Remove the selected object');
           const mask = await rgba(
             Buffer.from(body.mask.image_url.split(',')[1], 'base64'),
@@ -157,8 +161,131 @@ test('masked AI extraction uses a server-only key, repairs only selected pixels 
     ).not.toContain('test-art-secret');
     expect(artStatus({ apiKey: 'test-art-secret' })).toEqual({
       configured: true,
-      model: 'gpt-image-1.5',
+      model: 'gpt-image-2.5-sunburst',
+      quality: 'high',
     });
+    expect(result).toMatchObject({
+      model: 'gpt-image-2.5-sunburst',
+      quality: 'high',
+    });
+    expect(
+      JSON.parse(await readFile(path.join(root, result.manifest), 'utf8')),
+    ).toMatchObject({ model: 'gpt-image-2.5-sunburst', quality: 'high' });
+  });
+});
+
+test('Image API settings preserve server defaults, allow explicit comparison and reject incompatible quality before spending credits', async () => {
+  await fixture(async (root) => {
+    const valid = {
+      source: 'source.png',
+      operation: 'remove',
+      selection: rectangle,
+      prompt: 'Remove the table.',
+      confirmed: true,
+    };
+    const output = await sharp({
+      create: { width: 1536, height: 1024, channels: 4, background: '#fff' },
+    })
+      .png()
+      .toBuffer();
+    let calls = 0;
+    const provider: typeof fetch = async (_url, init) => {
+      calls++;
+      const body = JSON.parse(init!.body as string);
+      expect(body.size).toBe('1536x1024');
+      expect(body.mask.image_url).toMatch(/^data:image\/png;base64,/);
+      expect(body.images[0].image_url).toMatch(/^data:image\/png;base64,/);
+      expect(body.n).toBe(1);
+      expect(body.output_format).toBe('png');
+      if (['gpt-image-1', 'gpt-image-1.5'].includes(body.model))
+        expect(body.input_fidelity).toBe('high');
+      else expect(body).not.toHaveProperty('input_fidelity');
+      const result = Response.json({
+        data: [{ b64_json: output.toString('base64') }],
+      });
+      requests.push(body);
+      return result;
+    };
+    const requests: Record<string, unknown>[] = [];
+    for (const config of [
+      {
+        server: { model: 'gpt-image-1.5', quality: 'medium' },
+        input: {},
+        model: 'gpt-image-1.5',
+        quality: 'medium',
+      },
+      {
+        server: { model: 'gpt-image-1.5', quality: 'medium' },
+        input: { model: 'gpt-image-2.5-sunburst', quality: 'high' },
+        model: 'gpt-image-2.5-sunburst',
+        quality: 'high',
+      },
+      {
+        server: {},
+        input: { model: 'gpt-image-1.5', quality: 'low' },
+        model: 'gpt-image-1.5',
+        quality: 'low',
+      },
+      {
+        server: {},
+        input: { quality: 'xhigh' },
+        model: 'gpt-image-2.5-sunburst',
+        quality: 'xhigh',
+      },
+      {
+        server: { model: 'gpt-image-2.5-sunburst-2026-09-08', quality: 'max' },
+        input: {},
+        model: 'gpt-image-2.5-sunburst-2026-09-08',
+        quality: 'max',
+      },
+      {
+        server: { model: 'gpt-image-1' },
+        input: {},
+        model: 'gpt-image-1',
+        quality: 'high',
+      },
+    ]) {
+      const result = await createArtwork(
+        root,
+        { ...valid, ...config.input },
+        { apiKey: 'secret', fetch: provider, ...config.server },
+      );
+      expect(requests.at(-1)).toMatchObject({
+        model: config.model,
+        quality: config.quality,
+      });
+      expect(result).toMatchObject({
+        model: config.model,
+        quality: config.quality,
+      });
+      expect(
+        JSON.parse(await readFile(path.join(root, result.manifest), 'utf8')),
+      ).toMatchObject({ model: config.model, quality: config.quality });
+    }
+    const successfulCalls = calls;
+    for (const input of [
+      { model: 'gpt-image-1.5', quality: 'max' },
+      { quality: 'unknown' },
+      { quality: 3 },
+      { model: 'unconfigured-model' },
+      { model: {} },
+    ])
+      await expect(
+        createArtwork(
+          root,
+          { ...valid, ...input },
+          { apiKey: 'secret', fetch: provider },
+        ),
+      ).rejects.toThrow(/kvalita|model/);
+    expect(calls).toBe(successfulCalls);
+    await expect(
+      createArtwork(root, valid, {
+        apiKey: 'secret',
+        quality: 'wrong',
+        fetch: provider,
+      }),
+    ).rejects.toThrow('OPENAI_IMAGE_QUALITY');
+    expect(calls).toBe(successfulCalls);
   });
 });
 

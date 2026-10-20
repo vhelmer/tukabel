@@ -136,6 +136,8 @@ export interface ArtworkResult {
   reassembled?: string;
   difference?: string;
   repairMask?: string;
+  model?: string;
+  quality?: import('./artSettings').ImageQuality;
   reconstruction?: {
     changedPixels: number;
     selectedPixels: number;
@@ -149,6 +151,7 @@ export const getArtStatus = () =>
   request<{
     configured: boolean;
     model: string;
+    quality: import('./artSettings').ImageQuality;
     segmentation: {
       grabcut: boolean;
       sam2: boolean;

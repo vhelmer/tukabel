@@ -318,12 +318,36 @@ nulovou alfou. Pomůcky editoru záměrně přidávají barevné rámy; pro věr
 Originály se nepřepisují. Zahazování náhledu ani Undo nemažou již vytvořené soubory,
 takže nepotřebné varianty lze později odstranit v Gitu.
 
-Pro AI nastav serverové `OPENAI_API_KEY` a volitelně `OPENAI_IMAGE_MODEL` v ignorovaném
-`.env.local`, pak restartuj Vite. Výchozí adaptér v `dev/sceneArt.ts` používá
+Pro AI nastav serverové `OPENAI_API_KEY` a volitelně `OPENAI_IMAGE_MODEL` /
+`OPENAI_IMAGE_QUALITY` v ignorovaném `.env.local`, pak restartuj Vite. Výchozí adaptér v `dev/sceneArt.ts` používá
 [OpenAI Images edit API](https://developers.openai.com/api/reference/resources/images/methods/edit)
-a model `gpt-image-1.5`. Jiný provider lze zapojit v jediné funkci `editImage`;
+a model **`gpt-image-2.5-sunburst` s kvalitou `high`**. V grafickém panelu vyber AI operaci
+a nastav **AI model obrázkov** / **Kvalita AI obrázka**. Pro porovnání lze přímo přepnout
+na `gpt-image-1.5`; běžné kvality jsou `low`, `medium`, `high`, `auto`, Sunburst nabízí
+také `xhigh` a `max`. Při přepnutí na model bez podpory vyšší kvality se výběr vrátí
+na `high`. Samotné přepnutí nic negeneruje. Jiný nebo datovaný model lze nabídnout
+přes serverové `OPENAI_IMAGE_MODEL`; tato volba zůstává vedle dvou základních modelů.
+Obě hodnoty se zachytí při zadání úlohy a uloží do `recipe.json` i náhledu výsledku,
+takže změna dalších nastavení nepřepíše údaje staršího výsledku. Výchozí nastavení:
+
+```dotenv
+OPENAI_IMAGE_MODEL=gpt-image-2.5-sunburst
+OPENAI_IMAGE_QUALITY=high
+```
+
+Návrat pro celý editor: nastav `OPENAI_IMAGE_MODEL=gpt-image-1.5` a restartuj Vite.
+Zůstává JSON požadavek na `/v1/images/edits`, PNG výstup, jedna varianta, stejné
+pracovní rozměry a maska s alfou. `input_fidelity: high` se posílá pouze u
+`gpt-image-1` / `gpt-image-1.5`; u Sunburst jej vynecháváme. Neposíláme zastaralý
+`response_format`. Nepodporovanou kombinaci modelu a kvality server odmítne před
+voláním API; při chybě nepřepíná model ani neopakuje placené volání. Výřezy,
+matting, přesah opravy pozadí a kontrola původních pixelů zůstávají stejné.
+API kontrakt ověřují mocky; úspěšný neplacený dotaz na model potvrzuje přístup,
+nikoli vizuální kvalitu konkrétní opravy. Tu ověř až vědomě spuštěnou úpravou v editoru.
+
+Jiný provider lze zapojit v jediné funkci `editImage`;
 výběry, archivace, PNG smyčky a herní renderer na něm nezávisí. Klient dostává pouze
-stav dostupnosti a ID modelu. Každá AI operace odešle celý zdroj a případnou masku,
+stav dostupnosti, ID modelu a kvalitu. Každá AI operace odešle celý zdroj a případnou masku,
 provede nejvýše jedno volání a nikdy automaticky neopakuje požadavek. Mimo výběr
 server vrací původní pixely; kvalitu doplněného pozadí je potřeba zkontrolovat v náhledu.
 Bez klíče fungují vrstvy, import, výběry a místní efekty. Produkce neobsahuje grafické

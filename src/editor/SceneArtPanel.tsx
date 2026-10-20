@@ -15,6 +15,13 @@ import { Field } from './fields';
 import { artFingerprint } from './jobs';
 import type { EditorJob } from './jobs';
 import { nextId } from './model';
+import {
+  defaultImageModel,
+  defaultImageQuality,
+  imageModels,
+  imageQualities,
+  type ImageQuality,
+} from './artSettings';
 
 const presets: Record<string, string> = {
   edit: 'Uprav označený detail. Zachovaj kreslený štýl, perspektívu a svetlo pôvodnej lokácie.',
@@ -76,6 +83,8 @@ export function SceneArtPanel({
     targetChoice.jobId === selectedJob ? targetChoice.value : jobTarget;
   const [prompt, setPrompt] = useState('');
   const [repairPadding, setRepairPadding] = useState(12);
+  const [modelChoice, setModelChoice] = useState<string>();
+  const [qualityChoice, setQualityChoice] = useState<ImageQuality>();
   const [label, setLabel] = useState('Nový výrez');
   const [motion, setMotion] = useState('water');
   const [amplitude, setAmplitude] = useState(4),
@@ -84,6 +93,7 @@ export function SceneArtPanel({
   const [status, setStatus] = useState<{
     configured: boolean;
     model: string;
+    quality: ImageQuality;
     segmentation?: {
       grabcut: boolean;
       sam2: boolean;
@@ -91,6 +101,8 @@ export function SceneArtPanel({
       closedForm?: boolean;
     };
   }>();
+  const model = modelChoice ?? status?.model ?? defaultImageModel;
+  const quality = qualityChoice ?? status?.quality ?? defaultImageQuality;
   const mounted = useRef(false),
     applied = useRef('');
   useEffect(() => {
@@ -242,6 +254,8 @@ export function SceneArtPanel({
             ? preparedMask && { ...preparedMask, foreground: undefined }
             : undefined,
           prompt: ai ? prompt : undefined,
+          model: ai ? model : undefined,
+          quality: ai ? quality : undefined,
           confirmed: ai ? true : undefined,
           repairPadding,
           motion,
@@ -507,6 +521,39 @@ export function SceneArtPanel({
         )}
         {ai && (
           <>
+            <div className="art-settings">
+              <Field label="AI model obrázkov">
+                <select
+                  value={model}
+                  onChange={(e) => {
+                    const next = e.target.value;
+                    setModelChoice(next);
+                    if (!imageQualities(next).includes(quality))
+                      setQualityChoice(defaultImageQuality);
+                  }}
+                >
+                  {imageModels(status?.model ?? defaultImageModel).map((id) => (
+                    <option key={id} value={id}>
+                      {id}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+              <Field label="Kvalita AI obrázka">
+                <select
+                  value={quality}
+                  onChange={(e) =>
+                    setQualityChoice(e.target.value as ImageQuality)
+                  }
+                >
+                  {imageQualities(model).map((value) => (
+                    <option key={value} value={value}>
+                      {value}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+            </div>
             {['extract', 'remove'].includes(operation) && (
               <Field label="Dočistenie pozadia za obrysom (px zdroja)">
                 <input
@@ -540,7 +587,7 @@ export function SceneArtPanel({
             </Field>
             <p className="field-note">
               {status?.configured
-                ? `OpenAI · ${status.model} · odosiela sa celý zdroj a maska výberu. Spustenie spotrebuje API kredit.`
+                ? `OpenAI · ${model} · ${quality} · odosiela sa celý zdroj a maska výberu. Spustenie spotrebuje API kredit.`
                 : 'AI vyžaduje OPENAI_API_KEY v .env.local a reštart Vite. Lokálne výrezy a slučky ho nepotrebujú.'}{' '}
               Mimo výberu
               {['extract', 'remove'].includes(operation)
@@ -595,6 +642,12 @@ export function SceneArtPanel({
       {result && (
         <div className="art-result">
           <h3>Náhľad výsledku</h3>
+          {result.data.model && (
+            <p className="field-note">
+              OpenAI · {result.data.model} ·{' '}
+              {result.data.quality ?? 'pôvodné nastavenie kvality'}
+            </p>
+          )}
           {result.fingerprint !== artFingerprint(scene, result.targetId) && (
             <p role="alert">
               Zdroj alebo jeho umiestnenie sa od zadania úlohy zmenili. Výsledok

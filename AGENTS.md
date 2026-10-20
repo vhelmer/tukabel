@@ -110,6 +110,11 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
   textury do PNG sekvence, volitelná AI úprava/odstranění/oddělení/nová lokace.
   AI jen po výslovném spuštění, serverové `OPENAI_API_KEY` / `OPENAI_IMAGE_MODEL`,
   jeden požadavek bez retry; provider je oddělený ve `editImage`. Testy mockují fetch.
+  Výchozí Image API model je `gpt-image-2.5-sunburst`, kvalita `high` (serverové
+  `OPENAI_IMAGE_QUALITY`). Editor nabízí návrat na `gpt-image-1.5`; konkrétní model
+  a kvalitu zachyť v úloze a receptu. `artSettings.ts` sdílí podporované kvality,
+  neplatné kombinace odmítej před API. `input_fidelity: high` patří jen ke starším
+  `gpt-image-1` / `gpt-image-1.5`, u Sunburst jej neposílej. Žádný automatický fallback.
   Produkce žádné grafické API nepotřebuje ani nevystavuje.
 - Nové soubory publikuj atomicky do `src/assets/scene-art/<uuid>/`. Původní soubor
   nepřepisuj; archivuj source, masku a recipe JSON s otiskem zdroje a parametry.

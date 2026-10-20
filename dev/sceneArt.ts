@@ -16,10 +16,18 @@ import { matteForeground, type SegmentationOptions } from './segmentation.ts';
 import { polygonBounds, polygonIssue } from '../src/game/polygon.ts';
 import type { AnimationDefinition } from '../src/game/types.ts';
 import type { Point } from '../src/game/transforms.ts';
+import {
+  defaultImageModel,
+  defaultImageQuality,
+  imageModels,
+  imageQualities,
+  type ImageQuality,
+} from '../src/editor/artSettings.ts';
 
 export interface ArtOptions {
   apiKey?: string;
   model?: string;
+  quality?: string;
   fetch?: typeof fetch;
   onStage?: (stage: string) => void;
   segmentation?: SegmentationOptions;
@@ -40,6 +48,8 @@ export interface ArtResult {
   reassembled?: string;
   difference?: string;
   repairMask?: string;
+  model?: string;
+  quality?: ImageQuality;
   reconstruction?: {
     changedPixels: number;
     selectedPixels: number;
@@ -53,9 +63,19 @@ const MAX_BYTES = 24 * 1024 * 1024;
 const object = (v: unknown): v is Record<string, unknown> =>
   v !== null && typeof v === 'object' && !Array.isArray(v);
 const aiOperations = ['edit', 'extract', 'remove', 'generate'];
+function imageSettings(model: string, quality: unknown) {
+  if (!imageQualities(model).includes(quality as ImageQuality))
+    throw Error(
+      `Neplatná kvalita obrázka pre ${model}. Vyber ${imageQualities(model).join(', ')}; skontroluj aj OPENAI_IMAGE_QUALITY.`,
+    );
+  return { model, quality: quality as ImageQuality };
+}
 export const artStatus = (options: ArtOptions) => ({
   configured: Boolean(options.apiKey),
-  model: options.model || 'gpt-image-1.5',
+  ...imageSettings(
+    options.model || defaultImageModel,
+    options.quality || defaultImageQuality,
+  ),
 });
 
 // Single provider boundary. It returns pixels, never project paths or credentials.
@@ -66,7 +86,7 @@ async function editImage(
   size: string,
   options: ArtOptions,
 ) {
-  const model = options.model || 'gpt-image-1.5';
+  const { model, quality } = artStatus(options);
   if (!options.apiKey)
     throw Error('Nastav OPENAI_API_KEY v .env.local a reštartuj Vite.');
   const body = {
@@ -79,7 +99,7 @@ async function editImage(
       : undefined,
     prompt,
     n: 1,
-    quality: 'medium',
+    quality,
     output_format: 'png',
     size,
     ...(['gpt-image-1', 'gpt-image-1.5'].includes(model)
@@ -106,7 +126,7 @@ async function editImage(
   if (!response.ok) {
     await response.body?.cancel();
     throw Error(
-      `AI úprava zlyhala (HTTP ${response.status}). Skontroluj prístup k modelu a kredit; požiadavka sa neopakuje.`,
+      `AI úprava zlyhala (HTTP ${response.status}, ${model}, ${quality}). Skontroluj prístup k modelu, nastavenia a kredit; požiadavka sa neopakuje.`,
     );
   }
   const chunks: Uint8Array[] = [];
@@ -162,6 +182,22 @@ export async function createArtwork(
       input.prompt.length > 4000)
   )
     throw Error('Zadaj pokyny pre AI (najviac 4000 znakov).');
+  let settings: ReturnType<typeof imageSettings> | undefined;
+  if (ai) {
+    const configuredModel = options.model || defaultImageModel;
+    const model = input.model ?? configuredModel;
+    if (
+      typeof model !== 'string' ||
+      !imageModels(configuredModel).includes(model)
+    )
+      throw Error(
+        'Vyber podporovaný model obrázkov alebo nastav OPENAI_IMAGE_MODEL na serveri.',
+      );
+    settings = imageSettings(
+      model,
+      input.quality ?? options.quality ?? defaultImageQuality,
+    );
+  }
   options.onStage?.('Načítavam zdroj a pripravujem výber');
   const original = await readArtSource(root, input.source);
   const { width, height, raw, source } = original;
@@ -333,7 +369,7 @@ export async function createArtwork(
       workingMask,
       `${instruction}Preserve the reference cartoon drawing style, perspective, lighting and composition outside the edit. Preserve the image framing. No UI, text labels or watermarks. User instructions: ${input.prompt as string}`,
       `${work.width}x${work.height}`,
-      options,
+      { ...options, ...settings },
     );
     const normalized = await sharp(generated)
       .resize(work.width, work.height, { fit: 'fill' })
@@ -609,7 +645,8 @@ export async function createArtwork(
         : undefined,
       reconstruction,
       prompt: ai ? input.prompt : undefined,
-      model: ai ? artStatus(options).model : undefined,
+      model: settings?.model,
+      quality: settings?.quality,
       motion:
         operation === 'loop'
           ? {
@@ -633,6 +670,7 @@ export async function createArtwork(
     return {
       operation,
       source: input.source,
+      ...settings,
       image: `${prefix}/image.png`,
       cutout: operation === 'extract' ? `${prefix}/cutout.png` : undefined,
       animation,

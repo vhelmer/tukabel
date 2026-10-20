@@ -263,6 +263,16 @@ test.describe('scene AI provider boundary', () => {
           !body.prompt.includes('reference')
         )
           throw Error('Invalid image request');
+        if (
+          !['gpt-image-2.5-sunburst', 'gpt-image-1.5'].includes(body.model) ||
+          !['high', 'medium'].includes(body.quality)
+        )
+          throw Error('Invalid model or quality');
+        if (body.model === 'gpt-image-1.5') {
+          if (body.input_fidelity !== 'high')
+            throw Error('Missing legacy fidelity');
+        } else if ('input_fidelity' in body)
+          throw Error('Unsupported Sunburst fidelity');
         const [width, height] = (body.size as string).split('x').map(Number);
         const bytes = await sharp({
           create: {
@@ -291,6 +301,15 @@ test.describe('scene AI provider boundary', () => {
     await art(page)
       .getByLabel('Grafická operácia', { exact: true })
       .selectOption('extract');
+    const model = art(page).getByLabel('AI model obrázkov', { exact: true });
+    const quality = art(page).getByLabel('Kvalita AI obrázka', { exact: true });
+    await expect(model).toHaveValue('gpt-image-2.5-sunburst');
+    await expect(quality).toHaveValue('high');
+    await quality.selectOption('max');
+    await model.selectOption('gpt-image-1.5');
+    await expect(quality).toHaveValue('high');
+    await expect(quality.locator('option[value="max"]')).toHaveCount(0);
+    await model.selectOption('gpt-image-2.5-sunburst');
     await page
       .getByLabel('Názov lokácie', { exact: true })
       .fill('Rozpracovaná lokácia');
@@ -347,9 +366,23 @@ test.describe('scene AI provider boundary', () => {
       decorative: true,
       image: expect.stringMatching(/\/cutout.png$/),
     });
+    expect(
+      JSON.parse(
+        await readFile(
+          path.join(
+            workspace.root,
+            'src/assets',
+            disk.scenes[0]!.background.replace(/image\.png$/, 'recipe.json'),
+          ),
+          'utf8',
+        ),
+      ),
+    ).toMatchObject({ model: 'gpt-image-2.5-sunburst', quality: 'high' });
     await art(page)
       .getByLabel('Grafická operácia', { exact: true })
       .selectOption('generate');
+    await model.selectOption('gpt-image-1.5');
+    await quality.selectOption('medium');
     await art(page)
       .getByLabel('Názov výslednej vrstvy alebo lokácie', { exact: true })
       .fill('AI skúšobný dvor');
@@ -378,6 +411,20 @@ test.describe('scene AI provider boundary', () => {
       height: 720,
       hotspots: [],
     });
+    expect(
+      JSON.parse(
+        await readFile(
+          path.join(
+            workspace.root,
+            'src/assets',
+            saved.scenes
+              .at(-1)!
+              .background.replace(/image\.png$/, 'recipe.json'),
+          ),
+          'utf8',
+        ),
+      ),
+    ).toMatchObject({ model: 'gpt-image-1.5', quality: 'medium' });
     await page.reload();
     await ready(page);
     await page.getByRole('button', { name: 'Dev Mode', exact: true }).click();
