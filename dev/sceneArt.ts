@@ -9,6 +9,7 @@ import {
   writeFile,
 } from 'node:fs/promises';
 import path from 'node:path';
+import { setImmediate as yieldToEditor } from 'node:timers/promises';
 import sharp from 'sharp';
 import { polygonBounds, polygonIssue } from '../src/game/polygon.ts';
 import type { AnimationDefinition } from '../src/game/types.ts';
@@ -18,6 +19,7 @@ export interface ArtOptions {
   apiKey?: string;
   model?: string;
   fetch?: typeof fetch;
+  onStage?: (stage: string) => void;
 }
 export type ArtOperation =
   'cutout' | 'loop' | 'edit' | 'extract' | 'remove' | 'generate';
@@ -164,6 +166,7 @@ export async function createArtwork(
       input.prompt.length > 4000)
   )
     throw Error('Zadaj pokyny pre AI (najviac 4000 znakov).');
+  options.onStage?.('Načítavam zdroj a pripravujem výber');
   const original = await sourceFile(root, input.source);
   const metadata = await sharp(original.bytes, {
     limitInputPixels: MAX_PIXELS,
@@ -267,6 +270,7 @@ export async function createArtwork(
         : operation === 'generate'
           ? 'Create a new 2D adventure location using the reference ONLY for its drawing style, palette and line work. '
           : 'Edit only the selected area. ';
+    options.onStage?.('AI upravuje obrázok · požiadavka sa neopakuje');
     const generated = await editImage(
       workingImage,
       workingMask,
@@ -346,9 +350,13 @@ export async function createArtwork(
       const frames: string[] = [];
       let total = 0;
       for (let frame = 0; frame < Number(count); frame++) {
+        options.onStage?.(`Vykresľujem snímku ${frame + 1}/${count}`);
         const result = Buffer.from(cutoutRaw),
           phase = (frame * Math.PI * 2) / Number(count);
-        for (let y = y0; y < Math.min(height, y0 + bh); y++)
+        for (let y = y0; y < Math.min(height, y0 + bh); y++) {
+          // Keep project reads, saves and progress polling responsive even for
+          // large local loops; no worker framework is needed for these batches.
+          if ((y - y0) % 32 === 0) await yieldToEditor();
           for (let x = x0; x < Math.min(width, x0 + bw); x++) {
             const i = (y * width + x) * 4;
             if (!coverage[i + 3]) continue;
@@ -403,6 +411,7 @@ export async function createArtwork(
               );
             }
           }
+        }
         const name = `frame-${String(frame + 1).padStart(3, '0')}.png`;
         const bytes = await png(result);
         total += bytes.length;
@@ -447,6 +456,7 @@ export async function createArtwork(
     );
     if (hash(await readFile(original.filename)) !== hash(original.bytes))
       throw Error('Zdroj sa medzitým zmenil. Výsledok sa neuložil.');
+    options.onStage?.('Overujem zdroj a publikujem assety');
     await rename(staging, path.join(folder, id));
     return {
       operation,

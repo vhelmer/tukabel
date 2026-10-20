@@ -7,6 +7,7 @@ import react from '@vitejs/plugin-react';
 import sharp from 'sharp';
 import { editorPlugin } from '../dev/editorPlugin';
 import type { SpeechOptions } from '../dev/speech';
+import type { DirectionOptions } from '../dev/animationDirection';
 import type { ArtOptions } from '../dev/sceneArt';
 import { ready } from './helpers';
 
@@ -15,11 +16,16 @@ import { ready } from './helpers';
 export const test = base.extend<{
   speechTools: SpeechOptions;
   artTools: ArtOptions;
+  directionTools: DirectionOptions;
   workspace: { url: string; source: string; root: string };
 }>({
   speechTools: [{}, { option: true }],
   artTools: [{ apiKey: '' }, { option: true }],
-  workspace: async ({ browserName, speechTools, artTools }, use) => {
+  directionTools: [{ apiKey: '' }, { option: true }],
+  workspace: async (
+    { browserName, speechTools, artTools, directionTools },
+    use,
+  ) => {
     const root = await mkdtemp(
       path.join(tmpdir(), `tukabel-editor-${browserName}-`),
     );
@@ -54,7 +60,11 @@ export const test = base.extend<{
         configFile: false,
         plugins: [
           react(),
-          editorPlugin({ speech: speechTools, art: artTools }),
+          editorPlugin({
+            speech: speechTools,
+            art: artTools,
+            direction: directionTools,
+          }),
         ],
         base: './',
         root,

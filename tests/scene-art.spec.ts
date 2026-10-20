@@ -316,9 +316,7 @@ test.describe('scene AI provider boundary', () => {
       'Rozpracovaná lokácia',
     );
     await expect(page.locator('.unsaved-badge')).toBeVisible();
-    await page
-      .getByLabel('Názov lokácie', { exact: true })
-      .fill('Zmenená scéna');
+    await page.getByLabel('Šírka lokácie', { exact: true }).fill('1290');
     await expect(
       art(page).getByRole('button', {
         name: 'Použiť výsledok v scéne',

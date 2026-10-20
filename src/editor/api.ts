@@ -135,14 +135,17 @@ export interface ArtworkResult {
 }
 export const getArtStatus = () =>
   request<{ configured: boolean; model: string }>('art/status');
-export const createArtwork = (input: {
-  source: string;
-  operation: ArtworkResult['operation'];
-  selection?: readonly import('../game/transforms').Point[];
-  prompt?: string;
-  confirmed?: boolean;
-  motion?: string;
-  amplitude?: number;
-  fps?: number;
-  frameCount?: number;
-}) => request<ArtworkResult>('art/create', 'POST', input);
+export const listEditorJobs = () =>
+  request<{ jobs: import('./jobs').EditorJob[] }>('jobs');
+export const submitEditorJob = (input: {
+  kind: 'art' | 'animation';
+  label: string;
+  context: import('./jobs').ArtContext | import('./jobs').AnimationContext;
+  input: unknown;
+}) => request<import('./jobs').EditorJob>('jobs', 'POST', input);
+export const editorJobAction = (id: string, action: 'cancel' | 'dismiss') =>
+  request(`jobs/${id}/${action}`, 'POST', {});
+export const getDirectionStatus = () =>
+  request<{ configured: boolean; model: string }>(
+    'animations/direction/status',
+  );

@@ -84,6 +84,20 @@ test('production serves a static game without editor code or write endpoints', a
     expect(artStatus.headers()['content-type']).not.toContain(
       'application/json',
     );
+    const jobsWrite = await page.request.post(
+      new URL('__tukabel/editor/jobs', url).href,
+      {
+        headers: { Origin: new URL(url).origin, 'X-Tukabel-Editor': '1' },
+        data: {},
+      },
+    );
+    expect(jobsWrite.status()).toBe(404);
+    const jobsRead = await page.request.get(
+      new URL('__tukabel/editor/jobs', url).href,
+    );
+    expect(jobsRead.headers()['content-type']).not.toContain(
+      'application/json',
+    );
     const animationEndpoint = new URL('__tukabel/editor/animations/import', url)
       .href;
     const animationWrite = await page.request.post(animationEndpoint, {
@@ -117,6 +131,8 @@ test('production serves a static game without editor code or write endpoints', a
           'api.elevenlabs.io',
           'queue.fal.run',
           'api.openai.com/v1/images',
+          'api.openai.com/v1/responses',
+          'OPENAI_ANIMATION_MODEL',
         ])
           expect(bundle).not.toContain(serverOnly);
       }

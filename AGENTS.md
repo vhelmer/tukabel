@@ -115,7 +115,21 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
   nepřepisuj; archivuj source, masku a recipe JSON s otiskem zdroje a parametry.
   Recept není druhá definice herního obsahu. Vazby a klipy zapisuje projektový save.
   Mimo masku musí AI výsledek zůstat pixelově shodný se zdrojem. Náhled se použije
-  až vědomou akcí; starý výsledek nesmí přepsat mezitím změněnou scénu.
+  až vědomou akcí; starý výsledek nesmí přepsat změněný zdroj/transformaci nebo souřadnice lokace.
+  Úpravy nesouvisejících objektů a názvu lokace mají zůstat zachované.
+
+- Grafické operace a textová réžie používají `/jobs` a `dev/editorJobs.ts`: nejvýše
+  20 úloh, jeden runner současně, mimo zámek projektových revizí. Fronta v paměti
+  Vite přežije reload klienta, nikoli restart serveru; žádné automatické retry.
+  Čekající lze zrušit, běžící se dokončí. Úlohy samy nikdy nemění projektový JSON.
+  Výsledky otevři podle zachyceného cíle; zaniklý či změněný cíl nepřepisuj.
+- `dev/animationDirection.ts` převádí text jen na omezený návrh existujících
+  blink/talk/idle klipů, intervalů a celkového motion. Serverové `OPENAI_API_KEY`
+  a `OPENAI_ANIMATION_MODEL`; Responses Structured Outputs + vlastní validace.
+  Nepouštěj modelový kód ani libovolné nástroje. Nevydávej nastavení za generování
+  snímků/hlavy. Náhled používá `CombinedPreview`, Apply projde stejnou validací jako
+  Save a tvoří jeden undo krok. Zachovej voice/mapu úst, pokud talk klip zůstává.
+  Polling musí zachovat identity nezměněných výsledků, jinak restartuje Pixi hodiny.
 
 ## Animace postav
 
@@ -144,8 +158,9 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
   (`active`, `timeMs`, volitelný `frameIndex`) připravuje řízení úst zvukovým
   adaptérem. Seek řeči nesmí restartovat oči. Vizuální požadavky ani hodiny
   nepatří do uloženého postupu hráče. Při skrytí Dev Mode odpoj jeho Pixi canvas.
-- Animace nepoužívají externí AI API ani video pipeline. `OPENAI_API_KEY` zůstává
-  pouze pro grafické úpravy lokací, v prostředí serveru / `.env.local`.
+- Import a přehrávání animací nepoužívají AI API ani video pipeline. Textová réžie
+  pouze navrhuje jejich konfiguraci. `OPENAI_API_KEY` používají volitelné grafické
+  úpravy a textová réžie pouze na serveru / v `.env.local`.
   Klíče nikdy do `VITE_`, klienta nebo autorského JSON.
 
 ## Dabing a lip-sync

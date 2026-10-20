@@ -114,10 +114,14 @@ herní hover, kliknutí i drop na objekty pod nimi. Zamknutí nemění chování
    - **AI nová lokácia** použije současné pozadí jako stylovou referenci a vytvoří
      další lokaci, aniž přepíše současnou.
 4. **Vytvoriť lokálny asset** nebo výslovné **Spustiť AI úpravu (API kredit)** uloží
-   nové soubory a zobrazí náhled. Smyčku lze přehrát i procházet po snímcích.
+   založí úlohu na pozadí. Můžeš mezitím upravovat i ukládat projekt, měnit
+   záložku nebo přejít do Game Mode. Přehled **Úlohy na pozadí** ukazuje kroky
+   a nabízí **Otvoriť výsledok**, které obnoví správnou lokaci a zdroj.
+   Smyčku lze přehrát i procházet po snímcích.
    **Použiť výsledok v scéne** teprve přiřadí assety a případný animační klip.
-   Operace tvoří jeden krok **Späť**. Pokud mezitím změníš scénu, starý náhled
-   nelze použít přes novější úpravy. Změna obrázku odpojí jeho původní animace.
+   Operace tvoří jeden krok **Späť**. Pokud mezitím změníš zdroj, jeho umístění
+   nebo rozměry lokace, starý náhled nelze použít přes novější úpravy. Přejmenování
+   lokace nebo úpravy jiných objektů mu nevadí. Změna obrázku odpojí jeho původní animace.
 5. **Živý náhľad animácií** přepne pracovní plochu na stejný Pixi renderer jako hra.
    **Otestovať odtiaľto ↗** otevře interaktivní Game Mode. **Uložiť do projektu**
    zapíše pořadí, vlastnosti, vazby i klipy do `src/game/content/project.json`.
@@ -139,6 +143,51 @@ provede nejvýše jedno volání a nikdy automaticky neopakuje požadavek. Mimo 
 server vrací původní pixely; kvalitu doplněného pozadí je potřeba zkontrolovat v náhledu.
 Bez klíče fungují vrstvy, import, výběry a místní efekty. Produkce neobsahuje grafické
 editorové API ani AI klíč a přehrává pouze lokální PNG. Testy provider mockují.
+
+### Úlohy a textová réžie postav
+
+Fronta je lokální, sériová a omezená na 20 úloh; jeden náročný požadavek běží,
+ostatní čekají. Čekající lze zrušit před voláním API, hotové nebo chybné odložit.
+Běžící požadavek se nechá dokončit; přepnutí režimu ani zavření náhledu jej neruší.
+Chyba ani výpadek spojení nikdy automaticky neopakuje placenou operaci.
+Rozpracované i hotové úlohy přežijí reload stránky, **nikoli restart Vite** — jde
+záměrně o frontu v paměti serveru, bez další služby nebo databáze. Před restartem
+použij a ulož potřebné výsledky. Vytvořené grafické soubory a recepty zůstanou na
+disku i po restartu; projektové vazby mění výhradně **Použiť** a projektový save.
+Obnovení stránky samo neuchovává neuložený návrh projektu, proto jej nejdřív ulož.
+
+V **Dev Mode → Animácie** vyber postavu a rozbal **Textová réžia · experiment**:
+
+1. Zadej pokyn, např. „Občas nervózně mrkne, během dialogu mluví a jemně dýchá.“
+2. Výslovně spusť **Navrhnúť správanie cez AI (API kredit)**. Editor posílá text,
+   popisy dostupných klipů a současná nastavení; neposílá obrázek ani celé herní dialogy.
+3. Později otevři výsledek ve frontě. Návrh vysvětlí změny a omezení. Náhled umožňuje
+   samostatně zapínat oči, ústa a idle, přiblížit postavu nebo vyvolat mrknutí.
+4. **Použiť navrhnuté správanie** změní návrh postavy v jednom kroku Undo. Potom
+   **Uložiť do projektu** a **Otestovať odtiaľto ↗**. Hlasy, dialogy, reakce a mapy
+   Rhubarb zůstávají zachované; při změně talk klipu se stará mapa jeho snímků odpojí.
+
+Tato první verze **konfiguruje existující klipy**, nevyrábí nové kreslené snímky.
+Umí vypnutí nebo přiřazení blink/talk/idle, náhodný interval mrkání a jemné
+celopostavové dýchání/pohupování. Samostatný pohyb hlavy nebo novou mimiku je třeba
+nejdřív připravit/importovat. Souběžné oči a ústa musejí mít nepřekrývající se oblasti;
+server i stejný validátor jako Save odmítnou nevhodné odkazy a překryvy. Změní-li se
+postava nebo klipy během čekání, návrh nesmí jejich novější nastavení přepsat.
+
+Serverový adaptér `dev/animationDirection.ts` používá
+[OpenAI Responses se strukturovaným výstupem](https://developers.openai.com/api/docs/guides/structured-outputs).
+Použije `OPENAI_API_KEY`, model lze změnit přes `OPENAI_ANIMATION_MODEL` v `.env.local`
+(výchozí `gpt-4.1-mini`, vyžaduje Structured Outputs). Není to agent s přístupem ke
+kódu ani souborům. API výstup je pouze omezený datový návrh. Bez klíče zůstává
+plně dostupný import a ruční řízení animací. Testy obou AI adaptérů používají mocky;
+reálnou kvalitu návrhů a obrázků je potřeba posoudit s vlastním API přístupem.
+
+`dev/editorJobs.ts` spravuje životní cyklus, `dev/editorPlugin.ts` páruje konkrétní
+runner a typ výsledku. Grafická pipeline už spojuje přípravu výběru, editaci pozadí,
+výřez a atomické publikování; průběh hlásí pojmenovanými kroky. Další operaci přidej
+jako konkrétní typ a runner, nikoli obecnou orchestraci agentů. React fronta pouze
+sleduje výsledky a umožňuje jejich vědomé použití. Produkční build tyto moduly ani
+endpointy `/__tukabel/editor/jobs` neobsahuje.
 
 ## Game Mode
 
@@ -438,7 +487,7 @@ Ticker respektuje pauzu, skrytou záložku a reduced motion.
 
 Animace obrázků nepoužívají AI služby, video ani FFmpeg. Produkce přehrává místní
 obrázky, audio a časování bez editoru a zápisového API. Staré archivní soubory se
-automaticky nemažou. `OPENAI_API_KEY` lze použít pro volitelné grafické úpravy lokací v Dev Mode, nikoli pro generování animací postav.
+automaticky nemažou. `OPENAI_API_KEY` lze použít pro grafické úpravy lokací a experimentální textovou réžii hotových klipů v Dev Mode. Generování nových animačních snímků přes API zůstává mimo tento workflow.
 
 ### Dabing ElevenLabs a Rhubarb Lip Sync
 

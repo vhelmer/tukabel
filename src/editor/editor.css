@@ -989,3 +989,72 @@
     animation: none;
   }
 }
+
+.editor-job-tray {
+  margin: 0.5rem 0 1rem;
+  padding: 0.85rem;
+  border: 1px solid #749887;
+  border-radius: 10px;
+  background: #172c27;
+}
+.editor-job-tray summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+.editor-job-tray ul {
+  list-style: none;
+  padding: 0;
+  max-height: 18rem;
+  overflow: auto;
+}
+.editor-job-tray li {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 0.6rem 0;
+  border-top: 1px solid #49634f;
+}
+.editor-job-tray li > div {
+  flex: 1;
+  min-width: 12rem;
+}
+.editor-job-tray li span {
+  display: block;
+  font-size: 0.85rem;
+}
+.animation-direction {
+  padding: 1rem;
+  border: 1px solid #749887;
+  border-radius: 10px;
+  background: #192e29;
+}
+.animation-direction textarea {
+  width: 100%;
+}
+.direction-result {
+  margin-top: 1rem;
+}
+.direction-result dt {
+  font-weight: 700;
+}
+.direction-result dd {
+  margin: 0 0 0.5rem;
+}
+.animation-direction {
+  margin-bottom: 1rem;
+}
+.animation-direction summary {
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.animation-direction textarea {
+  max-width: 65rem;
+}
+.animation-direction .combined-preview {
+  max-width: 48rem;
+}
+.animation-direction .character-preview-canvas {
+  height: min(65dvh, 560px);
+}

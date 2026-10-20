@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { assetIds } from '../game/assets';
 import { validateProject } from '../game/validateProject';
 import { initialState } from '../game/state';
@@ -11,12 +11,14 @@ import type {
 import { readProject, writeProject } from './api';
 import { nextId } from './model';
 import { Field, SelectId } from './fields';
-import { AnimationPanel } from './AnimationPanel';
+import { AnimationStudio } from './AnimationStudio';
 import { EditorStage } from './EditorStage';
 import { SceneInspector } from './SceneInspector';
 import { DialoguesPanel, ItemsPanel, PuzzlesPanel } from './ContentPanels';
 import { LogicGraph } from './LogicGraph';
 import { LayerPanel } from './LayerPanel';
+import { useEditorJobs } from './useEditorJobs';
+import { JobTray } from './JobTray';
 import { SceneArtPanel } from './SceneArtPanel';
 import { SceneLivePreview } from './SceneLivePreview';
 import type { Point } from '../game/transforms';
@@ -52,6 +54,8 @@ export default function DevWorkspace({
   onPreview: () => void;
   testState?: GameState;
 }) {
+  const jobQueue = useEditorJobs(active);
+  const [selectedJob, setSelectedJob] = useState('');
   const [tab, setTab] = useState<Tab>('scenes');
   const [graphNodeId, setGraphNodeId] = useState('');
   const [hotspotId, setHotspotId] = useState('');
@@ -62,6 +66,13 @@ export default function DevWorkspace({
   const [livePreview, setLivePreview] = useState(false);
   const [dialogueId, setDialogueId] = useState(document.dialogues[0]?.id ?? '');
   const [assets, setAssets] = useState<string[]>(assetIds);
+  const addAssets = useCallback((ids: string[]) => {
+    setAssets((current) =>
+      ids.every((id) => current.includes(id))
+        ? current
+        : [...new Set([...current, ...ids])],
+    );
+  }, []);
   const [revision, setRevision] = useState<string | null>(null);
   const [saved, setSaved] = useState<string | null>(null);
   const [message, setMessage] = useState('Načítavam zdrojový projekt…');
@@ -253,6 +264,30 @@ export default function DevWorkspace({
       <div className="editor-status" role="status" aria-label="Stav editora">
         {message}
       </div>
+      <JobTray
+        jobs={jobQueue.jobs}
+        error={jobQueue.error}
+        onAction={(id, action) => void jobQueue.action(id, action)}
+        onOpen={(job) => {
+          const target = document.scenes.find(
+            (s) => s.id === job.context.sceneId,
+          );
+          if (
+            !target ||
+            (job.context.targetId &&
+              !target.hotspots.some((h) => h.id === job.context.targetId))
+          ) {
+            setMessage(
+              'Cieľ úlohy už v návrhu neexistuje. Výsledok sa nepoužil; grafické assety zostávajú v src/assets/scene-art/.',
+            );
+            return;
+          }
+          onScene(job.context.sceneId);
+          setHotspotId(job.context.targetId);
+          setTab(job.kind === 'art' ? 'scenes' : 'animations');
+          setSelectedJob(job.id);
+        }}
+      />
       <div className="editor-nav">
         <div className="editor-tabs">
           {tabs.map((entry) => (
@@ -376,7 +411,7 @@ export default function DevWorkspace({
                   scene={scene}
                   selectedId={hotspotId}
                   assets={assets}
-                  onAssets={setAssets}
+                  onAssets={addAssets}
                   onSelect={setHotspotId}
                   onChange={updateScene}
                 />
@@ -440,12 +475,19 @@ export default function DevWorkspace({
                     key={`${artScope}/${hotspot?.image ?? ''}`}
                     active={active}
                     content={document}
+                    jobs={jobQueue.jobs}
+                    selectedJob={selectedJob}
+                    onSubmitted={(job) => {
+                      setSelectedJob(job.id);
+                      jobQueue.add(job);
+                    }}
+                    onDismiss={(id) => void jobQueue.action(id, 'dismiss')}
                     scene={scene}
                     hotspot={hotspot}
                     selection={selection}
                     onSelection={selectArea}
                     onChange={change}
-                    onAssets={setAssets}
+                    onAssets={addAssets}
                     onScene={onScene}
                     onSelect={setHotspotId}
                   />
@@ -467,7 +509,7 @@ export default function DevWorkspace({
                       hotspot={hotspot}
                       content={document}
                       assets={assets}
-                      onAssets={setAssets}
+                      onAssets={addAssets}
                       onScene={updateScene}
                       onHotspot={updateHotspot}
                       onOpenAnimations={() => setTab('animations')}
@@ -507,9 +549,16 @@ export default function DevWorkspace({
               />
             </div>
             {actor ? (
-              <AnimationPanel
+              <AnimationStudio
                 active={active}
                 sceneId={actor.scene.id}
+                jobs={jobQueue.jobs}
+                selectedJob={selectedJob}
+                onSubmitted={(job) => {
+                  setSelectedJob(job.id);
+                  jobQueue.add(job);
+                }}
+                onDismiss={(id) => void jobQueue.action(id, 'dismiss')}
                 onNode={(dialogueId, node) =>
                   change({
                     ...document,
@@ -529,7 +578,7 @@ export default function DevWorkspace({
                 hotspot={actor.hotspot}
                 content={document}
                 assets={assets}
-                onAssets={setAssets}
+                onAssets={addAssets}
                 onHotspot={(next) =>
                   change({
                     ...document,
@@ -572,7 +621,7 @@ export default function DevWorkspace({
             content={document}
             onChange={change}
             assets={assets}
-            onAssets={setAssets}
+            onAssets={addAssets}
           />
         )}
         {tab === 'dialogues' && (

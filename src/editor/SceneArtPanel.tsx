@@ -1,14 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { GameContent, Hotspot, SceneDefinition } from '../game/types';
 import { assetUrl } from '../game/assets';
 import { centre, imagePlacement, rotateAround } from '../game/transforms';
 import type { Point } from '../game/transforms';
 import { polygonIssue } from '../game/polygon';
 import { useImageSize } from './useImageSize';
-import { createArtwork, getArtStatus } from './api';
+import { submitEditorJob, getArtStatus } from './api';
 import type { ArtworkResult } from './api';
 import { AnimationPreview } from './AnimationPreview';
 import { Field } from './fields';
+import { artFingerprint } from './jobs';
+import type { EditorJob } from './jobs';
 import { nextId } from './model';
 
 const presets: Record<string, string> = {
@@ -22,6 +24,10 @@ const presets: Record<string, string> = {
 };
 export function SceneArtPanel({
   active,
+  jobs,
+  selectedJob,
+  onSubmitted,
+  onDismiss,
   content,
   scene,
   hotspot,
@@ -33,6 +39,10 @@ export function SceneArtPanel({
   onSelect,
 }: {
   active: boolean;
+  jobs: readonly EditorJob[];
+  selectedJob: string;
+  onSubmitted: (job: EditorJob) => void;
+  onDismiss: (id: string) => void;
   content: GameContent;
   scene: SceneDefinition;
   hotspot?: Hotspot;
@@ -58,19 +68,33 @@ export function SceneArtPanel({
     configured: boolean;
     model: string;
   }>();
+  const mounted = useRef(false),
+    applied = useRef('');
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
-  const [result, setResult] = useState<{
-    data: ArtworkResult;
-    placement: Pick<Hotspot, 'bounds' | 'rotation' | 'imageFit'>;
-    targetId: string;
-    fingerprint: string;
-  }>();
   const [index, setIndex] = useState(0),
     [playing, setPlaying] = useState(false);
   const object =
     target === 'object' && operation !== 'generate' ? hotspot : undefined;
   const source = object?.image ?? scene.background;
+  const candidates = jobs.filter(
+    (job): job is Extract<EditorJob, { kind: 'art' }> =>
+      job.kind === 'art' &&
+      job.context.sceneId === scene.id &&
+      job.context.targetId === (object?.id ?? ''),
+  );
+  const job = candidates.find((j) => j.id === selectedJob) ?? candidates.at(-1);
+  const result = job?.result ? { data: job.result, ...job.context } : undefined;
+  const resultData = job?.result;
+  useEffect(() => {
+    if (resultData) onAssets(resultData.assets);
+  }, [resultData, onAssets]);
   const size = useImageSize(source);
   const ai = !['cutout', 'loop'].includes(operation);
   const needsSelection = ['cutout', 'loop', 'extract', 'remove'].includes(
@@ -135,50 +159,64 @@ export function SceneArtPanel({
     }
     setBusy(true);
     setPlaying(false);
-    setResult(undefined);
+
     setMessage(
       ai
         ? 'AI spracúva obrázok… Môže to trvať niekoľko minút. Požiadavka sa neopakuje.'
         : 'Pripravujem a ukladám PNG assety…',
     );
     try {
-      const data = await createArtwork({
-        source,
-        operation,
-        selection: points,
-        prompt: ai ? prompt : undefined,
-        confirmed: ai ? true : undefined,
-        motion,
-        amplitude,
-        fps,
-        frameCount: count,
+      const submitted = await submitEditorJob({
+        kind: 'art',
+        label: label.trim() || 'Grafická úprava',
+        context: {
+          sceneId: scene.id,
+          targetId: object?.id ?? '',
+          label: label.trim() || 'Nový výrez',
+          placement: {
+            bounds: placement.bounds,
+            rotation: placement.rotation,
+            imageFit: placement.imageFit,
+          },
+          fingerprint: artFingerprint(scene, object?.id ?? ''),
+        },
+        input: {
+          source,
+          operation,
+          selection: points,
+          prompt: ai ? prompt : undefined,
+          confirmed: ai ? true : undefined,
+          motion,
+          amplitude,
+          fps,
+          frameCount: count,
+        },
       });
-      onAssets(data.assets);
-      setResult({
-        data,
-        placement,
-        targetId: object?.id ?? '',
-        fingerprint: JSON.stringify(scene),
-      });
+      onSubmitted(submitted);
+      if (!mounted.current) return;
       setIndex(0);
       setMessage(
-        'Assety sú uložené. Skontroluj náhľad a zvoľ Použiť výsledok; pôvodné súbory ostávajú zachované.',
+        'Úloha je vo fronte. Môžeš meniť lokáciu, uložiť návrh alebo pokračovať v práci.',
       );
     } catch (error) {
       setMessage(
         error instanceof Error ? error.message : 'Grafická operácia zlyhala.',
       );
     } finally {
-      setBusy(false);
+      if (mounted.current) setBusy(false);
     }
   }
   function apply() {
     if (
       !result ||
+      !job ||
+      applied.current === job.id ||
+      object?.locked ||
       result.data.source !== source ||
-      result.fingerprint !== JSON.stringify(scene)
+      result.fingerprint !== artFingerprint(scene, result.targetId)
     )
       return;
+    applied.current = job.id;
     const { data, placement, targetId } = result;
     if (data.operation === 'generate') {
       const id = nextId(
@@ -191,7 +229,7 @@ export function SceneArtPanel({
           ...content.scenes,
           {
             id,
-            title: label.trim() || 'Nová lokácia',
+            title: result.label || 'Nová lokácia',
             width: scene.width,
             height: scene.height,
             background: data.image,
@@ -201,6 +239,7 @@ export function SceneArtPanel({
       });
       onScene(id);
       onSelect('');
+      onDismiss(job!.id);
       return;
     }
     let next = scene;
@@ -224,7 +263,7 @@ export function SceneArtPanel({
       );
       const layer: Hotspot = {
         id: layerId,
-        label: label.trim() || 'Nový výrez',
+        label: result.label || 'Nový výrez',
         bounds: placement.bounds,
         rotation: placement.rotation,
         imageFit: placement.imageFit,
@@ -254,7 +293,8 @@ export function SceneArtPanel({
         ? [...(content.animations ?? []), data.animation]
         : content.animations,
     });
-    setResult(undefined);
+
+    onDismiss(job!.id);
     onSelection(undefined);
     if (layerId) onSelect(layerId);
     setMessage(
@@ -277,7 +317,6 @@ export function SceneArtPanel({
               onChange={(e) => {
                 setTarget(e.target.value);
                 onSelection(undefined);
-                setResult(undefined);
               }}
             >
               <option value="background">Pozadie lokácie</option>
@@ -293,7 +332,6 @@ export function SceneArtPanel({
                 const op = e.target.value as ArtworkResult['operation'];
                 setOperation(op);
                 setPrompt(presets[op] ?? '');
-                setResult(undefined);
               }}
             >
               <option value="cutout">
@@ -401,15 +439,21 @@ export function SceneArtPanel({
       </fieldset>
       <p role="status" aria-label="Stav grafickej operácie" aria-live="polite">
         {busy && <span className="art-spinner" aria-hidden="true" />}
-        {message}
+        {job?.status === 'succeeded'
+          ? 'Assety sú uložené. Skontroluj náhľad a použi výsledok.'
+          : (job?.error ??
+            (job && ['queued', 'running'].includes(job.status)
+              ? job.stage
+              : message))}
       </p>
       {result && (
         <div className="art-result">
           <h3>Náhľad výsledku</h3>
-          {result.fingerprint !== JSON.stringify(scene) && (
+          {result.fingerprint !== artFingerprint(scene, result.targetId) && (
             <p role="alert">
-              Scéna sa od vytvorenia náhľadu zmenila. Vytvor náhľad znovu, aby
-              sa neprepísali nové úpravy.
+              Zdroj alebo jeho umiestnenie sa od zadania úlohy zmenili. Výsledok
+              nemôže prepísať novšie úpravy; môžeš ich vrátiť alebo vytvoriť
+              novú úlohu.
             </p>
           )}
           {result.data.animation ? (
@@ -452,7 +496,7 @@ export function SceneArtPanel({
               disabled={
                 result.data.source !== source ||
                 object?.locked ||
-                result.fingerprint !== JSON.stringify(scene)
+                result.fingerprint !== artFingerprint(scene, result.targetId)
               }
               onClick={apply}
             >
@@ -461,7 +505,7 @@ export function SceneArtPanel({
             <button
               onClick={() => {
                 setPlaying(false);
-                setResult(undefined);
+                onDismiss(job!.id);
               }}
             >
               Zahodiť náhľad

@@ -11,6 +11,14 @@ import {
 import path from 'node:path';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { loadEnv, type Plugin } from 'vite';
+import { createEditorJobs } from './editorJobs.ts';
+import {
+  directionInput,
+  directionStatus,
+  proposeAnimation,
+  type DirectionOptions,
+} from './animationDirection.ts';
+import type { ArtContext } from '../src/editor/jobs.ts';
 import { artStatus, createArtwork, type ArtOptions } from './sceneArt.ts';
 import {
   createSpeech,
@@ -46,9 +54,11 @@ async function readJson(req: IncomingMessage): Promise<unknown> {
       size >
       (req.url?.endsWith('/animations/import')
         ? 48
-        : req.url?.endsWith('/speech/import')
-          ? 29
-          : 9) *
+        : req.url?.includes('/jobs')
+          ? 0.25
+          : req.url?.endsWith('/speech/import')
+            ? 29
+            : 9) *
         1024 *
         1024
     )
@@ -61,6 +71,9 @@ async function listAssets(directory: string, prefix = ''): Promise<string[]> {
   const entries = await readdir(directory, { withFileTypes: true });
   const nested = await Promise.all(
     entries.map(async (entry) => {
+      // Hidden staging directories can be renamed while jobs publish assets.
+      // Never walk them or offer their partial files in another editor request.
+      if (entry.name.startsWith('.')) return [];
       const id = `${prefix}${entry.name}`;
       if (entry.isDirectory())
         return listAssets(path.join(directory, entry.name), `${id}/`);
@@ -76,6 +89,7 @@ export function editorPlugin(
   options: {
     speech?: import('./speech.ts').SpeechOptions;
     art?: ArtOptions;
+    direction?: DirectionOptions;
   } = {},
 ): Plugin {
   return {
@@ -101,6 +115,13 @@ export function editorPlugin(
         model: process.env.OPENAI_IMAGE_MODEL || env.OPENAI_IMAGE_MODEL,
         ...options.art,
       };
+      const directionOptions: DirectionOptions = {
+        apiKey: process.env.OPENAI_API_KEY || env.OPENAI_API_KEY,
+        model: process.env.OPENAI_ANIMATION_MODEL || env.OPENAI_ANIMATION_MODEL,
+        ...options.direction,
+      };
+      const jobs = createEditorJobs();
+      server.httpServer?.once('close', () => jobs.close());
       let queue = Promise.resolve();
       server.middlewares.use((req, res, next) => {
         if (!req.url?.startsWith(API)) {
@@ -139,20 +160,91 @@ export function editorPlugin(
             respond(200, artStatus(artOptions));
             return;
           }
-          if (endpoint === `${API}/art/create` && req.method === 'POST') {
-            const result = await createArtwork(
-              assetsRoot,
-              await readJson(req),
-              artOptions,
-            );
-            const modules =
-              server.environments.client.moduleGraph.getModulesByFile(
-                path.resolve(server.config.root, 'src/game/assets.ts'),
-              );
-            for (const module of modules ?? [])
-              server.environments.client.moduleGraph.invalidateModule(module);
-            respond(201, { ...result, assets: await listAssets(assetsRoot) });
+          if (
+            endpoint === `${API}/animations/direction/status` &&
+            req.method === 'GET'
+          ) {
+            respond(200, directionStatus(directionOptions));
             return;
+          }
+          if (endpoint === `${API}/jobs` && req.method === 'GET') {
+            respond(200, { jobs: jobs.list() });
+            return;
+          }
+          const action = endpoint.match(
+            /^\/__tukabel\/editor\/jobs\/([a-f0-9-]+)\/(cancel|dismiss)$/,
+          );
+          if (action && req.method === 'POST') {
+            if (action[2] === 'cancel') jobs.cancel(action[1]!);
+            else jobs.dismiss(action[1]!);
+            respond(200, {});
+            return;
+          }
+          if (endpoint === `${API}/jobs` && req.method === 'POST') {
+            const body = (await readJson(req)) as {
+              kind?: string;
+              label?: string;
+              context?: unknown;
+              input?: unknown;
+            };
+            if (
+              !body ||
+              typeof body.label !== 'string' ||
+              !body.context ||
+              typeof body.context !== 'object'
+            )
+              throw Error('Neplatná úloha.');
+            if (body.kind === 'art') {
+              const context = body.context as ArtContext;
+              if (
+                typeof context.sceneId !== 'string' ||
+                typeof context.targetId !== 'string' ||
+                typeof context.fingerprint !== 'string' ||
+                typeof context.label !== 'string' ||
+                !context.placement?.bounds
+              )
+                throw Error('Neplatný cieľ grafickej úpravy.');
+              const input = body.input;
+              const job = jobs.submit(
+                { kind: 'art', context },
+                body.label,
+                async (onStage) => {
+                  const result = await createArtwork(assetsRoot, input, {
+                    ...artOptions,
+                    onStage,
+                  });
+                  const modules =
+                    server.environments.client.moduleGraph.getModulesByFile(
+                      path.resolve(server.config.root, 'src/game/assets.ts'),
+                    );
+                  for (const module of modules ?? [])
+                    server.environments.client.moduleGraph.invalidateModule(
+                      module,
+                    );
+                  return { ...result, assets: await listAssets(assetsRoot) };
+                },
+              );
+              respond(202, job);
+              return;
+            }
+            if (body.kind === 'animation') {
+              const input = {
+                ...(body.input as object),
+                context: body.context,
+              };
+              const { context } = directionInput(input);
+              const job = jobs.submit(
+                { kind: 'animation', context },
+                body.label,
+                async (stage) => {
+                  stage('AI navrhuje nastavenie existujúcich klipov');
+                  return proposeAnimation(input, directionOptions);
+                },
+              );
+              respond(202, job);
+              return;
+            }
+            throw Error('Neznámy typ úlohy.');
           }
           if (endpoint === `${API}/speech/status` && req.method === 'GET') {
             respond(200, await speechStatus(speechOptions));
@@ -326,7 +418,11 @@ export function editorPlugin(
           } else respond(404, { error: 'Unknown editor endpoint or method.' });
         };
         // Serialize writes and reads so two tabs cannot both overwrite the same revision.
-        queue = queue.then(run).catch((error: unknown) => {
+        const pending =
+          req.url?.startsWith(`${API}/jobs`) || req.url?.endsWith('/status')
+            ? run()
+            : (queue = queue.then(run));
+        const handled = pending.catch((error: unknown) => {
           if (!(res as ServerResponse).headersSent)
             respond(400, {
               error:
@@ -335,6 +431,7 @@ export function editorPlugin(
                   : 'Editor request failed.',
             });
         });
+        if (pending === queue) queue = handled;
       });
     },
     hotUpdate: {
