@@ -9,6 +9,7 @@ type Snapshot = {
   pixels: Uint8Array;
   seeds: Uint8Array;
   method: ObjectMask['method'];
+  refineEdges?: boolean;
 };
 export function MaskEditor({
   source,
@@ -35,6 +36,7 @@ export function MaskEditor({
         pixels: Uint8Array;
         seeds: Uint8Array;
         method: ObjectMask['method'];
+        refineEdges?: boolean;
       }
     | undefined
   >(undefined);
@@ -64,6 +66,7 @@ export function MaskEditor({
   const [method, setMethod] = useState<'grabcut' | 'sam2'>(
     available?.sam2 ? 'sam2' : 'grabcut',
   );
+  const [refineEdges, setRefineEdges] = useState(initial?.refineEdges ?? true);
   useEffect(() => {
     const el = dialog.current!;
     el.showModal();
@@ -127,6 +130,7 @@ export function MaskEditor({
           pixels,
           seeds: new Uint8Array(pixels.length),
           method: initial?.method ?? 'manual',
+          refineEdges: initial?.refineEdges,
         };
         setSize(original);
         setReady(true);
@@ -224,6 +228,7 @@ export function MaskEditor({
       pixels: d.pixels.slice(),
       seeds: d.seeds.slice(),
       method: d.method,
+      refineEdges: d.refineEdges,
     };
   }
   function remember(before: Snapshot) {
@@ -259,13 +264,14 @@ export function MaskEditor({
       tool === 'add',
     );
     d.method = 'manual';
+    d.refineEdges = undefined;
   }
   async function refine() {
     const d = working.current;
     if (!d || busy) return;
     setBusy(true);
     setMessage(
-      `${method === 'sam2' ? 'SAM 2' : 'GrabCut'} hľadá hranice objektu…`,
+      `${method === 'sam2' ? (refineEdges ? 'SAM 2 + pôvodné hrany' : 'SAM 2') : 'GrabCut'} hľadá hranice objektu…`,
     );
     try {
       const before = snapshot();
@@ -278,12 +284,14 @@ export function MaskEditor({
         },
         maskBase64(d.seeds, d.source.width, d.source.height),
         method,
+        refineEdges,
       );
       const pixels = await pngPixels(result.data, result.width, result.height);
       if (!alive.current) return;
       remember(before);
       d.pixels = pixels;
       d.method = result.method;
+      d.refineEdges = result.refineEdges;
       setRevision((v) => v + 1);
       setView('cutout');
       setMessage(
@@ -386,6 +394,7 @@ export function MaskEditor({
               height: size.height * scale,
               touchAction: tool === 'inspect' ? 'auto' : 'none',
               cursor: tool === 'inspect' ? 'grab' : 'crosshair',
+              imageRendering: scale >= 1 ? 'pixelated' : 'auto',
             }}
             onPointerDown={(e) => {
               if (
@@ -464,6 +473,7 @@ export function MaskEditor({
               d.pixels = next.map((v) => (v >= 128 ? 255 : 0));
               d.seeds.fill(0);
               d.method = 'manual';
+              d.refineEdges = undefined;
               setRevision((v) => v + 1);
               setView('cutout');
               setMessage(
@@ -484,6 +494,7 @@ export function MaskEditor({
         <Field label="Segmentácia hraníc">
           <select
             value={method}
+            disabled={busy}
             onChange={(e) => setMethod(e.target.value as typeof method)}
           >
             <option value="grabcut">GrabCut · lokálne farby a hrany</option>
@@ -492,6 +503,17 @@ export function MaskEditor({
             </option>
           </select>
         </Field>
+        {method === 'sam2' && (
+          <label className="mask-edge-toggle">
+            <input
+              type="checkbox"
+              checked={refineEdges}
+              disabled={busy}
+              onChange={(e) => setRefineEdges(e.target.checked)}
+            />{' '}
+            Dotiahnuť obrysy a tenké časti
+          </label>
+        )}
         <button
           disabled={!ready || busy || !available?.[method]}
           onClick={() => void refine()}
@@ -511,6 +533,7 @@ export function MaskEditor({
               ...d.source,
               data: maskBase64(d.pixels, d.source.width, d.source.height),
               method: d.method,
+              refineEdges: d.refineEdges,
             });
           }}
         >
@@ -521,6 +544,14 @@ export function MaskEditor({
         <p className="field-note">
           Automatické spresnenie: spusti npm run setup:segmentation a reštartuj
           Vite. Ručné maskovanie funguje aj bez Pythonu.
+        </p>
+      )}
+      {method === 'sam2' && (
+        <p className="field-note">
+          SAM 2 odhadne tvar objektu. Dotiahnutie obrysov použije farby a hrany
+          pôvodného obrázka v pásme 12 px okolo hranice. Chýbajúcu anténu alebo
+          čiaru prejdi zeleným štetcom, nežiaduce pozadie červeným. Tieto pixely
+          zostanú zachované aj po ďalšom spresnení.
         </p>
       )}
       <p className="field-note">

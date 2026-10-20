@@ -166,10 +166,12 @@ export const segmentMask = (
   mask: import('./masks').ObjectMask,
   seeds: string,
   method: 'grabcut' | 'sam2',
+  refineEdges = true,
 ) =>
   request<import('./masks').ObjectMask>('art/segment', 'POST', {
     source,
     mask,
     seeds,
     method,
+    refineEdges,
   });

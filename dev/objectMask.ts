@@ -63,12 +63,17 @@ export async function readObjectMask(
     input.width !== source.width ||
     input.height !== source.height ||
     input.sourceSha256 !== source.sourceSha256 ||
-    !['manual', 'grabcut', 'sam2'].includes(String(input.method))
+    !['manual', 'grabcut', 'sam2'].includes(String(input.method)) ||
+    (input.refineEdges !== undefined && typeof input.refineEdges !== 'boolean')
   )
     throw Error(
       'Maska patrí k inému alebo zmenenému zdroju. Priprav ju znovu.',
     );
   const pixels = await maskPixels(input.data, source.width, source.height);
   if (!pixels.includes(255)) throw Error('Maska neobsahuje žiadny objekt.');
-  return { pixels, method: input.method as ObjectMask['method'] };
+  return {
+    pixels,
+    method: input.method as ObjectMask['method'],
+    refineEdges: input.refineEdges as boolean | undefined,
+  };
 }

@@ -169,9 +169,23 @@ test('source-pixel masks support real segmentation, manual touchups, zoom, compa
   const segmentation = (await status.json()).segmentation;
   const available = segmentation.grabcut;
   const method = segmentation.sam2 ? 'sam2' : 'grabcut';
+  if (segmentation.sam2) {
+    const edges = editor.getByRole('checkbox', {
+      name: 'Dotiahnuť obrysy a tenké časti',
+      exact: true,
+    });
+    await expect(edges).toBeChecked();
+    await edges.uncheck();
+    await expect(edges).not.toBeChecked();
+    await edges.check();
+  }
   if (available) {
     await expect(refine).toBeEnabled();
+    const request = page.waitForRequest(
+      (r) => r.url().endsWith('/art/segment') && r.method() === 'POST',
+    );
     await refine.click();
+    expect((await request).postDataJSON().refineEdges).toBe(true);
     await expect(editor.getByRole('status')).toContainText('Skontroluj obrys', {
       timeout: 20000,
     });
@@ -280,6 +294,7 @@ test('source-pixel masks support real segmentation, manual touchups, zoom, compa
   const recipe = JSON.parse(await readFile(asset(result.manifest), 'utf8'));
   expect(recipe.reconstruction.changedPixels).toBe(0);
   expect(recipe.objectMask.method).toBe(available ? method : 'manual');
+  if (segmentation.sam2) expect(recipe.objectMask.refineEdges).toBe(true);
   await page
     .getByRole('button', { name: 'Otestovať odtiaľto ↗', exact: true })
     .click();

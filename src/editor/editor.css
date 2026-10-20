@@ -1107,6 +1107,14 @@
 .mask-toolbar input {
   width: 100%;
 }
+.mask-edge-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.mask-toolbar .mask-edge-toggle input {
+  width: auto;
+}
 .mask-viewport {
   overflow: auto;
   max-height: 65dvh;

@@ -4,6 +4,7 @@ export interface ObjectMask {
   height: number;
   sourceSha256: string;
   method: 'manual' | 'grabcut' | 'sam2';
+  refineEdges?: boolean; // SAM followed by a source-resolution boundary fit.
 }
 export interface MaskSource {
   data: string;

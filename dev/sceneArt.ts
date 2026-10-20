@@ -515,6 +515,7 @@ export async function createArtwork(
         ? {
             file: 'object-mask.png',
             method: suppliedMask?.method ?? 'polygon',
+            refineEdges: suppliedMask?.refineEdges,
             pixelOwnership: 'binary',
           }
         : undefined,

@@ -294,6 +294,10 @@ for (const method of ['grabcut', 'sam2'] as const) {
         options,
       );
       const mask = await readObjectMask(result, source);
+      for (let p = 0; p < seeds.length; p++) {
+        if (seeds[p] === 255) expect(mask.pixels[p]).toBe(255);
+        if (seeds[p] === 128) expect(mask.pixels[p]).toBe(0);
+      }
       expect(mask.pixels[105 * source.width + 905]).toBe(255);
       expect(mask.pixels[120 * source.width + 849]).toBe(255);
       expect(mask.pixels[60 * source.width + 835]).toBe(0);
@@ -324,3 +328,128 @@ for (const method of ['grabcut', 'sam2'] as const) {
     });
   });
 }
+
+test('SAM source-edge refinement recovers both router antennae and keeps cutout pixels opaque and source-identical', async () => {
+  test.setTimeout(120000);
+  const info = test.info();
+  const options = {
+    python,
+    checkpoint:
+      process.env.SAM2_CHECKPOINT ||
+      path.resolve('.local-tools/models/sam2.1_hiera_tiny.pt'),
+  };
+  test.skip(
+    !(await segmentationStatus(options)).sam2,
+    'Install local SAM 2; see README',
+  );
+  await fixture(async (root) => {
+    const svg = await readFile('src/assets/demo-room.svg', 'utf8');
+    await writeFile(
+      path.join(root, 'source.png'),
+      await sharp(Buffer.from(svg)).png().toBuffer(),
+    );
+    const source = await readArtSource(root, 'source.png');
+    // Independent ground truth from the actual drawing, including its outlines.
+    const drawing = svg
+      .split('<!-- Router:')[1]!
+      .split('-->')[1]!
+      .split('<!-- A mug')[0]!;
+    const truthRgba = await rgba(
+      await sharp(
+        Buffer.from(
+          `<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720"><g stroke="#383b32" stroke-width="7" stroke-linejoin="round" stroke-linecap="round">${drawing}</g></svg>`,
+        ),
+      )
+        .png()
+        .toBuffer(),
+    );
+    const truth = Buffer.alloc(source.width * source.height);
+    for (let p = 0; p < truth.length; p++)
+      truth[p] = truthRgba[p * 4 + 3]! >= 128 ? 255 : 0;
+    const pixels = Buffer.alloc(truth.length);
+    // Same loose rectangle used when the router's left antenna lost half its pixels.
+    for (let y = 326; y < 543; y++)
+      for (let x = 317; x < 598; x++) pixels[y * source.width + x] = 255;
+    const input = {
+      source: 'source.png',
+      method: 'sam2',
+      mask: {
+        width: source.width,
+        height: source.height,
+        sourceSha256: source.sourceSha256,
+        data: (await maskPng(pixels, source.width, source.height)).toString(
+          'base64',
+        ),
+        method: 'manual',
+      },
+      seeds: (
+        await maskPng(Buffer.alloc(truth.length), source.width, source.height)
+      ).toString('base64'),
+    };
+    const overlaps: number[] = [];
+    for (const refineEdges of [false, true]) {
+      const result = await segmentObject(
+        root,
+        { ...input, refineEdges },
+        options,
+      );
+      expect(result.refineEdges).toBe(refineEdges);
+      const { pixels: mask } = await readObjectMask(result, source);
+      let intersection = 0,
+        union = 0;
+      for (let p = 0; p < mask.length; p++) {
+        if (mask[p] && truth[p]) intersection++;
+        if (mask[p] || truth[p]) union++;
+      }
+      overlaps.push(intersection / union);
+      if (refineEdges) {
+        for (const [left, right] of [
+          [325, 375],
+          [510, 560],
+        ]) {
+          let expected = 0,
+            retained = 0;
+          for (let y = 345; y < 437; y++)
+            for (let x = left!; x < right!; x++) {
+              const p = y * source.width + x;
+              if (truth[p]) {
+                expected++;
+                if (mask[p]) retained++;
+              }
+            }
+          expect(retained / expected).toBeGreaterThan(0.985);
+        }
+      }
+      const cutout = await createArtwork(root, {
+        source: 'source.png',
+        operation: 'cutout',
+        objectMask: result,
+      });
+      const bytes = await readFile(path.join(root, cutout.image));
+      await writeFile(
+        info.outputPath(
+          refineEdges ? 'router-refined.png' : 'router-raw-sam.png',
+        ),
+        bytes,
+      );
+      const raw = await rgba(bytes);
+      let alteredPixels = 0;
+      for (let p = 0; p < mask.length; p++) {
+        const i = p * 4;
+        if (
+          mask[p]
+            ? !raw.subarray(i, i + 4).equals(source.raw.subarray(i, i + 4))
+            : raw[i + 3] !== 0
+        )
+          alteredPixels++;
+      }
+      expect(alteredPixels).toBe(0);
+      expect(
+        JSON.parse(await readFile(path.join(root, cutout.manifest), 'utf8'))
+          .objectMask.refineEdges,
+      ).toBe(refineEdges);
+    }
+    expect(overlaps[1]!).toBeGreaterThan(0.96);
+    expect(overlaps[1]! - overlaps[0]!).toBeGreaterThan(0.06);
+  });
+});

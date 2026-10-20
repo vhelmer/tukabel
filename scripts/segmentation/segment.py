@@ -20,7 +20,8 @@ import numpy as np
 
 cv.setNumThreads(1)
 cv.setRNGSeed(7)
-folder, method = sys.argv[1:]
+folder, method = sys.argv[1:3]
+refine_edges = len(sys.argv) < 4 or sys.argv[3] == "source-edges"
 image = cv.imread(os.path.join(folder, "source.png"), cv.IMREAD_COLOR)
 prior = cv.imread(os.path.join(folder, "prior.png"), cv.IMREAD_GRAYSCALE)
 seeds = cv.imread(os.path.join(folder, "seeds.png"), cv.IMREAD_GRAYSCALE)
@@ -37,6 +38,40 @@ y0, y1 = max(0, int(ys.min()) - 24), min(image.shape[0], int(ys.max()) + 25)
 roi = image[y0:y1, x0:x1].copy()
 p = inside[y0:y1, x0:x1]
 s = seeds[y0:y1, x0:x1]
+
+
+def source_edges(image, mask, seeds):
+    """Fit SAM's coarse boundary to original pixels, never soften its alpha.
+
+    Only a 12px boundary band may change. Interior/background remain fixed;
+    explicit brush strokes are hard constraints, including recovered thin parts.
+    No closing/filling: real holes and gaps between antennae must survive.
+    """
+    mask = mask.copy()
+    mask[seeds == 255] = True
+    mask[seeds == 128] = False
+    kernel = cv.getStructuringElement(cv.MORPH_ELLIPSE, (25, 25))
+    core = cv.erode(mask.astype(np.uint8), kernel) > 0
+    possible = cv.dilate(mask.astype(np.uint8), kernel) > 0
+    core[seeds == 255] = True
+    possible[seeds == 255] = True
+    # Degenerate/tiny masks cannot train GrabCut's foreground/background GMMs.
+    if np.count_nonzero(core) < 5 or np.count_nonzero(~possible) < 5:
+        return mask
+    yy, xx = np.where(possible)
+    x0, x1 = max(0, int(xx.min()) - 1), min(image.shape[1], int(xx.max()) + 2)
+    y0, y1 = max(0, int(yy.min()) - 1), min(image.shape[0], int(yy.max()) + 2)
+    labels = np.where(mask, cv.GC_PR_FGD, cv.GC_PR_BGD).astype(np.uint8)
+    labels[core] = cv.GC_FGD
+    labels[~possible] = cv.GC_BGD
+    labels[seeds == 255] = cv.GC_FGD
+    labels[seeds == 128] = cv.GC_BGD
+    region = labels[y0:y1, x0:x1].copy()
+    cv.grabCut(image[y0:y1, x0:x1].copy(), region, None, np.zeros((1, 65), np.float64), np.zeros((1, 65), np.float64), 5, cv.GC_INIT_WITH_MASK)
+    result = np.zeros_like(mask)
+    result[y0:y1, x0:x1] = (region == cv.GC_FGD) | (region == cv.GC_PR_FGD)
+    return result
+
 
 if method == "grabcut":
     labels = np.where(p, cv.GC_PR_FGD, cv.GC_BGD).astype(np.uint8)
@@ -73,6 +108,8 @@ elif method == "sam2":
         predictor.set_image(cv.cvtColor(roi, cv.COLOR_BGR2RGB))
         masks, scores, _ = predictor.predict(point_coords=np.asarray(points, dtype=np.float32) if points else None, point_labels=np.asarray(labels, dtype=np.int32) if points else None, box=np.array([xs.min() - x0, ys.min() - y0, xs.max() - x0, ys.max() - y0], dtype=np.float32), multimask_output=True)
         mask = masks[int(np.argmax(scores))].astype(bool)
+    if refine_edges:
+        mask = source_edges(image, mask, seeds)
 else:
     raise ValueError("unknown method")
 

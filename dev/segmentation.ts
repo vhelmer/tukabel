@@ -64,6 +64,8 @@ export async function segmentObject(
 ) {
   if (!isObject(input) || !['grabcut', 'sam2'].includes(String(input.method)))
     throw Error('Neplatný segmentačný nástroj.');
+  if (input.refineEdges !== undefined && typeof input.refineEdges !== 'boolean')
+    throw Error('Neplatné nastavenie spresnenia obrysov.');
   if (running)
     throw Error('Segmentácia už beží. Počkaj na dokončenie; nič sa neopakuje.');
   running = true;
@@ -97,7 +99,12 @@ export async function segmentObject(
     try {
       await execute(
         await python(options),
-        [helper, directory, String(input.method)],
+        [
+          helper,
+          directory,
+          String(input.method),
+          input.refineEdges !== false ? 'source-edges' : 'none',
+        ],
         { timeout: 90000, maxBuffer: 32768, env: environment(options) },
       );
     } catch {
@@ -119,6 +126,8 @@ export async function segmentObject(
       height: original.height,
       sourceSha256: original.sourceSha256,
       method: input.method as 'grabcut' | 'sam2',
+      refineEdges:
+        input.method === 'sam2' ? input.refineEdges !== false : undefined,
     };
   } finally {
     running = false;

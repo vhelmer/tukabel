@@ -129,6 +129,10 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
   jen pevný lokální Python helper bez shellu, timeout 90 s a dočasné soubory uklízí.
   GrabCut i volitelný SAM 2 mění pouze masku, nikdy původní RGB. Žádné automatické
   stahování modelů; váhy a Python patří do ignorovaného `.local-tools/`.
+- SAM dostává celý zdroj kvůli kontextu; výchozí `refineEdges` dotáhne jeho masku
+  GrabCutem jen v pásmu 12 původních pixelů kolem hranice. Eroze/dilatace tvoří
+  pouze pomocný trimap, ne výslednou masku. Tahy štětce jsou vždy pevné podmínky;
+  nevyplňuj automaticky díry ani nepřidávej měkkou alfu. Volbu archivuj v recipe.
 - `MaskEditor` upravuje pixely zdroje nezávisle na zoomu, tahy tvoří celé undo kroky;
   pointercancel/Escape rozpracovaný tah vrátí. Import PNG masky i ruční štětec mají
   fungovat bez Pythonu. Náhled oddělení ukazuje šachovnici, originál/reassembly a diff;

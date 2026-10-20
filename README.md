@@ -137,7 +137,11 @@ herní hover, kliknutí i drop na objekty pod nimi. Zamknutí nemění chování
    objektu, červený odstraňuje pozadí a umí vytvořit i otvory uvnitř objektu.
    Tyto tahy zároveň určují jisté popředí/pozadí pro segmentaci. Označ několik
    charakteristických barev a také tenké černé obrysy, které mají zůstat.
-3. **Spresniť hranice objektu** spustí lokální GrabCut podle skutečných barev a hran.
+3. **Spresniť hranice objektu** spustí vybraný lokální nástroj. U SAM nech zapnuté
+   **Dotiahnuť obrysy a tenké časti**: po rozpoznání objektu se hranice dotáhnou
+   podle původních pixelů, což pomáhá například anténám routeru. Pro srovnání lze
+   přepínač vypnout a vrátit se pomocí **Späť v maske**. Nejde o změkčování alfy;
+   každému pixelu maska přiřadí buď původní neprůhlednost, nebo úplnou průhlednost.
    Výsledek zkontroluj a případně uprav štětcem nebo segmentaci zopakuj. **Priblížiť
    objekt**, zoom až 8×, původní obrázek, barevná maska a šachovnice pomohou odhalit
    chybějící čáry. **Späť v maske** vrací celé tahy i segmentaci; přerušený tah nic
@@ -184,9 +188,17 @@ V okně **Spresniť / upraviť masku objektu → Segmentácia hraníc** se zpř�
 Výsledek zkontroluj na šachovnici, případně oprav zeleným/červeným štětcem a zopakuj.
 Model dostává celý zdroj kvůli kontextu, rám výběru a body odvozené z tahů štětce;
 výsledná maska vybírá původní pixely, objekt se negeneruje znovu.
+Výchozí dotažení hran používá GrabCut v původním rozlišení pouze v pásmu 12 px
+okolo odhadu SAM; vnitřek a vzdálené pozadí zůstávají pevné. Maska se nerozmazává
+ani plošně nezvětšuje. Zelené/červené tahy jsou pevná pravidla pro oba kroky.
+Pokud chybí celá tenká část, projdi ji zeleným štětcem a pozadí kolem ní červeným;
+automatické dotažení není záruka perfektního obrysu. Ve zvětšení alespoň 1:1 se
+canvas zobrazuje bez vyhlazení, takže jsou skutečné chybějící pixely dobře vidět.
 
 Skutečné lokální inference GrabCut i SAM 2 jsou ověřené na kreslených hodinách
 v `tests/object-mask-rules.spec.ts`, včetně zachování RGB/alpha původního objektu.
+Test routeru porovnává samotný SAM s dotažením proti původním SVG obrysům a
+vyžaduje zachování alespoň 98,5 % pixelů obou antén bez nové poloprůhlednosti.
 Test SAM se přeskočí, pokud chybí instalace nebo checkpoint (výše uvedená cesta,
 případně `SAM2_CHECKPOINT`). Browserový test masky použije SAM, pokud je nastavený
 `SAM2_CHECKPOINT`, jinak GrabCut. Modely ani kód se za běhu automaticky nestahují.
@@ -197,7 +209,8 @@ Všechny nové soubory jsou v `src/assets/scene-art/<uuid>/`: normalizovaný ras
 `source.png`, opravná `mask.png` (průhledná uvnitř oblasti povolené pro AI), výsledek,
 případný `cutout.png` a snímky. Přesné výřezy mají `object-mask.png` (bílá = ponechat
 původní pixel, černá = průhlednost); oddělení navíc `reassembled.png` a `difference.png`.
-`recipe.json` archivuje SHA-256 zdroje, polygon nebo metodu masky, prompt/model,
+`recipe.json` archivuje SHA-256 zdroje, polygon nebo metodu masky (u SAM také
+`refineEdges`, zda se dotahovaly obrysy), prompt/model,
 přesah opravné masky a výsledek pixelové kontroly. Je to záznam výroby; jedinou definicí
 herního obsahu zůstává projektový JSON. Masku lze načíst znovu do editoru nad původním
 zdrojem. Rozpracovaná maska je vázaná na hash i rozměry zdroje. Při výslovném
