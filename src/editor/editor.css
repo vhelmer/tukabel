@@ -1154,3 +1154,12 @@
   background: #172c27;
   border-bottom: 1px solid #749887;
 }
+.mask-launch-error {
+  flex-basis: 100%;
+  margin: 0;
+  padding: 0.65rem;
+  border: 1px solid #d88e68;
+  border-radius: 6px;
+  color: #ffe0c2;
+  background: #482b22;
+}

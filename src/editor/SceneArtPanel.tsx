@@ -58,9 +58,22 @@ export function SceneArtPanel({
 }) {
   const [operation, setOperation] =
     useState<ArtworkResult['operation']>('cutout');
-  const [target, setTarget] = useState(
-    hotspot?.image ? 'object' : 'background',
+  const openedJob = jobs.find(
+    (job) =>
+      job.kind === 'art' &&
+      job.id === selectedJob &&
+      job.context.sceneId === scene.id &&
+      job.context.targetId === (hotspot?.id ?? ''),
   );
+  const jobTarget = openedJob?.context.targetId ? 'object' : 'background';
+  // Selecting a character must not silently retarget a selection on the scenery.
+  // Explicitly opening a saved job still restores the source of that job.
+  const [targetChoice, setTargetChoice] = useState({
+    jobId: selectedJob,
+    value: jobTarget,
+  });
+  const target =
+    targetChoice.jobId === selectedJob ? targetChoice.value : jobTarget;
   const [prompt, setPrompt] = useState('');
   const [label, setLabel] = useState('Nový výrez');
   const [motion, setMotion] = useState('water');
@@ -89,6 +102,7 @@ export function SceneArtPanel({
     mask: ObjectMask;
   }>();
   const [message, setMessage] = useState('');
+  const [maskError, setMaskError] = useState<{ scope: string; text: string }>();
   const [busy, setBusy] = useState(false);
   const [index, setIndex] = useState(0),
     [playing, setPlaying] = useState(false);
@@ -352,8 +366,8 @@ export function SceneArtPanel({
               value={target}
               disabled={operation === 'generate'}
               onChange={(e) => {
-                setTarget(e.target.value);
-                onSelection(undefined);
+                setTargetChoice({ jobId: selectedJob, value: e.target.value });
+                setMaskError(undefined);
               }}
             >
               <option value="background">Pozadie lokácie</option>
@@ -398,20 +412,31 @@ export function SceneArtPanel({
             <button
               disabled={!size}
               onClick={() => {
+                setMaskError(undefined);
                 try {
                   setMaskDraft({
                     scope: maskScope,
                     points: sourceSelection().points,
                   });
                 } catch (e) {
-                  setMessage(
-                    e instanceof Error ? e.message : 'Neplatný výber.',
-                  );
+                  setMaskError({
+                    scope: maskScope,
+                    text:
+                      (e instanceof Error ? e.message : 'Neplatný výber.') +
+                      (object
+                        ? ` Zdrojom je vrstva „${object.label}“. Pre výber na pozadí zvoľ Zdroj grafickej úpravy → Pozadie lokácie; polygón zostane zachovaný.`
+                        : ''),
+                  });
                 }
               }}
             >
               Spresniť / upraviť masku objektu
             </button>
+            {maskError?.scope === maskScope && (
+              <p className="mask-launch-error" role="alert">
+                {maskError.text}
+              </p>
+            )}
             {preparedMask && (
               <>
                 <span>✓ Maska pripravená · {preparedMask.method}</span>
@@ -421,9 +446,10 @@ export function SceneArtPanel({
               </>
             )}
             <p className="field-note">
-              Najprv približne označ objekt, potom spresni hranice a oprav ich
-              štetcom. Maska vyberá pôvodné pixely vrátane čiernych obrysov; AI
-              generuje iba pozadie.
+              Najprv približne označ objekt. Polygón uzavri kliknutím na prvý
+              bod alebo tlačidlom Dokončiť polygón. Potom spresni hranice a
+              oprav ich štetcom. Maska vyberá pôvodné pixely vrátane čiernych
+              obrysov; AI generuje iba pozadie.
             </p>
           </div>
         )}

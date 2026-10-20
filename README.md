@@ -130,7 +130,9 @@ herní hover, kliknutí i drop na objekty pod nimi. Zamknutí nemění chování
 
 1. Vyber **Zdroj grafickej úpravy → Pozadie lokácie** a operaci
    **AI · oddeliť objekt + opraviť pozadie**. Nad scénou zvol **Vybrať obdĺžnik**
-   nebo **Vybrať polygón** a volně obkresli celý objekt včetně obrysu.
+   nebo **Vybrať polygón** a volně obkresli celý objekt včetně obrysu. Zdroj je
+   ve výchozím stavu pozadí, i když je vybraná postava. Pro úpravu samostatného
+   assetu výslovně zvol **Vybraná obrázková vrstva**; změna zdroje polygon nemaže.
 2. Klikni na **Spresniť / upraviť masku objektu**. Zelený štětec ponechává pixely
    objektu, červený odstraňuje pozadí a umí vytvořit i otvory uvnitř objektu.
    Tyto tahy zároveň určují jisté popředí/pozadí pro segmentaci. Označ několik

@@ -6,6 +6,7 @@ import { test, openEditor } from './editorFixture';
 import { ready } from './helpers';
 import type { GameContent } from '../src/game/types';
 import type { EditorJob } from '../src/editor/jobs';
+import { artFingerprint } from '../src/editor/jobs';
 
 async function sourcePoint(canvas: Locator, x: number, y: number) {
   await canvas.scrollIntoViewIfNeeded();
@@ -293,4 +294,150 @@ test('source-pixel masks support real segmentation, manual touchups, zoom, compa
     },
   );
   expect(foreign.status()).toBe(403);
+});
+
+async function selectBackgroundPolygon(page: Page, touch: boolean) {
+  await page
+    .getByRole('button', { name: 'Vybrať polygón', exact: true })
+    .click();
+  const stage = page.locator('.editor-stage');
+  await stage.scrollIntoViewIfNeeded();
+  const points = await stage.evaluate((el) => {
+    const matrix = (el as SVGSVGElement).getScreenCTM()!;
+    return [
+      { x: 300, y: 400 },
+      { x: 650, y: 400 },
+      { x: 650, y: 650 },
+      { x: 300, y: 650 },
+      { x: 300, y: 400 },
+    ].map((p) => {
+      const screen = new DOMPoint(p.x, p.y).matrixTransform(matrix);
+      return { x: screen.x, y: screen.y };
+    });
+  });
+  for (const p of points) {
+    if (touch) await page.touchscreen.tap(p.x, p.y);
+    else await page.mouse.click(p.x, p.y);
+  }
+  await expect(stage.locator('[data-art-selection]')).toHaveCount(1);
+}
+
+test('a background polygon opens the mask editor even when a character was selected earlier', async ({
+  page,
+  workspace,
+  isMobile,
+}) => {
+  await openEditor(page, workspace.url);
+  await page
+    .getByLabel('Vybraný objekt', { exact: true })
+    .selectOption('caretaker');
+  await selectBackgroundPolygon(page, isMobile);
+  const art = page.getByRole('region', { name: 'Grafické nástroje scény' });
+  await expect(
+    art.getByLabel('Zdroj grafickej úpravy', { exact: true }),
+  ).toHaveValue('background');
+  await art
+    .getByRole('button', {
+      name: 'Spresniť / upraviť masku objektu',
+      exact: true,
+    })
+    .click();
+  await expect(
+    page.getByRole('dialog', { name: 'Maska objektu' }),
+  ).toBeVisible();
+  await expect(
+    page.getByLabel('Plátno segmentačnej masky', { exact: true }),
+  ).toBeVisible();
+});
+
+test('mask launch errors remain visible beside the button and source switching preserves the polygon and restores object jobs', async ({
+  page,
+  workspace,
+  isMobile,
+}) => {
+  const project = JSON.parse(
+    await readFile(workspace.source, 'utf8'),
+  ) as GameContent;
+  const scene = project.scenes[0]!,
+    actor = scene.hotspots.find((h) => h.id === 'caretaker')!;
+  await openEditor(page, workspace.url);
+  await page
+    .getByLabel('Vybraný objekt', { exact: true })
+    .selectOption(actor.id);
+  const art = page.getByRole('region', { name: 'Grafické nástroje scény' });
+  const source = art.getByLabel('Zdroj grafickej úpravy', { exact: true });
+  await source.selectOption('object');
+  const response = await page.request.post(
+    `${workspace.url}__tukabel/editor/jobs`,
+    {
+      headers: {
+        Origin: new URL(workspace.url).origin,
+        'X-Tukabel-Editor': '1',
+      },
+      data: {
+        kind: 'art',
+        label: 'Predchádzajúci výrez',
+        context: {
+          sceneId: scene.id,
+          targetId: actor.id,
+          label: 'Predchádzajúci výrez',
+          fingerprint: artFingerprint(scene, actor.id),
+          placement: {
+            bounds: actor.bounds,
+            rotation: actor.rotation,
+            imageFit: actor.imageFit,
+          },
+        },
+        input: {
+          source: actor.image,
+          operation: 'cutout',
+          selection: [
+            { x: 0, y: 0 },
+            { x: 16, y: 0 },
+            { x: 16, y: 16 },
+          ],
+        },
+      },
+    },
+  );
+  expect(response.status()).toBe(202);
+  await expect(
+    art.getByRole('status', { name: 'Stav grafickej operácie' }),
+  ).toContainText('Assety sú uložené');
+  await selectBackgroundPolygon(page, isMobile);
+  await source.selectOption('background');
+  await expect(page.locator('[data-art-selection]')).toHaveCount(1);
+  // Opening an object job must restore its explicit target even without a remount.
+  await page
+    .getByRole('button', { name: 'Otvoriť výsledok', exact: true })
+    .click();
+  await expect(source).toHaveValue('object');
+  await art
+    .getByRole('button', {
+      name: 'Spresniť / upraviť masku objektu',
+      exact: true,
+    })
+    .click();
+  await expect(page.getByRole('dialog', { name: 'Maska objektu' })).toHaveCount(
+    0,
+  );
+  await expect(art.locator('.mask-launcher').getByRole('alert')).toContainText(
+    'Pozadie lokácie',
+  );
+  // The older job's success message must not hide the new launch error.
+  await expect(
+    art.getByRole('status', { name: 'Stav grafickej operácie' }),
+  ).toContainText('Assety sú uložené');
+  await source.selectOption('background');
+  await expect(page.locator('[data-art-selection]')).toHaveCount(1);
+  await expect(art.locator('.mask-launcher').getByRole('alert')).toHaveCount(0);
+  await art
+    .getByRole('button', {
+      name: 'Spresniť / upraviť masku objektu',
+      exact: true,
+    })
+    .click();
+  await expect(
+    page.getByLabel('Plátno segmentačnej masky', { exact: true }),
+  ).toBeVisible();
 });

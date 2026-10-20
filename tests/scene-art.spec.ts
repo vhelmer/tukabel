@@ -449,6 +449,9 @@ test('concave selections map through rotated contain-fit assets and decorative l
     .getByRole('region', { name: 'Vrstvy scény' })
     .getByRole('button', { name: '▧ Natočený obraz', exact: true })
     .click();
+  await art(page)
+    .getByLabel('Zdroj grafickej úpravy', { exact: true })
+    .selectOption('object');
   await page
     .getByLabel('Priblíženie scény', { exact: true })
     .selectOption('1.5');
