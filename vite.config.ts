@@ -5,4 +5,7 @@ import { editorPlugin } from './dev/editorPlugin.ts';
 export default defineConfig({
   plugins: [react(), editorPlugin()],
   base: './',
+  server: {
+    watch: { ignored: [/(^|\/)\.local-tools(\/|$)/] },
+  },
 });

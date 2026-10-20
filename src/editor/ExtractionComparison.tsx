@@ -24,9 +24,18 @@ export function ExtractionComparison({ result }: { result: ArtworkResult }) {
       <p>
         {(result.reconstruction?.unexpectedPixels ??
           result.reconstruction?.changedPixels) === 0
-          ? 'Výrez: 0 chýb pri zachovaní pôvodných pixelov a zarovnania.'
+          ? result.reconstruction?.edgePixels !== undefined
+            ? 'Výrez: 0 chýb v pevných pixeloch a zarovnaní. Jemná alfa sa vyhodnocuje samostatne.'
+            : 'Výrez: 0 chýb pri zachovaní pôvodných pixelov a zarovnania.'
           : 'Skontroluj výsledok oproti originálu.'}
       </p>
+      {result.reconstruction?.edgePixels !== undefined && (
+        <p>
+          Matting: {result.reconstruction.edgePixels} zmenených okrajových
+          pixelov. Modrá označuje jemnú hranu; skontroluj ju na kontrastnom
+          pozadí.
+        </p>
+      )}
       {!!result.reconstruction?.cleanupPixels && (
         <p>
           Pozadie v opravnom presahu: {result.reconstruction.cleanupPixels}{' '}
@@ -47,7 +56,7 @@ export function ExtractionComparison({ result }: { result: ArtworkResult }) {
             </option>
           )}
           <option value="difference">
-            Rozdiel · zlatá = dočistenie, červená = chyba
+            Rozdiel · zlatá = pozadie, modrá = alfa, červená = chyba
           </option>
         </select>
       </Field>

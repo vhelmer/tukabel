@@ -12,6 +12,7 @@ import { setImmediate as yieldToEditor } from 'node:timers/promises';
 import sharp from 'sharp';
 import { readArtSource, ART_MAX_PIXELS, artHash as hash } from './artSource.ts';
 import { readObjectMask, maskPng } from './objectMask.ts';
+import { matteForeground, type SegmentationOptions } from './segmentation.ts';
 import { polygonBounds, polygonIssue } from '../src/game/polygon.ts';
 import type { AnimationDefinition } from '../src/game/types.ts';
 import type { Point } from '../src/game/transforms.ts';
@@ -21,6 +22,7 @@ export interface ArtOptions {
   model?: string;
   fetch?: typeof fetch;
   onStage?: (stage: string) => void;
+  segmentation?: SegmentationOptions;
 }
 export type ArtOperation =
   'cutout' | 'loop' | 'edit' | 'extract' | 'remove' | 'generate';
@@ -43,6 +45,7 @@ export interface ArtResult {
     selectedPixels: number;
     cleanupPixels: number;
     unexpectedPixels: number;
+    edgePixels?: number;
   };
 }
 const MAX_PIXELS = ART_MAX_PIXELS;
@@ -226,7 +229,11 @@ export async function createArtwork(
   }
   const objectPixels = Buffer.alloc(width * height);
   for (let p = 0; p < objectPixels.length; p++)
-    objectPixels[p] = coverage[p * 4 + 3]!;
+    objectPixels[p] = suppliedMask?.matting
+      ? coverage[p * 4 + 3]! > 0
+        ? 255
+        : 0
+      : coverage[p * 4 + 3]!;
   const repairPadding = ['extract', 'remove'].includes(operation)
     ? (input.repairPadding ?? 12)
     : 0;
@@ -263,10 +270,16 @@ export async function createArtwork(
         Math.min(providerMask[p]!, soft[p]!),
       );
   }
-  const cutoutRaw = Buffer.from(raw);
+  if (suppliedMask?.matting?.decontaminate)
+    options.onStage?.('Oddeľujem farbu pozadia iba v jemných hranách');
+  const cutoutRaw = suppliedMask?.matting?.decontaminate
+    ? await matteForeground(original, suppliedMask.pixels, options.segmentation)
+    : Buffer.from(raw);
   const maskRaw = Buffer.alloc(raw.length, 255);
   for (let i = 0; i < raw.length; i += 4) {
-    cutoutRaw[i + 3] = Math.round((raw[i + 3]! * coverage[i + 3]!) / 255);
+    cutoutRaw[i + 3] = suppliedMask?.matting
+      ? Math.min(raw[i + 3]!, coverage[i + 3]!)
+      : Math.round((raw[i + 3]! * coverage[i + 3]!) / 255);
     maskRaw[i + 3] = 255 - providerMask[i / 4]!;
   }
   const png = (data: Buffer) =>
@@ -376,6 +389,16 @@ export async function createArtwork(
     if (exact)
       await writeFile(
         path.join(staging, 'object-mask.png'),
+        await maskPng(
+          suppliedMask?.matting ? suppliedMask.pixels : objectPixels,
+          width,
+          height,
+        ),
+        { flag: 'wx' },
+      );
+    if (suppliedMask?.matting)
+      await writeFile(
+        path.join(staging, 'ownership-mask.png'),
         await maskPng(objectPixels, width, height),
         { flag: 'wx' },
       );
@@ -387,7 +410,8 @@ export async function createArtwork(
       let changedPixels = 0,
         selectedPixels = 0,
         cleanupPixels = 0,
-        unexpectedPixels = 0;
+        unexpectedPixels = 0,
+        edgePixels = 0;
       for (let i = 0; i < raw.length; i += 4) {
         if (objectPixels[i / 4]) selectedPixels++;
         const a = cutoutRaw[i + 3]! / 255,
@@ -409,9 +433,20 @@ export async function createArtwork(
         const cleanup =
           changed && !objectPixels[i / 4] && repairCoverage[i / 4]! > 0;
         if (cleanup) cleanupPixels++;
-        if (changed && !cleanup) unexpectedPixels++;
+        const matteEdge =
+          changed &&
+          !!suppliedMask?.matting &&
+          cutoutRaw[i + 3]! > 0 &&
+          cutoutRaw[i + 3]! < raw[i + 3]!;
+        if (matteEdge) edgePixels++;
+        if (changed && !cleanup && !matteEdge) unexpectedPixels++;
         difference[i] = changed ? 255 : 0;
         difference[i + 1] = cleanup ? 170 : 0;
+        if (matteEdge) {
+          difference[i] = 0;
+          difference[i + 1] = 170;
+          difference[i + 2] = 255;
+        }
         difference[i + 3] = 255;
       }
       reconstruction = {
@@ -419,6 +454,7 @@ export async function createArtwork(
         selectedPixels,
         cleanupPixels,
         unexpectedPixels,
+        ...(suppliedMask?.matting ? { edgePixels } : {}),
       };
       if (unexpectedPixels)
         throw Error(
@@ -560,7 +596,11 @@ export async function createArtwork(
             method: suppliedMask?.method ?? 'polygon',
             refineEdges: suppliedMask?.refineEdges,
             detailPass: suppliedMask?.detailPass,
-            pixelOwnership: 'binary',
+            pixelOwnership: suppliedMask?.matting ? 'alpha' : 'binary',
+            matting: suppliedMask?.matting,
+            ownershipMask: suppliedMask?.matting
+              ? 'ownership-mask.png'
+              : undefined,
           }
         : undefined,
       repairPadding,

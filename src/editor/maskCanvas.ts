@@ -11,8 +11,13 @@ export async function pngPixels(data: string, width: number, height: number) {
   ctx.drawImage(image, 0, 0);
   const rgba = ctx.getImageData(0, 0, width, height).data;
   const result = new Uint8Array(width * height);
-  for (let p = 0; p < result.length; p++)
-    result[p] = rgba[p * 4]! >= 192 ? 255 : rgba[p * 4]! >= 64 ? 128 : 0;
+  for (let p = 0; p < result.length; p++) {
+    const i = p * 4,
+      value = rgba[i]!;
+    if (rgba[i + 1] !== value || rgba[i + 2] !== value || rgba[i + 3] !== 255)
+      throw Error('PNG maska musí byť nepriehľadná v odtieňoch sivej (0–255).');
+    result[p] = value;
+  }
   return result;
 }
 export function maskBase64(pixels: Uint8Array, width: number, height: number) {
@@ -38,7 +43,7 @@ export function paintMask(
   x: number,
   y: number,
   radius: number,
-  add: boolean,
+  add: boolean | 'unknown',
 ) {
   for (
     let row = Math.max(0, Math.floor(y - radius));
@@ -52,7 +57,7 @@ export function paintMask(
     ) {
       if ((col + 0.5 - x) ** 2 + (row + 0.5 - y) ** 2 > radius ** 2) continue;
       const p = row * width + col;
-      mask[p] = add ? 255 : 0;
-      seeds[p] = add ? 255 : 128;
+      if (add !== 'unknown') mask[p] = add ? 255 : 0;
+      seeds[p] = add === 'unknown' ? 64 : add ? 255 : 128;
     }
 }

@@ -14,6 +14,7 @@ import { loadEnv, type Plugin } from 'vite';
 import {
   maskSource,
   segmentObject,
+  matteObject,
   segmentationStatus,
   type SegmentationOptions,
 } from './segmentation.ts';
@@ -60,7 +61,7 @@ async function readJson(req: IncomingMessage): Promise<unknown> {
       size >
       (req.url?.endsWith('/animations/import')
         ? 48
-        : req.url?.endsWith('/art/segment')
+        : req.url?.endsWith('/art/segment') || req.url?.endsWith('/art/matte')
           ? 13
           : req.url?.includes('/jobs')
             ? 7
@@ -133,6 +134,7 @@ export function editorPlugin(
         python: process.env.SEGMENTATION_PYTHON || env.SEGMENTATION_PYTHON,
         checkpoint: process.env.SAM2_CHECKPOINT || env.SAM2_CHECKPOINT,
         modelConfig: process.env.SAM2_CONFIG || env.SAM2_CONFIG,
+        mattingModel: process.env.VITMATTE_MODEL || env.VITMATTE_MODEL,
         ...options.segmentation,
       };
       const jobs = createEditorJobs();
@@ -193,6 +195,17 @@ export function editorPlugin(
             );
             return;
           }
+          if (endpoint === `${API}/art/matte` && req.method === 'POST') {
+            respond(
+              200,
+              await matteObject(
+                assetsRoot,
+                await readJson(req),
+                segmentationOptions,
+              ),
+            );
+            return;
+          }
           if (
             endpoint === `${API}/animations/direction/status` &&
             req.method === 'GET'
@@ -244,6 +257,7 @@ export function editorPlugin(
                 async (onStage) => {
                   const result = await createArtwork(assetsRoot, input, {
                     ...artOptions,
+                    segmentation: segmentationOptions,
                     onStage,
                   });
                   const modules =

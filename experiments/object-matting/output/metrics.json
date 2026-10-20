@@ -1,0 +1,66 @@
+[
+  {
+    "image": "router",
+    "method": "binary",
+    "boundaryAlphaMAE": 0.06674,
+    "boundaryGradientMAE": 0.2749,
+    "compositeMAEwhiteBlack": 8.509,
+    "fractionalPixels": 0
+  },
+  {
+    "image": "router",
+    "method": "closed-form",
+    "boundaryAlphaMAE": 0.04033,
+    "boundaryGradientMAE": 0.13116,
+    "compositeMAEwhiteBlack": 5.246,
+    "fractionalPixels": 2602
+  },
+  {
+    "image": "router",
+    "method": "vitmatte-raw",
+    "boundaryAlphaMAE": 0.03713,
+    "boundaryGradientMAE": 0.13815,
+    "compositeMAEwhiteBlack": 4.763,
+    "fractionalPixels": 5000
+  },
+  {
+    "image": "router",
+    "method": "vitmatte",
+    "boundaryAlphaMAE": 0.01511,
+    "boundaryGradientMAE": 0.06817,
+    "compositeMAEwhiteBlack": 2.014,
+    "fractionalPixels": 1407
+  },
+  {
+    "image": "cartoon",
+    "method": "binary",
+    "boundaryAlphaMAE": 0.03293,
+    "boundaryGradientMAE": 0.18234,
+    "compositeMAEwhiteBlack": 4.198,
+    "fractionalPixels": 0
+  },
+  {
+    "image": "cartoon",
+    "method": "closed-form",
+    "boundaryAlphaMAE": 0.00069,
+    "boundaryGradientMAE": 0.00352,
+    "compositeMAEwhiteBlack": 0.258,
+    "fractionalPixels": 1992
+  },
+  {
+    "image": "cartoon",
+    "method": "vitmatte-raw",
+    "boundaryAlphaMAE": 0.03166,
+    "boundaryGradientMAE": 0.12973,
+    "compositeMAEwhiteBlack": 4.132,
+    "fractionalPixels": 7043
+  },
+  {
+    "image": "cartoon",
+    "method": "vitmatte",
+    "boundaryAlphaMAE": 0.00068,
+    "boundaryGradientMAE": 0.00352,
+    "compositeMAEwhiteBlack": 0.257,
+    "fractionalPixels": 1981
+  }
+]

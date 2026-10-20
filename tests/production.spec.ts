@@ -98,7 +98,7 @@ test('production serves a static game without editor code or write endpoints', a
     expect(jobsRead.headers()['content-type']).not.toContain(
       'application/json',
     );
-    for (const operation of ['source', 'segment']) {
+    for (const operation of ['source', 'segment', 'matte']) {
       const response = await page.request.post(
         new URL(`__tukabel/editor/art/${operation}`, url).href,
         {

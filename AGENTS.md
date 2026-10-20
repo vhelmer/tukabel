@@ -118,31 +118,42 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
   až vědomou akcí; starý výsledek nesmí přepsat změněný zdroj/transformaci nebo souřadnice lokace.
   Úpravy nesouvisejících objektů a názvu lokace mají zůstat zachované.
 
-- Oddělení vlastní pixely binární `object-mask.png`: RGB kopíruj ze zdroje,
-  zachovej jeho alfa, rozměry a umístění. Nepoužívej vyhlazenou polygonovou masku
-  zároveň pro background blend a cutout source-over; mění to obrys při složení.
-  Opravná maska pro AI je samostatná: publikuj i její explicitní přesah kolem
-  objektu, jinak se vracejí zbytky původních obrysů. Mimo opravný přesah nic neměň.
-  Částečně průhledné pixely výřezu nesmějí dostat druhou vrstvu původní alfa. Před publikací ověř reassembly proti rasterizovanému zdroji.
-  `cleanupPixels` jsou úmyslné změny pozadí mimo objekt v opravném přesahu;
-  `unexpectedPixels` musí zůstat nula (objekt i vzdálené okolí jsou přesné).
+- Výchozí oddělení používá binární `object-mask.png` a původní RGB/alfa.
+  Měkkou alfu povol jen s explicitními metadaty `objectMask.matting`; maska je
+  neprůhledná šedotónová PNG 0–255 v přesných rozměrech a s SHA-256 zdroje.
+  V matting režimu je alfa výřezu `min(sourceAlpha, matte)`, nikdy součin dvou
+  pokrytí. Ruční polygon bez mattingu zůstává binární pro zpětnou kompatibilitu.
+- `npm run setup:matting` připraví lokální ViTMatte a PyMatting. `/art/matte` používá
+  trimap ze segmentace + zelené/červené pevné tahy a oranžové nejisté pixely.
+  ViTMatte následuje úzký closed-form průchod podle původních barev; samostatný
+  closed-form je alternativa. Počítej v původním rozlišení s překrývanými dlaždicemi,
+  nikoli zmenšenou maskou. Segmentace/matting negenerují nový objekt.
+- RGB plně krytého jádra a vnitřní alfa zdroje zůstávají původní. Volitelné
+  odstranění barevného lemu odhaduje foreground pouze na nově částečných hranách
+  původně neprůhledného zdroje; vypnutí zachová všechna RGB přesně. Foreground
+  v klientovi je jen náhled, export jej bezpečně přepočítá z původního zdroje.
+  Po změně masky vyžaduj nový výpočet barev, aby náhled odpovídal exportu.
+- Opravná maska pozadí je samostatná binární podpora (`ownership-mask.png` u mattingu)
+  s explicitním přesahem. Nezaměňuj ji s jemnou alfou a nevracej za objekt původní
+  obrysy. Mimo opravu nic neměň. Výřez má celé původní plátno a souřadnice.
+  Kontrola reassembly vyžaduje `unexpectedPixels: 0`; zvlášť vykazuje
+  `cleanupPixels` v opravném okolí a `edgePixels` na částečných hranách mattingu.
+  Ty nelze přesně obnovit z nového pozadí; nulové chyby jádra nedokazují kvalitu hrany.
 - `dev/artSource.ts` sdílí bezpečné načtení/normalizaci; `dev/objectMask.ts` ověřuje
-  binární PNG a SHA-256 zdroje před placeným voláním. `dev/segmentation.ts` spouští
-  jen pevný lokální Python helper bez shellu, timeout 300 s a dočasné soubory uklízí.
-  GrabCut i volitelný SAM 2 mění pouze masku, nikdy původní RGB. Žádné automatické
-  stahování modelů; váhy a Python patří do ignorovaného `.local-tools/`.
-- SAM dostává celý zdroj kvůli kontextu; výchozí `refineEdges` dotáhne jeho masku
-  GrabCutem jen v pásmu 12 původních pixelů kolem hranice. Eroze/dilatace tvoří
-  pouze pomocný trimap, ne výslednou masku. Tahy štětce jsou vždy pevné podmínky;
-  nevyplňuj automaticky díry ani nepřidávej měkkou alfu výřezu. `detailPass`
-  přidává druhou analýzu kontextového výřezu; nesouvisející masku odmítne podle
-  překryvu s celou scénou. Volby archivuj v recipe. Vyhlazení švu patří jen
-  do opravné masky pozadí, nikoli do binární masky objektu.
-- `MaskEditor` upravuje pixely zdroje nezávisle na zoomu, tahy tvoří celé undo kroky;
-  pointercancel/Escape rozpracovaný tah vrátí. Import PNG masky i ruční štětec mají
-  fungovat bez Pythonu. Náhled oddělení ukazuje šachovnici, originál/reassembly a diff;
-  nulový počet neočekávaných změn dokazuje věrnost pixelů, nikoli sémanticky
-  správnou segmentaci. Změny v opravném přesahu vykazuj odděleně.
+  PNG a hash před placeným voláním. `dev/segmentation.ts` spouští pevné Python
+  helpery bez shellu, timeout 300 s, uklízí dočasné soubory. Žádné automatické
+  stahování ani vzdálený modelový kód; váhy a venv jsou v ignorovaném `.local-tools/`,
+  které Vite nesleduje. Modely/AI API nejsou součástí produkce.
+- SAM dostává celý zdroj kvůli kontextu; `refineEdges` dotáhne binární masku
+  GrabCutem v pásmu 12 původních pixelů. Tahy jsou pevné podmínky; `detailPass`
+  přidává analýzu výřezu s kontrolou překryvu. Matting je samostatný vědomý krok,
+  nepřidávej měkkou alfu plošným rozmazáním či zvětšením objektu.
+- `MaskEditor` pracuje v pixelech zdroje nezávisle na zoomu; undo vrací celé tahy,
+  segmentaci, matting i barvy. Pointercancel/Escape tah vrátí. Ruční štětec a import
+  šedotónové PNG fungují bez Pythonu. Kontroluj hrany na bílé i černé a alfa náhledu;
+  porovnávej původní raster, reassembly i diff. `npm run compare:matting` porovná
+  stejné SAM masky čtyřmi postupy proti známým kresleným obrysům; výsledky dvou
+  ukázek nejsou obecnou zárukou. Testuj PNG/Canvas/Pixi včetně vnitřní alfy a rotace.
 
 - Grafické operace a textová réžie používají `/jobs` a `dev/editorJobs.ts`: nejvýše
   20 úloh, jeden runner současně, mimo zámek projektových revizí. Fronta v paměti

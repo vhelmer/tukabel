@@ -1,7 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Point } from '../game/transforms';
-import { getMaskSource, segmentMask } from './api';
-import type { MaskSource, ObjectMask } from './masks';
+import { getMaskSource, segmentMask, matteMask } from './api';
+import type {
+  MaskSource,
+  ObjectMask,
+  MattingResult,
+  MattingSettings,
+} from './masks';
 import { maskBase64, paintMask, pngPixels } from './maskCanvas';
 import { Field } from './fields';
 
@@ -11,6 +16,9 @@ type Snapshot = {
   method: ObjectMask['method'];
   refineEdges?: boolean;
   detailPass?: boolean;
+  matting?: MattingSettings;
+  foreground?: string;
+  foregroundImage?: ImageData;
 };
 export function MaskEditor({
   source,
@@ -22,9 +30,14 @@ export function MaskEditor({
 }: {
   source: string;
   selection?: readonly Point[];
-  initial?: ObjectMask;
-  available?: { grabcut: boolean; sam2: boolean };
-  onDone: (mask: ObjectMask) => void;
+  initial?: MattingResult;
+  available?: {
+    grabcut: boolean;
+    sam2: boolean;
+    vitmatte?: boolean;
+    closedForm?: boolean;
+  };
+  onDone: (mask: MattingResult) => void;
   onClose: () => void;
 }) {
   const dialog = useRef<HTMLDialogElement>(null),
@@ -39,6 +52,9 @@ export function MaskEditor({
         method: ObjectMask['method'];
         refineEdges?: boolean;
         detailPass?: boolean;
+        matting?: MattingSettings;
+        foreground?: string;
+        foregroundImage?: ImageData;
       }
     | undefined
   >(undefined);
@@ -60,7 +76,9 @@ export function MaskEditor({
     [ready, setReady] = useState(false),
     [busy, setBusy] = useState(false),
     [message, setMessage] = useState('Načítavam pôvodné pixely…');
-  const [tool, setTool] = useState<'add' | 'erase' | 'inspect'>('add'),
+  const [tool, setTool] = useState<'add' | 'erase' | 'unknown' | 'inspect'>(
+      'add',
+    ),
     [view, setView] = useState('mask'),
     [radius, setRadius] = useState(8),
     [zoom, setZoom] = useState(1),
@@ -70,6 +88,39 @@ export function MaskEditor({
   );
   const [refineEdges, setRefineEdges] = useState(initial?.refineEdges ?? true);
   const [detailPass, setDetailPass] = useState(initial?.detailPass ?? false);
+  const [mattingMethod, setMattingMethod] = useState<
+    'vitmatte' | 'closed-form'
+  >(
+    initial?.matting?.method === 'closed-form' ||
+      initial?.matting?.method === 'vitmatte'
+      ? initial.matting.method
+      : available?.vitmatte
+        ? 'vitmatte'
+        : 'closed-form',
+  );
+  const [edgeRadius, setEdgeRadius] = useState(initial?.matting?.radius || 4);
+  const [decontaminate, setDecontaminate] = useState(
+    initial?.matting?.decontaminate ?? true,
+  );
+  const [previewBackground, setPreviewBackground] = useState('checker');
+  const [foregroundDirty, setForegroundDirty] = useState(false);
+  const redraw = useCallback(() => {
+    const d = working.current;
+    setForegroundDirty(!!d?.matting?.decontaminate && !d.foreground);
+    setRevision((v) => v + 1);
+  }, []);
+  async function decodeForeground(data?: string) {
+    if (!data) return undefined;
+    const img = new Image();
+    img.src = `data:image/png;base64,${data}`;
+    await img.decode();
+    const el = document.createElement('canvas');
+    el.width = img.naturalWidth;
+    el.height = img.naturalHeight;
+    const ctx = el.getContext('2d')!;
+    ctx.drawImage(img, 0, 0);
+    return ctx.getImageData(0, 0, el.width, el.height);
+  }
   useEffect(() => {
     const el = dialog.current!;
     el.showModal();
@@ -98,10 +149,12 @@ export function MaskEditor({
           original.width,
           original.height,
         );
+        const restored =
+          initial?.sourceSha256 === original.sourceSha256 ? initial : undefined;
         let pixels: Uint8Array;
-        if (initial?.sourceSha256 === original.sourceSha256)
+        if (restored)
           pixels = await pngPixels(
-            initial.data,
+            restored.data,
             original.width,
             original.height,
           );
@@ -127,18 +180,23 @@ export function MaskEditor({
             pixels[p] = selected[p * 4 + 3]! >= 128 ? 255 : 0;
         }
         if (disposed) return;
-        working.current = {
+        const draft: NonNullable<typeof working.current> = {
           source: original,
           image: imageData,
           pixels,
           seeds: new Uint8Array(pixels.length),
-          method: initial?.method ?? 'manual',
-          refineEdges: initial?.refineEdges,
-          detailPass: initial?.detailPass,
+          method: restored?.method ?? 'manual',
+          refineEdges: restored?.refineEdges,
+          detailPass: restored?.detailPass,
+          matting: restored?.matting,
+          foreground: restored?.foreground,
         };
+        draft.foregroundImage = await decodeForeground(restored?.foreground);
+        if (disposed) return;
+        working.current = draft;
         setSize(original);
         setReady(true);
-        setRevision((v) => v + 1);
+        redraw();
         setMessage(
           'Zeleným štetcom označ objekt, červeným pozadie. Spresnenie hľadá hranice v pôvodnom obrázku; farby nemení.',
         );
@@ -150,7 +208,7 @@ export function MaskEditor({
     return () => {
       disposed = true;
     };
-  }, [source, selection, initial]);
+  }, [source, selection, initial, redraw]);
   useEffect(() => {
     const el = viewport.current!;
     const observer = new ResizeObserver(() => setFrameWidth(el.clientWidth));
@@ -169,7 +227,25 @@ export function MaskEditor({
       );
     for (let p = 0; p < d.pixels.length; p++) {
       const i = p * 4;
-      if (view === 'cutout' && !d.pixels[p]) result.data[i + 3] = 0;
+      if (view === 'cutout') {
+        const a = d.pixels[p]!;
+        if (
+          a > 0 &&
+          a < 255 &&
+          d.image.data[i + 3] === 255 &&
+          d.matting?.decontaminate &&
+          d.foregroundImage
+        )
+          for (let c = 0; c < 3; c++)
+            result.data[i + c] = d.foregroundImage.data[i + c]!;
+        result.data[i + 3] = d.matting
+          ? Math.min(d.image.data[i + 3]!, a)
+          : Math.round((d.image.data[i + 3]! * a) / 255);
+      }
+      if (view === 'alpha') {
+        result.data[i] = result.data[i + 1] = result.data[i + 2] = d.pixels[p]!;
+        result.data[i + 3] = 255;
+      }
       if (view === 'mask') {
         const inside = !!d.pixels[p];
         result.data[i] = Math.round(
@@ -181,7 +257,9 @@ export function MaskEditor({
         result.data[i + 2] = Math.round(result.data[i + 2]! * 0.65 + 35 * 0.35);
         if (d.seeds[p]) {
           result.data[i] = d.seeds[p] === 128 ? 255 : 0;
-          result.data[i + 1] = d.seeds[p] === 255 ? 255 : 0;
+          result.data[i + 1] =
+            d.seeds[p] === 255 ? 255 : d.seeds[p] === 64 ? 170 : 0;
+          if (d.seeds[p] === 64) result.data[i] = 255;
           result.data[i + 2] = 0;
         }
       }
@@ -234,6 +312,9 @@ export function MaskEditor({
       method: d.method,
       refineEdges: d.refineEdges,
       detailPass: d.detailPass,
+      matting: d.matting,
+      foreground: d.foreground,
+      foregroundImage: d.foregroundImage,
     };
   }
   function remember(before: Snapshot) {
@@ -245,7 +326,7 @@ export function MaskEditor({
     if (d && stroke.current) {
       Object.assign(d, stroke.current.before);
       stroke.current = undefined;
-      setRevision((v) => v + 1);
+      redraw();
     }
   }
   function point(e: React.PointerEvent<HTMLCanvasElement>) {
@@ -266,11 +347,15 @@ export function MaskEditor({
       x,
       y,
       radius,
-      tool === 'add',
+      tool === 'unknown' ? 'unknown' : tool === 'add',
     );
     d.method = 'manual';
     d.refineEdges = undefined;
     d.detailPass = undefined;
+    // Foreground estimation depends on the complete matte. Never show stale
+    // edge colors and then silently recompute different ones during export.
+    d.foreground = undefined;
+    d.foregroundImage = undefined;
   }
   async function refine() {
     const d = working.current;
@@ -287,6 +372,7 @@ export function MaskEditor({
           ...d.source,
           data: maskBase64(d.pixels, d.source.width, d.source.height),
           method: d.method,
+          matting: d.matting,
         },
         maskBase64(d.seeds, d.source.width, d.source.height),
         method,
@@ -300,7 +386,10 @@ export function MaskEditor({
       d.method = result.method;
       d.refineEdges = result.refineEdges;
       d.detailPass = result.detailPass;
-      setRevision((v) => v + 1);
+      d.matting = undefined;
+      d.foreground = undefined;
+      d.foregroundImage = undefined;
+      redraw();
       setView('cutout');
       setMessage(
         'Skontroluj obrys, diery aj tenké čiary. Štetcom oprav chyby; spresnenie môžeš zopakovať.',
@@ -308,6 +397,53 @@ export function MaskEditor({
     } catch (e) {
       if (alive.current)
         setMessage(e instanceof Error ? e.message : 'Segmentácia zlyhala.');
+    } finally {
+      if (alive.current) setBusy(false);
+    }
+  }
+  async function applyMatting() {
+    const d = working.current;
+    if (!d || busy) return;
+    setBusy(true);
+    setMessage(
+      `${mattingMethod === 'vitmatte' ? 'ViTMatte' : 'Closed-form'} počíta alfu a farby hrany…`,
+    );
+    try {
+      const before = snapshot();
+      const settings: MattingSettings = {
+        method: mattingMethod,
+        radius: edgeRadius,
+        decontaminate,
+      };
+      const result = await matteMask(
+        source,
+        {
+          ...d.source,
+          data: maskBase64(d.pixels, d.source.width, d.source.height),
+          method: d.method,
+          matting: d.matting,
+        },
+        maskBase64(d.seeds, d.source.width, d.source.height),
+        settings,
+      );
+      const pixels = await pngPixels(result.data, result.width, result.height);
+      const foregroundImage = await decodeForeground(result.foreground);
+      if (!alive.current) return;
+      remember(before);
+      Object.assign(d, {
+        pixels,
+        matting: result.matting,
+        foreground: result.foreground,
+        foregroundImage,
+      });
+      redraw();
+      setView('cutout');
+      setMessage(
+        'Alfa je hotová. Porovnaj hrany na bielej aj čiernej, prípadne uprav isté pixely štetcom a zopakuj matting.',
+      );
+    } catch (e) {
+      if (alive.current)
+        setMessage(e instanceof Error ? e.message : 'Matting zlyhal.');
     } finally {
       if (alive.current) setBusy(false);
     }
@@ -342,6 +478,9 @@ export function MaskEditor({
             >
               <option value="add">+ Ponechať objekt · zelený štetec</option>
               <option value="erase">− Odobrať pozadie · červený štetec</option>
+              <option value="unknown">
+                Hrana na prepočet · oranžový štetec
+              </option>
               <option value="inspect">Prehliadať / posúvať</option>
             </select>
           </Field>
@@ -362,7 +501,18 @@ export function MaskEditor({
             <select value={view} onChange={(e) => setView(e.target.value)}>
               <option value="mask">Zelená = objekt · červená = pozadie</option>
               <option value="cutout">Výrez na šachovnici</option>
+              <option value="alpha">Alfa · čierna až biela 0–255</option>
               <option value="original">Pôvodný obrázok</option>
+            </select>
+          </Field>
+          <Field label="Pozadie kontroly hrán">
+            <select
+              value={previewBackground}
+              onChange={(e) => setPreviewBackground(e.target.value)}
+            >
+              <option value="checker">Šachovnica</option>
+              <option value="white">Biele</option>
+              <option value="black">Čierne</option>
             </select>
           </Field>
           <Field label="Priblíženie masky">
@@ -383,7 +533,7 @@ export function MaskEditor({
             onClick={() => {
               Object.assign(working.current!, history.current.pop());
               setUndoCount(history.current.length);
-              setRevision((v) => v + 1);
+              redraw();
             }}
           >
             Späť v maske
@@ -403,6 +553,14 @@ export function MaskEditor({
               touchAction: tool === 'inspect' ? 'auto' : 'none',
               cursor: tool === 'inspect' ? 'grab' : 'crosshair',
               imageRendering: scale >= 1 ? 'pixelated' : 'auto',
+              backgroundImage:
+                previewBackground === 'checker' ? undefined : 'none',
+              backgroundColor:
+                previewBackground === 'black'
+                  ? '#000'
+                  : previewBackground === 'white'
+                    ? '#fff'
+                    : undefined,
             }}
             onPointerDown={(e) => {
               if (
@@ -422,7 +580,7 @@ export function MaskEditor({
               };
               e.currentTarget.setPointerCapture(e.pointerId);
               paint(p.x, p.y);
-              setRevision((v) => v + 1);
+              redraw();
             }}
             onPointerMove={(e) => {
               const s = stroke.current;
@@ -438,13 +596,13 @@ export function MaskEditor({
                 );
               s.x = p.x;
               s.y = p.y;
-              setRevision((v) => v + 1);
+              redraw();
             }}
             onPointerUp={(e) => {
               if (stroke.current?.pointerId !== e.pointerId) return;
               remember(stroke.current.before);
               stroke.current = undefined;
-              setRevision((v) => v + 1);
+              redraw();
             }}
             onPointerCancel={rollback}
             onLostPointerCapture={rollback}
@@ -478,12 +636,17 @@ export function MaskEditor({
               );
               if (!alive.current) return;
               remember(snapshot());
-              d.pixels = next.map((v) => (v >= 128 ? 255 : 0));
+              d.pixels = next;
+              d.matting = next.some((v) => v > 0 && v < 255)
+                ? { method: 'import', radius: 0, decontaminate: false }
+                : undefined;
+              d.foreground = undefined;
+              d.foregroundImage = undefined;
               d.seeds.fill(0);
               d.method = 'manual';
               d.refineEdges = undefined;
               d.detailPass = undefined;
-              setRevision((v) => v + 1);
+              redraw();
               setView('cutout');
               setMessage(
                 'Maska načítaná. Biela ponecháva objekt, čierna ho odstráni; rozmery a pixely zdroja zostávajú pôvodné.',
@@ -540,12 +703,75 @@ export function MaskEditor({
         >
           Spresniť hranice objektu
         </button>
+      </div>
+      <fieldset disabled={!ready || busy} className="mask-matting">
+        <legend>2. Jemné hrany · alpha matting</legend>
+        <div className="mask-toolbar">
+          <Field label="Metóda alpha mattingu">
+            <select
+              value={mattingMethod}
+              onChange={(e) =>
+                setMattingMethod(e.target.value as typeof mattingMethod)
+              }
+            >
+              <option value="vitmatte" disabled={!available?.vitmatte}>
+                ViTMatte + presné kreslené hrany
+              </option>
+              <option value="closed-form" disabled={!available?.closedForm}>
+                Closed-form · pôvodné farby
+              </option>
+            </select>
+          </Field>
+          <Field label="Pásmo neistých hrán (px zdroja)">
+            <input
+              type="number"
+              min={1}
+              max={32}
+              value={edgeRadius}
+              onChange={(e) =>
+                setEdgeRadius(
+                  Math.max(
+                    1,
+                    Math.min(32, Math.round(Number(e.target.value) || 1)),
+                  ),
+                )
+              }
+            />
+          </Field>
+          <label className="mask-edge-toggle">
+            <input
+              type="checkbox"
+              checked={decontaminate}
+              onChange={(e) => setDecontaminate(e.target.checked)}
+            />
+            Odstrániť farebný lem
+          </label>
+          <button
+            disabled={
+              !(mattingMethod === 'vitmatte'
+                ? available?.vitmatte
+                : available?.closedForm)
+            }
+            onClick={() => void applyMatting()}
+          >
+            Vypočítať jemnú alfu
+          </button>
+        </div>
+        <p className="field-note">
+          Najprv vyber objekt alebo spresni SAM. Zelená/červená určujú isté
+          vnútro/pozadie, oranžová uvoľní hranu na prepočet. Model mení alfu,
+          nie kresbu. Odstránenie lemu odhaduje pôvodnú farbu iba na
+          polopriehľadnom okraji; vypnutím zachováš všetky RGB. Nástroje: npm
+          run setup:matting.
+        </p>
+      </fieldset>
+      <div className="mask-toolbar">
         <button
           className="primary-button"
-          disabled={!ready || busy}
+          disabled={!ready || busy || foregroundDirty}
           onClick={() => {
             const d = working.current!;
-            if (!d.pixels.includes(255)) {
+            if (!d.pixels.some((v) => v > 0)) {
               setMessage('Maska je prázdna. Označ objekt zeleným štetcom.');
               return;
             }
@@ -555,11 +781,19 @@ export function MaskEditor({
               method: d.method,
               refineEdges: d.refineEdges,
               detailPass: d.detailPass,
+              matting: d.matting,
+              foreground: d.foreground,
             });
           }}
         >
           Použiť masku
         </button>
+        {foregroundDirty && (
+          <p className="field-note">
+            Po úprave masky znovu vypočítaj jemnú alfu, aby náhľad farieb
+            zodpovedal exportu. Alebo vypni odstránenie lemu a prepočítaj.
+          </p>
+        )}
       </div>
       {!available?.grabcut && (
         <p className="field-note">
@@ -576,9 +810,9 @@ export function MaskEditor({
         </p>
       )}
       <p className="field-note">
-        Bez rozmazávania a zmeny RGB. Vybrané pixely zachovávajú pôvodnú
-        priehľadnosť. Výber má pôvodné rozmery a zarovnanie; maska sa uloží s
-        výsledným assetom.
+        Výber má pôvodné rozmery a zarovnanie. Binárny výrez zachová pôvodné RGB
+        a alfu. Matting zachová všetky pevné pixely; priehľadnosť hrany a
+        prípadné dočistenie farby sa ukladajú samostatne v recepte.
       </p>
     </dialog>
   );

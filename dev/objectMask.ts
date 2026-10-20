@@ -1,6 +1,7 @@
 import sharp from 'sharp';
 import { ART_MAX_PIXELS } from './artSource.ts';
-import type { ObjectMask } from '../src/editor/masks.ts';
+import type { ObjectMask, MattingSettings } from '../src/editor/masks.ts';
+export const ALPHA_LEVELS = Array.from({ length: 256 }, (_, i) => i);
 export const isObject = (value: unknown): value is Record<string, unknown> =>
   !!value && typeof value === 'object' && !Array.isArray(value);
 
@@ -34,17 +35,18 @@ export async function maskPixels(
     .raw()
     .toBuffer();
   const pixels = Buffer.alloc(width * height);
+  const allowed = new Set(levels);
   for (let p = 0; p < pixels.length; p++) {
     const i = p * 4,
       v = rgba[i]!;
     if (
-      !levels.includes(v) ||
+      !allowed.has(v) ||
       rgba[i + 1] !== v ||
       rgba[i + 2] !== v ||
       rgba[i + 3] !== 255
     )
       throw Error(
-        'Maska musí byť nepriehľadná, bez mäkkých alebo farebných okrajov.',
+        'Maska musí byť nepriehľadná, bez farebných okrajov. Mäkké hodnoty vyžadujú režim alpha matting.',
       );
     pixels[p] = v;
   }
@@ -71,12 +73,30 @@ export async function readObjectMask(
     throw Error(
       'Maska patrí k inému alebo zmenenému zdroju. Priprav ju znovu.',
     );
-  const pixels = await maskPixels(input.data, source.width, source.height);
-  if (!pixels.includes(255)) throw Error('Maska neobsahuje žiadny objekt.');
+  const matting = input.matting;
+  if (
+    matting !== undefined &&
+    (!isObject(matting) ||
+      !['vitmatte', 'closed-form', 'import'].includes(String(matting.method)) ||
+      !Number.isInteger(matting.radius) ||
+      Number(matting.radius) < (matting.method === 'import' ? 0 : 1) ||
+      Number(matting.radius) > 32 ||
+      typeof matting.decontaminate !== 'boolean')
+  )
+    throw Error('Neplatné nastavenie alpha mattingu.');
+  const pixels = await maskPixels(
+    input.data,
+    source.width,
+    source.height,
+    matting ? ALPHA_LEVELS : undefined,
+  );
+  if (!pixels.some((v) => v > 0))
+    throw Error('Maska neobsahuje žiadny objekt.');
   return {
     pixels,
     method: input.method as ObjectMask['method'],
     refineEdges: input.refineEdges as boolean | undefined,
     detailPass: input.detailPass as boolean | undefined,
+    matting: matting as MattingSettings | undefined,
   };
 }

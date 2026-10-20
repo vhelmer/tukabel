@@ -6,8 +6,283 @@ import sharp from 'sharp';
 import { readArtSource } from '../dev/artSource';
 import { createArtwork } from '../dev/sceneArt';
 import { maskPng, readObjectMask } from '../dev/objectMask';
-import { segmentObject, segmentationStatus } from '../dev/segmentation';
+import {
+  segmentObject,
+  segmentationStatus,
+  matteObject,
+} from '../dev/segmentation';
 import { paintMask } from '../src/editor/maskCanvas';
+
+test('alpha PNGs retain all 256 levels and intrinsic alpha is never multiplied twice', async () => {
+  await fixture(async (root) => {
+    const width = 256,
+      height = 2;
+    const raw = Buffer.alloc(width * height * 4);
+    for (let p = 0; p < width * height; p++) {
+      raw.set([224, 80, 24, p < width ? 255 : 128], p * 4);
+    }
+    await writeFile(
+      path.join(root, 'source.png'),
+      await sharp(raw, { raw: { width, height, channels: 4 } })
+        .png()
+        .toBuffer(),
+    );
+    const source = await readArtSource(root, 'source.png');
+    const alpha = Buffer.from(
+      Array.from({ length: width * height }, (_, i) => i % 256),
+    );
+    const mask = {
+      width,
+      height,
+      sourceSha256: source.sourceSha256,
+      method: 'manual',
+      data: (await maskPng(alpha, width, height)).toString('base64'),
+      matting: { method: 'import', radius: 0, decontaminate: false },
+    };
+    expect((await readObjectMask(mask, source)).pixels).toEqual(alpha);
+    await expect(
+      readObjectMask({ ...mask, matting: undefined }, source),
+    ).rejects.toThrow('Mäkké');
+    await expect(
+      readObjectMask(
+        { ...mask, matting: { ...mask.matting, decontaminate: 'true' } },
+        source,
+      ),
+    ).rejects.toThrow('mattingu');
+    const result = await createArtwork(root, {
+      source: 'source.png',
+      operation: 'cutout',
+      objectMask: mask,
+    });
+    const decoded = await rgba(path.join(root, result.image));
+    for (let p = 0; p < alpha.length; p++) {
+      expect(decoded[p * 4 + 3]).toBe(Math.min(raw[p * 4 + 3]!, alpha[p]!));
+      expect(decoded.subarray(p * 4, p * 4 + 3)).toEqual(
+        raw.subarray(p * 4, p * 4 + 3),
+      );
+    }
+    expect(
+      JSON.parse(await readFile(path.join(root, result.manifest), 'utf8'))
+        .objectMask,
+    ).toMatchObject({
+      pixelOwnership: 'alpha',
+      matting: mask.matting,
+      ownershipMask: 'ownership-mask.png',
+    });
+  });
+});
+
+for (const method of ['closed-form', 'vitmatte'] as const) {
+  test(`real ${method} preserves hard brush pixels, improves an antialiased black outline and exports exact cores`, async () => {
+    test.setTimeout(120000);
+    const status = await segmentationStatus({ python });
+    test.skip(
+      !(method === 'vitmatte' ? status.vitmatte : status.closedForm),
+      'npm run setup:matting',
+    );
+    await fixture(async (root) => {
+      const width = 128,
+        height = 128;
+      const foreground = await sharp(
+        Buffer.from(
+          '<svg width="128" height="128"><path d="M27.2 31.7Q65 5.3 98.1 35L101.6 96.2Q55 119.8 23.3 88Z" fill="#b7a05c" stroke="#202830" stroke-width="5"/></svg>',
+        ),
+      )
+        .png()
+        .toBuffer();
+      const sourceBytes = await sharp({
+        create: { width, height, channels: 4, background: '#c4d9e2' },
+      })
+        .composite([{ input: foreground }])
+        .png()
+        .toBuffer();
+      await writeFile(path.join(root, 'source.png'), sourceBytes);
+      const original = await readArtSource(root, 'source.png');
+      const trueAlpha = await sharp(foreground)
+        .extractChannel('alpha')
+        .raw()
+        .toBuffer();
+      const prior = Buffer.from(trueAlpha.map((v) => (v >= 128 ? 255 : 0)));
+      const seeds = Buffer.alloc(prior.length);
+      seeds[64 * width + 64] = 255;
+      seeds[3 * width + 3] = 128;
+      const result = await matteObject(
+        root,
+        {
+          source: 'source.png',
+          mask: {
+            width,
+            height,
+            sourceSha256: original.sourceSha256,
+            method: 'manual',
+            data: (await maskPng(prior, width, height)).toString('base64'),
+          },
+          seeds: (await maskPng(seeds, width, height)).toString('base64'),
+          method,
+          radius: 4,
+          decontaminate: true,
+        },
+        { python },
+      );
+      const { pixels: alpha } = await readObjectMask(result, original);
+      expect(new Set(alpha).size).toBeGreaterThan(32);
+      expect(alpha[64 * width + 64]).toBe(255);
+      expect(alpha[3 * width + 3]).toBe(0);
+      let baseline = 0,
+        error = 0;
+      for (let p = 0; p < prior.length; p++) {
+        baseline += Math.abs(prior[p]! - trueAlpha[p]!);
+        error += Math.abs(alpha[p]! - trueAlpha[p]!);
+      }
+      expect(error).toBeLessThan(baseline * 0.65);
+      const exported = await createArtwork(root, {
+        source: 'source.png',
+        operation: 'cutout',
+        objectMask: result,
+      });
+      const raw = await rgba(path.join(root, exported.image));
+      let coreChanges = 0,
+        correctedEdges = 0,
+        alphaChanges = 0;
+      for (let p = 0; p < alpha.length; p++) {
+        if (
+          alpha[p] === 255 &&
+          !raw
+            .subarray(p * 4, p * 4 + 4)
+            .equals(original.raw.subarray(p * 4, p * 4 + 4))
+        )
+          coreChanges++;
+        if (
+          alpha[p]! > 0 &&
+          alpha[p]! < 255 &&
+          !raw
+            .subarray(p * 4, p * 4 + 3)
+            .equals(original.raw.subarray(p * 4, p * 4 + 3))
+        )
+          correctedEdges++;
+        if (raw[p * 4 + 3] !== alpha[p]) alphaChanges++;
+      }
+      expect(coreChanges).toBe(0);
+      expect(alphaChanges).toBe(0);
+      expect(correctedEdges).toBeGreaterThan(0);
+      const repaired = await createArtwork(
+        root,
+        {
+          source: 'source.png',
+          operation: 'extract',
+          objectMask: result,
+          confirmed: true,
+          prompt: 'Repair background.',
+        },
+        {
+          apiKey: 'mock',
+          fetch: (async (_url, init) => {
+            const [w, h] = JSON.parse(init!.body as string)
+              .size.split('x')
+              .map(Number);
+            return Response.json({
+              data: [
+                {
+                  b64_json: (
+                    await sharp({
+                      create: {
+                        width: w,
+                        height: h,
+                        channels: 4,
+                        background: '#37404a',
+                      },
+                    })
+                      .png()
+                      .toBuffer()
+                  ).toString('base64'),
+                },
+              ],
+            });
+          }) as typeof fetch,
+        },
+      );
+      expect(repaired.reconstruction?.unexpectedPixels).toBe(0);
+      expect(repaired.reconstruction?.edgePixels).toBeGreaterThan(0);
+      await expect(
+        matteObject(
+          root,
+          { source: 'source.png', method, radius: 0, decontaminate: true },
+          { python },
+        ),
+      ).rejects.toThrow('nastavenie');
+    });
+  });
+}
+
+test('native-resolution matting stitches overlapping tiles without shifting or degrading the outline', async () => {
+  test.setTimeout(120000);
+  test.skip(
+    !(await segmentationStatus({ python })).closedForm,
+    'npm run setup:matting',
+  );
+  await fixture(async (root) => {
+    const width = 1600,
+      height = 900;
+    const foreground = await sharp(
+      Buffer.from(
+        '<svg width="1600" height="900"><path d="M70.3 60.7L1520.1 85.2L1490.8 820.4L95.6 838.3Z" stroke="#202830" stroke-width="7" fill="#bd9d64"/></svg>',
+      ),
+    )
+      .png()
+      .toBuffer();
+    await sharp({
+      create: { width, height, channels: 4, background: '#bdcfd8' },
+    })
+      .composite([{ input: foreground }])
+      .png()
+      .toFile(path.join(root, 'source.png'));
+    const original = await readArtSource(root, 'source.png');
+    const truth = await sharp(foreground)
+      .extractChannel('alpha')
+      .raw()
+      .toBuffer();
+    const prior = Buffer.from(truth.map((v) => (v >= 128 ? 255 : 0)));
+    const result = await matteObject(
+      root,
+      {
+        source: 'source.png',
+        mask: {
+          width,
+          height,
+          sourceSha256: original.sourceSha256,
+          method: 'manual',
+          data: (await maskPng(prior, width, height)).toString('base64'),
+        },
+        seeds: (
+          await maskPng(Buffer.alloc(prior.length), width, height)
+        ).toString('base64'),
+        method: 'closed-form',
+        radius: 4,
+        decontaminate: false,
+      },
+      { python },
+    );
+    const { pixels } = await readObjectMask(result, original);
+    expect([result.width, result.height]).toEqual([width, height]);
+    let baseline = 0,
+      error = 0,
+      seamError = 0,
+      seamBaseline = 0;
+    for (let p = 0; p < pixels.length; p++) {
+      const delta = Math.abs(pixels[p]! - truth[p]!);
+      const base = Math.abs(prior[p]! - truth[p]!);
+      error += delta;
+      baseline += base;
+      // Tile stride is 576; inspect its crossings with the actual outline.
+      if (Math.abs((p % width) - 576) < 6 || Math.abs((p % width) - 1152) < 6) {
+        seamError += delta;
+        seamBaseline += base;
+      }
+    }
+    expect(error).toBeLessThan(baseline * 0.1);
+    expect(seamError).toBeLessThan(seamBaseline * 0.1);
+  });
+});
 
 const python = path.resolve('.local-tools/segmentation/bin/python');
 const rgba = (file: string | Buffer) =>
@@ -258,6 +533,10 @@ test('mask brush clips at canvas edges and supports foreground, background and s
   paintMask(pixels, seeds, 10, 10, 0.5, 0.5, 1, false);
   expect(pixels[0]).toBe(0);
   expect(seeds[0]).toBe(128);
+  pixels[55] = 73;
+  paintMask(pixels, seeds, 10, 10, 5.5, 5.5, 1, 'unknown');
+  expect(pixels[55]).toBe(73);
+  expect(seeds[55]).toBe(64);
 });
 
 for (const method of ['grabcut', 'sam2'] as const) {

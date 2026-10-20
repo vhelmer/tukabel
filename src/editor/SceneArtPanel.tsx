@@ -84,7 +84,12 @@ export function SceneArtPanel({
   const [status, setStatus] = useState<{
     configured: boolean;
     model: string;
-    segmentation?: { grabcut: boolean; sam2: boolean };
+    segmentation?: {
+      grabcut: boolean;
+      sam2: boolean;
+      vitmatte?: boolean;
+      closedForm?: boolean;
+    };
   }>();
   const mounted = useRef(false),
     applied = useRef('');
@@ -234,7 +239,7 @@ export function SceneArtPanel({
           objectMask: ['cutout', 'extract', 'remove', 'edit'].includes(
             operation,
           )
-            ? preparedMask
+            ? preparedMask && { ...preparedMask, foreground: undefined }
             : undefined,
           prompt: ai ? prompt : undefined,
           confirmed: ai ? true : undefined,

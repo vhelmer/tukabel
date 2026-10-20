@@ -140,12 +140,22 @@ herní hover, kliknutí i drop na objekty pod nimi. Zamknutí nemění chování
 3. **Spresniť hranice objektu** spustí vybraný lokální nástroj. U SAM nech zapnuté
    **Dotiahnuť obrysy a tenké časti**: po rozpoznání objektu se hranice dotáhnou
    podle původních pixelů, což pomáhá například anténám routeru. Pro srovnání lze
-   přepínač vypnout a vrátit se pomocí **Späť v maske**. Nejde o změkčování alfy;
-   každému pixelu maska přiřadí buď původní neprůhlednost, nebo úplnou průhlednost.
+   přepínač vypnout a vrátit se pomocí **Späť v maske**. Tento krok vytvoří základní
+   binární masku; jemnou alfu dopočítá následující samostatný krok.
    Výsledek zkontroluj a případně uprav štětcem nebo segmentaci zopakuj. **Priblížiť
    objekt**, zoom až 8×, původní obrázek, barevná maska a šachovnice pomohou odhalit
    chybějící čáry. **Späť v maske** vrací celé tahy i segmentaci; přerušený tah nic
-   neukládá. Hotovou černobílou PNG masku lze také načíst tlačítkem **Načítať PNG masku**.
+   neukládá. PNG masku lze také načíst tlačítkem **Načítať PNG masku**; šedé hodnoty
+   0–255 se zachovávají. V panelu **2. Jemné hrany · alpha matting** vyber
+   **ViTMatte + presné kreslené hrany** a klikni **Vypočítať jemnú alfu**.
+   Výchozí pásmo 4 px určuje nejisté okolí hrany v původním rozlišení. Oranžovým
+   štětcem uvolni chybný pevný okraj, zeleným označ jistý objekt, červeným jisté
+   pozadí a výpočet zopakuj. Automaticky chybějící část nejprve přidej zeleně.
+   **Odstrániť farebný lem** odhadne původní barvu pouze v částečných hranách;
+   vypnutí zachová všechna původní RGB. Změna nastavení se projeví až novým výpočtem.
+   Po ruční opravě masky je při odstranění lemu nutný nový výpočet barev před exportem.
+   Prohlédni výřez na **bílé i černé** a v režimu **Alfa**; samotná šachovnice
+   barevné lemy snadno skryje. Undo vrací i předchozí alfu a odhad barev.
 4. U oddělení/odstranění nastav **Dočistenie pozadia za obrysom** (výchozí 12 px,
    rozsah 0–64 v původních pixelech). Odstraní i zbytky obrysů nebo stínu mimo
    masku objektu; přesah se skutečně použije na publikované pozadí a šev se
@@ -158,9 +168,11 @@ herní hover, kliknutí i drop na objekty pod nimi. Zamknutí nemění chování
 5. V náhledu porovnej originál s opraveným pozadím a vráceným objektem pomocí
    posuvníku. Lze zobrazit také samotný výřez, pozadí nebo rozdílový obraz. Kontrola
    musí hlásit **0 chýb pri zachovaní pôvodných pixelov a zarovnania**.
-   Zlatý rozdíl označuje úmyslné dočištění pozadí v opravném přesahu; červený by
+   Zlatý rozdíl označuje úmyslné dočištění pozadí v opravném přesahu, modrý změny
+   částečných hran při mattingu; červený by
    znamenal chybu objektu nebo změnu vzdáleného okolí a nesmí se publikovat.
-   To ověřuje zachování pixelů a zarovnání; správné rozpoznání objektu je potřeba
+   U mattingu se přesně kontroluje jádro a vzdálené okolí; částečné hrany se na novém
+   pozadí záměrně liší. To ověřuje zarovnání; správné rozpoznání objektu je potřeba
    zkontrolovat na šachovnici. Přesné složení samo nepozná omylem přibalené pozadí.
 6. **Použiť výsledok v scéne → Uložiť do projektu** nahradí pozadí a přidá oddělenou
    vrstvu na původní místo. Scéna proto může vypadat stejně. Novou vrstvu skryj nebo
@@ -226,31 +238,82 @@ případně `SAM2_CHECKPOINT`). Browserový test masky použije SAM, pokud je na
 Produkční hra nepotřebuje Python, modely ani API. Segmentace běží mimo zámek
 projektového save, bez shellu a s timeoutem.
 
-Všechny nové soubory jsou v `src/assets/scene-art/<uuid>/`: normalizovaný rastrový
-`source.png`, opravná `mask.png` (průhledná uvnitř oblasti povolené pro AI), výsledek,
-případný `cutout.png`, `repair-mask.png` (skutečný rozsah opravy pozadí) a snímky. Přesné výřezy mají `object-mask.png` (bílá = ponechat
-původní pixel, černá = průhlednost); oddělení navíc `reassembled.png` a `difference.png`.
-`recipe.json` archivuje SHA-256 zdroje, polygon nebo metodu masky (u SAM také
-`refineEdges` a `detailPass`), prompt/model,
-přesah opravné masky a výsledek pixelové kontroly. Je to záznam výroby; jedinou definicí
-herního obsahu zůstává projektový JSON. Masku lze načíst znovu do editoru nad původním
-zdrojem. Rozpracovaná maska je vázaná na hash i rozměry zdroje. Při výslovném
-importu samotného PNG se ověřují rozměry; příslušný původní obrázek vybírá autor.
+### Alpha matting: instalace, kvalita a soubory
 
-Maska objektu vlastní celé původní pixely (0/255), nerozmazává se. RGB se nekreslí ani
-nepřepočítává, alfa vybraných pixelů zůstává původní. AI dostává opravnou masku s malým
-přesahem (výchozí 12 px) pro odstranění obrysů. Z jejího výsledku se převezme
-i tento přesah s jemným vnitřním přechodem, jinak by se za objektem vracely staré
-čáry. Mimo opravnou masku zůstává původní pozadí. Dvě masky se nesmějí zaměnit.
-Výřez má celé původní plátno, nikoli nové ořezání či měřítko. U částečně průhledného
-zdroje zůstává pod těmito pixely průhlednost, aby se alfa neaplikovala dvakrát.
-Server před publikováním ověří složení pixel po pixelu: chyby pod objektem nebo
-mimo opravu odmítne, povolené dočištění okolí vykáže samostatně. Starší již
-vytvořené PNG se nemění; oddělení je potřeba z původního zdroje spustit znovu.
-SVG se pro tuto kontrolu nejprve rasterizuje přes Sharp; rastrový originál v náhledu
-je skutečný zdroj výřezu. Při zmenšení ve hře se uplatní běžné filtrování textur.
-Zachování RGB záměrně neodbarvuje vyhlazené pixely původního pozadí; při přesunu na
-zcela jinou barvu je případný barevný lem potřeba odstranit úpravou masky.
+ViTMatte i PyMatting jsou lokálně ověřené se skutečnými modely na CPU.
+Na novém stroji s **Pythonem 3.12** spusť **`npm run setup:matting`** a restartuj Vite. Instalátor
+připraví stejné ignorované Python prostředí jako segmentace, CPU PyTorch a připnuté
+knihovny v `scripts/segmentation/requirements-matting.txt`. Stáhne přibližně 99 MB
+safetensors vah [ViTMatte Small](https://huggingface.co/hustvl/vitmatte-small-composition-1k)
+(revize `6a58ad7646403c1df626fbd746900aec7361ea1d`, SHA-256
+`bda9289db1bb6762d978b42d1c62ae3f34daf7497171a347a1d09657efd788cb`). Celá instalace
+včetně PyTorch vyžaduje několik GB. Volitelný serverový `VITMATTE_MODEL` určuje jiný
+lokální adresář; výchozí je `.local-tools/models/vitmatte-small`. Inference běží
+offline, bez API kreditů, automatického stahování či vzdáleného Python kódu.
+Vite ignoruje `.local-tools/`, aby prostředí a modely nevyčerpávaly file watchery.
+
+Pipeline vychází z propojení segmentace a trimapu v
+[Matte Anything](https://github.com/hustvl/Matte-Anything), ale zachovává současný
+editor. **SAM 2 určí objekt → ViTMatte odhadne alfu → úzký closed-form průchod podle
+původních barev zpřesní kreslené hrany.** Samostatný **Closed-form · pôvodné farby**
+je dostupný pro porovnání. Pracujeme v původním rozlišení, u větších obrázků v
+překrývaných dlaždicích 768 px; žádné zmenšení ani posun výsledného plátna.
+Známé popředí/pozadí z trimapu zůstává pevné, proto špatný jistý pixel oprav štětcem.
+Nejde o generativní překreslování. SAM 3 ani BiRefNet nejsou přidané jako další závislosti;
+pro tento experiment jsme potřebovali doladit již vybraný konkrétní objekt.
+
+**`npm run compare:matting`** reprodukuje porovnání na routeru ze zkušební lokace a
+druhém kresleném objektu s tenkou čárou a otvorem. Vyžaduje instalovaný SAM 2 Large
+(výše); `SAM2_CHECKPOINT`/`SAM2_CONFIG` lze předat jako proměnné shellu.
+Všechny varianty používají stejnou SAM masku. Původní transparentní SVG poskytuje
+známou správnou alfu; kontrolujeme konturové pásmo a složení na bílé i černé.
+Výstup je v ignorovaném `.local-tools/matting-comparison/`; jiný adresář lze zadat
+`npm run compare:matting -- /tmp/tukabel-matting`. Archivované
+[porovnání hran](experiments/object-matting/output/comparison.png) a
+[naměřené hodnoty](experiments/object-matting/output/metrics.json):
+
+| Metoda                 | Chyba alfy na hraně: router | Druhý kreslený objekt |
+| ---------------------- | --------------------------: | --------------------: |
+| SAM + binární dotažení |                     0,06674 |               0,03293 |
+| Closed-form            |                     0,04033 |               0,00069 |
+| Samotný ViTMatte       |                     0,03713 |               0,03166 |
+| ViTMatte + closed-form |                 **0,01511** |           **0,00068** |
+
+Jde o dvě kontrolní kresby, nikoli záruku na libovolném pozadí. Samotný ViTMatte
+některé obrysy příliš změkčil; kombinace je v těchto ukázkách přesnější. Chybějící
+anténu nebo špatně rozpoznaný objekt matting automaticky nezachrání. Kvalitu skutečně
+opraveného pozadí je stále potřeba vizuálně zkontrolovat; testy jeho placené API mockují.
+
+V `src/assets/scene-art/<uuid>/` se archivuje normalizovaný `source.png`, opravná
+`mask.png`, výsledek a případný `cutout.png`, `repair-mask.png`, `reassembled.png` a
+`difference.png`. `object-mask.png` má u mattingu všech 256 hodnot a samostatný
+`ownership-mask.png` označuje jeho binární podporu pro opravu pozadí.
+`recipe.json` uchovává hash zdroje, nastavení segmentace/mattingu, přesah a výsledky
+kontroly. Recept není další definice obsahu; vazby zapisuje projektový JSON.
+Masku lze znovu importovat nad odpovídajícím původním zdrojem. Hash a rozměry se
+kontrolují na serveru před publikováním. Originály se nepřepisují.
+
+Výřez má **celé původní plátno a stejné souřadnice**. Binární režim zachovává původní
+RGB/alfa; v matting režimu je výstupní alfa `min(alfa zdroje, matte)` a neaplikuje se
+dvakrát. Plně kryté jádro je pixelově původní. U vyhlazeného okraje neprůhledné
+fotografie či kresby už původní RGB obsahuje směs s pozadím: samotné přidání alfy
+vytváří barevný lem. Volitelné odstranění lemu proto deterministicky odhaduje
+foreground pomocí PyMatting **jen na těchto částečných hranách**. Není to generování
+nových detailů; může však změnit jejich RGB. Pro absolutní shodu všech RGB jej vypni.
+U již transparentního zdroje se jeho barvy nepřepočítávají.
+
+Oprava pozadí používá jinou masku s přesahem (výchozí 12 px), aby nezůstávaly staré
+čáry. Mimo opravu zůstává původní pozadí. Kontrola složení vyžaduje
+`unexpectedPixels: 0`, zvlášť eviduje `cleanupPixels` v opravném okolí a `edgePixels`
+na částečných hranách mattingu. Přesnou rekonstrukci těchto hran nad novým pozadím
+nelze slíbit; náhled a porovnání nesmějí tvrdit opak. Starší vytvořené PNG se nemění,
+oddělení je nutné z původního zdroje spustit znovu.
+
+PNG ukládáme se straight alpha. Náhled Canvasu zachovává všechny šedé hodnoty,
+export nepřidává další násobení alfy a Pixi používá své standardní premultiplied
+vykreslování. Browserové testy porovnávají PNG, Canvas, SVG editor bez zapnutých
+pomůcek a Pixi, včetně poloprůhledného zdroje a rotované textury s barevnými RGB pod
+nulovou alfou. Pomůcky editoru záměrně přidávají barevné rámy; pro věrné porovnání je vypni.
 
 Originály se nepřepisují. Zahazování náhledu ani Undo nemažou již vytvořené soubory,
 takže nepotřebné varianty lze později odstranit v Gitu.
@@ -385,7 +448,7 @@ animace, dabing a lip-sync lze přiřadit v editoru podle návodu níže.
 - `dev/editorPlugin.ts` — lokální Vite middleware pro načtení/zápis a import assetů.
 - `src/editor/MaskEditor.tsx`, `ExtractionComparison.tsx` — štětcové masky a kontrola složení.
 - `dev/artSource.ts`, `objectMask.ts`, `segmentation.ts` — bezpečný rastrový zdroj,
-  validace masek a lokální OpenCV / volitelný SAM 2. `sceneArt.ts` publikuje původní
+  validace masek a lokální OpenCV / SAM 2 / ViTMatte + PyMatting. `sceneArt.ts` publikuje původní
   výřez, samostatnou opravu pozadí a pixelovou kontrolu.
 - `dev/animationImport.ts` — lokální import PNG sekvencí a atlasů přes Sharp, obnova
   plátna oříznutých snímků, atomický zápis a kontrola rozměrů. Bez runtime závislosti.

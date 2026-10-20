@@ -141,6 +141,7 @@ export interface ArtworkResult {
     selectedPixels: number;
     cleanupPixels?: number;
     unexpectedPixels?: number;
+    edgePixels?: number;
   };
   assets: string[];
 }
@@ -148,7 +149,12 @@ export const getArtStatus = () =>
   request<{
     configured: boolean;
     model: string;
-    segmentation: { grabcut: boolean; sam2: boolean };
+    segmentation: {
+      grabcut: boolean;
+      sam2: boolean;
+      vitmatte?: boolean;
+      closedForm?: boolean;
+    };
   }>('art/status');
 export const listEditorJobs = () =>
   request<{ jobs: import('./jobs').EditorJob[] }>('jobs');
@@ -182,4 +188,16 @@ export const segmentMask = (
     method,
     refineEdges,
     detailPass,
+  });
+export const matteMask = (
+  source: string,
+  mask: import('./masks').ObjectMask,
+  seeds: string,
+  settings: import('./masks').MattingSettings,
+) =>
+  request<import('./masks').MattingResult>('art/matte', 'POST', {
+    source,
+    mask,
+    seeds,
+    ...settings,
   });
