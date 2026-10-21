@@ -42,7 +42,7 @@ async function rectangle(
   end = { x: 420, y: 290 },
 ) {
   await page
-    .getByRole('button', { name: 'Vybrať obdĺžnik', exact: true })
+    .getByRole('button', { name: 'Vybrat obdélník', exact: true })
     .click();
   const stage = page.locator('.editor-stage');
   await stage.scrollIntoViewIfNeeded();
@@ -81,7 +81,7 @@ async function rectangle(
 }
 async function save(page: Page) {
   const button = page.getByRole('button', {
-    name: 'Uložiť do projektu',
+    name: 'Uložit do projektu',
     exact: true,
   });
   await expect(button).toBeEnabled();
@@ -94,7 +94,7 @@ async function save(page: Page) {
   expect((await saved).ok()).toBe(true);
   await expect(page.locator('.saved-badge')).toBeVisible();
   await expect(
-    page.getByRole('status', { name: 'Stav editora' }),
+    page.getByRole('status', { name: 'Stav editoru' }),
   ).toContainText('Uložené do');
 }
 const art = (page: Page) =>
@@ -111,83 +111,83 @@ test('layer editing, scene-space selection and local ambient clips save real ass
   await openEditor(page, workspace.url);
   await rectangle(page, isMobile);
   await art(page)
-    .getByLabel('Názov výslednej vrstvy alebo lokácie', { exact: true })
+    .getByLabel('Název výsledné vrstvy nebo lokace', { exact: true })
     .fill('Vrstvený výrez');
   await art(page)
-    .getByRole('button', { name: 'Vytvoriť lokálny asset', exact: true })
+    .getByRole('button', { name: 'Vytvořit lokální asset', exact: true })
     .click();
   await expect(
     art(page).getByRole('status', {
-      name: 'Stav grafickej operácie',
+      name: 'Stav grafické operace',
       exact: true,
     }),
-  ).toContainText('Assety sú uložené');
+  ).toContainText('Assety jsou uložené');
   await expect(
-    art(page).getByAltText('Výsledok grafickej operácie'),
+    art(page).getByAltText('Výsledek grafické operace'),
   ).toBeVisible();
   expect(await readFile(workspace.source, 'utf8')).toBe(original);
   await art(page)
-    .getByRole('button', { name: 'Použiť výsledok v scéne', exact: true })
+    .getByRole('button', { name: 'Použít výsledek ve scéně', exact: true })
     .click();
   const layers = page.getByRole('region', { name: 'Vrstvy scény' });
   const row = layers.locator('.layer-row').filter({
     has: page.getByRole('button', { name: '▧ Vrstvený výrez', exact: true }),
   });
   await expect(row).toHaveCount(1);
-  await row.getByLabel('Zamknutie · Vrstvený výrez', { exact: true }).check();
+  await row.getByLabel('Zamčení · Vrstvený výrez', { exact: true }).check();
   await expect(page.locator('[data-move-id]')).toHaveCount(0);
-  await row.getByLabel('Zamknutie · Vrstvený výrez', { exact: true }).uncheck();
+  await row.getByLabel('Zamčení · Vrstvený výrez', { exact: true }).uncheck();
   await expect(page.locator('[data-move-id]')).toHaveCount(1);
   await row
-    .getByRole('button', { name: 'Dopredu · Vrstvený výrez', exact: true })
+    .getByRole('button', { name: 'Dopředu · Vrstvený výrez', exact: true })
     .click();
   await row
     .getByRole('button', { name: 'Dozadu · Vrstvený výrez', exact: true })
     .click();
-  await layers.getByRole('slider', { name: 'Krytie vrstvy (%)' }).focus();
+  await layers.getByRole('slider', { name: 'Krytí vrstvy (%)' }).focus();
   await page.keyboard.press('End');
   await page.keyboard.press('ArrowLeft');
   await row
-    .getByLabel('Viditeľnosť · Vrstvený výrez', { exact: true })
+    .getByLabel('Viditelnost · Vrstvený výrez', { exact: true })
     .uncheck();
   await expect(
     page
       .locator('.editor-stage [data-hotspot-id]')
       .filter({ has: page.locator('[data-scene-image*="scene-art/"]') }),
   ).toHaveAttribute('opacity', '0.18');
-  await row.getByLabel('Viditeľnosť · Vrstvený výrez', { exact: true }).check();
-  await layers.getByRole('button', { name: '▣ Pozadie', exact: true }).click();
+  await row.getByLabel('Viditelnost · Vrstvený výrez', { exact: true }).check();
+  await layers.getByRole('button', { name: '▣ Pozadí', exact: true }).click();
   await page
-    .getByLabel('Priblíženie scény', { exact: true })
+    .getByLabel('Přiblížení scény', { exact: true })
     .selectOption('1.5');
   await rectangle(page, isMobile, { x: 100, y: 90 }, { x: 360, y: 240 });
   await art(page)
-    .getByLabel('Grafická operácia', { exact: true })
+    .getByLabel('Grafická operace', { exact: true })
     .selectOption('loop');
   await art(page)
-    .getByLabel('Názov výslednej vrstvy alebo lokácie', { exact: true })
+    .getByLabel('Název výsledné vrstvy nebo lokace', { exact: true })
     .fill('Živá rieka');
-  await art(page).getByLabel('Počet snímok slučky', { exact: true }).fill('8');
+  await art(page).getByLabel('Počet snímků smyčky', { exact: true }).fill('8');
   await art(page)
-    .getByRole('button', { name: 'Vytvoriť lokálny asset', exact: true })
+    .getByRole('button', { name: 'Vytvořit lokální asset', exact: true })
     .click();
   await expect(
     art(page).getByRole('status', {
-      name: 'Stav grafickej operácie',
+      name: 'Stav grafické operace',
       exact: true,
     }),
-  ).toContainText('Assety sú uložené');
+  ).toContainText('Assety jsou uložené');
   await art(page)
-    .getByRole('button', { name: 'Prehrať náhľad', exact: true })
+    .getByRole('button', { name: 'Přehrát náhled', exact: true })
     .click();
   await expect(
     art(page).locator('.row-actions').filter({ hasText: '/ 8' }),
   ).not.toContainText('1 / 8');
   await art(page)
-    .getByRole('button', { name: 'Zastaviť náhľad', exact: true })
+    .getByRole('button', { name: 'Zastavit náhled', exact: true })
     .click();
   await art(page)
-    .getByRole('button', { name: 'Použiť výsledok v scéne', exact: true })
+    .getByRole('button', { name: 'Použít výsledek ve scéně', exact: true })
     .click();
   await save(page);
   const disk = JSON.parse(
@@ -215,7 +215,7 @@ test('layer editing, scene-space selection and local ambient clips save real ass
     { x: 100, y: 240 },
   ]);
   await page
-    .getByRole('button', { name: 'Živý náhľad animácií', exact: true })
+    .getByRole('button', { name: 'Živý náhled animací', exact: true })
     .click();
   await ready(page);
   const canvas = page.locator('.scene-live-preview canvas');
@@ -227,7 +227,7 @@ test('layer editing, scene-space selection and local ambient clips save real ass
     fullPage: true,
   });
   await page
-    .getByRole('button', { name: 'Otestovať odtiaľto ↗', exact: true })
+    .getByRole('button', { name: 'Otestovat odsud ↗', exact: true })
     .click();
   await ready(page);
   await expect(await object(page, 'Router')).toBeVisible();
@@ -261,35 +261,35 @@ test('inpainting preparation is inspectable without an API key, survives reload 
   await openEditor(page, workspace.url);
   await rectangle(page, isMobile);
   await art(page)
-    .getByLabel('Grafická operácia', { exact: true })
+    .getByLabel('Grafická operace', { exact: true })
     .selectOption('remove');
   await art(page)
-    .getByLabel('Dočistenie pozadia za obrysom (px zdroja)', { exact: true })
+    .getByLabel('Dočištění pozadí za obrysem (px zdroje)', { exact: true })
     .fill('8');
   await art(page)
-    .getByLabel('Prechod švu (px zdroja)', { exact: true })
+    .getByLabel('Přechod švu (px zdroje)', { exact: true })
     .fill('4');
   await expect(
     art(page).getByRole('button', {
-      name: 'Spustiť AI úpravu (API kredit)',
+      name: 'Spustit AI úpravu (API kredit)',
       exact: true,
     }),
   ).toBeDisabled();
   await art(page)
     .getByRole('button', {
-      name: 'Skontrolovať prípravu (bez API)',
+      name: 'Zkontrolovat přípravu (bez API)',
       exact: true,
     })
     .click();
   await expect(
     art(page).getByRole('status', {
-      name: 'Stav grafickej operácie',
+      name: 'Stav grafické operace',
       exact: true,
     }),
-  ).toContainText('Assety sú uložené');
+  ).toContainText('Assety jsou uložené');
   await expect(
     art(page).getByRole('button', {
-      name: 'Použiť výsledok v scéne',
+      name: 'Použít výsledek ve scéně',
       exact: true,
     }),
   ).toBeDisabled();
@@ -315,13 +315,13 @@ test('inpainting preparation is inspectable without an API key, survives reload 
   }
   await step.selectOption('expandedMask');
   await art(page)
-    .getByLabel('Zväčšenie diagnostiky', { exact: true })
+    .getByLabel('Zvětšení diagnostiky', { exact: true })
     .selectOption('2');
   await expect(
     art(page).getByAltText('Diagnostický krok inpaintingu'),
   ).toHaveCSS('width', '2560px');
   await art(page)
-    .getByLabel('Zväčšenie diagnostiky', { exact: true })
+    .getByLabel('Zvětšení diagnostiky', { exact: true })
     .selectOption('fit');
   await art(page)
     .locator('.inpaint-inspector')
@@ -354,14 +354,14 @@ test('inpainting preparation is inspectable without an API key, survives reload 
   expect(await readFile(workspace.source, 'utf8')).toBe(before);
   await openEditor(page, workspace.url);
   await page
-    .getByRole('button', { name: 'Otvoriť výsledok', exact: true })
+    .getByRole('button', { name: 'Otevřít výsledek', exact: true })
     .click();
   await expect(
     art(page).getByLabel('Krok diagnostiky', { exact: true }),
   ).toBeVisible();
   await expect(
     art(page).getByRole('button', {
-      name: 'Použiť výsledok v scéne',
+      name: 'Použít výsledek ve scéně',
       exact: true,
     }),
   ).toBeDisabled();
@@ -416,10 +416,10 @@ test.describe('scene AI provider boundary', () => {
     await openEditor(page, workspace.url);
     await rectangle(page, isMobile);
     await art(page)
-      .getByLabel('Grafická operácia', { exact: true })
+      .getByLabel('Grafická operace', { exact: true })
       .selectOption('extract');
-    const model = art(page).getByLabel('AI model obrázkov', { exact: true });
-    const quality = art(page).getByLabel('Kvalita AI obrázka', { exact: true });
+    const model = art(page).getByLabel('AI model obrázků', { exact: true });
+    const quality = art(page).getByLabel('Kvalita AI obrázku', { exact: true });
     await expect(model).toHaveValue('gpt-image-2.5-sunburst');
     await expect(quality).toHaveValue('high');
     await quality.selectOption('max');
@@ -428,25 +428,25 @@ test.describe('scene AI provider boundary', () => {
     await expect(quality.locator('option[value="max"]')).toHaveCount(0);
     await model.selectOption('gpt-image-2.5-sunburst');
     await page
-      .getByLabel('Názov lokácie', { exact: true })
+      .getByLabel('Název lokace', { exact: true })
       .fill('Rozpracovaná lokácia');
     await art(page)
-      .getByLabel('Názov výslednej vrstvy alebo lokácie', { exact: true })
+      .getByLabel('Název výsledné vrstvy nebo lokace', { exact: true })
       .fill('Oddelený stôl');
     await art(page)
       .getByRole('button', {
-        name: 'Spustiť AI úpravu (API kredit)',
+        name: 'Spustit AI úpravu (API kredit)',
         exact: true,
       })
       .click();
     await expect(
       art(page).getByRole('status', {
-        name: 'Stav grafickej operácie',
+        name: 'Stav grafické operace',
         exact: true,
       }),
-    ).toContainText('Assety sú uložené');
+    ).toContainText('Assety jsou uložené');
     await expect(
-      art(page).getByAltText('Oddelený transparentný objekt'),
+      art(page).getByAltText('Oddělený transparentní objekt'),
     ).toBeVisible();
     const debugStep = art(page).getByLabel('Krok diagnostiky', { exact: true });
     await debugStep.selectOption('returned');
@@ -457,21 +457,21 @@ test.describe('scene AI provider boundary', () => {
     await expect(
       art(page).getByAltText('Diagnostický krok inpaintingu'),
     ).toHaveJSProperty('naturalWidth', 1280);
-    await expect(page.getByLabel('Názov lokácie', { exact: true })).toHaveValue(
+    await expect(page.getByLabel('Název lokace', { exact: true })).toHaveValue(
       'Rozpracovaná lokácia',
     );
     await expect(page.locator('.unsaved-badge')).toBeVisible();
-    await page.getByLabel('Šírka lokácie', { exact: true }).fill('1290');
+    await page.getByLabel('Šířka lokace', { exact: true }).fill('1290');
     await expect(
       art(page).getByRole('button', {
-        name: 'Použiť výsledok v scéne',
+        name: 'Použít výsledek ve scéně',
         exact: true,
       }),
     ).toBeDisabled();
-    await page.getByRole('button', { name: 'Späť', exact: true }).click();
+    await page.getByRole('button', { name: 'Zpět', exact: true }).click();
     await expect(
       art(page).getByRole('button', {
-        name: 'Použiť výsledok v scéne',
+        name: 'Použít výsledek ve scéně',
         exact: true,
       }),
     ).toBeEnabled();
@@ -480,13 +480,15 @@ test.describe('scene AI provider boundary', () => {
       fullPage: true,
     });
     await art(page)
-      .getByRole('button', { name: 'Použiť výsledok v scéne', exact: true })
+      .getByRole('button', { name: 'Použít výsledek ve scéně', exact: true })
       .click();
     await save(page);
     const disk = JSON.parse(
       await readFile(workspace.source, 'utf8'),
     ) as GameContent;
-    expect(disk.scenes[0]!.background).toMatch(/^scene-art\/.*\/image.png$/);
+    expect(disk.scenes[0]!.background).toMatch(
+      /^scene-art\/.*\/provider-restored.png$/,
+    );
     expect(disk.scenes[0]!.hotspots[0]).toMatchObject({
       label: 'Oddelený stôl',
       decorative: true,
@@ -498,34 +500,37 @@ test.describe('scene AI provider boundary', () => {
           path.join(
             workspace.root,
             'src/assets',
-            disk.scenes[0]!.background.replace(/image\.png$/, 'recipe.json'),
+            disk.scenes[0]!.background.replace(
+              /(?:image|provider-restored)\.png$/,
+              'recipe.json',
+            ),
           ),
           'utf8',
         ),
       ),
     ).toMatchObject({ model: 'gpt-image-2.5-sunburst', quality: 'high' });
     await art(page)
-      .getByLabel('Grafická operácia', { exact: true })
+      .getByLabel('Grafická operace', { exact: true })
       .selectOption('generate');
     await model.selectOption('gpt-image-1.5');
     await quality.selectOption('medium');
     await art(page)
-      .getByLabel('Názov výslednej vrstvy alebo lokácie', { exact: true })
+      .getByLabel('Název výsledné vrstvy nebo lokace', { exact: true })
       .fill('AI skúšobný dvor');
     await art(page)
       .getByRole('button', {
-        name: 'Spustiť AI úpravu (API kredit)',
+        name: 'Spustit AI úpravu (API kredit)',
         exact: true,
       })
       .click();
     await expect(
       art(page).getByRole('status', {
-        name: 'Stav grafickej operácie',
+        name: 'Stav grafické operace',
         exact: true,
       }),
-    ).toContainText('Assety sú uložené');
+    ).toContainText('Assety jsou uložené');
     await art(page)
-      .getByRole('button', { name: 'Použiť výsledok v scéne', exact: true })
+      .getByRole('button', { name: 'Použít výsledek ve scéně', exact: true })
       .click();
     await save(page);
     const saved = JSON.parse(
@@ -545,7 +550,10 @@ test.describe('scene AI provider boundary', () => {
             'src/assets',
             saved.scenes
               .at(-1)!
-              .background.replace(/image\.png$/, 'recipe.json'),
+              .background.replace(
+                /(?:image|provider-restored)\.png$/,
+                'recipe.json',
+              ),
           ),
           'utf8',
         ),
@@ -555,7 +563,7 @@ test.describe('scene AI provider boundary', () => {
     await ready(page);
     await page.getByRole('button', { name: 'Dev Mode', exact: true }).click();
     await expect(
-      page.getByLabel('Aktívna lokácia', { exact: true }).locator('option'),
+      page.getByLabel('Aktivní lokace', { exact: true }).locator('option'),
     ).toContainText([
       'Rozpracovaná lokácia',
       'Skúšobný dvor',
@@ -585,14 +593,14 @@ test.describe('scene AI provider boundary', () => {
     await openEditor(page, workspace.url);
     await rectangle(page, isMobile);
     await art(page)
-      .getByLabel('Grafická operácia', { exact: true })
+      .getByLabel('Grafická operace', { exact: true })
       .selectOption('remove');
     await art(page)
-      .getByLabel('Pokyny pre AI', { exact: true })
+      .getByLabel('Pokyny pro AI', { exact: true })
       .fill('wrong dimensions');
     await art(page)
       .getByRole('button', {
-        name: 'Spustiť AI úpravu (API kredit)',
+        name: 'Spustit AI úpravu (API kredit)',
         exact: true,
       })
       .click();
@@ -601,7 +609,7 @@ test.describe('scene AI provider boundary', () => {
     );
     await expect(
       art(page).getByRole('button', {
-        name: 'Použiť výsledok v scéne',
+        name: 'Použít výsledek ve scéně',
         exact: true,
       }),
     ).toBeDisabled();
@@ -666,13 +674,13 @@ test('concave selections map through rotated contain-fit assets and decorative l
     .getByRole('button', { name: '▧ Natočený obraz', exact: true })
     .click();
   await art(page)
-    .getByLabel('Zdroj grafickej úpravy', { exact: true })
+    .getByLabel('Zdroj grafické úpravy', { exact: true })
     .selectOption('object');
   await page
-    .getByLabel('Priblíženie scény', { exact: true })
+    .getByLabel('Přiblížení scény', { exact: true })
     .selectOption('1.5');
   await page
-    .getByRole('button', { name: 'Vybrať polygón', exact: true })
+    .getByRole('button', { name: 'Vybrat polygon', exact: true })
     .click();
   const stage = page.locator('.editor-stage');
   await stage.scrollIntoViewIfNeeded();
@@ -703,23 +711,23 @@ test('concave selections map through rotated contain-fit assets and decorative l
     else await page.mouse.click(screen.x, screen.y);
   }
   await page
-    .getByRole('button', { name: 'Dokončiť polygón', exact: true })
+    .getByRole('button', { name: 'Dokončit polygon', exact: true })
     .click();
   await expect(stage.locator('[data-art-selection]')).toHaveCount(1);
   await art(page)
-    .getByLabel('Názov výslednej vrstvy alebo lokácie', { exact: true })
+    .getByLabel('Název výsledné vrstvy nebo lokace', { exact: true })
     .fill('Presný výrez');
   await art(page)
-    .getByRole('button', { name: 'Vytvoriť lokálny asset', exact: true })
+    .getByRole('button', { name: 'Vytvořit lokální asset', exact: true })
     .click();
   await expect(
     art(page).getByRole('status', {
-      name: 'Stav grafickej operácie',
+      name: 'Stav grafické operace',
       exact: true,
     }),
-  ).toContainText('Assety sú uložené');
+  ).toContainText('Assety jsou uložené');
   await art(page)
-    .getByRole('button', { name: 'Použiť výsledok v scéne', exact: true })
+    .getByRole('button', { name: 'Použít výsledek ve scéně', exact: true })
     .click();
   await save(page);
   const saved = JSON.parse(
@@ -728,7 +736,7 @@ test('concave selections map through rotated contain-fit assets and decorative l
   const layer = saved.scenes[0]!.hotspots.find(
     (h) => h.label === 'Presný výrez',
   )!;
-  expect(layer.bounds).toEqual({ x: 100, y: 100, width: 400, height: 300 });
+
   expect(layer.rotation).toBe(30);
   const folder = path.join(
     workspace.root,
@@ -742,18 +750,141 @@ test('concave selections map through rotated contain-fit assets and decorative l
     expect(recipe.selection[i].x).toBeCloseTo(pixels[i]!.x, 1);
     expect(recipe.selection[i].y).toBeCloseTo(pixels[i]!.y, 1);
   }
-  const cutout = await sharp(path.join(folder, 'image.png'))
+  const { croppedPlacement } = await import('../src/game/transforms');
+  expect(layer.bounds).toEqual(
+    croppedPlacement(
+      { bounds: { x: 100, y: 100, width: 400, height: 300 }, rotation: 30 },
+      recipe.cutoutFrame,
+    ).bounds,
+  );
+  const cutout = await sharp(path.join(folder, 'cutout-full.png'))
     .ensureAlpha()
     .raw()
     .toBuffer();
   expect(cutout[(450 * 1280 + 550) * 4 + 3]).toBe(0); // concave notch
   expect(cutout[(250 * 1280 + 400) * 4 + 3]).toBe(255);
   await page
-    .getByRole('button', { name: 'Otestovať odtiaľto ↗', exact: true })
+    .getByRole('button', { name: 'Otestovat odsud ↗', exact: true })
     .click();
   await ready(page);
   await activate(page, 300, 250, isMobile);
   await expect(page.getByRole('status', { name: 'Reakcia' })).toContainText(
     'Klik prešiel cez dekoráciu.',
   );
+});
+
+test('archived extraction offers both backgrounds without API access and saves cropped placement across reload and game preview', async ({
+  page,
+  workspace,
+  isMobile,
+}, info) => {
+  await seed(workspace.root, workspace.source);
+  const sourceProject = JSON.parse(
+    await readFile(workspace.source, 'utf8'),
+  ) as GameContent;
+  const { createArtwork } = await import('../dev/sceneArt');
+  const source = sourceProject.scenes[0]!.background;
+  const result = await createArtwork(
+    path.join(workspace.root, 'src/assets'),
+    {
+      source,
+      operation: 'extract',
+      confirmed: true,
+      prompt: 'Remove selection',
+      selection: [
+        { x: 80, y: 90 },
+        { x: 260, y: 90 },
+        { x: 260, y: 210 },
+        { x: 80, y: 210 },
+      ],
+    },
+    {
+      apiKey: 'mock',
+      fetch: (async (_url, options) => {
+        const body = JSON.parse(String(options!.body));
+        const [width, height] = body.size.split('x').map(Number);
+        const png = await sharp({
+          create: { width, height, channels: 4, background: '#bd9a6a' },
+        })
+          .png()
+          .toBuffer();
+        return Response.json({ data: [{ b64_json: png.toString('base64') }] });
+      }) as typeof fetch,
+    },
+  );
+  await openEditor(page, workspace.url);
+  await art(page)
+    .getByRole('button', {
+      name: 'Načíst dřívější výsledky (bez API)',
+      exact: true,
+    })
+    .click();
+  await art(page)
+    .getByLabel('Uložený výsledek', { exact: true })
+    .selectOption(result.manifest);
+  const choice = art(page).getByLabel('Pozadí pro scénu', { exact: true });
+  const preview = art(page).getByAltText('Výsledek grafické operace');
+  await expect(choice).toHaveValue('restored');
+  await expect(preview).toHaveAttribute('src', /provider-restored\.png/);
+  await choice.selectOption('masked');
+  await expect(preview).toHaveAttribute('src', /\/image\.png/);
+  await choice.selectOption('restored');
+  await expect(page.locator('main')).toHaveCount(1);
+  if (isMobile) await choice.scrollIntoViewIfNeeded();
+  await page.screenshot({
+    path: info.outputPath('restored-background-choice.png'),
+    fullPage: !isMobile,
+  });
+  await art(page)
+    .getByRole('button', { name: 'Použít výsledek ve scéně', exact: true })
+    .click();
+  await save(page);
+  const saved = JSON.parse(
+    await readFile(workspace.source, 'utf8'),
+  ) as GameContent;
+  const scene = saved.scenes[0]!;
+  expect(scene.background).toBe(result.backgrounds!.restored);
+  const layer = scene.hotspots.find((h) => h.image === result.cutout)!;
+  expect(layer.bounds).toEqual({ x: 80, y: 90, width: 180, height: 120 });
+  expect(layer.imageFit).toBe('contain');
+  const dimensions = await sharp(
+    path.join(workspace.root, 'src/assets', layer.image!),
+  ).metadata();
+  expect([dimensions.width, dimensions.height]).toEqual([180, 120]);
+  await page.reload();
+  await ready(page);
+  await page.getByRole('button', { name: 'Dev Mode', exact: true }).click();
+  await expect(page.getByLabel('Pozadí lokace', { exact: true })).toHaveValue(
+    result.backgrounds!.restored,
+  );
+  // Reopen the currently applied background directly, with no reset to source
+  // and no duplicate object when changing the chosen result after a reload.
+  await art(page)
+    .getByRole('button', {
+      name: 'Načíst dřívější výsledky (bez API)',
+      exact: true,
+    })
+    .click();
+  await art(page)
+    .getByLabel('Uložený výsledek', { exact: true })
+    .selectOption(result.manifest);
+  await art(page)
+    .getByLabel('Pozadí pro scénu', { exact: true })
+    .selectOption('masked');
+  await art(page)
+    .getByRole('button', { name: 'Použít výsledek ve scéně', exact: true })
+    .click();
+  await save(page);
+  const switched = JSON.parse(
+    await readFile(workspace.source, 'utf8'),
+  ) as GameContent;
+  expect(switched.scenes[0]!.background).toBe(result.backgrounds!.masked);
+  expect(switched.scenes[0]!.hotspots).toEqual(scene.hotspots);
+  await page.getByRole('button', { name: 'Game Mode', exact: true }).click();
+  await ready(page);
+  await expect(page.locator('canvas')).toBeVisible();
+  await page.screenshot({
+    path: info.outputPath('cropped-extraction-game.png'),
+    fullPage: true,
+  });
 });

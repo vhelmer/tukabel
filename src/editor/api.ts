@@ -26,7 +26,7 @@ export const writeProject = (content: GameContent, revision: string) =>
 export async function importAsset(file: File) {
   const bytes = new Uint8Array(await file.arrayBuffer());
   if (bytes.length > 6 * 1024 * 1024)
-    throw new Error('Obrázok môže mať najviac 6 MB.');
+    throw new Error('Obrázek může mít nejvýše 6 MB.');
   let binary = '';
   for (let offset = 0; offset < bytes.length; offset += 8192)
     binary += String.fromCharCode(...bytes.subarray(offset, offset + 8192));
@@ -49,7 +49,7 @@ export async function importAnimationFiles(input: {
     input.files.reduce((size, file) => size + file.size, 0) >
     32 * 1024 * 1024
   )
-    throw new Error('Import môže mať spolu najviac 32 MB.');
+    throw new Error('Import může mít společně nejvýše 32 MB.');
   const files = await Promise.all(
     input.files.map(async (file) => {
       const bytes = new Uint8Array(await file.arrayBuffer());
@@ -110,7 +110,7 @@ export async function uploadSpeech(
   subtitle?: string,
 ) {
   if (file.size > 20 * 1024 * 1024)
-    throw new Error('WAV môže mať najviac 20 MB.');
+    throw new Error('WAV může mít nejvýše 20 MB.');
   const bytes = new Uint8Array(await file.arrayBuffer());
   let binary = '';
   for (let offset = 0; offset < bytes.length; offset += 8192)
@@ -127,6 +127,9 @@ export interface ArtworkResult {
   source: string;
   image: string;
   cutout?: string;
+  cutoutFull?: string;
+  cutoutFrame?: import('../game/transforms').CropFrame;
+  backgrounds?: { restored: string; masked: string };
   animation?: import('../game/types').AnimationDefinition;
   width: number;
   height: number;
@@ -158,6 +161,7 @@ export const getArtStatus = () =>
     segmentation: {
       grabcut: boolean;
       sam2: boolean;
+      sam3?: boolean;
       vitmatte?: boolean;
       closedForm?: boolean;
     };
@@ -183,7 +187,7 @@ export const segmentMask = (
   source: string,
   mask: import('./masks').ObjectMask,
   seeds: string,
-  method: 'grabcut' | 'sam2',
+  method: 'grabcut' | 'sam2' | 'sam3',
   refineEdges = true,
   detailPass = false,
 ) =>
@@ -207,3 +211,10 @@ export const matteMask = (
     seeds,
     ...settings,
   });
+
+export const getArtworkHistory = (source: string) =>
+  request<{ results: ArtworkResult[]; assets: string[] }>(
+    'art/history',
+    'POST',
+    { source },
+  );

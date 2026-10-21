@@ -39,8 +39,8 @@ export function SceneInspector({
   return (
     <div className="scene-inspector">
       <details open>
-        <summary>Lokácia · {scene.id}</summary>
-        <Field label="Názov lokácie">
+        <summary>Lokace · {scene.id}</summary>
+        <Field label="Název lokace">
           <input
             value={scene.title}
             onChange={(event) =>
@@ -52,7 +52,7 @@ export function SceneInspector({
           {(['width', 'height'] as const).map((key) => (
             <Field
               key={key}
-              label={key === 'width' ? 'Šírka lokácie' : 'Výška lokácie'}
+              label={key === 'width' ? 'Šířka lokace' : 'Výška lokace'}
             >
               <input
                 type="number"
@@ -66,7 +66,7 @@ export function SceneInspector({
           ))}
         </div>
         <AssetField
-          label="Pozadie lokácie"
+          label="Pozadí lokace"
           value={scene.background}
           assets={assets}
           onAssets={onAssets}
@@ -76,7 +76,7 @@ export function SceneInspector({
       {hotspot ? (
         <>
           <h2>Objekt · {hotspot.id}</h2>
-          <Field label="Názov objektu">
+          <Field label="Název objektu">
             <input
               value={hotspot.label}
               onChange={(event) =>
@@ -86,7 +86,7 @@ export function SceneInspector({
           </Field>
           <div className="bounds-fields">
             {(['x', 'y', 'width', 'height'] as const).map((key) => (
-              <Field key={key} label={`Oblasť ${key}`}>
+              <Field key={key} label={`Oblast ${key}`}>
                 <TransformNumber
                   min={key === 'x' || key === 'y' ? 0 : 1}
                   value={hotspot.bounds[key]}
@@ -108,7 +108,7 @@ export function SceneInspector({
               </Field>
             ))}
           </div>
-          <Field label="Otočenie objektu (°)">
+          <Field label="Otočení objektu (°)">
             <TransformNumber
               min={-360}
               max={360}
@@ -124,7 +124,7 @@ export function SceneInspector({
           </Field>
           {hotspot.image && (
             <>
-              <Field label="Spôsob zmeny veľkosti">
+              <Field label="Způsob změny velikosti">
                 <select
                   value={hotspot.imageFit ?? 'contain'}
                   onChange={(event) =>
@@ -137,16 +137,16 @@ export function SceneInspector({
                     })
                   }
                 >
-                  <option value="contain">Proporčne · bez deformácie</option>
+                  <option value="contain">Proporčně · bez deformace</option>
                   <option value="stretch">
-                    Deformovať · voľná šírka a výška
+                    Deformovat · volná šířka a výška
                   </option>
                 </select>
               </Field>
               <p className="field-note">
                 {hotspot.imageFit === 'stretch'
-                  ? 'Deformácia je zapnutá: šírka a výška sa menia nezávisle.'
-                  : 'Šírka a výška sa menia spolu. Obrázok vždy zachová pôvodné proporcie vo svojom ráme.'}
+                  ? 'Deformace je zapnutá: šířka a výška se mění nezávisle.'
+                  : 'Šířka a výška se mění společně. Obrázek vždy zachová původní proporce v svém rámu.'}
               </p>
               <button
                 disabled={!imageSize}
@@ -161,12 +161,12 @@ export function SceneInspector({
                   })
                 }
               >
-                Rám podľa obrázka
+                Rám podle obrázku
               </button>
             </>
           )}
           <AssetField
-            label="Obrázok objektu"
+            label="Obrázek objektu"
             value={hotspot.image ?? ''}
             optional
             assets={assets}
@@ -176,9 +176,9 @@ export function SceneInspector({
             }
           />
           <label>
-            Klikateľná oblasť
+            Klikatelná oblast
             <select
-              aria-label="Klikateľná oblasť"
+              aria-label="Klikatelná oblast"
               value={hotspot.polygon ? 'polygon' : (hotspot.hitTest ?? 'alpha')}
               onChange={(event) =>
                 onHotspot({
@@ -193,19 +193,19 @@ export function SceneInspector({
               }
             >
               <option value="alpha">
-                Automaticky · viditeľné pixely obrázka
+                Automaticky · viditelné pixely obrázku
               </option>
               <option value="polygon">
-                Ručný polygón · úprava vrcholov v scéne
+                Ruční polygon · úprava vrcholů ve scéně
               </option>
-              <option value="bounds">Ručný obdĺžnik · celý rám hotspotu</option>
+              <option value="bounds">Ruční obdélník · celý rám hotspotu</option>
             </select>
           </label>
           {hotspot.image &&
             !hotspot.polygon &&
             hotspot.hitTest !== 'bounds' && (
               <label>
-                Prah nepriehľadnosti (1–255)
+                Práh neprůhlednosti (1–255)
                 <input
                   type="number"
                   min={1}
@@ -221,18 +221,18 @@ export function SceneInspector({
               </label>
             )}
           <p className="field-note">
-            Ručný polygón má prednosť pred priehľadnosťou obrázka. Bez obrázka a
-            polygónu je klikateľný celý rám. Automatický režim prepúšťa
-            priehľadné pixely na objekty pod nimi; predvolený prah je 32/255.
-            Ručný obdĺžnik má prednosť pred priehľadnosťou.
+            Ruční polygon má přednost před průhledností obrázku. Bez obrázku a
+            polygonu je klikatelný celý rám. Automatický režim propouští
+            průhledné pixely na objekty pod nimi; výchozí práh je 32/255. Ruční
+            obdélník má přednost před průhledností.
           </p>
           {hotspot.image && (
             <button className="primary-button" onClick={onOpenAnimations}>
-              Otvoriť animačné štúdio
+              Otevřít animační studio
             </button>
           )}
           <ConditionField
-            label="Viditeľnosť objektu"
+            label="Viditelnost objektu"
             content={content}
             value={hotspot.visibleWhen}
             onChange={(visibleWhen) => onHotspot({ ...hotspot, visibleWhen })}
@@ -260,18 +260,18 @@ export function SceneInspector({
               }
             />
           )}
-          <h3>Kliknutie na objekt</h3>
+          <h3>Kliknutí na objekt</h3>
           <p className="field-note">
-            Prvá splnená reakcia sa vykoná automaticky. Prázdny zoznam znamená
-            tichú kulisu; komentár nie je povinný.
+            První splněná reakce se vykoná automaticky. Prázdný seznam znamená
+            tichou kulisu; komentář není povinný.
           </p>
           <RulesField
             content={content}
             value={hotspot.onClick}
             onChange={(onClick) => onHotspot({ ...hotspot, onClick })}
           />
-          <h3>Kurzor nad objektom</h3>
-          <Field label="Typ kurzora">
+          <h3>Kurzor nad objektem</h3>
+          <Field label="Typ kurzoru">
             <select
               value={hotspot.cursor ?? 'auto'}
               onChange={(event) =>
@@ -281,14 +281,14 @@ export function SceneInspector({
                 })
               }
             >
-              <option value="auto">Automaticky podľa kliknutia</option>
-              <option value="interact">Ruka · interakcia</option>
-              <option value="talk">Rozprávajúca pusa</option>
+              <option value="auto">Automaticky podle kliknutí</option>
+              <option value="interact">Ruka · interakce</option>
+              <option value="talk">Mluvící pusa</option>
               <option value="exit">Odchod</option>
             </select>
           </Field>
           <AssetField
-            label="Vlastný obrázok kurzora"
+            label="Vlastní obrázek kurzoru"
             value={hotspot.cursorImage ?? ''}
             optional
             assets={assets}
@@ -302,17 +302,17 @@ export function SceneInspector({
             }
           />
           <SelectId
-            label="Animácia kurzora"
+            label="Animace kurzoru"
             value={hotspot.cursorAnimation ?? ''}
             values={(content.animations ?? []).filter(
               (c) => !hotspot.cursorImage || c.source === hotspot.cursorImage,
             )}
-            empty="Bez animácie"
+            empty="Bez animace"
             onChange={(id) =>
               onHotspot({ ...hotspot, cursorAnimation: id || undefined })
             }
           />
-          <Field label="Veľkosť kurzora (px)">
+          <Field label="Velikost kurzoru (px)">
             <TransformNumber
               min={16}
               max={96}
@@ -322,7 +322,7 @@ export function SceneInspector({
           </Field>
           <div className="field-row">
             {([0, 1] as const).map((i) => (
-              <Field key={i} label={`Špička kurzora ${i === 0 ? 'x' : 'y'}`}>
+              <Field key={i} label={`Špička kurzoru ${i === 0 ? 'x' : 'y'}`}>
                 <TransformNumber
                   min={0}
                   max={96}
@@ -338,9 +338,9 @@ export function SceneInspector({
               </Field>
             ))}
           </div>
-          <h3>Použitie inventára na objekt</h3>
+          <h3>Použití inventáře na objekt</h3>
           <SelectId
-            label="Použitý predmet"
+            label="Použitý předmět"
             value={useItem}
             values={content.items}
             onChange={setUseItem}
@@ -358,12 +358,12 @@ export function SceneInspector({
             />
           )}
           <button className="danger-button" onClick={onDelete}>
-            Odstrániť objekt
+            Odstranit objekt
           </button>
         </>
       ) : (
         <p className="field-note">
-          Vyber oblasť v scéne alebo nakresli nový hotspot.
+          Vyber oblast ve scéně nebo nakresli nový hotspot.
         </p>
       )}
     </div>

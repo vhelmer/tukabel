@@ -41,7 +41,11 @@ export function App() {
   return (
     <main className={`app ${mode === 'dev' ? 'dev-mode' : 'game-mode'}`}>
       {DevWorkspace && (
-        <nav className="mode-bar" aria-label="Režim aplikácie">
+        <nav
+          className="mode-bar"
+          lang={mode === 'dev' ? 'cs' : 'sk'}
+          aria-label={mode === 'dev' ? 'Režim aplikace' : 'Režim aplikácie'}
+        >
           <span>
             ↯ TUKABEL <small>WORKSHOP</small>
           </span>

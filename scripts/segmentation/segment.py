@@ -8,7 +8,9 @@ import sys
 def capabilities():
     grabcut = all(importlib.util.find_spec(m) for m in ("cv2", "numpy"))
     sam2 = grabcut and importlib.util.find_spec("sam2") is not None and os.path.isfile(os.environ.get("TUKABEL_SAM2_CHECKPOINT", ""))
-    return {"grabcut": bool(grabcut), "sam2": bool(sam2)}
+    model = os.environ.get("TUKABEL_SAM3_MODEL", "")
+    sam3 = grabcut and importlib.util.find_spec("transformers") is not None and os.path.isfile(os.path.join(model, "config.json")) and (os.path.isfile(os.path.join(model, "model.safetensors")) or os.path.isfile(os.path.join(model, "model.safetensors.index.json")))
+    return {"grabcut": bool(grabcut), "sam2": bool(sam2), "sam3": bool(sam3)}
 
 
 if sys.argv[1:] == ["--status"]:
@@ -89,7 +91,7 @@ if method == "grabcut":
     assert np.any(labels == cv.GC_BGD), "mark some background"
     cv.grabCut(roi, labels, None, np.zeros((1, 65), np.float64), np.zeros((1, 65), np.float64), 5, cv.GC_INIT_WITH_MASK)
     mask = (labels == cv.GC_FGD) | (labels == cv.GC_PR_FGD)
-elif method == "sam2":
+elif method in ("sam2", "sam3"):
     # Optional official SAM 2 installation and a local checkpoint. Never fetch
     # weights, execute model-provided code or use a cloud endpoint here.
     # SAM needs scene context: a tight GrabCut ROI can turn a whole object into
@@ -97,9 +99,8 @@ elif method == "sam2":
     x0, y0 = 0, 0
     x1, y1 = image.shape[1], image.shape[0]
     roi, s = image, seeds
-    from sam2.build_sam import build_sam2
-    from sam2.sam2_image_predictor import SAM2ImagePredictor
     import torch
+    torch.set_num_threads(4)
     points, labels = [], []
     for value, label in ((255, 1), (128, 0)):
         # SAM point prompts represent clicks, not densely sampled brush pixels.
@@ -113,7 +114,13 @@ elif method == "sam2":
             points.append([xx[i], yy[i]])
             labels.append(label)
     with torch.inference_mode():
-        predictor = SAM2ImagePredictor(build_sam2(os.environ.get("TUKABEL_SAM2_CONFIG", "configs/sam2.1/sam2.1_hiera_t.yaml"), os.environ["TUKABEL_SAM2_CHECKPOINT"], device="cpu", apply_postprocessing=False))
+        if method == "sam3":
+            from sam3_adapter import Sam3Predictor
+            predictor = Sam3Predictor(os.environ["TUKABEL_SAM3_MODEL"])
+        else:
+            from sam2.build_sam import build_sam2
+            from sam2.sam2_image_predictor import SAM2ImagePredictor
+            predictor = SAM2ImagePredictor(build_sam2(os.environ.get("TUKABEL_SAM2_CONFIG", "configs/sam2.1/sam2.1_hiera_t.yaml"), os.environ["TUKABEL_SAM2_CHECKPOINT"], device="cpu", apply_postprocessing=False))
         predictor.set_image(cv.cvtColor(roi, cv.COLOR_BGR2RGB))
         masks, scores, _ = predictor.predict(point_coords=np.asarray(points, dtype=np.float32) if points else None, point_labels=np.asarray(labels, dtype=np.int32) if points else None, box=np.array([xs.min() - x0, ys.min() - y0, xs.max() - x0, ys.max() - y0], dtype=np.float32), multimask_output=True)
         mask = masks[int(np.argmax(scores))].astype(bool)

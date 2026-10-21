@@ -29,10 +29,10 @@ type Tab =
   'animations' | 'scenes' | 'items' | 'dialogues' | 'puzzles' | 'graph';
 const serialize = (value: GameContent) => JSON.stringify(value);
 const tabs: { id: Tab; label: string }[] = [
-  { id: 'scenes', label: 'Lokácie' },
-  { id: 'animations', label: 'Animácie' },
-  { id: 'items', label: 'Predmety' },
-  { id: 'dialogues', label: 'Dialógy' },
+  { id: 'scenes', label: 'Lokace' },
+  { id: 'animations', label: 'Animace' },
+  { id: 'items', label: 'Předměty' },
+  { id: 'dialogues', label: 'Dialogy' },
   { id: 'puzzles', label: 'Hádanky' },
   { id: 'graph', label: 'Mapa logiky' },
 ];
@@ -75,7 +75,7 @@ export default function DevWorkspace({
   }, []);
   const [revision, setRevision] = useState<string | null>(null);
   const [saved, setSaved] = useState<string | null>(null);
-  const [message, setMessage] = useState('Načítavam zdrojový projekt…');
+  const [message, setMessage] = useState('Načítám zdrojový projekt…');
   const [busy, setBusy] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [history, setHistory] = useState<{
@@ -123,13 +123,13 @@ export default function DevWorkspace({
         onChange(response.content);
         setLoaded(true);
         setMessage(
-          'Zdroj načítaný. Úpravy sa zapíšu až tlačidlom Uložiť do projektu.',
+          'Zdroj načtený. Úpravy se zapíšou až tlačítkem Uložit do projektu.',
         );
       })
       .catch((error: unknown) => {
         if (!disposed)
           setMessage(
-            error instanceof Error ? error.message : 'Načítanie zlyhalo.',
+            error instanceof Error ? error.message : 'Načítání selhalo.',
           );
       });
     return () => {
@@ -191,10 +191,10 @@ export default function DevWorkspace({
       setRevision(response.revision);
       setSaved(serialize(savingDocument));
       setMessage(
-        'Uložené do src/game/content/project.json. Zmeny môžeš commitnúť do Gitu.',
+        'Uložené do src/game/content/project.json. Změny můžeš commitnout do Gitu.',
       );
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : 'Uloženie zlyhalo.');
+      setMessage(error instanceof Error ? error.message : 'Uložení selhalo.');
     } finally {
       setBusy(false);
     }
@@ -210,11 +210,9 @@ export default function DevWorkspace({
       setSaved(serialize(response.content));
       change(response.content);
       setLoaded(true);
-      setMessage(
-        'Zdroj znovu načítaný. Predchádzajúci návrh je dostupný cez Späť.',
-      );
+      setMessage('Zdroj znovu načtený. Předchozí návrh je dostupný přes Zpět.');
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : 'Načítanie zlyhalo.');
+      setMessage(error instanceof Error ? error.message : 'Načítání selhalo.');
     } finally {
       setBusy(false);
     }
@@ -233,35 +231,36 @@ export default function DevWorkspace({
   return (
     <section
       className={`dev-workspace ${tab === 'animations' ? 'animation-mode' : ''}`}
-      aria-label="Vývojársky editor"
+      lang="cs"
+      aria-label="Vývojářský editor"
     >
       <header className="editor-header">
         <div>
           <p className="eyebrow">AUTORSKÝ EDITOR</p>
           <h1>
             {tab === 'animations'
-              ? 'Animačné štúdio'
-              : 'Tvoja scéna. Tvoje pravidlá.'}
+              ? 'Animační studio'
+              : 'Tvá scéna. Tvá pravidla.'}
           </h1>
-          <p>Obsah v Gite · náhľad bez zápisu · lokálne ukladanie do zdrojov</p>
+          <p>Obsah v Gitu · náhled bez zápisu · lokální ukládání do zdrojů</p>
         </div>
         <div className="editor-save">
           <span className={dirty ? 'unsaved-badge' : 'saved-badge'}>
-            {dirty ? '● Neuložené zmeny' : '✓ Zhodné so zdrojom'}
+            {dirty ? '● Neuložené změny' : '✓ Zhodné s zdrojem'}
           </span>
           <button
             className="primary-button"
             disabled={!loaded || busy || errors.length > 0 || !dirty}
             onClick={() => void save()}
           >
-            {busy ? 'Pracujem…' : 'Uložiť do projektu'}
+            {busy ? 'Pracuji…' : 'Uložit do projektu'}
           </button>
           <button disabled={errors.length > 0 || !loaded} onClick={onPreview}>
-            Otestovať odtiaľto ↗
+            Otestovat odsud ↗
           </button>
         </div>
       </header>
-      <div className="editor-status" role="status" aria-label="Stav editora">
+      <div className="editor-status" role="status" aria-label="Stav editoru">
         {message}
       </div>
       <JobTray
@@ -278,7 +277,7 @@ export default function DevWorkspace({
               !target.hotspots.some((h) => h.id === job.context.targetId))
           ) {
             setMessage(
-              'Cieľ úlohy už v návrhu neexistuje. Výsledok sa nepoužil; grafické assety zostávajú v src/assets/scene-art/.',
+              'Cíl úlohy už v návrhu neexistuje. Výsledek se nepoužil; grafické assety zůstávají v src/assets/scene-art/.',
             );
             return;
           }
@@ -314,7 +313,7 @@ export default function DevWorkspace({
               }
             }}
           >
-            Späť
+            Zpět
           </button>
           <button
             disabled={!history.redo.length || busy}
@@ -329,16 +328,16 @@ export default function DevWorkspace({
               }
             }}
           >
-            Znova
+            Znovu
           </button>
           <button disabled={busy} onClick={() => void reload()}>
-            Zahodiť zmeny a načítať
+            Zahodit změny a načíst
           </button>
         </div>
       </div>
       {errors.length > 0 && (
         <div className="validation-errors" role="alert">
-          <strong>Oprav údaje pred uložením alebo testom:</strong>
+          <strong>Oprav údaje před uložením nebo testem:</strong>
           <ul>
             {errors.map((error, index) => (
               <li key={index}>{error}</li>
@@ -352,7 +351,7 @@ export default function DevWorkspace({
           <>
             <div className="scene-selector">
               <SelectId
-                label="Aktívna lokácia"
+                label="Aktivní lokace"
                 value={scene?.id ?? ''}
                 values={document.scenes.map((entry) => ({
                   id: entry.id,
@@ -387,7 +386,7 @@ export default function DevWorkspace({
                   setHotspotId('');
                 }}
               >
-                + Lokácia
+                + Lokace
               </button>
               <button
                 disabled={!scene || document.scenes.length <= 1}
@@ -402,7 +401,7 @@ export default function DevWorkspace({
                     });
                 }}
               >
-                Odstrániť lokáciu
+                Odstranit lokaci
               </button>
             </div>
             {scene && (
@@ -422,8 +421,8 @@ export default function DevWorkspace({
                       onClick={() => setLivePreview(!livePreview)}
                     >
                       {livePreview
-                        ? 'Späť na úpravy vrstiev'
-                        : 'Živý náhľad animácií'}
+                        ? 'Zpět na úpravy vrstev'
+                        : 'Živý náhled animací'}
                     </button>
                   </div>
                   {livePreview ? (
@@ -492,14 +491,14 @@ export default function DevWorkspace({
                     onSelect={setHotspotId}
                   />
                   <p className="field-note">
-                    Súradnice patria k pôvodnej veľkosti lokácie. Obrázky a
-                    hotspoty sa pri hraní škálujú spolu. ID objektov sú stabilné
-                    a automaticky pridelené.
+                    Souřadnice patří k původní velikosti lokace. Obrázky a
+                    hotspoty se při hraní škálují společně. ID objektů jsou
+                    stabilní a automaticky přidělené.
                   </p>
                 </div>
                 <aside
                   className="editor-inspector"
-                  aria-label="Vlastnosti lokácie a objektu"
+                  aria-label="Vlastnosti lokace a objektu"
                 >
                   <fieldset disabled={hotspot?.locked}>
                     <legend className="sr-only">Vlastnosti vrstvy</legend>
@@ -538,7 +537,7 @@ export default function DevWorkspace({
                   id: a.key,
                   label: `${a.scene.title} · ${a.hotspot.label}`,
                 }))}
-                empty="Vyber postavu s obrázkom"
+                empty="Vyber postavu s obrázkem"
                 onChange={(key) => {
                   const next = actors.find((a) => a.key === key);
                   if (next) {
@@ -612,7 +611,7 @@ export default function DevWorkspace({
                 }
               />
             ) : (
-              <p>Najprv pridaj do lokácie objekt s obrázkom postavy.</p>
+              <p>Nejprve přidej do lokace objekt s obrázkem postavy.</p>
             )}
           </>
         )}

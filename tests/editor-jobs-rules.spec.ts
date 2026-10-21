@@ -47,7 +47,7 @@ const plan: AnimationDirection = {
   minMs: 1000,
   maxMs: 2200,
   motion: 'breath',
-  notes: 'Použité hotové oči a ústa; pohyb celej postavy.',
+  notes: 'Použité hotové oči a ústa; pohyb celé postavy.',
 };
 const submit = { kind: 'animation' as const, context };
 const deferred = () => {
@@ -85,7 +85,7 @@ test('jobs return queued immediately, serialize expensive calls, cancel queued w
     return plan;
   });
   jobs.dismiss(cancelled.id);
-  expect(() => jobs.cancel(first.id)).toThrow('iba čakajúcu');
+  expect(() => jobs.cancel(first.id)).toThrow('pouze čekající');
   gate.resolve();
   await expect.poll(() => last.status).toBe('succeeded');
   expect(first.status).toBe('succeeded');
@@ -119,7 +119,7 @@ test('removing completed jobs while another is running never strands queued work
 test('structured AI direction only configures available non-overlapping clips and preserves speech mapping', async () => {
   let calls = 0;
   const result = await proposeAnimation(
-    { prompt: 'Nervózne mrkanie a rozprávanie', context, confirmed: true },
+    { prompt: 'Nervózně mrkání a mluvení', context, confirmed: true },
     {
       apiKey: 'secret',
       fetch: (async (url, init) => {
@@ -172,13 +172,13 @@ test('structured AI direction only configures available non-overlapping clips an
       region: { x: 0, y: 0, width: 100, height: 100 },
     })),
   };
-  expect(() => validateDirection(plan, overlap)).toThrow('prekrývajú');
+  expect(() => validateDirection(plan, overlap)).toThrow('překrývají');
   expect(() =>
     validateDirection(plan, {
       ...context,
       clips: context.clips.map((c) => ({ ...c, region: undefined })),
     }),
-  ).toThrow('lokálne');
+  ).toThrow('lokální klipy');
   expect(() =>
     directionInput({ context, prompt: 'Do it', confirmed: false }),
   ).toThrow();
@@ -222,7 +222,7 @@ test('provider failure, refusal and incomplete proposals never retry or expose p
         apiKey: 'secret',
         fetch: (async () => Response.json(data)) as typeof fetch,
       }),
-    ).rejects.toThrow('Nič sa nepoužilo');
+    ).rejects.toThrow('Nic se nepoužilo');
   await expect(proposeAnimation(input, {})).rejects.toThrow('OPENAI_API_KEY');
 });
 

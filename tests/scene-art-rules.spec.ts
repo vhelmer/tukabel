@@ -354,17 +354,17 @@ test('a wrong-sized provider image is archived for diagnosis and never stretched
   });
 });
 
-test('scene cutouts and ambient loops preserve canvas, archive selections and publish complete local clips', async () => {
+test('scene cutouts crop to visible pixels while ambient loops preserve canvas, archive selections and publish complete local clips', async () => {
   await fixture(async (root, original) => {
     const result = await createArtwork(root, {
       source: 'source.png',
       operation: 'cutout',
       selection: rectangle,
     });
-    const bytes = await rgba(path.join(root, result.image)),
+    const bytes = await rgba(path.join(root, result.cutoutFull!)),
       source = await rgba(original);
     expect((await sharp(path.join(root, result.image)).metadata()).width).toBe(
-      64,
+      48,
     );
     expect(bytes[3]).toBe(0);
     const inside = (20 * 64 + 20) * 4;
@@ -464,7 +464,7 @@ test('masked AI extraction uses a server-only key, repairs only selected pixels 
     expect(edited.subarray((20 * 64 + 20) * 4, (20 * 64 + 20) * 4 + 4)).toEqual(
       Buffer.from([0, 255, 0, 255]),
     );
-    expect((await rgba(path.join(root, result.cutout!)))[3]).toBe(0);
+    expect((await rgba(path.join(root, result.cutoutFull!)))[3]).toBe(0);
     expect(
       await readFile(path.join(root, result.manifest), 'utf8'),
     ).not.toContain('test-art-secret');
@@ -617,10 +617,10 @@ test('scene graphics reject unsafe paths and invalid selections; failed provider
     };
     await expect(
       createArtwork(root, { ...valid, confirmed: false }, options),
-    ).rejects.toThrow('výslovne');
+    ).rejects.toThrow('výslovně');
     await expect(
       createArtwork(root, { ...valid, source: '../source.png' }, options),
-    ).rejects.toThrow('lokálny');
+    ).rejects.toThrow('lokální');
     await symlink(path.join(root, 'source.png'), path.join(root, 'link.png'));
     await expect(
       createArtwork(root, { ...valid, source: 'link.png' }, options),
@@ -638,7 +638,7 @@ test('scene graphics reject unsafe paths and invalid selections; failed provider
         },
         options,
       ),
-    ).rejects.toThrow('Výber');
+    ).rejects.toThrow('Výběr');
     expect(paid).toBe(0);
     await expect(createArtwork(root, valid, options)).rejects.toThrow(
       'HTTP 402',
@@ -652,7 +652,7 @@ test('scene graphics reject unsafe paths and invalid selections; failed provider
             status: 200,
           })) as typeof fetch,
       }),
-    ).rejects.toThrow('nečitateľnú');
+    ).rejects.toThrow('nečitelnou');
     expect(await readdir(root)).not.toContain('scene-art');
     await expect(
       createArtwork(root, {
@@ -661,7 +661,7 @@ test('scene graphics reject unsafe paths and invalid selections; failed provider
         selection: rectangle,
         frameCount: 300,
       }),
-    ).rejects.toThrow('slučky');
+    ).rejects.toThrow('smyčky');
     expect(await readdir(path.join(root, 'scene-art'))).toEqual([]);
   });
 });
@@ -723,4 +723,87 @@ test('layer properties validate and hidden or decorative objects cannot dispatch
       scenes: [{ ...content.scenes[0], hotspots: [{ ...layer, opacity: 2 }] }],
     }),
   ).toContain('scenes[0].hotspots[0]: opacity must be within 0–1');
+});
+
+test('cropped assets retain every RGBA byte and archived restored backgrounds reopen only for the unchanged source', async () => {
+  await fixture(async (root, original) => {
+    const result = await createArtwork(
+      root,
+      {
+        source: 'source.png',
+        operation: 'extract',
+        selection: rectangle,
+        repairPadding: 2,
+        repairFeather: 1,
+        confirmed: true,
+        prompt: 'Remove the object',
+      },
+      {
+        apiKey: 'mock',
+        fetch: (async (_url, options) => {
+          const body = JSON.parse(String(options!.body));
+          const [width, height] = body.size.split('x').map(Number);
+          const bytes = await sharp({
+            create: { width, height, channels: 4, background: '#267849' },
+          })
+            .png()
+            .toBuffer();
+          return Response.json({
+            data: [{ b64_json: bytes.toString('base64') }],
+          });
+        }) as typeof fetch,
+      },
+    );
+    expect(result.cutoutFrame).toEqual({
+      x: 8,
+      y: 8,
+      width: 48,
+      height: 32,
+      sourceWidth: 64,
+      sourceHeight: 48,
+    });
+    const cropped = await sharp(path.join(root, result.cutout!))
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+    const full = await rgba(path.join(root, result.cutoutFull!));
+    expect([cropped.info.width, cropped.info.height]).toEqual([48, 32]);
+    for (let y = 0; y < 32; y++)
+      expect(cropped.data.subarray(y * 48 * 4, (y + 1) * 48 * 4)).toEqual(
+        full.subarray(((y + 8) * 64 + 8) * 4, ((y + 8) * 64 + 56) * 4),
+      );
+    // The user can choose the clean full AI result, including changed context,
+    // or keep the masked version with pixel-identical protected surroundings.
+    expect(
+      (await rgba(path.join(root, result.backgrounds!.masked))).subarray(0, 4),
+    ).toEqual((await rgba(original)).subarray(0, 4));
+    expect(
+      (await rgba(path.join(root, result.backgrounds!.restored))).subarray(
+        0,
+        4,
+      ),
+    ).toEqual(Buffer.from([38, 120, 73, 255]));
+    const { artworkHistory } = await import('../dev/artHistory');
+    const history = await artworkHistory(root, { source: 'source.png' });
+    expect(history).toHaveLength(1);
+    expect(history[0]!.backgrounds).toEqual(result.backgrounds);
+    expect(history[0]!.cutoutFrame).toEqual(result.cutoutFrame);
+    const reapplied = await artworkHistory(root, {
+      source: result.backgrounds!.masked,
+    });
+    expect(reapplied).toHaveLength(1);
+    expect(reapplied[0]).toMatchObject({
+      source: result.backgrounds!.masked,
+      operation: 'remove',
+      backgrounds: result.backgrounds,
+    });
+    expect(reapplied[0]!.cutout).toBeUndefined();
+    await writeFile(
+      path.join(root, 'source.png'),
+      await sharp(original).negate().png().toBuffer(),
+    );
+    expect(await artworkHistory(root, { source: 'source.png' })).toEqual([]);
+    await expect(
+      artworkHistory(root, { source: '../source.png' }),
+    ).rejects.toThrow();
+  });
 });

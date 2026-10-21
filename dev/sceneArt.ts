@@ -46,6 +46,9 @@ export interface ArtResult {
   source: string;
   image: string;
   cutout?: string;
+  cutoutFull?: string;
+  cutoutFrame?: import('../src/game/transforms.ts').CropFrame;
+  backgrounds?: { restored: string; masked: string };
   animation?: AnimationDefinition;
   width: number;
   height: number;
@@ -76,7 +79,7 @@ const aiOperations = ['edit', 'extract', 'remove', 'generate'];
 function imageSettings(model: string, quality: unknown) {
   if (!imageQualities(model).includes(quality as ImageQuality))
     throw Error(
-      `Neplatná kvalita obrázka pre ${model}. Vyber ${imageQualities(model).join(', ')}; skontroluj aj OPENAI_IMAGE_QUALITY.`,
+      `Neplatná kvalita obrázku pro ${model}. Vyber ${imageQualities(model).join(', ')}; zkontroluj i OPENAI_IMAGE_QUALITY.`,
     );
   return { model, quality: quality as ImageQuality };
 }
@@ -98,7 +101,7 @@ async function editImage(
 ) {
   const { model, quality } = artStatus(options);
   if (!options.apiKey)
-    throw Error('Nastav OPENAI_API_KEY v .env.local a reštartuj Vite.');
+    throw Error('Nastav OPENAI_API_KEY v .env.local a restartuj Vite.');
   const body = {
     model,
     images: [
@@ -131,33 +134,33 @@ async function editImage(
       },
     );
   } catch {
-    throw Error('AI služba neodpovedala. Požiadavka sa automaticky neopakuje.');
+    throw Error('AI služba neodpověděla. Požadavek se automaticky neopakuje.');
   }
   if (!response.ok) {
     await response.body?.cancel();
     throw Error(
-      `AI úprava zlyhala (HTTP ${response.status}, ${model}, ${quality}). Skontroluj prístup k modelu, nastavenia a kredit; požiadavka sa neopakuje.`,
+      `AI úprava selhala (HTTP ${response.status}, ${model}, ${quality}). Zkontroluj přístup k modelu, nastavení a kredit; požadavek se neopakuje.`,
     );
   }
   const chunks: Uint8Array[] = [];
   let length = 0;
   for await (const chunk of response.body ?? []) {
     length += chunk.length;
-    if (length > 40 * 1024 * 1024) throw Error('Odpoveď AI je príliš veľká.');
+    if (length > 40 * 1024 * 1024) throw Error('Odpověď AI je příliš velká.');
     chunks.push(chunk);
   }
   let data: unknown;
   try {
     data = JSON.parse(Buffer.concat(chunks).toString());
   } catch {
-    throw Error('AI vrátila nečitateľnú odpoveď. Požiadavka sa neopakuje.');
+    throw Error('AI vrátila nečitelnou odpověď. Požadavek se neopakuje.');
   }
   const item =
     object(data) && Array.isArray(data.data)
       ? (data.data[0] as unknown)
       : undefined;
   if (!object(item) || typeof item.b64_json !== 'string')
-    throw Error('AI nevrátila PNG obrázok.');
+    throw Error('AI nevrátila PNG obrázek.');
   const bytes = Buffer.from(item.b64_json, 'base64');
   const meta = await sharp(bytes, { limitInputPixels: MAX_PIXELS }).metadata();
   if (
@@ -165,7 +168,7 @@ async function editImage(
     (meta.pages ?? 1) !== 1 ||
     bytes.length > MAX_BYTES
   )
-    throw Error('AI vrátila neplatný alebo príliš veľký obrázok.');
+    throw Error('AI vrátila neplatný nebo příliš velký obrázek.');
   return bytes;
 }
 
@@ -180,7 +183,7 @@ export async function createArtwork(
     typeof input.operation !== 'string' ||
     !['cutout', 'loop', ...aiOperations].includes(input.operation)
   )
-    throw Error('Neplatná grafická operácia.');
+    throw Error('Neplatná grafická operace.');
   const operation = input.operation as ArtOperation;
   const debugOnly = input.debugOnly === true;
   if (
@@ -188,18 +191,18 @@ export async function createArtwork(
     (debugOnly && !['extract', 'remove'].includes(operation))
   )
     throw Error(
-      'Diagnostika prípravy je dostupná pre oddelenie a odstránenie objektu.',
+      'Diagnostika přípravy je dostupná pro oddělení a odstranění objektu.',
     );
   const ai = aiOperations.includes(operation) && !debugOnly;
   if (ai && input.confirmed !== true)
-    throw Error('AI generovanie musíš výslovne spustiť.');
+    throw Error('AI generování musíš výslovně spustit.');
   if (
     ai &&
     (typeof input.prompt !== 'string' ||
       !input.prompt.trim() ||
       input.prompt.length > 4000)
   )
-    throw Error('Zadaj pokyny pre AI (najviac 4000 znakov).');
+    throw Error('Zadej pokyny pro AI (nejvýše 4000 znaků).');
   let settings: ReturnType<typeof imageSettings> | undefined;
   if (ai || debugOnly) {
     const configuredModel = options.model || defaultImageModel;
@@ -209,14 +212,14 @@ export async function createArtwork(
       !imageModels(configuredModel).includes(model)
     )
       throw Error(
-        'Vyber podporovaný model obrázkov alebo nastav OPENAI_IMAGE_MODEL na serveri.',
+        'Vyber podporovaný model obrázků nebo nastav OPENAI_IMAGE_MODEL na serveru.',
       );
     settings = imageSettings(
       model,
       input.quality ?? options.quality ?? defaultImageQuality,
     );
   }
-  options.onStage?.('Načítavam zdroj a pripravujem výber');
+  options.onStage?.('Načítám zdroj a připravuji výběr');
   const original = await readArtSource(root, input.source);
   const { width, height, raw, source } = original;
   const suppliedMask =
@@ -227,7 +230,7 @@ export async function createArtwork(
     suppliedMask &&
     !['cutout', 'extract', 'remove', 'edit'].includes(operation)
   )
-    throw Error('Maska nie je podporovaná pre túto operáciu.');
+    throw Error('Maska není podporovaná pro tuto operaci.');
   let points: Point[] | undefined;
   if (input.selection !== undefined) {
     if (
@@ -247,17 +250,17 @@ export async function createArtwork(
           p.y > height,
       )
     )
-      throw Error('Výber musí byť polygón vo vnútri zdrojového obrázka.');
+      throw Error('Výběr musí být polygon uvnitř zdrojového obrázku.');
     points = input.selection as Point[];
     if (polygonIssue(points))
-      throw Error('Výber sa nesmie krížiť a musí mať plochu.');
+      throw Error('Výběr se nesmí křížit a musí mít plochu.');
   }
   if (
     ['cutout', 'loop', 'extract', 'remove'].includes(operation) &&
     !points &&
     !suppliedMask
   )
-    throw Error('Najprv vyber oblasť obrázka.');
+    throw Error('Nejprve vyber oblast obrázku.');
   if (operation === 'generate') points = undefined;
   const coverage = points
     ? await sharp(
@@ -296,7 +299,7 @@ export async function createArtwork(
     Number(repairPadding) < 0 ||
     Number(repairPadding) > 64
   )
-    throw Error('Presah opravy musí byť 0–64 px.');
+    throw Error('Přesah opravy musí být 0–64 px.');
   // The repair owns its own margin. Clipping it back to the cutout restores
   // missed outlines from the original image and leaves a ghost of the object.
   const providerMask = Number(repairPadding)
@@ -314,7 +317,7 @@ export async function createArtwork(
     Number(requestedFeather) < 0 ||
     Number(requestedFeather) > 32
   )
-    throw Error('Prechod švu musí byť 0–32 px.');
+    throw Error('Přechod švu musí být 0–32 px.');
   const feather = Math.min(Number(requestedFeather), Number(repairPadding));
   const repairCoverage = await featherRepair(
     objectPixels,
@@ -324,7 +327,7 @@ export async function createArtwork(
     feather,
   );
   if (!debugOnly && suppliedMask?.matting?.decontaminate)
-    options.onStage?.('Oddeľujem farbu pozadia iba v jemných hranách');
+    options.onStage?.('Odděluji barvu pozadí pouze v jemných hranách');
   const cutoutRaw =
     !debugOnly && suppliedMask?.matting?.decontaminate
       ? await matteForeground(
@@ -345,15 +348,54 @@ export async function createArtwork(
       .png()
       .toBuffer();
   const cutout = await png(cutoutRaw);
+  // Crop only still cutouts. Animation frames retain their shared source canvas.
+  let cutoutFrame: ArtResult['cutoutFrame'];
+  let croppedCutout = cutout;
+  if (['cutout', 'extract'].includes(operation) && !debugOnly) {
+    let left = width,
+      top = height,
+      right = -1,
+      bottom = -1;
+    for (let y = 0; y < height; y++)
+      for (let x = 0; x < width; x++)
+        if (cutoutRaw[(y * width + x) * 4 + 3]) {
+          left = Math.min(left, x);
+          top = Math.min(top, y);
+          right = Math.max(right, x);
+          bottom = Math.max(bottom, y);
+        }
+    if (right < left) throw Error('Výřez neobsahuje žádné viditelné pixely.');
+    cutoutFrame = {
+      x: left,
+      y: top,
+      width: right - left + 1,
+      height: bottom - top + 1,
+      sourceWidth: width,
+      sourceHeight: height,
+    };
+    croppedCutout = await sharp(cutout)
+      .extract({
+        left,
+        top,
+        width: cutoutFrame.width,
+        height: cutoutFrame.height,
+      })
+      .png()
+      .toBuffer();
+  }
   const mask = await png(maskRaw);
-  let image = debugOnly ? source : cutout;
+  let image = debugOnly
+    ? source
+    : operation === 'cutout'
+      ? croppedCutout
+      : cutout;
   let pipeline: Awaited<ReturnType<typeof prepareInpaint>> | undefined;
   let returned: Buffer | undefined, restored: Buffer | undefined;
   let blockedReason: string | undefined;
   let returnedSize: { width: number; height: number } | undefined;
   if (ai || debugOnly) {
     if ((points || suppliedMask) && !providerMask.some((v) => v > 0))
-      throw Error('Maska je prázdna v pôvodnom rozlíšení. Zväčši výber.');
+      throw Error('Maska je prázdná v původním rozlišení. Zvětši výběr.');
     pipeline = await prepareInpaint(source, providerMask, width, height);
   }
   if (ai) {
@@ -366,7 +408,7 @@ export async function createArtwork(
         : operation === 'generate'
           ? 'Create a new 2D adventure location using the reference ONLY for its drawing style, palette and line work. '
           : 'Edit only the selected area. ';
-    options.onStage?.('AI upravuje obrázok · požiadavka sa neopakuje');
+    options.onStage?.('AI upravuje obrázek · požadavek se neopakuje');
     const generated = await editImage(
       workingImage,
       workingMask,
@@ -380,7 +422,7 @@ export async function createArtwork(
     // A differently sized response cannot be aligned reliably. Archive it for
     // inspection instead of silently stretching it and publishing a shifted edit.
     if (meta.width !== work.width || meta.height !== work.height) {
-      blockedReason = `AI vrátila ${meta.width} × ${meta.height}, očakávané ${work.width} × ${work.height}. Výsledok sa neškáluje ani nepoužije; skontroluj diagnostiku.`;
+      blockedReason = `AI vrátila ${meta.width} × ${meta.height}, očakávané ${work.width} × ${work.height}. Výsledek se neškáluje ani nepoužije; zkontroluj diagnostiku.`;
       image = source;
     } else {
       restored = await restore(generated);
@@ -400,7 +442,7 @@ export async function createArtwork(
   const folder = path.join(root, 'scene-art');
   await mkdir(folder, { recursive: true });
   if ((await realpath(folder)) !== path.resolve(folder))
-    throw Error('Adresár grafiky nesmie byť symbolický odkaz.');
+    throw Error('Adresář grafiky nesmí být symbolický odkaz.');
   const id = randomUUID(),
     prefix = `scene-art/${id}`;
   const staging = path.join(folder, `.tmp-${id}`);
@@ -432,8 +474,16 @@ export async function createArtwork(
         await maskPng(objectPixels, width, height),
         { flag: 'wx' },
       );
+    if (cutoutFrame && !blockedReason) {
+      await writeFile(path.join(staging, 'cutout-full.png'), cutout, {
+        flag: 'wx',
+      });
+      if (operation === 'extract')
+        await writeFile(path.join(staging, 'cutout.png'), croppedCutout, {
+          flag: 'wx',
+        });
+    }
     if (operation === 'extract' && !debugOnly && !blockedReason) {
-      await writeFile(path.join(staging, 'cutout.png'), cutout, { flag: 'wx' });
       const background = await sharp(image).ensureAlpha().raw().toBuffer();
       const combined = Buffer.from(background),
         difference = Buffer.alloc(raw.length, 0);
@@ -488,7 +538,7 @@ export async function createArtwork(
       };
       if (unexpectedPixels)
         throw Error(
-          'Kontrola zloženia zistila zmenené pixely. Výsledok sa nepublikoval.',
+          'Kontrola složení zjistila změněné pixely. Výsledek se nepublikoval.',
         );
       await writeFile(
         path.join(staging, 'reassembled.png'),
@@ -522,7 +572,7 @@ export async function createArtwork(
         !['water', 'clouds', 'smoke'].includes(String(motion))
       )
         throw Error(
-          'Neplatné nastavenie slučky (4–24 snímok, 1–30 fps, sila 1–32 px).',
+          'Neplatné nastavení smyčky (4–24 snímků, 1–30 fps, síla 1–32 px).',
         );
       const bBox = polygonBounds(points!);
       const x0 = Math.floor(bBox.x),
@@ -534,7 +584,7 @@ export async function createArtwork(
       const frames: string[] = [];
       let total = 0;
       for (let frame = 0; frame < Number(count); frame++) {
-        options.onStage?.(`Vykresľujem snímku ${frame + 1}/${count}`);
+        options.onStage?.(`Vykresluji snímek ${frame + 1}/${count}`);
         const result = Buffer.from(cutoutRaw),
           phase = (frame * Math.PI * 2) / Number(count);
         for (let y = y0; y < Math.min(height, y0 + bh); y++) {
@@ -600,13 +650,13 @@ export async function createArtwork(
         const bytes = await png(result);
         total += bytes.length;
         if (total > 64 * 1024 * 1024)
-          throw Error('Slučka je príliš veľká. Zmenši zdrojový obrázok.');
+          throw Error('Smyčka je příliš velká. Zmenši zdrojový obrázek.');
         await writeFile(path.join(staging, name), bytes, { flag: 'wx' });
         frames.push(`${prefix}/${name}`);
       }
       animation = {
         id: `ambient-${id}`,
-        label: `Slučka · ${motion}`,
+        label: `Smyčka · ${motion}`,
         source: `${prefix}/image.png`,
         frames,
         kind: 'idle',
@@ -663,7 +713,7 @@ export async function createArtwork(
       }
       if (outsideChanges)
         throw Error(
-          'Kompozícia zmenila pixely mimo opravy. Výsledok sa nepublikoval.',
+          'Kompozice zmenila pixely mimo opravy. Výsledek se nepublikoval.',
         );
       const roundTripMae = rgbMae(raw, pipeline.roundTrip, () => true);
       const contextMae = restored
@@ -687,11 +737,11 @@ export async function createArtwork(
       const warnings: string[] = [];
       if (!repairPadding)
         warnings.push(
-          'Presah je nulový: tiene a obrysy mimo masky sa neopravujú, šev je tvrdý.',
+          'Přesah je nulový: tiene a obrysy mimo masky se neopravujú, šev je tvrdý.',
         );
       else if (feather >= Number(repairPadding))
         warnings.push(
-          'Prechod švu zaberá celý presah. Ak ostávajú stopy objektu, zväčši presah oproti šírke prechodu.',
+          'Přechod švu zaberá celý přesah. Pokud ostávajú stopy objektu, zvětši přesah oproti šířce přechodu.',
         );
       if (
         providerMask.subarray(0, width).some((v) => v > 0) ||
@@ -701,30 +751,30 @@ export async function createArtwork(
         )
       )
         warnings.push(
-          'Opravná maska dosahuje okraj zdroja; presah je na ňom orezaný.',
+          'Opravná maska dosahuje okraj zdroje; přesah je na něm orezaný.',
         );
       if (expandedCount > width * height * 0.5)
         warnings.push(
-          'Opravná maska zaberá viac než polovicu obrázka; skontroluj výber a presah.',
+          'Opravná maska zaberá viac než polovicu obrázku; zkontroluj výběr a přesah.',
         );
       if (lostObjectPixels)
         warnings.push(
-          `Maska po škálovaní stráca ${lostObjectPixels} pixelov objektu.`,
+          `Maska po škálování stráca ${lostObjectPixels} pixelů objektu.`,
         );
       if (boundaryMaxWeight)
         warnings.push(
-          'Na vonkajšej hranici opravy ostáva nenulový zásah. Skontroluj prechod švu a presah.',
+          'Na vnější hranici opravy ostáva nenulový zásah. Zkontroluj přechod švu a přesah.',
         );
       if (roundTripMae > 1)
         warnings.push(
-          'Samotné škálovanie mení detaily. Porovnaj kontrolný návrat bez AI s originálom.',
+          'Samotné škálování mění detaily. Porovnej kontrolní návrat bez AI s originálem.',
         );
       if (
         (contextMae !== undefined && contextMae > 1) ||
         (seamMae !== undefined && seamMae > 1)
       )
         warnings.push(
-          'Model zmenil aj chránený kontext. Rozdiel oproti kontrolnému návratu môže vysvetliť farebný šev; color matching sa nepoužíva.',
+          'Model změnil i chráněný kontext. Rozdíl oproti kontrolnímu návratu může vysvětlit barevný šev; color matching se nepoužívá.',
         );
       if (blockedReason) warnings.push(blockedReason);
       debug = {
@@ -770,7 +820,17 @@ export async function createArtwork(
       );
     }
     const manifest = {
-      version: 2,
+      version: 3,
+      cutoutFrame,
+      cutoutFull: cutoutFrame && !blockedReason ? 'cutout-full.png' : undefined,
+      backgrounds:
+        restored && ['extract', 'remove'].includes(operation)
+          ? { restored: 'provider-restored.png', masked: 'image.png' }
+          : undefined,
+      defaultBackground:
+        restored && ['extract', 'remove'].includes(operation)
+          ? 'restored'
+          : undefined,
       source: input.source,
       sourceSha256: hash(original.bytes),
       operation,
@@ -827,7 +887,7 @@ export async function createArtwork(
       { flag: 'wx' },
     );
     if (hash(await readFile(original.filename)) !== hash(original.bytes))
-      throw Error('Zdroj sa medzitým zmenil. Výsledok sa neuložil.');
+      throw Error('Zdroj se mezitím změnil. Výsledek se neuložil.');
     options.onStage?.('Overujem zdroj a publikujem assety');
     await rename(staging, path.join(folder, id));
     return {
@@ -838,6 +898,16 @@ export async function createArtwork(
       blockedReason,
       debug,
       image: `${prefix}/image.png`,
+      cutoutFrame: blockedReason ? undefined : cutoutFrame,
+      cutoutFull:
+        cutoutFrame && !blockedReason ? `${prefix}/cutout-full.png` : undefined,
+      backgrounds:
+        restored && ['extract', 'remove'].includes(operation)
+          ? {
+              restored: `${prefix}/provider-restored.png`,
+              masked: `${prefix}/image.png`,
+            }
+          : undefined,
       cutout:
         operation === 'extract' && !debugOnly && !blockedReason
           ? `${prefix}/cutout.png`

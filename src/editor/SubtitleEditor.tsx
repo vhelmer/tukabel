@@ -17,7 +17,7 @@ export function SubtitleTextField({
 }) {
   return (
     <>
-      <Field label="Vlastný text titulkov (voliteľné)">
+      <Field label="Vlastní text titulků (volitelné)">
         <textarea
           value={node.subtitle ?? ''}
           placeholder={stripAudioTags(node.text)}
@@ -27,8 +27,8 @@ export function SubtitleTextField({
         />
       </Field>
       <p className="field-note">
-        Prázdne pole použije repliku bez hranatých zátvoriek. Text dabingu a
-        jeho audio sa úpravou titulkov nemenia.
+        Prázdné pole použije repliku bez hranatých závorek. Text dabingu a jeho
+        audio se úpravou titulků nemění.
       </p>
     </>
   );
@@ -67,22 +67,18 @@ export function SubtitleEditor({
   };
   const issue = subtitleTrackIssue(track, duration || 180);
   return (
-    <section className="subtitle-editor" aria-label="Editor titulkov">
+    <section className="subtitle-editor" aria-label="Editor titulků">
       <h3>Titulky</h3>
       <SubtitleTextField node={node} onChange={onChange} />
       {current && (
         <>
-          <p
-            className="field-note"
-            role="status"
-            aria-label="Časovanie titulkov"
-          >
+          <p className="field-note" role="status" aria-label="Časování titulků">
             {track.timing === 'alignment'
-              ? 'Časovanie podľa ElevenLabs.'
+              ? 'Časování podle ElevenLabs.'
               : track.timing === 'manual'
-                ? 'Ručne upravené časovanie.'
-                : 'Odhad podľa dĺžky textu. Pri WAV alebo prepísanom preklade uprav časy podľa posluchu.'}{' '}
-            Časy sú v sekundách. Zmeny uloží Uložiť do projektu.
+                ? 'Ručně upravené časování.'
+                : 'Odhad podle délky textu. Při WAV nebo přepsaném překladu uprav časy podle poslechu.'}{' '}
+            Časy jsou v sekundách. Změny uloží Uložit do projektu.
           </p>
           <button
             disabled={!duration}
@@ -93,11 +89,11 @@ export function SubtitleEditor({
               })
             }
           >
-            Obnoviť automatické titulky
+            Obnovit automatické titulky
           </button>
           {issue && (
             <p role="alert">
-              Úseky sa nesmú prekrývať a musia byť v rozsahu audia (0–
+              Úseky se nesmějí překrývat a musí být v rozsahu audia (0–
               {duration.toFixed(2)} s).
             </p>
           )}
@@ -111,7 +107,7 @@ export function SubtitleEditor({
                   {(['start', 'end'] as const).map((key) => (
                     <Field
                       key={key}
-                      label={`${key === 'start' ? 'Začiatok' : 'Koniec'} titulku ${index + 1}`}
+                      label={`${key === 'start' ? 'Začátek' : 'Konec'} titulku ${index + 1}`}
                     >
                       <input
                         type="number"
@@ -155,7 +151,7 @@ export function SubtitleEditor({
                     disabled={!duration}
                     onClick={() => onSeek(cue.start)}
                   >
-                    Náhľad úseku {index + 1}
+                    Náhled úseku {index + 1}
                   </button>
                   <button
                     disabled={!cue.text.trim().includes(' ')}
@@ -174,7 +170,7 @@ export function SubtitleEditor({
                       )
                     }
                   >
-                    Rozdeliť úsek {index + 1}
+                    Rozdělit úsek {index + 1}
                   </button>
                   <button
                     disabled={index === track.cues.length - 1}
@@ -196,7 +192,7 @@ export function SubtitleEditor({
                       )
                     }
                   >
-                    Zlúčiť úsek {index + 1} s ďalším
+                    Sloučit úsek {index + 1} s dalším
                   </button>
                 </div>
               </li>

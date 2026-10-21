@@ -20,7 +20,8 @@
     "test:rules": "playwright test --config playwright.rules.config.ts",
     "setup:segmentation": "node scripts/setup-segmentation.mjs",
     "setup:matting": "node scripts/setup-matting.mjs",
-    "compare:matting": "node experiments/object-matting/compare.mjs"
+    "compare:matting": "node experiments/object-matting/compare.mjs",
+    "setup:sam3": "node scripts/setup-sam3.mjs"
   },
   "dependencies": {
     "pixi.js": "^8.22.0",

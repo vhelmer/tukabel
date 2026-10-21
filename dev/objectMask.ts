@@ -16,7 +16,7 @@ export async function maskPixels(
     data.length > 6 * 1024 * 1024 ||
     !/^[A-Za-z0-9+/]+={0,2}$/.test(data)
   )
-    throw Error('Neplatná PNG maska (najviac 4 MB).');
+    throw Error('Neplatná PNG maska (nejvýše 4 MB).');
   const bytes = Buffer.from(data, 'base64');
   const meta = await sharp(bytes, {
     limitInputPixels: ART_MAX_PIXELS,
@@ -28,7 +28,7 @@ export async function maskPixels(
     meta.height !== height ||
     bytes.length > 4 * 1024 * 1024
   )
-    throw Error('Maska musí mať presné rozmery zdroja.');
+    throw Error('Maska musí mít přesné rozměry zdroje.');
   const rgba = await sharp(bytes)
     .toColourspace('srgb')
     .ensureAlpha()
@@ -46,7 +46,7 @@ export async function maskPixels(
       rgba[i + 3] !== 255
     )
       throw Error(
-        'Maska musí byť nepriehľadná, bez farebných okrajov. Mäkké hodnoty vyžadujú režim alpha matting.',
+        'Maska musí být neprůhledná, bez barevných okrajov. Měkké hodnoty vyžadují režim alpha matting.',
       );
     pixels[p] = v;
   }
@@ -65,13 +65,13 @@ export async function readObjectMask(
     input.width !== source.width ||
     input.height !== source.height ||
     input.sourceSha256 !== source.sourceSha256 ||
-    !['manual', 'grabcut', 'sam2'].includes(String(input.method)) ||
+    !['manual', 'grabcut', 'sam2', 'sam3'].includes(String(input.method)) ||
     (input.refineEdges !== undefined &&
       typeof input.refineEdges !== 'boolean') ||
     (input.detailPass !== undefined && typeof input.detailPass !== 'boolean')
   )
     throw Error(
-      'Maska patrí k inému alebo zmenenému zdroju. Priprav ju znovu.',
+      'Maska patří k jinému nebo změněnému zdroji. Připrav ji znovu.',
     );
   const matting = input.matting;
   if (
@@ -83,15 +83,14 @@ export async function readObjectMask(
       Number(matting.radius) > 32 ||
       typeof matting.decontaminate !== 'boolean')
   )
-    throw Error('Neplatné nastavenie alpha mattingu.');
+    throw Error('Neplatné nastavení alpha mattingu.');
   const pixels = await maskPixels(
     input.data,
     source.width,
     source.height,
     matting ? ALPHA_LEVELS : undefined,
   );
-  if (!pixels.some((v) => v > 0))
-    throw Error('Maska neobsahuje žiadny objekt.');
+  if (!pixels.some((v) => v > 0)) throw Error('Maska neobsahuje žádný objekt.');
   return {
     pixels,
     method: input.method as ObjectMask['method'],

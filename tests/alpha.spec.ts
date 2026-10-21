@@ -124,7 +124,7 @@ test('padded PNGs pass clicks, hover and inventory drops through transparent pix
     };
   });
   await openEditor(page, workspace.url);
-  await expect(page.getByText('Načítavam klikateľné oblasti…')).toHaveCount(0);
+  await expect(page.getByText('Načítám klikatelné oblasti…')).toHaveCount(0);
   await page.locator('.editor-stage').scrollIntoViewIfNeeded();
   // Padding on both PNGs, low-alpha front over the back, and opaque front.
   const samples = [
@@ -152,7 +152,7 @@ test('padded PNGs pass clicks, hover and inventory drops through transparent pix
     .getByLabel('Vybraný objekt', { exact: true })
     .selectOption('front');
   await page
-    .getByLabel('Prah nepriehľadnosti (1–255)', { exact: true })
+    .getByLabel('Práh neprůhlednosti (1–255)', { exact: true })
     .fill('200');
   await page.locator('.editor-stage').scrollIntoViewIfNeeded();
   await selectAt(page, sourcePoint(front, 80, 50), isMobile);
@@ -163,7 +163,7 @@ test('padded PNGs pass clicks, hover and inventory drops through transparent pix
     .getByLabel('Vybraný objekt', { exact: true })
     .selectOption('front');
   await page
-    .getByLabel('Priblíženie scény', { exact: true })
+    .getByLabel('Přiblížení scény', { exact: true })
     .selectOption('1.5');
   // Keep the tested point in the scrolled/zoomed SVG viewport.
   await page
@@ -174,10 +174,10 @@ test('padded PNGs pass clicks, hover and inventory drops through transparent pix
     'front',
   );
   await page
-    .getByRole('button', { name: 'Uložiť do projektu', exact: true })
+    .getByRole('button', { name: 'Uložit do projektu', exact: true })
     .click();
   await expect(
-    page.getByRole('status', { name: 'Stav editora' }),
+    page.getByRole('status', { name: 'Stav editoru' }),
   ).toContainText('Uložené do');
   const disk = JSON.parse(
     await readFile(workspace.source, 'utf8'),
@@ -249,7 +249,7 @@ test('padded PNGs pass clicks, hover and inventory drops through transparent pix
     .getByLabel('Vybraný objekt', { exact: true })
     .selectOption('front');
   await page
-    .getByLabel('Klikateľná oblasť', { exact: true })
+    .getByLabel('Klikatelná oblast', { exact: true })
     .selectOption('bounds');
   await page.locator('.editor-stage').scrollIntoViewIfNeeded();
   await selectAt(page, sourcePoint(front, 10, 50), isMobile);
@@ -258,10 +258,10 @@ test('padded PNGs pass clicks, hover and inventory drops through transparent pix
   );
   // Explicit manual frames persist on disk and win on transparent pixels.
   await page
-    .getByRole('button', { name: 'Uložiť do projektu', exact: true })
+    .getByRole('button', { name: 'Uložit do projektu', exact: true })
     .click();
   await expect(
-    page.getByRole('status', { name: 'Stav editora' }),
+    page.getByRole('status', { name: 'Stav editoru' }),
   ).toContainText('Uložené do');
   const manual = JSON.parse(
     await readFile(workspace.source, 'utf8'),

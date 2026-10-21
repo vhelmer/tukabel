@@ -102,17 +102,17 @@ const test = base.extend<{
 });
 async function studio(page: Page, url: string) {
   await openEditor(page, url);
-  await page.getByRole('button', { name: 'Animácie', exact: true }).click();
+  await page.getByRole('button', { name: 'Animace', exact: true }).click();
   await page
     .getByLabel('Animovaná postava', { exact: true })
     .selectOption(JSON.stringify(['animation-lab', 'blink-character']));
 }
 async function save(page: Page) {
   await page
-    .getByRole('button', { name: 'Uložiť do projektu', exact: true })
+    .getByRole('button', { name: 'Uložit do projektu', exact: true })
     .click();
   await expect(
-    page.getByRole('status', { name: 'Stav editora' }),
+    page.getByRole('status', { name: 'Stav editoru' }),
   ).toContainText('Uložené do');
 }
 async function audioAt(audio: Locator, seconds: number) {
@@ -136,9 +136,9 @@ test('studio explicitly generates, analyzes, previews, saves and reloads speech 
   await studio(page, workspace.url);
   await page.locator('.voice-settings summary').click();
   await page
-    .getByRole('button', { name: 'Načítať hlasy a modely', exact: true })
+    .getByRole('button', { name: 'Načíst hlasy a modely', exact: true })
     .click();
-  await expect(page.locator('.voice-settings')).toContainText('Hlasy načítané');
+  await expect(page.locator('.voice-settings')).toContainText('Hlasy načtené');
   await page
     .getByLabel('ElevenLabs Voice ID', { exact: true })
     .fill('mock-voice');
@@ -146,7 +146,7 @@ test('studio explicitly generates, analyzes, previews, saves and reloads speech 
     .getByRole('button', { name: 'Dabing a lip-sync', exact: true })
     .click();
   const generate = page.getByRole('button', {
-    name: 'Vygenerovať dabing ElevenLabs',
+    name: 'Vygenerovat dabing ElevenLabs',
     exact: true,
   });
   await expect(generate).toBeDisabled();
@@ -154,11 +154,11 @@ test('studio explicitly generates, analyzes, previews, saves and reloads speech 
     speechMock.requests.filter((r) => r.url.includes('/text-to-speech/')),
   ).toHaveLength(0);
   await page
-    .getByLabel('Text dabovanej repliky', { exact: true })
+    .getByLabel('Text dabované repliky', { exact: true })
     .fill('Skúšam nový dabing.');
-  await expect(page.getByRole('alert')).toContainText('Text sa zmenil');
+  await expect(page.getByRole('alert')).toContainText('Text se změnil');
   await page
-    .getByLabel('Potvrdzujem platené generovanie tejto repliky', {
+    .getByLabel('Potvrzuji placené generování této repliky', {
       exact: true,
     })
     .check();
@@ -170,7 +170,7 @@ test('studio explicitly generates, analyzes, previews, saves and reloads speech 
     speechMock.requests.filter((r) => r.url.includes('/text-to-speech/')),
   ).toHaveLength(1);
   await page
-    .getByRole('button', { name: 'Analyzovať Rhubarb', exact: true })
+    .getByRole('button', { name: 'Analyzovat Rhubarb', exact: true })
     .click();
   await expect(
     page.getByRole('status', { name: 'Stav dabingu' }),
@@ -182,18 +182,18 @@ test('studio explicitly generates, analyzes, previews, saves and reloads speech 
   const audio = page.locator('.speech-studio audio');
   await audioAt(audio, 0.9);
   await page
-    .getByLabel('Priblíženie postavy', { exact: true })
+    .getByLabel('Přiblížení postavy', { exact: true })
     .selectOption('4');
   await expect(page.locator('.character-preview-canvas canvas')).toHaveCount(1);
   await audio.evaluate((el) => void (el as HTMLAudioElement).play());
   await page
-    .getByRole('button', { name: 'Pozastaviť kombináciu', exact: true })
+    .getByRole('button', { name: 'Pozastavit kombinaci', exact: true })
     .click();
   await expect
     .poll(() => audio.evaluate((el) => (el as HTMLAudioElement).paused))
     .toBe(true);
   await page
-    .getByRole('button', { name: 'Prehrať kombináciu', exact: true })
+    .getByRole('button', { name: 'Přehrát kombinaci', exact: true })
     .click();
   await expect
     .poll(() => audio.evaluate((el) => (el as HTMLAudioElement).paused))
@@ -233,7 +233,7 @@ test('studio explicitly generates, analyzes, previews, saves and reloads speech 
     .getByRole('button', { name: 'Dabing a lip-sync', exact: true })
     .click();
   await expect(
-    page.getByLabel('Text dabovanej repliky', { exact: true }),
+    page.getByLabel('Text dabované repliky', { exact: true }),
   ).toHaveValue('Skúšam nový dabing.');
   await page.getByRole('button', { name: 'Game Mode', exact: true }).click();
   await ready(page);
@@ -272,12 +272,12 @@ test('studio explicitly generates, analyzes, previews, saves and reloads speech 
     await oldAudio!.evaluate((el) => (el as HTMLAudioElement).paused),
   ).toBe(true);
   await page.getByRole('button', { name: 'Dev Mode', exact: true }).click();
-  await page.getByRole('button', { name: 'Animácie', exact: true }).click();
+  await page.getByRole('button', { name: 'Animace', exact: true }).click();
   await page
     .getByRole('button', { name: 'Dabing a lip-sync', exact: true })
     .click();
   await page
-    .getByLabel('Nahrať dabing WAV', { exact: true })
+    .getByLabel('Nahrát dabing WAV', { exact: true })
     .setInputFiles(
       path.join(workspace.root, 'src/assets/speech/animation-demo/audio.wav'),
     );
@@ -484,10 +484,10 @@ test('models and editable subtitle segments survive save/reload and follow the a
   await studio(page, workspace.url);
   await page.locator('.voice-settings summary').click();
   await page
-    .getByRole('button', { name: 'Načítať hlasy a modely', exact: true })
+    .getByRole('button', { name: 'Načíst hlasy a modely', exact: true })
     .click();
   await expect(page.locator('.voice-settings')).toContainText(
-    'Modely načítané z API',
+    'Modely načtené z API',
   );
   await page
     .getByLabel('ElevenLabs Voice ID', { exact: true })
@@ -499,31 +499,31 @@ test('models and editable subtitle segments survive save/reload and follow the a
     'Podporuje [laughs]',
   );
   await expect(
-    page.getByLabel('Rýchlosť reči', { exact: true }),
+    page.getByLabel('Rychlost řeči', { exact: true }),
   ).toBeDisabled();
   await page
     .getByRole('button', { name: 'Dabing a lip-sync', exact: true })
     .click();
   const raw =
     '[laughs] Prvá dlhšia veta má jasný začiatok aj koniec. [whispers] Druhá dlhšia veta prichádza po krátkej prestávke. Tretia veta pokračuje úplne pokojným hlasom. Štvrtá veta tento skúšobný rozhovor uzatvára.';
-  await page.getByLabel('Text dabovanej repliky', { exact: true }).fill(raw);
+  await page.getByLabel('Text dabované repliky', { exact: true }).fill(raw);
   await page
-    .getByLabel('Potvrdzujem platené generovanie tejto repliky', {
+    .getByLabel('Potvrzuji placené generování této repliky', {
       exact: true,
     })
     .check();
   await page
-    .getByRole('button', { name: 'Vygenerovať dabing ElevenLabs', exact: true })
+    .getByRole('button', { name: 'Vygenerovat dabing ElevenLabs', exact: true })
     .click();
   await expect(
     page.getByRole('status', { name: 'Stav dabingu' }),
   ).toContainText('Hotovo');
   await expect(
-    page.getByRole('status', { name: 'Časovanie titulkov' }),
-  ).toContainText('podľa ElevenLabs');
-  const editor = page.getByRole('region', { name: 'Editor titulkov' });
+    page.getByRole('status', { name: 'Časování titulků' }),
+  ).toContainText('podle ElevenLabs');
+  const editor = page.getByRole('region', { name: 'Editor titulků' });
   await expect(editor.locator('li')).toHaveCount(4);
-  const preview = page.getByRole('status', { name: 'Náhľad titulkov' });
+  const preview = page.getByRole('status', { name: 'Náhled titulků' });
   const audio = page.locator('.speech-studio audio');
   await audioAt(audio, 0.9);
   await expect(preview).toContainText('Prvá dlhšia veta');
@@ -536,32 +536,32 @@ test('models and editable subtitle segments survive save/reload and follow the a
   const custom =
     'Prvá dlhšia veta má jasný začiatok aj koniec. Druhá vlastná veta prichádza po krátkej prestávke. Tretia veta pokračuje úplne pokojným hlasom. Štvrtá veta tento skúšobný rozhovor uzatvára.';
   await page
-    .getByLabel('Vlastný text titulkov (voliteľné)', { exact: true })
+    .getByLabel('Vlastní text titulků (volitelné)', { exact: true })
     .fill(custom);
   await expect(
-    page.getByRole('status', { name: 'Časovanie titulkov' }),
+    page.getByRole('status', { name: 'Časování titulků' }),
   ).toContainText('Odhad');
   await expect
     .poll(() => audio.evaluate((el) => (el as HTMLAudioElement).currentTime))
     .toBeCloseTo(8.5, 1);
   await page
-    .getByRole('button', { name: 'Obnoviť automatické titulky', exact: true })
+    .getByRole('button', { name: 'Obnovit automatické titulky', exact: true })
     .click();
   await page
     .getByLabel('Text titulku 2', { exact: true })
     .fill('Druhá upravená veta pre hráča.');
   await page
-    .getByRole('button', { name: 'Rozdeliť úsek 2', exact: true })
+    .getByRole('button', { name: 'Rozdělit úsek 2', exact: true })
     .click();
   await expect(editor.locator('li')).toHaveCount(5);
   await page
-    .getByRole('button', { name: 'Zlúčiť úsek 2 s ďalším', exact: true })
+    .getByRole('button', { name: 'Sloučit úsek 2 s dalším', exact: true })
     .click();
   await expect(editor.locator('li')).toHaveCount(4);
-  await page.getByLabel('Začiatok titulku 2', { exact: true }).fill('4.5');
-  await page.getByLabel('Koniec titulku 2', { exact: true }).fill('7.5');
+  await page.getByLabel('Začátek titulku 2', { exact: true }).fill('4.5');
+  await page.getByLabel('Konec titulku 2', { exact: true }).fill('7.5');
   await page
-    .getByRole('button', { name: 'Náhľad úseku 2', exact: true })
+    .getByRole('button', { name: 'Náhled úseku 2', exact: true })
     .click();
   await expect(preview).toHaveText('Druhá upravená veta pre hráča.');
   const paid = speechMock.requests.filter((r) =>
@@ -606,7 +606,7 @@ test('models and editable subtitle segments survive save/reload and follow the a
     .getByRole('button', { name: 'Dabing a lip-sync', exact: true })
     .click();
   await expect(
-    page.getByLabel('Vlastný text titulkov (voliteľné)', { exact: true }),
+    page.getByLabel('Vlastní text titulků (volitelné)', { exact: true }),
   ).toHaveValue(custom);
   await expect(page.getByLabel('Text titulku 2', { exact: true })).toHaveValue(
     'Druhá upravená veta pre hráča.',

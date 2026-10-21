@@ -74,25 +74,25 @@ test('editor saves silent click rules, custom cursor animation and inventory ico
   await page
     .getByLabel('Vybraný objekt', { exact: true })
     .selectOption('cable');
-  await page.getByLabel('Typ kurzora', { exact: true }).selectOption('talk');
+  await page.getByLabel('Typ kurzoru', { exact: true }).selectOption('talk');
   await page
-    .getByLabel('Vlastný obrázok kurzora', { exact: true })
+    .getByLabel('Vlastní obrázek kurzoru', { exact: true })
     .selectOption('woman.png');
   await page
-    .getByLabel('Animácia kurzora', { exact: true })
+    .getByLabel('Animace kurzoru', { exact: true })
     .selectOption('woman-blink');
-  await page.getByLabel('Veľkosť kurzora (px)', { exact: true }).fill('52');
-  await page.getByLabel('Špička kurzora x', { exact: true }).fill('8');
+  await page.getByLabel('Velikost kurzoru (px)', { exact: true }).fill('52');
+  await page.getByLabel('Špička kurzoru x', { exact: true }).fill('8');
   await page
-    .getByRole('button', { name: 'Odobrať pravidlo', exact: true })
+    .getByRole('button', { name: 'Odebrat pravidlo', exact: true })
     .first()
     .click();
-  await page.getByRole('button', { name: 'Dialógy', exact: true }).click();
+  await page.getByRole('button', { name: 'Dialogy', exact: true }).click();
   await page
-    .getByRole('button', { name: 'Uložiť do projektu', exact: true })
+    .getByRole('button', { name: 'Uložit do projektu', exact: true })
     .click();
   await expect(
-    page.getByRole('status', { name: 'Stav editora' }),
+    page.getByRole('status', { name: 'Stav editoru' }),
   ).toContainText('Uložené do');
   const saved = JSON.parse(
     await readFile(workspace.source, 'utf8'),

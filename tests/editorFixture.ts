@@ -95,6 +95,6 @@ export async function openEditor(
   await ready(page);
   await page.getByRole('button', { name: 'Dev Mode', exact: true }).click();
   await expect(
-    page.getByRole('status', { name: 'Stav editora' }),
-  ).toContainText('Zdroj načítaný');
+    page.getByRole('status', { name: 'Stav editoru' }),
+  ).toContainText('Zdroj načtený');
 }

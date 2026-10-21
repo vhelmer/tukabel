@@ -96,17 +96,17 @@ export function AssetField({
           .filter((id) => /\.(svg|png|jpe?g|webp|avif)$/.test(id))
           .map((id) => ({ id }))}
         onChange={onChange}
-        empty={optional ? 'Bez obrázka' : undefined}
+        empty={optional ? 'Bez obrázku' : undefined}
       />
       {value && (
         <img
           className="asset-preview"
           src={assetUrl(value)}
-          alt="Náhľad assetu"
+          alt="Náhled assetu"
         />
       )}
       <label className="upload-button">
-        {busy ? 'Importujem…' : 'Importovať PNG / JPEG / WebP'}
+        {busy ? 'Importuji…' : 'Importovat PNG / JPEG / WebP'}
         <input
           type="file"
           accept="image/png,image/jpeg,image/webp"
@@ -125,7 +125,7 @@ export function AssetField({
             } catch (error) {
               if (mounted.current)
                 setMessage(
-                  error instanceof Error ? error.message : 'Import zlyhal.',
+                  error instanceof Error ? error.message : 'Import selhal.',
                 );
             } finally {
               if (mounted.current) setBusy(false);
@@ -145,7 +145,7 @@ export function ConditionField({
   value,
   onChange,
   content,
-  label = 'Podmienka',
+  label = 'Podmínka',
   depth = 0,
 }: {
   value?: Condition;
@@ -185,19 +185,19 @@ export function ConditionField({
         }}
       >
         <option value="always">Vždy</option>
-        <option value="flag">Herný príznak</option>
-        <option value="item">Predmet v inventári</option>
+        <option value="flag">Herní příznak</option>
+        <option value="item">Předmět v inventáři</option>
         {depth < 10 && (
           <>
-            <option value="not">Negácia (NIE)</option>
-            <option value="all">Všetky podmienky (A)</option>
+            <option value="not">Negace (NE)</option>
+            <option value="all">Všechny podmínky (A)</option>
           </>
         )}
       </select>
       {value && 'flag' in value && (
         <div className="field-row">
           <SelectId
-            label="Príznak"
+            label="Příznak"
             value={value.flag}
             values={content.flags.map((id) => ({ id }))}
             onChange={(flag) => onChange({ ...value, flag })}
@@ -217,7 +217,7 @@ export function ConditionField({
       )}
       {value && 'item' in value && (
         <SelectId
-          label="Požadovaný predmet"
+          label="Požadovaný předmět"
           value={value.item}
           values={content.items}
           onChange={(item) => onChange({ item })}
@@ -228,7 +228,7 @@ export function ConditionField({
           content={content}
           value={value.not}
           onChange={(child) => onChange(child ? { not: child } : undefined)}
-          label="Nesmie platiť"
+          label="Nesmí platit"
           depth={depth + 1}
         />
       )}
@@ -247,7 +247,7 @@ export function ConditionField({
                       : value.all.filter((_, position) => position !== index),
                   })
                 }
-                label={`Podmienka ${index + 1}`}
+                label={`Podmínka ${index + 1}`}
               />
               <button
                 onClick={() =>
@@ -256,7 +256,7 @@ export function ConditionField({
                   })
                 }
               >
-                Odobrať podmienku
+                Odebrat podmínku
               </button>
             </div>
           ))}
@@ -267,7 +267,7 @@ export function ConditionField({
               })
             }
           >
-            + Podmienka
+            + Podmínka
           </button>
         </>
       )}
@@ -293,7 +293,7 @@ export function EffectsField({
           : (content.items[0]?.id ?? '');
   return (
     <fieldset className="effects-field">
-      <legend>Efekty (v poradí)</legend>
+      <legend>Efekty (v pořadí)</legend>
       {value.map((effect, index) => {
         const values =
           effect.type === 'flag'
@@ -325,15 +325,15 @@ export function EffectsField({
                     );
                   }}
                 >
-                  <option value="flag">Nastaviť príznak</option>
-                  <option value="addItem">Pridať predmet</option>
-                  <option value="removeItem">Odobrať predmet</option>
-                  <option value="scene">Zmeniť lokáciu</option>
-                  <option value="dialogue">Otvoriť dialóg</option>
+                  <option value="flag">Nastavit příznak</option>
+                  <option value="addItem">Přidat předmět</option>
+                  <option value="removeItem">Odebrat předmět</option>
+                  <option value="scene">Změnit lokaci</option>
+                  <option value="dialogue">Otevřít dialog</option>
                 </select>
               </Field>
               <SelectId
-                label="Cieľ efektu"
+                label="Cíl efektu"
                 value={effect.id}
                 values={values}
                 onChange={(id) =>
@@ -378,7 +378,7 @@ export function EffectsField({
                   onChange(value.filter((_, position) => position !== index))
                 }
               >
-                Odobrať efekt
+                Odebrat efekt
               </button>
             </div>
           </div>
@@ -409,14 +409,14 @@ export function RulesField({
   return (
     <div className="rules-field">
       <p className="field-note">
-        Vyhrá prvé splnené pravidlo. Pravidlo „Vždy“ patrí posledné.
+        Vyhraje první splněné pravidlo. Pravidlo „Vždy“ patří poslední.
       </p>
       {value.map((rule, index) => (
         <details className="rule-card" key={index} open>
           <summary>
-            Pravidlo {index + 1} · {rule.when ? 'podmienené' : 'vždy'}
+            Pravidlo {index + 1} · {rule.when ? 'podmíněné' : 'vždy'}
           </summary>
-          <Field label="Reakcia">
+          <Field label="Reakce">
             <textarea
               value={rule.message ?? ''}
               onChange={(event) =>
@@ -462,7 +462,7 @@ export function RulesField({
                 onChange(value.filter((_, position) => position !== index))
               }
             >
-              Odobrať pravidlo
+              Odebrat pravidlo
             </button>
           </div>
         </details>

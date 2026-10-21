@@ -31,19 +31,19 @@ async function localAsset(root: string, id: string) {
     !/^[a-zA-Z0-9_/-]+\.(svg|png|webp|jpe?g|avif)$/.test(id) ||
     id.split('/').includes('..')
   )
-    throw new Error('Vyber lokálny obrázok zo src/assets/.');
+    throw new Error('Vyber lokální obrázek ze src/assets/.');
   const filename = path.resolve(root, id);
   if (
     !filename.startsWith(path.resolve(root) + path.sep) ||
     (await realpath(filename)) !== filename
   )
-    throw new Error('Asset nesmie používať symbolické odkazy.');
+    throw new Error('Asset nesmí používat symbolické odkazy.');
   return readFile(filename);
 }
 async function dimensions(bytes: Buffer) {
   const data = await sharp(bytes, { limitInputPixels: MAX_PIXELS }).metadata();
   if (!data.width || !data.height || (data.pages ?? 1) !== 1)
-    throw new Error('Očakávam jeden statický obrázok.');
+    throw new Error('Očekávám jeden statický obrázek.');
   return { width: data.width, height: data.height, format: data.format };
 }
 
@@ -66,13 +66,13 @@ export async function validateAnimationAssets(
         clip.region.y + clip.region.height > source.height)
     )
       throw new Error(
-        `${clip.label}: oblasť animácie je mimo pôvodného obrázka.`,
+        `${clip.label}: oblast animace je mimo původního obrázku.`,
       );
     for (const frame of clip.frames) {
       const current = await size(frame);
       if (current.width !== source.width || current.height !== source.height)
         throw new Error(
-          `${clip.label}: snímka ${frame} musí mať plátno ${source.width} × ${source.height} ako zdroj. Bez automatického škálovania.`,
+          `${clip.label}: snímek ${frame} musí mít plátno ${source.width} × ${source.height} jako zdroj. Bez automatického škálování.`,
         );
     }
   }
@@ -136,18 +136,18 @@ export async function detectAnimationRegion(
     input.frames.length > 120 ||
     !input.frames.every((id) => typeof id === 'string')
   )
-    throw new Error('Vyber zdroj a 1–120 lokálnych snímkov.');
+    throw new Error('Vyber zdroj a 1–120 lokálních snímků.');
   const original = await localAsset(root, input.source),
     source = await dimensions(original);
   if (source.width * source.height * input.frames.length > MAX_PIXELS)
-    throw new Error('Animácia má priveľa pixelov.');
+    throw new Error('Animace má příliš mnoho pixelů.');
   const base = await rgba(original),
     box = { left: source.width, top: source.height, right: -1, bottom: -1 };
   for (const id of input.frames) {
     const bytes = await localAsset(root, id),
       size = await dimensions(bytes);
     if (size.width !== source.width || size.height !== source.height)
-      throw new Error('Snímky musia mať rovnaké plátno ako zdroj.');
+      throw new Error('Snímky musí mít stejné plátno jako zdroj.');
     extendDifference(base, await rgba(bytes), source.width, box);
   }
   return asRegion(box);
@@ -165,7 +165,7 @@ interface AtlasFrame {
 function atlasFrames(value: unknown, name: unknown): AtlasFrame[] {
   if (!object(value) || !object(value.frames))
     throw new Error(
-      'Spritesheet JSON musí obsahovať objekt frames (PixiJS/TexturePacker).',
+      'Spritesheet JSON musí obsahovat objekt frames (PixiJS/TexturePacker).',
     );
   let names = Object.keys(value.frames);
   if (object(value.animations) && Object.keys(value.animations).length) {
@@ -178,13 +178,13 @@ function atlasFrames(value: unknown, name: unknown): AtlasFrame[] {
       !Array.isArray(sequence) ||
       !sequence.every((n) => typeof n === 'string')
     )
-      throw new Error('Neplatná sekvencia animácie v spritesheete.');
+      throw new Error('Neplatná sekvence animace v spritesheetu.');
     names = sequence;
   }
   return names.map((key) => {
     const entry = (value.frames as Record<string, unknown>)[key];
     if (!object(entry) || !object(entry.frame))
-      throw new Error(`Chýbajúca snímka ${key}.`);
+      throw new Error(`Chybějící snímek ${key}.`);
     return entry as unknown as AtlasFrame;
   });
 }
@@ -211,7 +211,7 @@ export async function importAnimation(
     input.files.length > 120
   )
     throw new Error(
-      'Neplatný import animácie: zdroj, názov, typ, fps 1–30 a 1–120 PNG súborov.',
+      'Neplatný import animace: zdroj, název, typ, fps 1–30 a 1–120 PNG souborů.',
     );
   let total = 0;
   const uploads = input.files.map((file: unknown) => {
@@ -223,23 +223,23 @@ export async function importAnimation(
       !/^[A-Za-z0-9+/]*={0,2}$/.test(file.data) ||
       file.data.length > 44 * 1024 * 1024
     )
-      throw new Error('Import podporuje iba PNG súbory.');
+      throw new Error('Import podporuje pouze PNG soubory.');
     const bytes = Buffer.from(file.data, 'base64');
     total += bytes.length;
     if (!bytes.length || total > MAX_BYTES)
-      throw new Error('Import môže mať spolu najviac 32 MB.');
+      throw new Error('Import může mít společně nejvýše 32 MB.');
     return { name: file.name, bytes };
   });
   const original = await localAsset(root, input.source);
   const source = await dimensions(original);
   if (source.width > 4096 || source.height > 4096)
-    throw new Error('Zdroj môže mať najviac 4096 × 4096 px.');
+    throw new Error('Zdroj může mít nejvýše 4096 × 4096 px.');
   const atlas =
     input.atlas === undefined
       ? undefined
       : atlasFrames(input.atlas, input.animationName);
   if (atlas && uploads.length !== 1)
-    throw new Error('K spritesheet JSON vyber práve jeden PNG atlas.');
+    throw new Error('K spritesheet JSON vyber právě jeden PNG atlas.');
   const count = atlas?.length ?? uploads.length;
   if (
     !count ||
@@ -247,7 +247,7 @@ export async function importAnimation(
     count * source.width * source.height > MAX_PIXELS
   )
     throw new Error(
-      'Očakávam 1–120 snímkov, spolu najviac 64 miliónov pixelov.',
+      'Očekávám 1–120 snímků, společně nejvýše 64 miliónov pixelů.',
     );
   const parent = path.join(root, 'animations');
   await mkdir(parent, { recursive: true });
@@ -255,7 +255,7 @@ export async function importAnimation(
     (await lstat(parent)).isSymbolicLink() ||
     (await realpath(parent)) !== path.resolve(parent)
   )
-    throw new Error('Adresár animácií nesmie byť symbolický odkaz.');
+    throw new Error('Adresář animací nesmí být symbolický odkaz.');
   const id = randomUUID();
   const staging = path.join(parent, `.${id}.tmp`);
   await mkdir(staging);
@@ -273,7 +273,7 @@ export async function importAnimation(
     const durations: number[] = [];
     const sheet = atlas ? await dimensions(uploads[0]!.bytes) : undefined;
     if (sheet && sheet.format !== 'png')
-      throw new Error('Atlas musí byť skutočný PNG.');
+      throw new Error('Atlas musí být skutečný PNG.');
     for (let i = 0; i < count; i++) {
       let bytes: Buffer;
       if (atlas) {
@@ -319,7 +319,7 @@ export async function importAnimation(
           offset.y + rect.h > full.h
         )
           throw new Error(
-            `Snímka ${i + 1}: neplatná oblasť / veľkosť plátna; otočené atlasové políčka nie sú podporované.`,
+            `Snímek ${i + 1}: neplatná oblast / velikost plátna; otočená atlasová políčka nejsou podporovaná.`,
           );
         bytes = await sharp(uploads[0]!.bytes, { limitInputPixels: MAX_PIXELS })
           .extract({ left: rect.x, top: rect.y, width: rect.w, height: rect.h })
@@ -339,7 +339,7 @@ export async function importAnimation(
             entry.duration < 10 ||
             entry.duration > 60000)
         )
-          throw new Error('Trvanie snímky musí byť 10–60000 ms.');
+          throw new Error('Délka snímku musí být 10–60000 ms.');
         durations.push(entry.duration ?? 1000 / input.fps);
       } else {
         bytes = uploads[i]!.bytes;
@@ -352,7 +352,7 @@ export async function importAnimation(
           frame.height !== source.height
         )
           throw new Error(
-            `Snímka ${i + 1} musí byť PNG ${source.width} × ${source.height} ako zdroj. Zarovnaj plátno, nie veľkosť postavy.`,
+            `Snímek ${i + 1} musí být PNG ${source.width} × ${source.height} jako zdroj. Zarovnaj plátno, ne velikost postavy.`,
           );
       }
       if (base)
@@ -392,7 +392,7 @@ export async function importAnimation(
       }),
     );
     if (hash(await localAsset(root, input.source)) !== hash(original))
-      throw new Error('Zdroj sa počas importu zmenil. Zopakuj import.');
+      throw new Error('Zdroj se během importu změnil. Zopakuj import.');
     await rename(staging, path.join(parent, id));
     return clip;
   } finally {

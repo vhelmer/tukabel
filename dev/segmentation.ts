@@ -21,6 +21,8 @@ export interface SegmentationOptions {
   checkpoint?: string;
   modelConfig?: string;
   mattingModel?: string;
+  sam3Python?: string;
+  sam3Model?: string;
 }
 async function python(options: SegmentationOptions) {
   if (options.python) return options.python;
@@ -35,6 +37,8 @@ async function python(options: SegmentationOptions) {
 function environment(options: SegmentationOptions) {
   return {
     ...process.env,
+    TUKABEL_SAM3_MODEL:
+      options.sam3Model ?? path.resolve('.local-tools/models/sam3'),
     TUKABEL_SAM2_CHECKPOINT: options.checkpoint ?? '',
     TUKABEL_SAM2_CONFIG:
       options.modelConfig ?? 'configs/sam2.1/sam2.1_hiera_t.yaml',
@@ -48,28 +52,44 @@ function environment(options: SegmentationOptions) {
 }
 export async function segmentationStatus(options: SegmentationOptions) {
   try {
-    const [{ stdout }, matte] = await Promise.all([
+    const [{ stdout }, matte, sam3] = await Promise.all([
       execute(await python(options), [helper, '--status'], {
         timeout: 5000,
         maxBuffer: 16384,
         env: environment(options),
-      }),
+      }).catch(() => ({ stdout: '{}' })),
       execute(await python(options), [matteHelper, '--status'], {
         timeout: 5000,
         maxBuffer: 16384,
         env: environment(options),
       }).catch(() => ({ stdout: '{}' })),
+      execute(
+        options.sam3Python ?? path.resolve('.local-tools/sam3/bin/python'),
+        [helper, '--status'],
+        {
+          timeout: 5000,
+          maxBuffer: 16384,
+          env: environment(options),
+        },
+      ).catch(() => ({ stdout: '{}' })),
     ]);
     const status = JSON.parse(stdout);
     const matting = JSON.parse(matte.stdout);
     return {
       grabcut: status.grabcut === true,
       sam2: status.sam2 === true,
+      sam3: JSON.parse(sam3.stdout).sam3 === true,
       vitmatte: matting.vitmatte === true,
       closedForm: matting['closed-form'] === true,
     };
   } catch {
-    return { grabcut: false, sam2: false, vitmatte: false, closedForm: false };
+    return {
+      grabcut: false,
+      sam2: false,
+      sam3: false,
+      vitmatte: false,
+      closedForm: false,
+    };
   }
 }
 export async function maskSource(root: string, input: unknown) {
@@ -87,14 +107,17 @@ export async function segmentObject(
   input: unknown,
   options: SegmentationOptions,
 ) {
-  if (!isObject(input) || !['grabcut', 'sam2'].includes(String(input.method)))
-    throw Error('Neplatný segmentačný nástroj.');
+  if (
+    !isObject(input) ||
+    !['grabcut', 'sam2', 'sam3'].includes(String(input.method))
+  )
+    throw Error('Neplatný segmentační nástroj.');
   if (input.refineEdges !== undefined && typeof input.refineEdges !== 'boolean')
-    throw Error('Neplatné nastavenie spresnenia obrysov.');
+    throw Error('Neplatné nastavení zpřesnění obrysů.');
   if (input.detailPass !== undefined && typeof input.detailPass !== 'boolean')
-    throw Error('Neplatné nastavenie detailného prechodu.');
+    throw Error('Neplatné nastavení detailního přechodu.');
   if (running)
-    throw Error('Segmentácia už beží. Počkaj na dokončenie; nič sa neopakuje.');
+    throw Error('Segmentace už běží. Počkej na dokončení; nic se neopakuje.');
   running = true;
   let directory: string | undefined;
   try {
@@ -107,11 +130,13 @@ export async function segmentObject(
       [0, 64, 128, 255],
     );
     const status = await segmentationStatus(options);
-    if (!status[input.method as 'grabcut' | 'sam2'])
+    if (!status[input.method as 'grabcut' | 'sam2' | 'sam3'])
       throw Error(
-        input.method === 'sam2'
-          ? 'SAM 2 potrebuje lokálnu inštaláciu a SAM2_CHECKPOINT; pozri README.'
-          : 'Spusti npm run setup:segmentation a reštartuj Vite.',
+        input.method === 'sam3'
+          ? 'SAM 3 potřebuje npm run setup:sam3 a schválený přístup k vahám facebook/sam3. Viz README.'
+          : input.method === 'sam2'
+            ? 'SAM 2 potřebuje lokální inštaláciu a SAM2_CHECKPOINT; pozri README.'
+            : 'Spusť npm run setup:segmentation a restartuj Vite.',
       );
     directory = await mkdtemp(path.join(tmpdir(), 'tukabel-segmentation-'));
     await writeFile(path.join(directory, 'source.png'), original.source);
@@ -125,7 +150,9 @@ export async function segmentObject(
     );
     try {
       await execute(
-        await python(options),
+        input.method === 'sam3'
+          ? (options.sam3Python ?? path.resolve('.local-tools/sam3/bin/python'))
+          : await python(options),
         [
           helper,
           directory,
@@ -137,7 +164,7 @@ export async function segmentObject(
       );
     } catch {
       throw Error(
-        'Segmentácia nenašla spoľahlivý objekt alebo prekročila čas. Označ zeleným ťahom objekt a červeným pozadie, prípadne uprav masku ručne.',
+        'Segmentace nenašla spolehlivý objekt nebo překročila čas. Označ zeleným tahem objekt a červeným pozadí, případně uprav masku ručně.',
       );
     }
     const result = await readFile(path.join(directory, 'result.png'));
@@ -147,17 +174,17 @@ export async function segmentObject(
       original.height,
     );
     if (artHash(await readFile(original.filename)) !== original.sourceSha256)
-      throw Error('Zdroj sa medzitým zmenil. Maska sa nepoužila.');
+      throw Error('Zdroj se mezitím změnil. Maska se nepoužila.');
     return {
       data: result.toString('base64'),
       width: original.width,
       height: original.height,
       sourceSha256: original.sourceSha256,
-      method: input.method as 'grabcut' | 'sam2',
+      method: input.method as 'grabcut' | 'sam2' | 'sam3',
       refineEdges:
-        input.method === 'sam2' ? input.refineEdges !== false : undefined,
+        input.method !== 'grabcut' ? input.refineEdges !== false : undefined,
       detailPass:
-        input.method === 'sam2' ? input.detailPass === true : undefined,
+        input.method !== 'grabcut' ? input.detailPass === true : undefined,
     };
   } finally {
     running = false;
@@ -178,8 +205,8 @@ export async function matteObject(
     Number(input.radius) > 32 ||
     typeof input.decontaminate !== 'boolean'
   )
-    throw Error('Neplatné nastavenie mattingu.');
-  if (running) throw Error('Segmentácia už beží. Počkaj na dokončenie.');
+    throw Error('Neplatné nastavení mattingu.');
+  if (running) throw Error('Segmentace už běží. Počkej na dokončení.');
   running = true;
   let directory: string | undefined;
   try {
@@ -194,7 +221,7 @@ export async function matteObject(
     const status = await segmentationStatus(options);
     if (!(input.method === 'vitmatte' ? status.vitmatte : status.closedForm))
       throw Error(
-        'Spusti npm run setup:matting a reštartuj Vite. Matting je iba lokálny.',
+        'Spusť npm run setup:matting a restartuj Vite. Matting je pouze lokální.',
       );
     directory = await mkdtemp(path.join(tmpdir(), 'tukabel-matting-'));
     await writeFile(path.join(directory, 'source.png'), original.source);
@@ -220,7 +247,7 @@ export async function matteObject(
       );
     } catch {
       throw Error(
-        'Matting sa nedokončil. Označ isté vnútro objektu zeleným a pozadie červeným štetcom, prípadne zmenši pásmo hrany. Maska zostala zachovaná.',
+        'Matting se nedokončil. Označ jisté vnitřek objektu zeleným a pozadí červeným štětcem, případně zmenši pásmo hrany. Maska zostala zachovaná.',
       );
     }
     const result = await readFile(path.join(directory, 'result.png'));
@@ -231,7 +258,7 @@ export async function matteObject(
       ALPHA_LEVELS,
     );
     if (artHash(await readFile(original.filename)) !== original.sourceSha256)
-      throw Error('Zdroj sa medzitým zmenil. Matting sa nepoužil.');
+      throw Error('Zdroj se mezitím změnil. Matting se nepoužil.');
     return {
       data: result.toString('base64'),
       width: original.width,
@@ -277,7 +304,7 @@ export async function matteForeground(
       );
     } catch {
       throw Error(
-        'Dočistenie farieb potrebuje npm run setup:matting. Vypni Odstrániť farebný lem alebo nainštaluj lokálne nástroje.',
+        'Dočištění barev potřebuje npm run setup:matting. Vypni Odstranit barevný lem nebo nainstaluj lokální nástroje.',
       );
     }
     const { data, info } = await sharp(
@@ -287,7 +314,7 @@ export async function matteForeground(
       .raw()
       .toBuffer({ resolveWithObject: true });
     if (info.width !== original.width || info.height !== original.height)
-      throw Error('Neplatné rozmery mattingu.');
+      throw Error('Neplatné rozměry mattingu.');
     // Export always owns the original source. A model can only unmix RGB at
     // fractional, previously opaque edges; its interior and intrinsic alpha are immutable.
     const result = Buffer.from(original.raw);

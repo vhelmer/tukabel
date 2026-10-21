@@ -18,15 +18,15 @@ function describe(condition?: Condition): string[] {
   if (!condition) return [];
   if ('flag' in condition)
     return [`${condition.flag} = ${condition.value ?? true}`];
-  if ('item' in condition) return [`V inventári: ${condition.item}`];
+  if ('item' in condition) return [`V inventáři: ${condition.item}`];
   if ('not' in condition)
-    return [`NIE (${describe(condition.not).join(' A ')})`];
+    return [`NE (${describe(condition.not).join(' A ')})`];
   return condition.all.flatMap(describe);
 }
 function effectText(effect: Effect) {
   return effect.type === 'flag'
     ? `${effect.id} ← ${effect.value}`
-    : `${{ addItem: '+ predmet', removeItem: '− predmet', scene: '→ lokácia', dialogue: '→ dialóg' }[effect.type]}: ${effect.id}`;
+    : `${{ addItem: '+ předmět', removeItem: '− předmět', scene: '→ lokace', dialogue: '→ dialog' }[effect.type]}: ${effect.id}`;
 }
 function graphRows(content: GameContent): Row[] {
   const rows: Row[] = [];
@@ -50,7 +50,7 @@ function graphRows(content: GameContent): Row[] {
           rows.push({
             label: `${scene.title} / ${hotspot.label} · ${interaction} #${index + 1}`,
             when: { all },
-            requires: [`Lokácia: ${scene.id}`, ...all.flatMap(describe)],
+            requires: [`Lokace: ${scene.id}`, ...all.flatMap(describe)],
             outcomes: (rule.effects ?? []).map(effectText),
             message: rule.message ?? '',
             target: { type: 'scene', sceneId: scene.id, hotspotId: hotspot.id },
@@ -64,18 +64,18 @@ function graphRows(content: GameContent): Row[] {
           label: `${dialogue.id}/${node.id} · ${choice.text}`,
           when: choice.when,
           requires: [
-            `Uzol: ${dialogue.id}/${node.id}`,
+            `Uzel: ${dialogue.id}/${node.id}`,
             ...describe(choice.when),
           ],
           outcomes: [
             ...(choice.effects ?? []).map(effectText),
             choice.next
-              ? `→ uzol: ${dialogue.id}/${choice.next}`
-              : 'Koniec rozhovoru',
+              ? `→ uzel: ${dialogue.id}/${choice.next}`
+              : 'Konec rozhovoru',
           ],
           message: choice.next
-            ? `→ uzol ${choice.next}${choice.message ? ` · ${choice.message}` : ''}`
-            : `Koniec rozhovoru${choice.message ? ` · ${choice.message}` : ''}`,
+            ? `→ uzel ${choice.next}${choice.message ? ` · ${choice.message}` : ''}`
+            : `Konec rozhovoru${choice.message ? ` · ${choice.message}` : ''}`,
           target: { type: 'dialogue', id: dialogue.id, nodeId: node.id },
         });
   for (const combination of content.combinations)
@@ -87,7 +87,7 @@ function graphRows(content: GameContent): Row[] {
         ],
       };
       rows.push({
-        label: `Kombinácia ${combination.items.join(' + ')}`,
+        label: `Kombinace ${combination.items.join(' + ')}`,
         when,
         requires: describe(when),
         outcomes: (rule.effects ?? []).map(effectText),
@@ -130,17 +130,17 @@ export function LogicGraph({
     <section className="logic-panel">
       <h2>Mapa logiky</h2>
       <p className="field-note">
-        Podmienky → akcia / odpoveď → efekty. Poradie pravidiel je dôležité:
-        vyhrá prvé splnené. Zelená znamená splnené podmienky podľa posledného
-        herného náhľadu; negarantuje dosiahnuteľnosť akcie. Klik na akciu otvorí
-        jej definíciu.
+        Podmínky → akce / odpověď → efekty. Pořadí pravidel je důležité: vyhraje
+        první splněné. Zelená znamená splněné podmínky podle posledního herního
+        náhledu; nezaručuje dosažitelnost akce. Klik na akci otevře její
+        definici.
       </p>
       <label className="editor-field">
-        <span>Hľadať ID, objekt, predmet alebo príznak</span>
+        <span>Hledat ID, objekt, předmět nebo příznak</span>
         <input
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="napr. powered alebo cable"
+          placeholder="např. powered nebo cable"
         />
       </label>
       <div className="graph-scroll">
@@ -150,7 +150,7 @@ export function LogicGraph({
           width="1040"
           height={offset}
           role="img"
-          aria-label="Graf podmienok, interakcií a následkov"
+          aria-label="Graf podmínek, interakcí a následků"
         >
           <defs>
             <marker
@@ -166,13 +166,13 @@ export function LogicGraph({
             </marker>
           </defs>
           <text x="20" y="24">
-            POTREBUJE
+            POTŘEBUJE
           </text>
           <text x="370" y="24">
-            AKCIA / UDALOSŤ
+            AKCE / UDÁLOST
           </text>
           <text x="760" y="24">
-            ZMENÍ
+            ZMĚNÍ
           </text>
           {positions.map(({ row, y, height }, index) => (
             <g key={index}>
@@ -202,7 +202,7 @@ export function LogicGraph({
               <g
                 role="button"
                 tabIndex={0}
-                aria-label={`Upraviť ${row.label}`}
+                aria-label={`Upravit ${row.label}`}
                 onClick={() => onNavigate(row.target)}
                 onKeyDown={(event) => {
                   if (event.key === 'Enter' || event.key === ' ') {
@@ -233,7 +233,7 @@ export function LogicGraph({
                   {short(row.message, 40)}
                 </text>
                 <text x="365" y={y + height - 16}>
-                  Upraviť ↗
+                  Upravit ↗
                 </text>
               </g>
               <rect
@@ -245,7 +245,7 @@ export function LogicGraph({
                 fill="#26323b"
                 stroke="#61756b"
               />
-              {(row.outcomes.length ? row.outcomes : ['Bez zmeny stavu']).map(
+              {(row.outcomes.length ? row.outcomes : ['Bez změny stavu']).map(
                 (text, line) => (
                   <text key={line} x="755" y={y + 30 + line * 20}>
                     <title>{text}</title>
@@ -257,7 +257,7 @@ export function LogicGraph({
           ))}
         </svg>
       </div>
-      {!filtered.length && <p>Žiadne pravidlá nevyhovujú filtru.</p>}
+      {!filtered.length && <p>Žádné pravidla nevyhovují filtru.</p>}
     </section>
   );
 }

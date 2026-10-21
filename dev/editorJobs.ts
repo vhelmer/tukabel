@@ -27,7 +27,7 @@ export function createEditorJobs() {
         const job = jobs.find((job) => job.status === 'queued');
         if (!job) break;
         job.status = 'running';
-        job.stage = 'Pripravujem vstup';
+        job.stage = 'Připravuji vstup';
         try {
           const result = await tasks.get(job.id)!((stage) => {
             job.stage = stage;
@@ -36,12 +36,12 @@ export function createEditorJobs() {
           Object.assign(job, {
             result,
             status: 'succeeded',
-            stage: 'Pripravené na kontrolu',
+            stage: 'Připravené na kontrolu',
           });
         } catch (error) {
           job.status = 'failed';
-          job.stage = 'Úloha zlyhala · bez automatického opakovania';
-          job.error = error instanceof Error ? error.message : 'Úloha zlyhala.';
+          job.stage = 'Úloha selhala · bez automatického opakování';
+          job.error = error instanceof Error ? error.message : 'Úloha selhala.';
         } finally {
           tasks.delete(job.id);
         }
@@ -65,7 +65,7 @@ export function createEditorJobs() {
         label: label.slice(0, 100),
         createdAt: new Date().toISOString(),
         status: 'queued',
-        stage: 'Čaká vo fronte',
+        stage: 'Čeká ve frontě',
       } as EditorJob;
       jobs.push(job);
       tasks.set(job.id, run);
@@ -77,16 +77,16 @@ export function createEditorJobs() {
       const job = jobs.find((j) => j.id === id);
       if (!job || job.status !== 'queued')
         throw Error(
-          'Zrušiť možno iba čakajúcu úlohu. Bežiaca požiadavka sa dokončí.',
+          'Zrušit lze pouze čekající úlohu. Běžící požadavek se dokončí.',
         );
       job.status = 'cancelled';
-      job.stage = 'Zrušené pred spustením';
+      job.stage = 'Zrušené před spuštěním';
       tasks.delete(id);
     },
     dismiss(id: string) {
       const index = jobs.findIndex((j) => j.id === id);
       if (index < 0 || ['queued', 'running'].includes(jobs[index]!.status))
-        throw Error('Najprv dokonči alebo zruš úlohu.');
+        throw Error('Nejprve dokonči nebo zruš úlohu.');
       jobs.splice(index, 1);
     },
     close() {

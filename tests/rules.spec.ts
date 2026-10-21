@@ -697,3 +697,56 @@ test('concave polygons share boundary, rotation, manual-alpha precedence and aff
       }).length,
     ).toBeGreaterThan(0);
 });
+
+test('cropped source pixels keep their world coordinates through contain, stretch and rotation', async () => {
+  const { croppedPlacement } = await import('../src/game/transforms');
+  const crop = {
+    x: 31,
+    y: 18,
+    width: 73,
+    height: 91,
+    sourceWidth: 320,
+    sourceHeight: 180,
+  };
+  for (const imageFit of ['contain', 'stretch'] as const)
+    for (const rotation of [0, 37, -91]) {
+      const placement = {
+        bounds: { x: 117, y: 83, width: 230, height: 300 },
+        imageFit,
+        rotation,
+      };
+      const cropped = croppedPlacement(placement, crop);
+      expect(cropped.imageFit).toBe(imageFit);
+      const fullImage = imagePlacement(
+        placement.bounds,
+        { width: 320, height: 180 },
+        imageFit,
+      );
+      for (const point of [
+        { x: 0, y: 0 },
+        { x: 36, y: 47 },
+        { x: 73, y: 91 },
+      ]) {
+        const before = rotateAround(
+          {
+            x: fullImage.x + ((crop.x + point.x) * fullImage.width) / 320,
+            y: fullImage.y + ((crop.y + point.y) * fullImage.height) / 180,
+          },
+          centre(placement.bounds),
+          rotation,
+        );
+        const after = rotateAround(
+          {
+            x: cropped.bounds.x + (point.x * cropped.bounds.width) / crop.width,
+            y:
+              cropped.bounds.y +
+              (point.y * cropped.bounds.height) / crop.height,
+          },
+          centre(cropped.bounds),
+          rotation,
+        );
+        expect(after.x).toBeCloseTo(before.x, 10);
+        expect(after.y).toBeCloseTo(before.y, 10);
+      }
+    }
+});

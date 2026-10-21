@@ -36,32 +36,32 @@ test.beforeEach(async ({ workspace }) => {
   );
 });
 async function actorPanel(page: Page) {
-  await page.getByRole('button', { name: 'Lokácie', exact: true }).click();
+  await page.getByRole('button', { name: 'Lokace', exact: true }).click();
   await page
     .getByLabel('Vybraný objekt', { exact: true })
     .selectOption('caretaker');
   await page
-    .getByRole('button', { name: 'Otvoriť animačné štúdio', exact: true })
+    .getByRole('button', { name: 'Otevřít animační studio', exact: true })
     .click();
-  const importSummary = page.getByText('Import hotovej animácie', {
+  const importSummary = page.getByText('Import hotové animace', {
     exact: true,
   });
   if (
     !(await page
-      .getByLabel('PNG snímky alebo atlas', { exact: true })
+      .getByLabel('PNG snímky nebo atlas', { exact: true })
       .isVisible())
   )
     await importSummary.click();
   await expect(
-    page.getByRole('button', { name: 'Importovať animáciu', exact: true }),
+    page.getByRole('button', { name: 'Importovat animaci', exact: true }),
   ).toBeVisible();
 }
 async function saveProject(page: Page) {
   await page
-    .getByRole('button', { name: 'Uložiť do projektu', exact: true })
+    .getByRole('button', { name: 'Uložit do projektu', exact: true })
     .click();
   await expect(
-    page.getByRole('status', { name: 'Stav editora' }),
+    page.getByRole('status', { name: 'Stav editoru' }),
   ).toContainText('Uložené do');
 }
 async function actorPixels(page: Page, baseline?: Buffer) {
@@ -140,36 +140,36 @@ test('PNG blink imports, previews, saves, reloads and plays with stable placemen
   await expect(page.getByText('fal.ai', { exact: false })).toHaveCount(0);
   const initial = await readFile(workspace.source, 'utf8');
   await page
-    .getByLabel('PNG snímky alebo atlas', { exact: true })
+    .getByLabel('PNG snímky nebo atlas', { exact: true })
     .setInputFiles(
       [5, 3, 1, 4, 2].map((i) => path.join(output, `frame-0${i}.png`)),
     );
   await page
-    .getByRole('button', { name: 'Importovať animáciu', exact: true })
+    .getByRole('button', { name: 'Importovat animaci', exact: true })
     .click();
   await expect(page.locator('.animation-timeline button')).toHaveCount(5);
   expect(await readFile(workspace.source, 'utf8')).toBe(initial);
-  await page.getByLabel('Názov animácie', { exact: true }).fill('Codex blink');
-  await page.getByLabel('Rýchlosť animácie (fps)', { exact: true }).fill('8');
-  await page.getByLabel('Opakovať klip', { exact: true }).uncheck();
+  await page.getByLabel('Název animace', { exact: true }).fill('Codex blink');
+  await page.getByLabel('Rychlost animace (fps)', { exact: true }).fill('8');
+  await page.getByLabel('Opakovat klip', { exact: true }).uncheck();
   await page
-    .getByRole('button', { name: 'Prehrať náhľad', exact: true })
+    .getByRole('button', { name: 'Přehrát náhled', exact: true })
     .click();
   await expect(
-    page.getByRole('button', { name: 'Prehrať náhľad', exact: true }),
+    page.getByRole('button', { name: 'Přehrát náhled', exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole('button', { name: 'Snímka 5', exact: true }),
+    page.getByRole('button', { name: 'Snímek 5', exact: true }),
   ).toHaveAttribute('aria-pressed', 'true');
-  await page.getByRole('button', { name: 'Snímka 3', exact: true }).click();
+  await page.getByRole('button', { name: 'Snímek 3', exact: true }).click();
   await page
     .locator('.animation-preview')
     .screenshot({ path: testInfo.outputPath('codex-blink-preview.png') });
   await page
-    .getByRole('button', { name: 'Priradiť postave', exact: true })
+    .getByRole('button', { name: 'Přiřadit postavě', exact: true })
     .click();
-  await page.getByLabel('Mrkanie min. (sekundy)', { exact: true }).fill('0.1');
-  await page.getByLabel('Mrkanie max. (sekundy)', { exact: true }).fill('0.1');
+  await page.getByLabel('Mrkání min. (sekundy)', { exact: true }).fill('0.1');
+  await page.getByLabel('Mrkání max. (sekundy)', { exact: true }).fill('0.1');
   await saveProject(page);
   const saved = JSON.parse(
     await readFile(workspace.source, 'utf8'),
@@ -203,21 +203,19 @@ test('PNG blink imports, previews, saves, reloads and plays with stable placemen
   expect((await actorPixels(page)).equals(paused)).toBe(true);
   await page.keyboard.press('Escape');
   await page.getByRole('button', { name: 'Dev Mode', exact: true }).click();
-  await page
-    .getByLabel('Automatické mrkanie', { exact: true })
-    .selectOption('');
-  await page.getByText('Animácia pri interakcii', { exact: true }).click();
-  await page.getByLabel('Pri kliknutí', { exact: true }).selectOption(blink.id);
+  await page.getByLabel('Automatické mrkání', { exact: true }).selectOption('');
+  await page.getByText('Animace při interakci', { exact: true }).click();
+  await page.getByLabel('Při kliknutí', { exact: true }).selectOption(blink.id);
   await saveProject(page);
   await page.reload();
   await ready(page);
   await page.getByRole('button', { name: 'Dev Mode', exact: true }).click();
   await actorPanel(page);
   await expect(
-    page.getByLabel('Automatické mrkanie', { exact: true }),
+    page.getByLabel('Automatické mrkání', { exact: true }),
   ).toHaveValue('');
-  await page.getByText('Animácia pri interakcii', { exact: true }).click();
-  await expect(page.getByLabel('Pri kliknutí', { exact: true })).toHaveValue(
+  await page.getByText('Animace při interakci', { exact: true }).click();
+  await expect(page.getByLabel('Při kliknutí', { exact: true })).toHaveValue(
     blink.id,
   );
   await page.getByRole('button', { name: 'Game Mode', exact: true }).click();
@@ -243,38 +241,36 @@ test('Codex atlas retains timing, supports dialogue playback, and works as a sta
   await openEditor(page, workspace.url);
   await actorPanel(page);
   await page
-    .getByLabel('Typ importovanej animácie', { exact: true })
+    .getByLabel('Typ importované animace', { exact: true })
     .selectOption('talk');
   await page
-    .getByLabel('PNG snímky alebo atlas', { exact: true })
+    .getByLabel('PNG snímky nebo atlas', { exact: true })
     .setInputFiles(path.join(output, 'spritesheet.png'));
   await page
-    .getByLabel('Spritesheet metadáta (JSON, voliteľné)', { exact: true })
+    .getByLabel('Spritesheet metadata (JSON, volitelné)', { exact: true })
     .setInputFiles(path.join(output, 'spritesheet.json'));
   await expect(
-    page.getByLabel('Sekvencia v atlase', { exact: true }),
+    page.getByLabel('Sekvence v atlase', { exact: true }),
   ).toHaveValue('blink');
   await page
-    .getByRole('button', { name: 'Importovať animáciu', exact: true })
+    .getByRole('button', { name: 'Importovat animaci', exact: true })
     .click();
   await expect(page.locator('.animation-timeline button')).toHaveCount(5);
   // Shorten the experiment's long open-eye holds for a visible test loop.
-  await page.getByRole('button', { name: 'Snímka 1', exact: true }).click();
+  await page.getByRole('button', { name: 'Snímek 1', exact: true }).click();
   await page
-    .getByLabel('Trvanie aktuálnej snímky (ms)', { exact: true })
+    .getByLabel('Délka aktuální snímky (ms)', { exact: true })
     .fill('50');
-  await page.getByRole('button', { name: 'Snímka 5', exact: true }).click();
+  await page.getByRole('button', { name: 'Snímek 5', exact: true }).click();
   await page
-    .getByLabel('Trvanie aktuálnej snímky (ms)', { exact: true })
+    .getByLabel('Délka aktuální snímky (ms)', { exact: true })
     .fill('50');
+  await page.getByLabel('Rychlost přehrávání (×)', { exact: true }).fill('0.5');
   await page
-    .getByLabel('Rýchlosť prehrávania (×)', { exact: true })
-    .fill('0.5');
-  await page
-    .getByRole('button', { name: 'Priradiť postave', exact: true })
+    .getByRole('button', { name: 'Přiřadit postavě', exact: true })
     .click();
   await page
-    .getByLabel('Dialóg postavy', { exact: true })
+    .getByLabel('Dialog postavy', { exact: true })
     .selectOption('caretaker');
   await saveProject(page);
   const saved = JSON.parse(
@@ -396,23 +392,23 @@ test('invalid import and mismatched frame replacement cannot publish broken cont
     ).status(),
   ).toBe(404);
   await page
-    .getByLabel('PNG snímky alebo atlas', { exact: true })
+    .getByLabel('PNG snímky nebo atlas', { exact: true })
     .setInputFiles(path.join(output, 'frame-01.png'));
   await page
-    .getByRole('button', { name: 'Importovať animáciu', exact: true })
+    .getByRole('button', { name: 'Importovat animaci', exact: true })
     .click();
   await expect(page.locator('.animation-timeline button')).toHaveCount(1);
   await page
-    .getByLabel('Obrázok aktuálnej snímky', { exact: true })
+    .getByLabel('Obrázek aktuální snímky', { exact: true })
     .selectOption('cable.svg');
   await page
-    .getByRole('button', { name: 'Priradiť postave', exact: true })
+    .getByRole('button', { name: 'Přiřadit postavě', exact: true })
     .click();
   await page
-    .getByRole('button', { name: 'Uložiť do projektu', exact: true })
+    .getByRole('button', { name: 'Uložit do projektu', exact: true })
     .click();
   await expect(
-    page.getByRole('status', { name: 'Stav editora' }),
+    page.getByRole('status', { name: 'Stav editoru' }),
   ).toContainText('plátno');
   expect(await readFile(workspace.source, 'utf8')).toBe(initial);
 });

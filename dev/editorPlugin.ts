@@ -18,6 +18,7 @@ import {
   segmentationStatus,
   type SegmentationOptions,
 } from './segmentation.ts';
+import { artworkHistory } from './artHistory.ts';
 import { createEditorJobs } from './editorJobs.ts';
 import {
   directionInput,
@@ -52,7 +53,7 @@ const imagePattern = /^[a-zA-Z0-9_/-]+\.(svg|png|jpe?g|webp|avif)$/;
 
 async function readJson(req: IncomingMessage): Promise<unknown> {
   if (!req.headers['content-type']?.startsWith('application/json'))
-    throw new Error('Expected application/json');
+    throw new Error('Očekávám application/json');
   const chunks: Buffer[] = [];
   let size = 0;
   for await (const chunk of req) {
@@ -71,7 +72,7 @@ async function readJson(req: IncomingMessage): Promise<unknown> {
         1024 *
         1024
     )
-      throw new Error('Request is too large');
+      throw new Error('Požadavek je příliš velký');
     chunks.push(Buffer.from(chunk));
   }
   return JSON.parse(Buffer.concat(chunks).toString('utf8'));
@@ -132,6 +133,8 @@ export function editorPlugin(
         ...options.direction,
       };
       const segmentationOptions: SegmentationOptions = {
+        sam3Python: process.env.SAM3_PYTHON || env.SAM3_PYTHON,
+        sam3Model: process.env.SAM3_MODEL || env.SAM3_MODEL,
         python: process.env.SEGMENTATION_PYTHON || env.SEGMENTATION_PYTHON,
         checkpoint: process.env.SAM2_CHECKPOINT || env.SAM2_CHECKPOINT,
         modelConfig: process.env.SAM2_CONFIG || env.SAM2_CONFIG,
@@ -161,7 +164,7 @@ export function editorPlugin(
             !loopback(host.hostname) ||
             !['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(remote ?? '')
           ) {
-            respond(403, { error: 'Editor is available on loopback only.' });
+            respond(403, { error: 'Editor je dostupný pouze lokálně.' });
             return;
           }
           if (
@@ -169,7 +172,9 @@ export function editorPlugin(
             (req.headers.origin !== host.origin ||
               req.headers['x-tukabel-editor'] !== '1')
           ) {
-            respond(403, { error: 'Same-origin editor request required.' });
+            respond(403, {
+              error: 'Požadavek editoru musí pocházet ze stejného serveru.',
+            });
             return;
           }
           const parsedUrl = new URL(req.url!, host);
@@ -178,6 +183,15 @@ export function editorPlugin(
             respond(200, {
               ...artStatus(artOptions),
               segmentation: await segmentationStatus(segmentationOptions),
+            });
+            return;
+          }
+          if (endpoint === `${API}/art/history` && req.method === 'POST') {
+            respond(200, {
+              results: (
+                await artworkHistory(assetsRoot, await readJson(req))
+              ).map((result) => ({ ...result, assets: [] })),
+              assets: await listAssets(assetsRoot),
             });
             return;
           }
@@ -250,7 +264,7 @@ export function editorPlugin(
                 typeof context.label !== 'string' ||
                 !context.placement?.bounds
               )
-                throw Error('Neplatný cieľ grafickej úpravy.');
+                throw Error('Neplatný cíl grafické úpravy.');
               const input = body.input;
               const job = jobs.submit(
                 { kind: 'art', context },
@@ -285,14 +299,14 @@ export function editorPlugin(
                 { kind: 'animation', context },
                 body.label,
                 async (stage) => {
-                  stage('AI navrhuje nastavenie existujúcich klipov');
+                  stage('AI navrhuje nastavení existujúcich klipů');
                   return proposeAnimation(input, directionOptions);
                 },
               );
               respond(202, job);
               return;
             }
-            throw Error('Neznámy typ úlohy.');
+            throw Error('Neznámý typ úlohy.');
           }
           if (endpoint === `${API}/speech/status` && req.method === 'GET') {
             respond(200, await speechStatus(speechOptions));
@@ -317,12 +331,12 @@ export function editorPlugin(
               typeof input === 'object' &&
               'data' in input
             )
-              throw new Error('Use speech/import for WAV uploads.');
+              throw new Error('Pro nahrání WAV použij speech/import.');
             if (
               endpoint.endsWith('/import') &&
               (!input || typeof input !== 'object' || !('data' in input))
             )
-              throw new Error('WAV upload required.');
+              throw new Error('Vyber WAV nahrávku.');
             const result = endpoint.endsWith('/analyze')
               ? await analyzeSpeech(assetsRoot, input, speechOptions)
               : await createSpeech(assetsRoot, input, speechOptions);
@@ -380,7 +394,7 @@ export function editorPlugin(
               await listAssets(assetsRoot),
             );
             if (errors.length) {
-              respond(422, { error: 'Invalid project', errors });
+              respond(422, { error: 'Neplatný projekt', errors });
               return;
             }
             await validateAnimationAssets(
@@ -393,12 +407,12 @@ export function editorPlugin(
             );
             const stat = await lstat(source);
             if (!stat.isFile() || stat.isSymbolicLink())
-              throw new Error('Project must be a regular source file.');
+              throw new Error('Projekt musí být běžný zdrojový soubor.');
             const raw = await readFile(source, 'utf8');
             if (body?.revision !== hash(raw)) {
               respond(409, {
                 error:
-                  'Súbor sa medzitým zmenil. Načítaj ho znovu; tvoje zmeny neboli prepísané.',
+                  'Soubor se mezitím změnil. Načti ho znovu; tvé změny nebyly přepsané.',
               });
               return;
             }
@@ -415,7 +429,7 @@ export function editorPlugin(
               // Recheck after formatting and staging to protect edits made outside the editor.
               if (hash(await readFile(source, 'utf8')) !== body.revision) {
                 respond(409, {
-                  error: 'Súbor sa medzitým zmenil. Načítaj ho znovu.',
+                  error: 'Soubor se mezitím změnil. Načti ho znovu.',
                 });
                 return;
               }
@@ -434,7 +448,7 @@ export function editorPlugin(
               typeof body.data !== 'string' ||
               body.data.length > 8 * 1024 * 1024
             )
-              throw new Error('Invalid image upload (max 6 MB)');
+              throw new Error('Neplatný obrázek (nejvýše 6 MB)');
             const extension = path.extname(body.name).toLowerCase();
             const bytes = Buffer.from(body.data, 'base64');
             const valid =
@@ -454,7 +468,7 @@ export function editorPlugin(
             const folder = path.join(assetsRoot, 'imported');
             await mkdir(folder, { recursive: true });
             if ((await lstat(folder)).isSymbolicLink())
-              throw new Error('Asset folder must not be a symbolic link.');
+              throw new Error('Složka assetů nesmí být symbolický odkaz.');
             const stem =
               path
                 .basename(body.name, extension)
@@ -463,7 +477,7 @@ export function editorPlugin(
             const id = `imported/${stem}-${randomUUID().slice(0, 8)}${extension}`;
             await writeFile(path.join(assetsRoot, id), bytes, { flag: 'wx' });
             respond(201, { id, assets: await listAssets(assetsRoot) });
-          } else respond(404, { error: 'Unknown editor endpoint or method.' });
+          } else respond(404, { error: 'Neznámá operace editoru.' });
         };
         // Serialize writes and reads so two tabs cannot both overwrite the same revision.
         const pending =
@@ -478,7 +492,7 @@ export function editorPlugin(
               error:
                 error instanceof Error
                   ? error.message
-                  : 'Editor request failed.',
+                  : 'Požadavek editoru selhal.',
             });
         });
         if (pending === queue) queue = handled;

@@ -65,7 +65,7 @@ export function waveDuration(bytes: Buffer): number {
     bytes.toString('ascii', 8, 12) !== 'WAVE' ||
     bytes.readUInt32LE(4) + 8 !== bytes.length
   )
-    throw new Error('Použi platný WAV PCM 16-bit (max. 20 MB / 180 s).');
+    throw new Error('Použij platný WAV PCM 16-bit (max. 20 MB / 180 s).');
   let rate = 0,
     alignment = 0,
     size = 0;
@@ -73,7 +73,7 @@ export function waveDuration(bytes: Buffer): number {
     const length = bytes.readUInt32LE(offset + 4),
       start = offset + 8,
       end = start + length;
-    if (end > bytes.length) throw new Error('Poškodený WAV.');
+    if (end > bytes.length) throw new Error('Poškozený WAV.');
     const id = bytes.toString('ascii', offset, offset + 4);
     if (id === 'fmt ') {
       if (
@@ -82,7 +82,7 @@ export function waveDuration(bytes: Buffer): number {
         ![1, 2].includes(bytes.readUInt16LE(start + 2)) ||
         bytes.readUInt16LE(start + 14) !== 16
       )
-        throw new Error('Podporovaný je WAV PCM 16-bit, mono alebo stereo.');
+        throw new Error('Podporovaný je WAV PCM 16-bit, mono nebo stereo.');
       const channels = bytes.readUInt16LE(start + 2),
         sampleRate = bytes.readUInt32LE(start + 4);
       alignment = channels * 2;
@@ -106,7 +106,7 @@ export function waveDuration(bytes: Buffer): number {
     seconds <= 0 ||
     seconds > 180
   )
-    throw new Error('Replika môže trvať najviac 180 sekúnd.');
+    throw new Error('Replika může trvat nejvýše 180 sekund.');
   return seconds;
 }
 async function local(
@@ -120,7 +120,7 @@ async function local(
     id.split('/').some((s) => !s || s === '..' || s === '.') ||
     !id.endsWith(`.${extension}`)
   )
-    throw new Error('Neplatný lokálny audio asset.');
+    throw new Error('Neplatný lokální audio asset.');
   const base = await realpath(root),
     filename = path.resolve(root, id),
     resolved = await realpath(filename);
@@ -129,9 +129,9 @@ async function local(
     (await lstat(filename)).isSymbolicLink() ||
     !(await lstat(resolved)).isFile()
   )
-    throw new Error('Asset musí byť lokálny súbor.');
+    throw new Error('Asset musí být lokální soubor.');
   const bytes = await readFile(resolved);
-  if (bytes.length > MAX_BYTES) throw new Error('Asset je príliš veľký.');
+  if (bytes.length > MAX_BYTES) throw new Error('Asset je příliš velký.');
   return bytes;
 }
 async function publish(
@@ -141,7 +141,7 @@ async function publish(
   const parent = path.join(root, 'speech');
   await mkdir(parent, { recursive: true });
   if ((await realpath(parent)) !== path.join(await realpath(root), 'speech'))
-    throw new Error('Audio priečinok nesmie byť symlink.');
+    throw new Error('Audio složka nesmí být symlink.');
   const id = randomUUID(),
     staging = path.join(parent, `.${id}.tmp`);
   await mkdir(staging);
@@ -166,7 +166,7 @@ async function eleven(
   body?: unknown,
 ) {
   if (!options.apiKey)
-    throw new Error('Nastav ELEVENLABS_API_KEY v .env.local a reštartuj Vite.');
+    throw new Error('Nastav ELEVENLABS_API_KEY v .env.local a restartuj Vite.');
   let response: Response;
   try {
     response = await (options.fetch ?? fetch)(
@@ -183,7 +183,7 @@ async function eleven(
     );
   } catch {
     throw new Error(
-      'ElevenLabs je nedostupný. Skontroluj pripojenie. Generovanie sa automaticky neopakuje.',
+      'ElevenLabs je nedostupný. Zkontroluj připojení. Generování se automaticky neopakuje.',
     );
   }
   if (!response.ok) {
@@ -198,24 +198,24 @@ async function eleven(
       : endpoint.startsWith('/v2/voices')
         ? 'Voices: Read (voices_read)'
         : 'Text to Speech (text_to_speech)';
-    let explanation = 'Skontroluj hlas, model, oprávnenia a kredity.';
+    let explanation = 'Zkontroluj hlas, model, oprávnění a kredity.';
     if (code === 'missing_permissions' || code === 'insufficient_permissions')
-      explanation = `Kľúču chýba oprávnenie ${permission}. Povoľ ho v ElevenLabs → Developers → API Keys → Edit.`;
+      explanation = `Klíči chybí oprávnění ${permission}. Povol ho v ElevenLabs → Developers → API Keys → Edit.`;
     else if (code === 'invalid_api_key')
       explanation =
-        'API kľúč je neplatný alebo zrušený. Nastav platný ELEVENLABS_API_KEY v .env.local a reštartuj Vite.';
+        'API klíč je neplatný nebo zrušený. Nastav platný ELEVENLABS_API_KEY v .env.local a restartuj Vite.';
     else if (code === 'quota_exceeded')
-      explanation = 'Bol prekročený kreditný limit účtu alebo API kľúča.';
+      explanation = 'Byl překročený kreditní limit účtu nebo API klíče.';
     else if (code === 'paid_plan_required')
       explanation =
-        'Vybraný hlas alebo model vyžaduje platený tarif. Hlasy z Voice Library nie sú cez API dostupné na bezplatnom tarife. Vyber hlas dostupný pre svoj tarif, zmeň predplatné v ElevenLabs alebo importuj vlastný WAV.';
+        'Vybraný hlas nebo model vyžaduje placený tarif. Hlasy z Voice Library nejsou přes API dostupné na bezplatném tarifu. Vyber hlas dostupný pro svůj tarif, změň předplatné v ElevenLabs nebo importuj vlastní WAV.';
     else if (code === 'payment_required' || response.status === 402)
       explanation =
-        'ElevenLabs vyžaduje platbu alebo vyšší tarif. Skontroluj predplatné a kredity účtu; hlasy z Voice Library nie sú cez API dostupné na bezplatnom tarife. Môžeš vybrať iný dostupný hlas alebo importovať vlastný WAV.';
+        'ElevenLabs vyžaduje platbu nebo vyšší tarif. Zkontroluj predplatné a kredity účtu; hlasy z Voice Library nejsou přes API dostupné na bezplatném tarifu. Můžeš vybrat iný dostupný hlas nebo importovat vlastní WAV.';
     else if (response.status === 401 || response.status === 403)
-      explanation = `Over API kľúč a jeho oprávnenie ${permission}. Po zmene .env.local reštartuj Vite.`;
+      explanation = `Ověř API klíč a jeho oprávnění ${permission}. Po zmene .env.local restartuj Vite.`;
     throw new Error(
-      `ElevenLabs HTTP ${response.status}: ${explanation} Požiadavka sa neopakuje.`,
+      `ElevenLabs HTTP ${response.status}: ${explanation} Požadavek se neopakuje.`,
     );
   }
   return response;
@@ -283,12 +283,12 @@ export async function createSpeech(
     !input.text.trim() ||
     input.text.length > 5000
   )
-    throw new Error('Replika musí mať 1–5000 znakov.');
+    throw new Error('Replika musí mít 1–5000 znaků.');
   if (
     input.subtitle !== undefined &&
     (typeof input.subtitle !== 'string' || input.subtitle.length > 10000)
   )
-    throw new Error('Neplatný text titulkov.');
+    throw new Error('Neplatný text titulků.');
   let bytes: Buffer;
   let alignment: SpeechAlignment | undefined;
   const archive: Record<string, unknown> = { text: input.text };
@@ -299,7 +299,7 @@ export async function createSpeech(
     archive.provider = 'upload';
   } else {
     if (input.confirmed !== true)
-      throw new Error('Generovanie vyžaduje výslovné potvrdenie.');
+      throw new Error('Generování vyžaduje výslovné potvrzení.');
     const issue = voiceIssue(input.voice);
     if (issue) throw new Error(issue);
     const voice = input.voice as unknown as VoiceSettings;
@@ -314,14 +314,14 @@ export async function createSpeech(
     );
     if (!model)
       throw new Error(
-        'Model nepodporuje text-to-speech alebo nie je dostupný pre tento účet.',
+        'Model nepodporuje text-to-speech nebo není dostupný pro tento účet.',
       );
     if (
       model.maximum_text_length_per_request &&
       input.text.length > model.maximum_text_length_per_request
     )
       throw new Error(
-        `Model povoľuje najviac ${model.maximum_text_length_per_request} znakov.`,
+        `Model povoluje nejvýše ${model.maximum_text_length_per_request} znaků.`,
       );
     if (model.can_use_speaker_boost)
       settings.use_speaker_boost = voice.useSpeakerBoost;
@@ -333,7 +333,7 @@ export async function createSpeech(
     );
     const length = Number(response.headers.get('content-length'));
     if (length > MAX_BYTES * 1.4 + 2 * 1024 * 1024)
-      throw new Error('Nahrávka je príliš veľká.');
+      throw new Error('Nahrávka je příliš velká.');
     const result: unknown = await response.json().catch(() => null);
     if (
       !object(result) ||
@@ -342,7 +342,7 @@ export async function createSpeech(
       !/^[A-Za-z0-9+/]+={0,2}$/.test(result.audio_base64)
     )
       throw new Error(
-        'ElevenLabs vrátil neplatný zvuk s časovaním. Požiadavka sa neopakuje.',
+        'ElevenLabs vrátil neplatný zvuk s časovaním. Požadavek se neopakuje.',
       );
     bytes = pcmWave(Buffer.from(result.audio_base64, 'base64'));
     // Prefer original text timing, so pronunciation normalization does not move
@@ -413,14 +413,14 @@ export async function analyzeSpeech(
       ));
     } catch {
       throw new Error(
-        'Rhubarb analýza zlyhala. Nainštaluj Rhubarb a nastav RHUBARB_BIN; podporovaný je WAV PCM 16-bit.',
+        'Rhubarb analýza selhala. Nainstaluj Rhubarb a nastav RHUBARB_BIN; podporovaný je WAV PCM 16-bit.',
       );
     }
     const track = JSON.parse(stdout) as LipSyncTrack;
     const issue = lipSyncIssue(track);
     if (issue) throw new Error(issue);
     if (Math.abs(track.metadata.duration - duration) > 0.1)
-      throw new Error('Rhubarb vrátil inú dĺžku audia.');
+      throw new Error('Rhubarb vrátil jinou délku audia.');
     const data = {
       metadata: {
         duration: track.metadata.duration,
@@ -457,7 +457,7 @@ export async function validateSpeechAssets(root: string, project: GameContent) {
             alignment.metadata.audioSha256 !== digest(bytes)
           )
             throw new Error(
-              `${dialogue.id}/${node.id}: neplatné zarovnanie titulkov alebo iné audio.`,
+              `${dialogue.id}/${node.id}: neplatné zarovnání titulků nebo jiné audio.`,
             );
         }
         if (node.speech.lipSync) {
@@ -471,7 +471,7 @@ export async function validateSpeechAssets(root: string, project: GameContent) {
             track.metadata.audioSha256 !== digest(bytes)
           )
             throw new Error(
-              `${dialogue.id}/${node.id}: lip-sync nezodpovedá audio súboru; zopakuj analýzu.`,
+              `${dialogue.id}/${node.id}: lip-sync neodpovídá audio souboru; zopakuj analýzu.`,
             );
         }
       }

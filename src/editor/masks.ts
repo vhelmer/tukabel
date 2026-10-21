@@ -3,7 +3,7 @@ export interface ObjectMask {
   width: number;
   height: number;
   sourceSha256: string;
-  method: 'manual' | 'grabcut' | 'sam2';
+  method: 'manual' | 'grabcut' | 'sam2' | 'sam3';
   refineEdges?: boolean; // SAM followed by a source-resolution boundary fit.
   detailPass?: boolean; // Full scene + contextual crop at higher object resolution.
   matting?: MattingSettings;

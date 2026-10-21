@@ -144,6 +144,10 @@ test('production serves a static game without editor code or write endpoints', a
           'api.openai.com/v1/responses',
           'OPENAI_ANIMATION_MODEL',
           'SAM2_CHECKPOINT',
+          'SAM3_PYTHON',
+          'SAM3_MODEL',
+          'HF_TOKEN',
+          'sam3_adapter',
           'SEGMENTATION_PYTHON',
           'segment.py',
         ])

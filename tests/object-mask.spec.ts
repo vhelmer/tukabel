@@ -39,7 +39,7 @@ async function mark(
 }
 async function selectClock(page: Page, touch: boolean) {
   await page
-    .getByRole('button', { name: 'Vybrať obdĺžnik', exact: true })
+    .getByRole('button', { name: 'Vybrat obdélník', exact: true })
     .click();
   const stage = page.locator('.editor-stage');
   await stage.scrollIntoViewIfNeeded();
@@ -118,12 +118,12 @@ test('source-pixel masks support real segmentation, manual touchups, zoom, compa
   await openEditor(page, workspace.url);
   const art = page.getByRole('region', { name: 'Grafické nástroje scény' });
   await art
-    .getByLabel('Grafická operácia', { exact: true })
+    .getByLabel('Grafická operace', { exact: true })
     .selectOption('extract');
   await art
-    .getByLabel('Názov výslednej vrstvy alebo lokácie', { exact: true })
+    .getByLabel('Název výsledné vrstvy nebo lokace', { exact: true })
     .fill('Presné hodiny');
-  const cleanup = art.getByLabel('Dočistenie pozadia za obrysom (px zdroja)', {
+  const cleanup = art.getByLabel('Dočištění pozadí za obrysem (px zdroje)', {
     exact: true,
   });
   await expect(cleanup).toHaveValue('12');
@@ -131,29 +131,29 @@ test('source-pixel masks support real segmentation, manual touchups, zoom, compa
   await selectClock(page, isMobile);
   await art
     .getByRole('button', {
-      name: 'Spresniť / upraviť masku objektu',
+      name: 'Zpřesnit / upravit masku objektu',
       exact: true,
     })
     .click();
   const editor = page.getByRole('dialog', { name: 'Maska objektu' });
-  const canvas = editor.getByLabel('Plátno segmentačnej masky', {
+  const canvas = editor.getByLabel('Plátno segmentační masky', {
     exact: true,
   });
   await expect(canvas).toBeVisible();
   await expect(
-    editor.getByRole('button', { name: 'Použiť masku', exact: true }),
+    editor.getByRole('button', { name: 'Použít masku', exact: true }),
   ).toBeEnabled();
   await editor
-    .getByLabel('Priblíženie masky', { exact: true })
+    .getByLabel('Přiblížení masky', { exact: true })
     .selectOption('2');
   // Paint then undo at source coordinates; all later output remains aligned.
   await mark(page, canvas, 820, 120, isMobile);
   await editor
-    .getByRole('button', { name: 'Späť v maske', exact: true })
+    .getByRole('button', { name: 'Zpět v masce', exact: true })
     .click();
   await mark(page, canvas, 905, 105, isMobile);
   await editor
-    .getByLabel('Polomer štetca (px zdroja)', { exact: true })
+    .getByLabel('Poloměr štětce (px zdroje)', { exact: true })
     .fill('2');
   await mark(page, canvas, 849, 120, isMobile);
   await editor
@@ -161,10 +161,10 @@ test('source-pixel masks support real segmentation, manual touchups, zoom, compa
     .selectOption('erase');
   await mark(page, canvas, 965, 180, isMobile);
   await editor
-    .getByLabel('Priblíženie masky', { exact: true })
+    .getByLabel('Přiblížení masky', { exact: true })
     .selectOption('1');
   const refine = editor.getByRole('button', {
-    name: 'Spresniť hranice objektu',
+    name: 'Zpřesnit hranice objektu',
     exact: true,
   });
   // This test deliberately uses the real local CLI, never a fake segmented mask.
@@ -176,13 +176,13 @@ test('source-pixel masks support real segmentation, manual touchups, zoom, compa
   const method = segmentation.sam2 ? 'sam2' : 'grabcut';
   if (segmentation.sam2) {
     const detail = editor.getByRole('checkbox', {
-      name: 'Detailný prechod · experimentálny',
+      name: 'Detailní přechod · experimentální',
       exact: true,
     });
     await expect(detail).not.toBeChecked();
     await detail.check();
     const edges = editor.getByRole('checkbox', {
-      name: 'Dotiahnuť obrysy a tenké časti',
+      name: 'Dotáhnout obrysy a tenké části',
       exact: true,
     });
     await expect(edges).toBeChecked();
@@ -199,7 +199,7 @@ test('source-pixel masks support real segmentation, manual touchups, zoom, compa
     const sent = (await request).postDataJSON();
     expect(sent.refineEdges).toBe(true);
     expect(sent.detailPass).toBe(segmentation.sam2);
-    await expect(editor.getByRole('status')).toContainText('Skontroluj obrys', {
+    await expect(editor.getByRole('status')).toContainText('Zkontroluj obrys', {
       timeout: 90000,
     });
   } else {
@@ -207,41 +207,39 @@ test('source-pixel masks support real segmentation, manual touchups, zoom, compa
     await expect(editor).toContainText('npm run setup:segmentation');
   }
   await editor
-    .getByLabel('Zobrazenie masky', { exact: true })
+    .getByLabel('Zobrazení masky', { exact: true })
     .selectOption('cutout');
   await editor
-    .getByRole('button', { name: 'Priblížiť objekt', exact: true })
+    .getByRole('button', { name: 'Přiblížit objekt', exact: true })
     .click();
   await editor.screenshot({ path: info.outputPath('mask-editor.png') });
   await editor
-    .getByRole('button', { name: 'Použiť masku', exact: true })
+    .getByRole('button', { name: 'Použít masku', exact: true })
     .click();
   await expect(editor).not.toBeVisible();
-  await expect(art).toContainText('Maska pripravená');
+  await expect(art).toContainText('Maska připravená');
   await art
     .getByRole('button', {
-      name: 'Spustiť AI úpravu (API kredit)',
+      name: 'Spustit AI úpravu (API kredit)',
       exact: true,
     })
     .click();
   await expect(
-    art.getByRole('status', { name: 'Stav grafickej operácie' }),
-  ).toContainText('Assety sú uložené');
-  const comparison = art.getByRole('region', { name: 'Porovnanie oddelenia' });
+    art.getByRole('status', { name: 'Stav grafické operace' }),
+  ).toContainText('Assety jsou uložené');
+  const comparison = art.getByRole('region', { name: 'Porovnání oddělení' });
   await expect(comparison).toContainText(
-    '0 chýb pri zachovaní pôvodných pixelov',
+    '0 chyb při zachování původních pixelů',
   );
-  await comparison
-    .getByLabel('Posuvník porovnania', { exact: true })
-    .fill('70');
+  await comparison.getByLabel('Posuvník porovnání', { exact: true }).fill('70');
   await comparison.screenshot({
     path: info.outputPath('exact-reassembly.png'),
   });
   await comparison
-    .getByLabel('Porovnanie výrezu', { exact: true })
+    .getByLabel('Porovnání výřezu', { exact: true })
     .selectOption('difference');
   await comparison
-    .getByLabel('Porovnanie výrezu', { exact: true })
+    .getByLabel('Porovnání výřezu', { exact: true })
     .selectOption('repair');
   const jobs = (
     await (
@@ -284,7 +282,7 @@ test('source-pixel masks support real segmentation, manual touchups, zoom, compa
     expect(mask[60 * 1280 + 835]).toBe(0);
     expect(mask[105 * 1280 + 905]).toBe(255);
   }
-  const cutout = await sharp(asset(result.cutout!))
+  const cutout = await sharp(asset(result.cutoutFull!))
     .ensureAlpha()
     .raw()
     .toBuffer();
@@ -292,37 +290,42 @@ test('source-pixel masks support real segmentation, manual touchups, zoom, compa
   // Reopen/import the saved mask to confirm it remains editable in source pixels.
   await art
     .getByRole('button', {
-      name: 'Spresniť / upraviť masku objektu',
+      name: 'Zpřesnit / upravit masku objektu',
       exact: true,
     })
     .click();
   await expect(canvas).toBeVisible();
   await editor
-    .getByLabel('Načítať PNG masku')
+    .getByLabel('Načíst PNG masku')
     .setInputFiles(asset(result.objectMask!));
-  await expect(editor.getByRole('status')).toContainText('Maska načítaná');
+  await expect(editor.getByRole('status')).toContainText('Maska načtená');
   await editor
-    .getByRole('button', { name: 'Zavrieť bez použitia', exact: true })
+    .getByRole('button', { name: 'Zavřít bez použití', exact: true })
     .click();
   await art
-    .getByRole('button', { name: 'Použiť výsledok v scéne', exact: true })
+    .getByRole('button', { name: 'Použít výsledek ve scéně', exact: true })
     .click();
   const saved = page.waitForResponse(
     (r) => r.url().endsWith('/project') && r.request().method() === 'PUT',
   );
   await page
-    .getByRole('button', { name: 'Uložiť do projektu', exact: true })
+    .getByRole('button', { name: 'Uložit do projektu', exact: true })
     .click();
   expect((await saved).ok()).toBe(true);
   const disk = JSON.parse(
     await readFile(workspace.source, 'utf8'),
   ) as GameContent;
-  expect(disk.scenes[0]!.background).toBe(result.image);
+  expect(disk.scenes[0]!.background).toBe(result.backgrounds!.restored);
   expect(
     disk.scenes[0]!.hotspots.find((h) => h.label === 'Presné hodiny'),
   ).toMatchObject({
     image: result.cutout,
-    bounds: { x: 0, y: 0, width: 1280, height: 720 },
+    bounds: {
+      x: result.cutoutFrame!.x,
+      y: result.cutoutFrame!.y,
+      width: result.cutoutFrame!.width,
+      height: result.cutoutFrame!.height,
+    },
     decorative: true,
   });
   const recipe = JSON.parse(await readFile(asset(result.manifest), 'utf8'));
@@ -331,7 +334,7 @@ test('source-pixel masks support real segmentation, manual touchups, zoom, compa
   expect(recipe.objectMask.method).toBe(available ? method : 'manual');
   if (segmentation.sam2) expect(recipe.objectMask.refineEdges).toBe(true);
   await page
-    .getByRole('button', { name: 'Otestovať odtiaľto ↗', exact: true })
+    .getByRole('button', { name: 'Otestovat odsud ↗', exact: true })
     .click();
   await ready(page);
   await page
@@ -350,7 +353,7 @@ test('source-pixel masks support real segmentation, manual touchups, zoom, compa
 
 async function selectBackgroundPolygon(page: Page, touch: boolean) {
   await page
-    .getByRole('button', { name: 'Vybrať polygón', exact: true })
+    .getByRole('button', { name: 'Vybrat polygon', exact: true })
     .click();
   const stage = page.locator('.editor-stage');
   await stage.scrollIntoViewIfNeeded();
@@ -386,11 +389,11 @@ test('a background polygon opens the mask editor even when a character was selec
   await selectBackgroundPolygon(page, isMobile);
   const art = page.getByRole('region', { name: 'Grafické nástroje scény' });
   await expect(
-    art.getByLabel('Zdroj grafickej úpravy', { exact: true }),
+    art.getByLabel('Zdroj grafické úpravy', { exact: true }),
   ).toHaveValue('background');
   await art
     .getByRole('button', {
-      name: 'Spresniť / upraviť masku objektu',
+      name: 'Zpřesnit / upravit masku objektu',
       exact: true,
     })
     .click();
@@ -398,7 +401,7 @@ test('a background polygon opens the mask editor even when a character was selec
     page.getByRole('dialog', { name: 'Maska objektu' }),
   ).toBeVisible();
   await expect(
-    page.getByLabel('Plátno segmentačnej masky', { exact: true }),
+    page.getByLabel('Plátno segmentační masky', { exact: true }),
   ).toBeVisible();
 });
 
@@ -417,8 +420,11 @@ test('mask launch errors remain visible beside the button and source switching p
     .getByLabel('Vybraný objekt', { exact: true })
     .selectOption(actor.id);
   const art = page.getByRole('region', { name: 'Grafické nástroje scény' });
-  const source = art.getByLabel('Zdroj grafickej úpravy', { exact: true });
+  const source = art.getByLabel('Zdroj grafické úpravy', { exact: true });
   await source.selectOption('object');
+  const actorSize = await sharp(
+    path.join(workspace.root, 'src/assets', actor.image!),
+  ).metadata();
   const response = await page.request.post(
     `${workspace.url}__tukabel/editor/jobs`,
     {
@@ -445,8 +451,9 @@ test('mask launch errors remain visible beside the button and source switching p
           operation: 'cutout',
           selection: [
             { x: 0, y: 0 },
-            { x: 16, y: 0 },
-            { x: 16, y: 16 },
+            { x: actorSize.width!, y: 0 },
+            { x: actorSize.width!, y: actorSize.height! },
+            { x: 0, y: actorSize.height! },
           ],
         },
       },
@@ -454,19 +461,19 @@ test('mask launch errors remain visible beside the button and source switching p
   );
   expect(response.status()).toBe(202);
   await expect(
-    art.getByRole('status', { name: 'Stav grafickej operácie' }),
-  ).toContainText('Assety sú uložené');
+    art.getByRole('status', { name: 'Stav grafické operace' }),
+  ).toContainText('Assety jsou uložené');
   await selectBackgroundPolygon(page, isMobile);
   await source.selectOption('background');
   await expect(page.locator('[data-art-selection]')).toHaveCount(1);
   // Opening an object job must restore its explicit target even without a remount.
   await page
-    .getByRole('button', { name: 'Otvoriť výsledok', exact: true })
+    .getByRole('button', { name: 'Otevřít výsledek', exact: true })
     .click();
   await expect(source).toHaveValue('object');
   await art
     .getByRole('button', {
-      name: 'Spresniť / upraviť masku objektu',
+      name: 'Zpřesnit / upravit masku objektu',
       exact: true,
     })
     .click();
@@ -474,22 +481,22 @@ test('mask launch errors remain visible beside the button and source switching p
     0,
   );
   await expect(art.locator('.mask-launcher').getByRole('alert')).toContainText(
-    'Pozadie lokácie',
+    'Pozadí lokace',
   );
   // The older job's success message must not hide the new launch error.
   await expect(
-    art.getByRole('status', { name: 'Stav grafickej operácie' }),
-  ).toContainText('Assety sú uložené');
+    art.getByRole('status', { name: 'Stav grafické operace' }),
+  ).toContainText('Assety jsou uložené');
   await source.selectOption('background');
   await expect(page.locator('[data-art-selection]')).toHaveCount(1);
   await expect(art.locator('.mask-launcher').getByRole('alert')).toHaveCount(0);
   await art
     .getByRole('button', {
-      name: 'Spresniť / upraviť masku objektu',
+      name: 'Zpřesnit / upravit masku objektu',
       exact: true,
     })
     .click();
   await expect(
-    page.getByLabel('Plátno segmentačnej masky', { exact: true }),
+    page.getByLabel('Plátno segmentační masky', { exact: true }),
   ).toBeVisible();
 });

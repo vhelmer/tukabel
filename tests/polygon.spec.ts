@@ -98,10 +98,10 @@ async function drag(
 }
 async function saved(page: Page, source: string) {
   await page
-    .getByRole('button', { name: 'Uložiť do projektu', exact: true })
+    .getByRole('button', { name: 'Uložit do projektu', exact: true })
     .click();
   await expect(
-    page.getByRole('status', { name: 'Stav editora' }),
+    page.getByRole('status', { name: 'Stav editoru' }),
   ).toContainText('Uložené do');
   return JSON.parse(await readFile(source, 'utf8')) as GameContent;
 }
@@ -114,7 +114,7 @@ test('draw, edit, transform and persist a concave polygon; clicks and drops foll
   await seed(workspace);
   await openEditor(page, workspace.url);
   await page
-    .getByRole('button', { name: 'Nakresliť polygón', exact: true })
+    .getByRole('button', { name: 'Nakreslit polygon', exact: true })
     .click();
   await page.locator('.editor-stage').scrollIntoViewIfNeeded();
   const points = [
@@ -137,11 +137,11 @@ test('draw, edit, transform and persist a concave polygon; clicks and drops foll
   );
   await expect(page.locator('[data-vertex-index]')).toHaveCount(6);
   await page
-    .getByLabel('Názov objektu', { exact: true })
+    .getByLabel('Název objektu', { exact: true })
     .fill('Nepravidelné okno');
-  await page.getByLabel('Reakcia', { exact: true }).fill('Klik: polygon');
+  await page.getByLabel('Reakce', { exact: true }).fill('Klik: polygon');
   await page
-    .getByLabel('Priblíženie scény', { exact: true })
+    .getByLabel('Přiblížení scény', { exact: true })
     .selectOption('1.5');
   await outline.scrollIntoViewIfNeeded();
   await drag(
@@ -152,17 +152,17 @@ test('draw, edit, transform and persist a concave polygon; clicks and drops foll
   );
   const edited = await outline.getAttribute('points');
   expect(edited).toContain('760');
-  await page.getByRole('button', { name: 'Späť', exact: true }).click();
+  await page.getByRole('button', { name: 'Zpět', exact: true }).click();
   await expect(outline).toHaveAttribute(
     'points',
     points.map((p) => `${p.x},${p.y}`).join(' '),
   );
-  await page.getByRole('button', { name: 'Znova', exact: true }).click();
+  await page.getByRole('button', { name: 'Znovu', exact: true }).click();
   await expect(outline).toHaveAttribute('points', edited!);
   await page.locator('[data-edge-index="1"]').click();
   await expect(page.locator('[data-vertex-index]')).toHaveCount(7);
   await page
-    .getByRole('button', { name: 'Odstrániť vybraný vrchol', exact: true })
+    .getByRole('button', { name: 'Odstranit vybraný vrchol', exact: true })
     .click();
   await expect(page.locator('[data-vertex-index]')).toHaveCount(6);
   await expect(outline).toHaveAttribute('points', edited!);
@@ -173,10 +173,10 @@ test('draw, edit, transform and persist a concave polygon; clicks and drops foll
     await editorPoint(page, { x: 400, y: 420 }),
     isMobile,
   );
-  await expect(page.getByLabel('Oblasť x', { exact: true })).toHaveValue('340');
-  await page.getByLabel('Oblasť width', { exact: true }).fill('500');
-  await page.getByLabel('Otočenie objektu (°)', { exact: true }).fill('30');
-  await page.getByLabel('Priblíženie scény', { exact: true }).selectOption('1');
+  await expect(page.getByLabel('Oblast x', { exact: true })).toHaveValue('340');
+  await page.getByLabel('Oblast width', { exact: true }).fill('500');
+  await page.getByLabel('Otočení objektu (°)', { exact: true }).fill('30');
+  await page.getByLabel('Přiblížení scény', { exact: true }).selectOption('1');
   await outline.scrollIntoViewIfNeeded();
   const beforeCancel = await outline.getAttribute('points');
   const handleBox = (await page
@@ -324,18 +324,18 @@ test('rectangle conversion, polygon cancellation and invalid crossings keep auth
     .getByLabel('Vybraný objekt', { exact: true })
     .selectOption('under');
   await page
-    .getByRole('button', { name: 'Previesť na polygón', exact: true })
+    .getByRole('button', { name: 'Převést na polygon', exact: true })
     .click();
   await expect(page.locator('[data-vertex-index]')).toHaveCount(4);
   await page
-    .getByRole('button', { name: 'Použiť obdĺžnik', exact: true })
+    .getByRole('button', { name: 'Použít obdélník', exact: true })
     .click();
   await expect(page.locator('[data-vertex-index]')).toHaveCount(0);
   await expect(
     page.locator('[data-hotspot-id="under"] rect.editor-region'),
   ).toHaveCount(1);
   await page
-    .getByRole('button', { name: 'Nakresliť polygón', exact: true })
+    .getByRole('button', { name: 'Nakreslit polygon', exact: true })
     .click();
   await page.locator('.editor-stage').scrollIntoViewIfNeeded();
   for (const p of [
@@ -346,16 +346,16 @@ test('rectangle conversion, polygon cancellation and invalid crossings keep auth
   ])
     await tap(page, await editorPoint(page, p), isMobile);
   await page
-    .getByRole('button', { name: 'Dokončiť polygón', exact: true })
+    .getByRole('button', { name: 'Dokončit polygon', exact: true })
     .click();
-  await expect(page.getByRole('alert')).toContainText('bez kríženia');
+  await expect(page.getByRole('alert')).toContainText('bez křížení');
   await expect(page.locator('[data-hotspot-id]')).toHaveCount(1);
   await page.keyboard.press('Escape');
   await expect(
-    page.getByRole('button', { name: 'Nakresliť polygón', exact: true }),
+    page.getByRole('button', { name: 'Nakreslit polygon', exact: true }),
   ).toHaveAttribute('aria-pressed', 'false');
   await page
-    .getByRole('button', { name: 'Nakresliť polygón', exact: true })
+    .getByRole('button', { name: 'Nakreslit polygon', exact: true })
     .click();
   await page.locator('.editor-stage').scrollIntoViewIfNeeded();
   for (const p of [
@@ -386,7 +386,7 @@ test('rectangle conversion, polygon cancellation and invalid crossings keep auth
   await expect(page.locator('[data-hotspot-id]')).toHaveCount(1);
   if (!isMobile) {
     await page
-      .getByRole('button', { name: 'Nakresliť polygón', exact: true })
+      .getByRole('button', { name: 'Nakreslit polygon', exact: true })
       .click();
     await page.locator('.editor-stage').scrollIntoViewIfNeeded();
     for (const p of [
@@ -406,7 +406,7 @@ test('rectangle conversion, polygon cancellation and invalid crossings keep auth
   await expect(page.locator('[data-vertex-index]')).toHaveCount(3);
   // A silent polygon remains interactive without requiring a commentary rule.
   await page
-    .getByRole('button', { name: 'Odobrať pravidlo', exact: true })
+    .getByRole('button', { name: 'Odebrat pravidlo', exact: true })
     .click();
   await saved(page, workspace.source);
   await page.getByRole('button', { name: 'Game Mode', exact: true }).click();

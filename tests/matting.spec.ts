@@ -42,7 +42,7 @@ test('real matting previews, lossless mask import/undo and source-sized PNG expo
   await openEditor(page, workspace.url);
   const art = page.getByRole('region', { name: 'Grafické nástroje scény' });
   await page
-    .getByRole('button', { name: 'Vybrať obdĺžnik', exact: true })
+    .getByRole('button', { name: 'Vybrat obdélník', exact: true })
     .click();
   const stage = page.locator('.editor-stage');
   await stage.scrollIntoViewIfNeeded();
@@ -80,28 +80,28 @@ test('real matting previews, lossless mask import/undo and source-sized PNG expo
   }
   await art
     .getByRole('button', {
-      name: 'Spresniť / upraviť masku objektu',
+      name: 'Zpřesnit / upravit masku objektu',
       exact: true,
     })
     .click();
   const editor = page.getByRole('dialog', { name: 'Maska objektu' });
   await editor
-    .getByRole('button', { name: 'Spresniť hranice objektu', exact: true })
+    .getByRole('button', { name: 'Zpřesnit hranice objektu', exact: true })
     .click();
-  await expect(editor.getByRole('status')).toContainText('Skontroluj obrys', {
+  await expect(editor.getByRole('status')).toContainText('Zkontroluj obrys', {
     timeout: 90000,
   });
   const method = status.segmentation.vitmatte ? 'vitmatte' : 'closed-form';
   await editor
-    .getByLabel('Metóda alpha mattingu', { exact: true })
+    .getByLabel('Metoda alpha mattingu', { exact: true })
     .selectOption(method);
   await editor
-    .getByRole('button', { name: 'Vypočítať jemnú alfu', exact: true })
+    .getByRole('button', { name: 'Vypočítat jemnou alfu', exact: true })
     .click();
   await expect(editor.getByRole('status')).toContainText('Alfa je hotová', {
     timeout: 90000,
   });
-  const canvas = editor.getByLabel('Plátno segmentačnej masky', {
+  const canvas = editor.getByLabel('Plátno segmentační masky', {
     exact: true,
   });
   const values = await canvas.evaluate((el) => {
@@ -113,15 +113,15 @@ test('real matting previews, lossless mask import/undo and source-sized PNG expo
   });
   expect(values).toBeGreaterThan(16);
   await editor
-    .getByRole('button', { name: 'Priblížiť objekt', exact: true })
+    .getByRole('button', { name: 'Přiblížit objekt', exact: true })
     .click();
   await editor
-    .getByLabel('Pozadie kontroly hrán', { exact: true })
+    .getByLabel('Pozadí kontroly hran', { exact: true })
     .selectOption('white');
   await editor.locator('.mask-viewport').scrollIntoViewIfNeeded();
   await editor.screenshot({ path: info.outputPath('matte-white.png') });
   await editor
-    .getByLabel('Pozadie kontroly hrán', { exact: true })
+    .getByLabel('Pozadí kontroly hran', { exact: true })
     .selectOption('black');
   await editor.locator('.mask-viewport').scrollIntoViewIfNeeded();
   await editor.screenshot({ path: info.outputPath('matte-black.png') });
@@ -137,24 +137,24 @@ test('real matting previews, lossless mask import/undo and source-sized PNG expo
   if (isMobile) await page.touchscreen.tap(x, y);
   else await page.mouse.click(x, y);
   await expect(
-    editor.getByRole('button', { name: 'Použiť masku', exact: true }),
+    editor.getByRole('button', { name: 'Použít masku', exact: true }),
   ).toBeDisabled();
   await editor
-    .getByRole('button', { name: 'Späť v maske', exact: true })
+    .getByRole('button', { name: 'Zpět v masce', exact: true })
     .click();
   await expect(
-    editor.getByRole('button', { name: 'Použiť masku', exact: true }),
+    editor.getByRole('button', { name: 'Použít masku', exact: true }),
   ).toBeEnabled();
   // A known fractional value must survive PNG -> Canvas -> PNG, not snap to 128.
   const imported = Buffer.alloc(1280 * 720);
   imported[100 * 1280 + 900] = 73;
   imported[101 * 1280 + 900] = 211;
-  await editor.getByLabel('Načítať PNG masku').setInputFiles({
+  await editor.getByLabel('Načíst PNG masku').setInputFiles({
     name: 'fractional.png',
     mimeType: 'image/png',
     buffer: await maskPng(imported, 1280, 720),
   });
-  await expect(editor.getByRole('status')).toContainText('Maska načítaná');
+  await expect(editor.getByRole('status')).toContainText('Maska načtená');
   expect(
     await canvas.evaluate(
       (el) =>
@@ -163,17 +163,17 @@ test('real matting previews, lossless mask import/undo and source-sized PNG expo
     ),
   ).toBe(73);
   await editor
-    .getByRole('button', { name: 'Späť v maske', exact: true })
+    .getByRole('button', { name: 'Zpět v masce', exact: true })
     .click();
   await editor
-    .getByRole('button', { name: 'Použiť masku', exact: true })
+    .getByRole('button', { name: 'Použít masku', exact: true })
     .click();
   await art
-    .getByRole('button', { name: 'Vytvoriť lokálny asset', exact: true })
+    .getByRole('button', { name: 'Vytvořit lokální asset', exact: true })
     .click();
   await expect(
-    art.getByRole('status', { name: 'Stav grafickej operácie' }),
-  ).toContainText('Assety sú uložené', { timeout: 90000 });
+    art.getByRole('status', { name: 'Stav grafické operace' }),
+  ).toContainText('Assety jsou uložené', { timeout: 90000 });
   const jobs = (
     await (
       await page.request.get(`${workspace.url}__tukabel/editor/jobs`)
@@ -184,7 +184,7 @@ test('real matting previews, lossless mask import/undo and source-sized PNG expo
       j.kind === 'art' && !!j.result,
   )!.result!;
   const asset = (id: string) => path.join(workspace.root, 'src/assets', id);
-  const exported = await sharp(asset(result.image))
+  const exported = await sharp(asset(result.cutoutFull!))
     .ensureAlpha()
     .raw()
     .toBuffer({ resolveWithObject: true });
@@ -205,18 +205,18 @@ test('real matting previews, lossless mask import/undo and source-sized PNG expo
     matting: { method, decontaminate: true },
   });
   await art
-    .getByRole('button', { name: 'Použiť výsledok v scéne', exact: true })
+    .getByRole('button', { name: 'Použít výsledek ve scéně', exact: true })
     .click();
   const saved = page.waitForResponse(
     (r) => r.url().endsWith('/project') && r.request().method() === 'PUT',
   );
   await page
-    .getByRole('button', { name: 'Uložiť do projektu', exact: true })
+    .getByRole('button', { name: 'Uložit do projektu', exact: true })
     .click();
   expect((await saved).ok()).toBe(true);
   expect(await readFile(workspace.source, 'utf8')).toContain(result.image);
   await page
-    .getByRole('button', { name: 'Otestovať odtiaľto ↗', exact: true })
+    .getByRole('button', { name: 'Otestovat odsud ↗', exact: true })
     .click();
   await ready(page);
 });
@@ -334,7 +334,7 @@ test('Canvas, PNG export and Pixi agree on straight alpha and transparent colors
   await page.getByRole('button', { name: 'Dev Mode', exact: true }).click();
   // Guides intentionally tint bounds and show hidden layers. Compare the
   // authored image with those editing aids disabled, as in Game Mode.
-  await page.getByLabel('Pomôcky scény', { exact: true }).uncheck();
+  await page.getByLabel('Pomůcky scény', { exact: true }).uncheck();
   const stage = page.locator('.editor-stage');
   await expect(stage).toBeVisible();
   const point = await stage.evaluate((el) => {

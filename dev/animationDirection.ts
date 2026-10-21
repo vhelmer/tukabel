@@ -27,7 +27,7 @@ export function directionInput(input: unknown): {
     input.prompt.length > 4000 ||
     !object(input.context)
   )
-    throw Error('Výslovne spusti AI návrh s pokynmi (najviac 4000 znakov).');
+    throw Error('Výslovně spusť AI návrh s pokyny (nejvýše 4000 znaků).');
   const c = input.context;
   if (
     typeof c.sceneId !== 'string' ||
@@ -52,7 +52,7 @@ export function directionInput(input: unknown): {
       !Array.isArray(clip.frames) ||
       !clip.frames.length
     )
-      throw Error('Vyber platné klipy patriace k obrázku postavy.');
+      throw Error('Vyber platné klipy patřící k obrázku postavy.');
     ids.add(clip.id);
     const region = clip.region;
     if (
@@ -64,7 +64,7 @@ export function directionInput(input: unknown): {
             Number(region[k]) >= (k === 'width' || k === 'height' ? 1 : 0),
         ))
     )
-      throw Error('Neplatná lokálna oblasť klipu.');
+      throw Error('Neplatná lokální oblast klipu.');
   }
   return {
     context: { ...c, instruction: input.prompt } as unknown as AnimationContext,
@@ -89,7 +89,7 @@ export function validateDirection(
     Number(value.maxMs) > 120000 ||
     Number(value.maxMs) < Number(value.minMs)
   )
-    throw Error('AI vrátila neplatné nastavenie. Návrh sa nepoužil.');
+    throw Error('AI vrátila neplatné nastavení. Návrh se nepoužil.');
   const chosen = (['blink', 'talk', 'idle'] as const).flatMap((key) => {
     if (value[key] === null) return [];
     const clip = c.clips.find(
@@ -97,7 +97,7 @@ export function validateDirection(
         clip.id === value[key] &&
         (key === 'idle' ? clip.kind === 'idle' : clip.kind === key),
     );
-    if (!clip) throw Error('AI odkázala na neexistujúci alebo nevhodný klip.');
+    if (!clip) throw Error('AI odkázala na neexistující nebo nevhodný klip.');
     return [clip];
   });
   for (let a = 0; a < chosen.length; a++)
@@ -107,7 +107,7 @@ export function validateDirection(
       // Face animations must actually compose, not override the whole character.
       if ((!x.region && x.kind !== 'idle') || (!y.region && y.kind !== 'idle'))
         throw Error(
-          'Súbežné oči a ústa vyžadujú lokálne klipy. Najprv zisti ich zmenené oblasti.',
+          'Souběžné oči a ústa vyžadují lokální klipy. Nejprve zjisti jejich změněné oblasti.',
         );
       if (
         x.region &&
@@ -117,7 +117,7 @@ export function validateDirection(
         x.region.y < y.region.y + y.region.height &&
         y.region.y < x.region.y + x.region.height
       )
-        throw Error('Oblasti navrhnutých klipov sa prekrývajú.');
+        throw Error('Oblasti navržených klipů se překrývají.');
     }
   return value as unknown as AnimationDirection;
 }
@@ -127,7 +127,7 @@ export async function proposeAnimation(
 ): Promise<AnimationDirection> {
   const { context, prompt } = directionInput(input);
   if (!options.apiKey)
-    throw Error('Nastav OPENAI_API_KEY v .env.local a reštartuj Vite.');
+    throw Error('Nastav OPENAI_API_KEY v .env.local a restartuj Vite.');
   const schema = {
     type: 'object',
     additionalProperties: false,
@@ -196,12 +196,12 @@ export async function proposeAnimation(
       },
     );
   } catch {
-    throw Error('AI neodpovedala. Požiadavka sa neopakuje.');
+    throw Error('AI neodpověděla. Požadavek se neopakuje.');
   }
   if (!response.ok) {
     await response.body?.cancel();
     throw Error(
-      `AI návrh zlyhal (HTTP ${response.status}). Skontroluj prístup a kredit. Bez opakovania.`,
+      `AI návrh selhal (HTTP ${response.status}). Zkontroluj přístup a kredit. Bez opakování.`,
     );
   }
   const chunks: Uint8Array[] = [];
@@ -210,7 +210,7 @@ export async function proposeAnimation(
     size += chunk.length;
     if (size > 128 * 1024) {
       await response.body?.cancel().catch(() => {});
-      throw Error('Príliš veľká odpoveď AI.');
+      throw Error('Příliš velká odpověď AI.');
     }
     chunks.push(chunk);
   }
@@ -228,7 +228,7 @@ export async function proposeAnimation(
     return validateDirection(JSON.parse(texts[0].text), context);
   } catch {
     throw Error(
-      'AI návrh nie je úplný alebo nezodpovedá dostupným klipom a oblastiam. Nič sa nepoužilo.',
+      'AI návrh není úplný nebo neodpovídá dostupným klipům a oblastem. Nic se nepoužilo.',
     );
   }
 }

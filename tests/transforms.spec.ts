@@ -85,7 +85,7 @@ async function readBounds(page: Page) {
   const [x, y, width, height] = await Promise.all(
     ['x', 'y', 'width', 'height'].map(async (key) =>
       Number(
-        await page.getByLabel(`Oblasť ${key}`, { exact: true }).inputValue(),
+        await page.getByLabel(`Oblast ${key}`, { exact: true }).inputValue(),
       ),
     ),
   );
@@ -146,9 +146,9 @@ async function svgPoint(page: Page, x: number, y: number) {
   );
 }
 async function editorImage(page: Page) {
-  await page.getByLabel('Priblíženie scény', { exact: true }).selectOption('1');
+  await page.getByLabel('Přiblížení scény', { exact: true }).selectOption('1');
   await page
-    .getByRole('checkbox', { name: 'Pomôcky scény', exact: true })
+    .getByRole('checkbox', { name: 'Pomůcky scény', exact: true })
     .uncheck();
   await page.mouse.move(0, 0);
   return sharp(
@@ -218,10 +218,10 @@ function difference(a: Buffer, b: Buffer, hotspot: Hotspot) {
 }
 async function save(page: Page) {
   await page
-    .getByRole('button', { name: 'Uložiť do projektu', exact: true })
+    .getByRole('button', { name: 'Uložit do projektu', exact: true })
     .click();
   await expect(
-    page.getByRole('status', { name: 'Stav editora' }),
+    page.getByRole('status', { name: 'Stav editoru' }),
   ).toContainText('Uložené do');
 }
 
@@ -249,22 +249,22 @@ test('proportional handles, numeric edits, zoom and explicit distortion persist 
     );
   await page.getByRole('button', { name: 'Dev Mode', exact: true }).click();
   await page
-    .getByRole('button', { name: 'Rám podľa obrázka', exact: true })
+    .getByRole('button', { name: 'Rám podle obrázku', exact: true })
     .click();
-  await page.getByLabel('Oblasť width', { exact: true }).fill('210');
+  await page.getByLabel('Oblast width', { exact: true }).fill('210');
   let bounds = await readBounds(page);
   expect(bounds.width / bounds.height).toBeCloseTo(180 / 290, 3);
   // Clearing a number while typing does not save zero/NaN or break proportions.
-  await page.getByLabel('Oblasť width', { exact: true }).fill('');
-  await page.getByLabel('Oblasť width', { exact: true }).fill('220');
-  await page.getByLabel('Oblasť width', { exact: true }).blur();
+  await page.getByLabel('Oblast width', { exact: true }).fill('');
+  await page.getByLabel('Oblast width', { exact: true }).fill('220');
+  await page.getByLabel('Oblast width', { exact: true }).blur();
   bounds = await readBounds(page);
   expect(bounds.width / bounds.height).toBeCloseTo(180 / 290, 3);
   await page
-    .getByRole('checkbox', { name: 'Pomôcky scény', exact: true })
+    .getByRole('checkbox', { name: 'Pomůcky scény', exact: true })
     .check();
   await page
-    .getByLabel('Priblíženie scény', { exact: true })
+    .getByLabel('Přiblížení scény', { exact: true })
     .selectOption('1.5');
   const before = await readBounds(page);
   const corner = await centreOf(page, '[data-resize-id="actor"]');
@@ -275,12 +275,12 @@ test('proportional handles, numeric edits, zoom and explicit distortion persist 
     before.width / before.height,
     3,
   );
-  await page.getByRole('button', { name: 'Späť', exact: true }).click();
+  await page.getByRole('button', { name: 'Zpět', exact: true }).click();
   expect(await readBounds(page)).toEqual(before);
-  await page.getByRole('button', { name: 'Znova', exact: true }).click();
+  await page.getByRole('button', { name: 'Znovu', exact: true }).click();
   expect(await readBounds(page)).toEqual(enlarged);
   // Zoom and scrolling change screen coordinates, never authored coordinates.
-  await page.getByLabel('Priblíženie scény', { exact: true }).selectOption('2');
+  await page.getByLabel('Přiblížení scény', { exact: true }).selectOption('2');
   const start = await centreOf(
     page,
     '[data-hotspot-id="actor"] .editor-region',
@@ -291,9 +291,9 @@ test('proportional handles, numeric edits, zoom and explicit distortion persist 
     (20 * 1280) / svgBox.width,
     1,
   );
-  await page.getByLabel('Priblíženie scény', { exact: true }).selectOption('1');
-  await page.getByLabel('Oblasť x', { exact: true }).fill('400');
-  await page.getByLabel('Oblasť y', { exact: true }).fill('160');
+  await page.getByLabel('Přiblížení scény', { exact: true }).selectOption('1');
+  await page.getByLabel('Oblast x', { exact: true }).fill('400');
+  await page.getByLabel('Oblast y', { exact: true }).fill('160');
   bounds = await readBounds(page);
   const knob = await centreOf(page, '[data-rotate-id="actor"]');
   const right = await svgPoint(
@@ -305,15 +305,15 @@ test('proportional handles, numeric edits, zoom and explicit distortion persist 
   expect(
     Number(
       await page
-        .getByLabel('Otočenie objektu (°)', { exact: true })
+        .getByLabel('Otočení objektu (°)', { exact: true })
         .inputValue(),
     ),
   ).toBeCloseTo(90, 0);
   await page
-    .getByLabel('Transformačný nástroj', { exact: true })
+    .getByLabel('Transformační nástroj', { exact: true })
     .selectOption('stretch');
   const oldHeight = (await readBounds(page)).height;
-  await page.getByLabel('Oblasť width', { exact: true }).fill('160');
+  await page.getByLabel('Oblast width', { exact: true }).fill('160');
   expect((await readBounds(page)).height).toBe(oldHeight);
   await save(page);
   project = JSON.parse(await readFile(workspace.source, 'utf8')) as GameContent;
@@ -345,10 +345,10 @@ test('proportional handles, numeric edits, zoom and explicit distortion persist 
   await page.getByRole('button', { name: 'Dev Mode', exact: true }).click();
   await select(page, 'actor');
   await expect(
-    page.getByLabel('Transformačný nástroj', { exact: true }),
+    page.getByLabel('Transformační nástroj', { exact: true }),
   ).toHaveValue('stretch');
   await expect(
-    page.getByLabel('Otočenie objektu (°)', { exact: true }),
+    page.getByLabel('Otočení objektu (°)', { exact: true }),
   ).toHaveValue('90');
 });
 
@@ -376,13 +376,13 @@ test('rotated hotspots accept scene clicks and inventory drops at their visible 
     1,
   );
   expect((await readBounds(page)).y).toBe(120);
-  await page.getByRole('button', { name: 'Späť', exact: true }).click();
+  await page.getByRole('button', { name: 'Zpět', exact: true }).click();
   await page
-    .getByRole('button', { name: 'Rám podľa obrázka', exact: true })
+    .getByRole('button', { name: 'Rám podle obrázku', exact: true })
     .click();
-  await page.getByLabel('Oblasť x', { exact: true }).fill('350');
-  await page.getByLabel('Oblasť y', { exact: true }).fill('210');
-  await page.getByLabel('Otočenie objektu (°)', { exact: true }).fill('90');
+  await page.getByLabel('Oblast x', { exact: true }).fill('350');
+  await page.getByLabel('Oblast y', { exact: true }).fill('210');
+  await page.getByLabel('Otočení objektu (°)', { exact: true }).fill('90');
   const bounds = await readBounds(page);
   await page.getByRole('button', { name: 'Game Mode', exact: true }).click();
   await ready(page);
@@ -455,10 +455,10 @@ test('canceling a transform restores the preview and leaves the authored source 
   expect(await readFile(workspace.source, 'utf8')).toBe(original);
   if (isMobile) {
     await page
-      .getByLabel('Priblíženie scény', { exact: true })
+      .getByLabel('Přiblížení scény', { exact: true })
       .selectOption('2');
     await page
-      .getByRole('checkbox', { name: 'Posun pohľadu', exact: true })
+      .getByRole('checkbox', { name: 'Posun pohledu', exact: true })
       .check();
     const viewport = page.locator('.editor-stage-viewport');
     await viewport.scrollIntoViewIfNeeded();

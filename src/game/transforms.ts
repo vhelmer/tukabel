@@ -84,3 +84,41 @@ export function isInsideScene(
     b.y + b.height <= scene.height + epsilon
   );
 }
+
+// Offsets are native source pixels, independent of viewport zoom/resolution.
+export interface CropFrame extends Bounds {
+  sourceWidth: number;
+  sourceHeight: number;
+}
+export function croppedPlacement(
+  placement: Pick<Hotspot, 'bounds' | 'rotation' | 'imageFit'>,
+  crop: CropFrame,
+): Pick<Hotspot, 'bounds' | 'rotation' | 'imageFit'> {
+  const image = imagePlacement(
+    placement.bounds,
+    { width: crop.sourceWidth, height: crop.sourceHeight },
+    placement.imageFit,
+  );
+  const width = (crop.width * image.width) / crop.sourceWidth;
+  const height = (crop.height * image.height) / crop.sourceHeight;
+  const pivot = rotateAround(
+    {
+      x: image.x + ((crop.x + crop.width / 2) * image.width) / crop.sourceWidth,
+      y:
+        image.y +
+        ((crop.y + crop.height / 2) * image.height) / crop.sourceHeight,
+    },
+    centre(placement.bounds),
+    placement.rotation ?? 0,
+  );
+  return {
+    bounds: { x: pivot.x - width / 2, y: pivot.y - height / 2, width, height },
+    rotation: placement.rotation,
+    imageFit:
+      Math.abs(
+        image.width / crop.sourceWidth - image.height / crop.sourceHeight,
+      ) < 1e-8
+        ? 'contain'
+        : 'stretch',
+  };
+}

@@ -31,7 +31,7 @@ export function AnimationDirectionPanel({
   onHotspot: (h: Hotspot) => void;
 }) {
   const [prompt, setPrompt] = useState(
-    'Postava občas prirodzene mrkne, pri rozprávaní pohybuje ústami a jemne sa pohupuje. Pôsobí trochu nervózne.',
+    'Postava občas přirozeně mrkne, při mluvení pohybuje ústy a jemně se pohupuje. Působí trochu nervózně.',
   );
   const [status, setStatus] = useState<{
     configured: boolean;
@@ -50,7 +50,7 @@ export function AnimationDirectionPanel({
         if (mounted.current) setStatus(s);
       })
       .catch(() => {
-        if (mounted.current) setMessage('AI stav sa nepodarilo načítať.');
+        if (mounted.current) setMessage('AI stav se nepodařilo načíst.');
       });
     return () => {
       mounted.current = false;
@@ -107,7 +107,7 @@ export function AnimationDirectionPanel({
   async function submit() {
     if (busy) return;
     setBusy(true);
-    setMessage('Odosielam úlohu…');
+    setMessage('Odesílám úlohu…');
     try {
       const next = await submitEditorJob({
         kind: 'animation',
@@ -123,27 +123,27 @@ export function AnimationDirectionPanel({
       });
       onSubmitted(next);
       if (mounted.current)
-        setMessage('Návrh beží na pozadí. Môžeš pokračovať v práci.');
+        setMessage('Návrh běží na pozadí. Můžeš pokračovat v práci.');
     } catch (e) {
       if (mounted.current)
-        setMessage(e instanceof Error ? e.message : 'Odoslanie zlyhalo.');
+        setMessage(e instanceof Error ? e.message : 'Odeslání selhalo.');
     } finally {
       if (mounted.current) setBusy(false);
     }
   }
   return (
-    <section className="animation-direction" aria-label="Textová réžia postavy">
+    <section className="animation-direction" aria-label="Textová režie postavy">
       <details
         ref={details}
         onToggle={(e) => setExpanded(e.currentTarget.open)}
       >
-        <summary>Textová réžia · experiment</summary>
+        <summary>Textová režie · experiment</summary>
         <p className="field-note">
-          AI navrhne priradenia hotových klipov, interval mrkania a jemný pohyb
-          celej postavy. Nevytvára nové snímky ani samostatný pohyb hlavy. Oči,
-          ústa, dabing a ich mapovanie zostávajú nezávislé.
+          AI navrhne přiřazení hotových klipů, interval mrkání a jemný pohyb
+          celé postavy. Nevytváří nové snímky ani samostatný pohyb hlavy. Oči,
+          ústa, dabing a jejich mapování zůstávají nezávislé.
         </p>
-        <Field label="Ako sa má postava správať?">
+        <Field label="Jak se má postava chovat?">
           <textarea
             rows={4}
             maxLength={4000}
@@ -153,8 +153,8 @@ export function AnimationDirectionPanel({
         </Field>
         <p className="field-note">
           {status?.configured
-            ? `OpenAI · ${status.model} · jedno vedomé volanie API, bez automatického opakovania.`
-            : 'Vyžaduje serverový OPENAI_API_KEY v .env.local a reštart Vite. Import a ručné nastavenia fungujú bez AI.'}
+            ? `OpenAI · ${status.model} · jedno vedomé volanie API, bez automatického opakování.`
+            : 'Vyžaduje serverový OPENAI_API_KEY v .env.local a restart Vite. Import a ruční nastavení fungují bez AI.'}
         </p>
         <button
           disabled={
@@ -162,7 +162,7 @@ export function AnimationDirectionPanel({
           }
           onClick={() => void submit()}
         >
-          Navrhnúť správanie cez AI (API kredit)
+          Navrhnout chování přes AI (API kredit)
         </button>
         <p role="status">
           {job?.error ??
@@ -173,7 +173,7 @@ export function AnimationDirectionPanel({
         {proposal && job?.result && (
           <div className="direction-result">
             <h4>Návrh na kontrolu</h4>
-            <p className="field-note">Zadanie: {job.context.instruction}</p>
+            <p className="field-note">Zadání: {job.context.instruction}</p>
             <p>{job.result.notes}</p>
             <dl>
               <dt>Oči</dt>
@@ -182,15 +182,15 @@ export function AnimationDirectionPanel({
                   'Vypnuté'}{' '}
                 · {job.result.minMs / 1000}–{job.result.maxMs / 1000} s
               </dd>
-              <dt>Ústa počas dialógu</dt>
+              <dt>Ústa během dialogu</dt>
               <dd>
                 {clips.find((c) => c.id === proposal.animation?.talk)?.label ??
                   'Vypnuté'}
               </dd>
-              <dt>Pohyb celej postavy</dt>
+              <dt>Pohyb celé postavy</dt>
               <dd>
                 {
-                  { none: 'Vypnutý', breath: 'Dýchanie', sway: 'Pohupovanie' }[
+                  { none: 'Vypnutý', breath: 'Dýchání', sway: 'Pohupování' }[
                     job.result.motion
                   ]
                 }
@@ -198,8 +198,8 @@ export function AnimationDirectionPanel({
             </dl>
             {stale && (
               <p role="alert">
-                Postava alebo klipy sa medzitým zmenili. Tento návrh nemôže
-                prepísať novšie nastavenia.
+                Postava nebo klipy se mezitím změnily. Tento návrh nemůže
+                přepsat novější nastavení.
               </p>
             )}
             {errors.length > 0 && <p role="alert">{errors.join('\n')}</p>}
@@ -225,13 +225,13 @@ export function AnimationDirectionPanel({
                   onHotspot(proposal);
                   onDismiss(job.id);
                   setMessage(
-                    'Návrh je použitý. Uložiť do projektu zapíše konfiguráciu; Späť ho vráti.',
+                    'Návrh je použitý. Uložit do projektu zapíše konfiguraci; Zpět ho vrátí.',
                   );
                 }}
               >
-                Použiť navrhnuté správanie
+                Použít navržené chování
               </button>
-              <button onClick={() => onDismiss(job.id)}>Zahodiť návrh</button>
+              <button onClick={() => onDismiss(job.id)}>Zahodit návrh</button>
             </div>
           </div>
         )}

@@ -34,7 +34,7 @@ export function PolygonHandles({
               <g
                 role="button"
                 tabIndex={0}
-                aria-label={`Pridať vrchol na hranu ${i + 1}`}
+                aria-label={`Přidat vrchol na hranu ${i + 1}`}
                 data-edge-index={i}
                 onPointerDown={(e) => {
                   e.stopPropagation();

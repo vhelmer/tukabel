@@ -21,9 +21,9 @@ export function JobTray({
         na kontrolu
       </summary>
       <p className="field-note">
-        Pokračuj v práci. Výsledky sa použijú až po kontrole. Fronta prežije
-        obnovenie stránky; reštart Vite ju vymaže. Hotové grafické assety
-        zostávajú v projekte.
+        Pokračuj v práci. Výsledky se použijí až po kontrole. Fronta přežije
+        obnovení stránky; restart Vite ji vymaže. Hotové grafické assety
+        zůstávají v projektu.
       </p>
       {error && <p role="alert">{error}</p>}
       <ul>
@@ -35,16 +35,16 @@ export function JobTray({
               {job.error && <p role="alert">{job.error}</p>}
             </div>
             {job.status === 'succeeded' && (
-              <button onClick={() => onOpen(job)}>Otvoriť výsledok</button>
+              <button onClick={() => onOpen(job)}>Otevřít výsledek</button>
             )}
             {job.status === 'queued' && (
               <button onClick={() => onAction(job.id, 'cancel')}>
-                Zrušiť čakajúcu úlohu
+                Zrušit čekající úlohu
               </button>
             )}
             {!['queued', 'running'].includes(job.status) && (
               <button onClick={() => onAction(job.id, 'dismiss')}>
-                Odložiť z fronty
+                Odložit z fronty
               </button>
             )}
           </li>

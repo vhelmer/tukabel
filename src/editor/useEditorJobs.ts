@@ -29,7 +29,7 @@ export function useEditorJobs(active: boolean) {
         }
       } catch {
         if (!disposed)
-          setError('Frontu sa nepodarilo načítať. Úlohy sa neposielajú znovu.');
+          setError('Frontu se nepodařilo načíst. Úlohy se neodesílají znovu.');
       }
       if (!disposed) timer = setTimeout(() => void poll(), 1000);
     }
@@ -48,12 +48,12 @@ export function useEditorJobs(active: boolean) {
           .filter((j) => j.id !== id || type !== 'dismiss')
           .map((j) =>
             j.id === id
-              ? { ...j, status: 'cancelled', stage: 'Zrušené pred spustením' }
+              ? { ...j, status: 'cancelled', stage: 'Zrušené před spuštěním' }
               : j,
           ),
       );
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Operácia zlyhala.');
+      setError(e instanceof Error ? e.message : 'Operace selhala.');
     }
   };
   const add = (job: EditorJob) => {

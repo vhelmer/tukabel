@@ -247,7 +247,7 @@ export function EditorStage({
               !isInsideScene(next.bounds, scene, next.rotation))
           )
             setPolygonError(
-              'Neplatná úprava sa neuložila. Vrcholy musia tvoriť jednoduchý polygón bez kríženia, s rámom v lokácii.',
+              'Neplatná úprava se neuložila. Vrcholy musí tvořit jednoduchý polygon bez křížení, s rámem v lokaci.',
             );
           else {
             setPolygonError('');
@@ -283,7 +283,7 @@ export function EditorStage({
   function completePolygon() {
     if (!polygonDraft || polygonIssue(polygonDraft)) {
       setPolygonError(
-        'Polygón potrebuje 3–128 rôznych bodov, plochu a hrany bez kríženia.',
+        'Polygon potřebuje 3–128 různých bodů, plochu a hrany bez křížení.',
       );
       return;
     }
@@ -300,7 +300,7 @@ export function EditorStage({
       !isInsideScene(next.bounds, scene, next.rotation)
     ) {
       setPolygonError(
-        'Neplatná úprava sa neuložila. Hrany sa nesmú krížiť a rám musí zostať v lokácii.',
+        'Neplatná úprava se neuložila. Hrany se nesmějí křížit a rám musí zůstat v lokaci.',
       );
       return;
     }
@@ -337,9 +337,9 @@ export function EditorStage({
           </span>
         </div>
         <label>
-          Priblíženie scény{' '}
+          Přiblížení scény{' '}
           <select
-            aria-label="Priblíženie scény"
+            aria-label="Přiblížení scény"
             value={zoom}
             onChange={(e) => setZoom(Number(e.target.value))}
           >
@@ -356,7 +356,7 @@ export function EditorStage({
             checked={helpers}
             onChange={(e) => setHelpers(e.target.checked)}
           />{' '}
-          Pomôcky scény
+          Pomůcky scény
         </label>
         <label className="editor-toggle">
           <input
@@ -368,7 +368,7 @@ export function EditorStage({
               setPolygonDraft(null);
             }}
           />
-          Posun pohľadu
+          Posun pohledu
         </label>
         <button
           aria-pressed={drawing && !selecting}
@@ -381,7 +381,7 @@ export function EditorStage({
             setHelpers(true);
           }}
         >
-          {drawing && !selecting ? 'Zrušiť kreslenie' : 'Nakresliť hotspot'}
+          {drawing && !selecting ? 'Zrušit kreslení' : 'Nakreslit hotspot'}
         </button>
         <button
           aria-pressed={polygonDraft !== null && !selecting}
@@ -396,8 +396,8 @@ export function EditorStage({
           }}
         >
           {polygonDraft !== null && !selecting
-            ? 'Zrušiť polygón'
-            : 'Nakresliť polygón'}
+            ? 'Zrušit polygon'
+            : 'Nakreslit polygon'}
         </button>
         {onSelection &&
           (['rectangle', 'polygon'] as const).map((tool) => (
@@ -419,15 +419,15 @@ export function EditorStage({
                 svg.current?.focus();
               }}
             >
-              {tool === 'rectangle' ? 'Vybrať obdĺžnik' : 'Vybrať polygón'}
+              {tool === 'rectangle' ? 'Vybrat obdélník' : 'Vybrat polygon'}
             </button>
           ))}
       </div>
       <div className="stage-transform-tool">
         <label>
-          Transformačný nástroj{' '}
+          Transformační nástroj{' '}
           <select
-            aria-label="Transformačný nástroj"
+            aria-label="Transformační nástroj"
             disabled={!selected?.image}
             value={selected?.imageFit ?? 'contain'}
             onChange={(e) =>
@@ -438,27 +438,27 @@ export function EditorStage({
               })
             }
           >
-            <option value="contain">Proporčne · bez deformácie</option>
-            <option value="stretch">Deformovať · voľná šírka a výška</option>
+            <option value="contain">Proporčně · bez deformace</option>
+            <option value="stretch">Deformovat · volná šířka a výška</option>
           </select>
         </label>
         {selected?.imageFit === 'stretch' && (
-          <strong>Deformácia je zapnutá</strong>
+          <strong>Deformace je zapnutá</strong>
         )}
       </div>
       <p className="field-note">
         {polygonDraft !== null
-          ? 'Klikaj alebo ťukaj pre pridanie bodov. Uzavri kliknutím na prvý bod, Enterom alebo tlačidlom Dokončiť polygón pod scénou. Backspace odoberie posledný bod, Escape zruší návrh.'
+          ? 'Klikej nebo klepej pro přidání bodů. Uzavři kliknutím na první bod, Enterem nebo tlačítkem Dokončit polygon pod scénou. Backspace odebere poslední bod, Escape zruší návrh.'
           : drawing
-            ? 'Potiahni v scéne a vytvor novú oblasť.'
+            ? 'Přetáhni ve scéně a vytvoř novou oblast.'
             : panning
-              ? 'Na dotyku potiahni scénu pre posun zväčšeného výrezu. Myšou použi posuvníky alebo koliesko. Vypni Posun pohľadu pre úpravy objektov.'
-              : 'Ťahaj viditeľnú časť objektu. Ľavý horný úchyt presúva celý rám, pravý dolný mení veľkosť. Objekt môžeš vybrať aj zo zoznamu. Kruh nad rámom otáča; Shift zarovnáva po 15°. Escape zruší ťah. Pomôcky možno skryť pre čistý náhľad. Zobrazené sú aj podmienene skryté objekty.'}
+              ? 'Na dotyku přetáhni scénu pro posun zvětšeného výřezu. Myší použij posuvníky nebo kolečko. Vypni Posun pohledu pro úpravy objektů.'
+              : 'Táhni viditelnou část objektu. Levý horní úchyt přesouvá celý rám, pravý dolní mění velikost. Objekt můžeš vybrat i ze seznamu. Kruh nad rámem otáčí; Shift zarovnává po 15°. Escape zruší tah. Pomůcky lze skrýt pro čistý náhled. Zobrazené jsou i podmíněně skryté objekty.'}
       </p>
       {maskError ? (
-        <p role="alert">Klikateľné pixely sa nepodarilo načítať: {maskError}</p>
+        <p role="alert">Klikatelné pixely se nepodařilo načíst: {maskError}</p>
       ) : (
-        !masks && <p role="status">Načítavam klikateľné oblasti…</p>
+        !masks && <p role="status">Načítám klikatelné oblasti…</p>
       )}
       <div className="editor-stage-viewport">
         <div
@@ -474,7 +474,7 @@ export function EditorStage({
               cursor: !drawing && !panning && hoveredId ? 'move' : undefined,
             }}
             data-hovered-id={hoveredId}
-            aria-label="Vizuálny editor lokácie"
+            aria-label="Vizuální editor lokace"
             tabIndex={0}
             onKeyDown={(e) => {
               if (polygonDraft === null || e.target !== svg.current) return;
@@ -663,7 +663,7 @@ export function EditorStage({
                     className="resize-handle"
                     style={{ cursor: 'move' }}
                     data-move-id={active.id}
-                    aria-label="Presunúť vybraný objekt"
+                    aria-label="Přesunout vybraný objekt"
                     onPointerDown={(e) => {
                       if (!drawing) begin(e, 'move', active);
                     }}
@@ -784,23 +784,23 @@ export function EditorStage({
           </svg>
         </div>
       </div>
-      <div className="stage-toolbar" aria-label="Nástroje polygónu">
+      <div className="stage-toolbar" aria-label="Nástroje polygonu">
         {polygonDraft !== null ? (
           <>
             <span>
-              {polygonDraft.length} / {maxPolygonPoints} bodov
+              {polygonDraft.length} / {maxPolygonPoints} bodů
             </span>
             <button
               disabled={polygonDraft.length < 3}
               onClick={completePolygon}
             >
-              Dokončiť polygón
+              Dokončit polygon
             </button>
             <button
               disabled={!polygonDraft.length}
               onClick={() => setPolygonDraft(polygonDraft.slice(0, -1))}
             >
-              Odobrať posledný bod
+              Odebrat poslední bod
             </button>
           </>
         ) : (
@@ -818,7 +818,7 @@ export function EditorStage({
                 })
               }
             >
-              {selected?.polygon ? 'Použiť obdĺžnik' : 'Previesť na polygón'}
+              {selected?.polygon ? 'Použít obdélník' : 'Převést na polygon'}
             </button>
             <button
               disabled={
@@ -828,11 +828,11 @@ export function EditorStage({
               }
               onClick={() => removeVertex(selectedVertex)}
             >
-              Odstrániť vybraný vrchol
+              Odstranit vybraný vrchol
             </button>
             <span>
-              Ťahaj vrcholy; + pridá bod na hrane. Delete zmaže zameraný vrchol,
-              šípky ho posunú (Shift ×10).
+              Táhni vrcholy; + přidá bod na hraně. Delete smaže zaměřený vrchol,
+              šípky ho posunou (Shift ×10).
             </span>
           </>
         )}

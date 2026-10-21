@@ -12,56 +12,51 @@ export function ExtractionComparison({ result }: { result: ArtworkResult }) {
     reassembled: result.reassembled,
     difference: result.difference,
     background: result.image,
-    cutout: result.cutout,
+    cutout: result.cutoutFull ?? result.cutout,
     repair: result.repairMask,
   }[view];
   return (
-    <section
-      className="extraction-comparison"
-      aria-label="Porovnanie oddelenia"
-    >
-      <h3>Kontrola presného zarovnania</h3>
+    <section className="extraction-comparison" aria-label="Porovnání oddělení">
+      <h3>Kontrola přesného zarovnání</h3>
       <p>
         {(result.reconstruction?.unexpectedPixels ??
           result.reconstruction?.changedPixels) === 0
           ? result.reconstruction?.edgePixels !== undefined
-            ? 'Výrez: 0 chýb v pevných pixeloch a zarovnaní. Jemná alfa sa vyhodnocuje samostatne.'
-            : 'Výrez: 0 chýb pri zachovaní pôvodných pixelov a zarovnania.'
-          : 'Skontroluj výsledok oproti originálu.'}
+            ? 'Výřez: 0 chyb v pevných pixelech a zarovnání. Jemná alfa se vyhodnocuje samostatně.'
+            : 'Výřez: 0 chyb při zachování původních pixelů a zarovnání.'
+          : 'Zkontroluj výsledek oproti originálu.'}
       </p>
       {result.reconstruction?.edgePixels !== undefined && (
         <p>
-          Matting: {result.reconstruction.edgePixels} zmenených okrajových
-          pixelov. Modrá označuje jemnú hranu; skontroluj ju na kontrastnom
+          Matting: {result.reconstruction.edgePixels} změněných okrajových
+          pixelů. Modrá označuje jemnou hranu; zkontroluj ji na kontrastním
           pozadí.
         </p>
       )}
       {!!result.reconstruction?.cleanupPixels && (
         <p>
-          Pozadie v opravnom presahu: {result.reconstruction.cleanupPixels}{' '}
-          zámerne upravených pixelov. Zlatá v rozdiele označuje toto dočistenie.
+          Pozadí v opravném přesahu: {result.reconstruction.cleanupPixels}{' '}
+          záměrně upravených pixelů. Zlatá v rozdílu označuje toto dočištění.
         </p>
       )}
-      <Field label="Porovnanie výrezu">
+      <Field label="Porovnání výřezu">
         <select value={view} onChange={(e) => setView(e.target.value)}>
           <option value="compare">
-            Originál ↔ pozadie + objekt na pôvodnom mieste
+            Originál ↔ pozadí + objekt na původním místě
           </option>
-          <option value="original">Pôvodný obrázok</option>
-          <option value="cutout">Výrez na šachovnici</option>
-          <option value="background">Opravené pozadie bez objektu</option>
+          <option value="original">Původní obrázek</option>
+          <option value="cutout">Výřez na šachovnici</option>
+          <option value="background">Opravené pozadí bez objektu</option>
           {result.repairMask && (
-            <option value="repair">
-              Maska opravy pozadia · biela = oprava
-            </option>
+            <option value="repair">Maska opravy pozadí · bílá = oprava</option>
           )}
           <option value="difference">
-            Rozdiel · zlatá = pozadie, modrá = alfa, červená = chyba
+            Rozdíl · zlatá = pozadí, modrá = alfa, červená = chyba
           </option>
         </select>
       </Field>
       {view === 'compare' && (
-        <Field label="Posuvník porovnania">
+        <Field label="Posuvník porovnání">
           <input
             type="range"
             min={0}
@@ -76,7 +71,7 @@ export function ExtractionComparison({ result }: { result: ArtworkResult }) {
           src={assetUrl(
             view === 'compare' ? result.original : (path ?? result.original),
           )}
-          alt="Kontrola výrezu proti originálu"
+          alt="Kontrola výřezu proti originálu"
         />
         {view === 'compare' && (
           <>
@@ -84,7 +79,7 @@ export function ExtractionComparison({ result }: { result: ArtworkResult }) {
               className="extraction-overlay"
               style={{ clipPath: `inset(0 ${100 - split}% 0 0)` }}
               src={assetUrl(result.reassembled)}
-              alt="Zložené pozadie a pôvodný výrez"
+              alt="Složené pozadí a původní výřez"
             />
             <span
               className="comparison-divider"
@@ -94,9 +89,11 @@ export function ExtractionComparison({ result }: { result: ArtworkResult }) {
         )}
       </div>
       <p className="field-note">
-        Výrez má celé pôvodné plátno. Nič sa neorezáva, neposúva ani neškáluje.
-        Skontroluj tiež samotný výrez: presné zloženie potvrdzuje zarovnanie,
-        nie správne rozpoznanie objektu.
+        Exportovaný asset je oříznutý podle nenulové alfy; offset v receptu
+        zachovává přesnou pozici. Kontrola zde používá archivní celé plátno a
+        maskovanou kompozici, nikoli volitelné celé obnovené pozadí. Zkontroluj
+        také samotný výřez: přesné složení potvrzuje zarovnání, ne správné
+        rozpoznání objektu.
       </p>
     </section>
   );

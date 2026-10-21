@@ -30,10 +30,10 @@ export function ItemsPanel({
     content.items.find((entry) => entry.id === selected) ?? content.items[0];
   return (
     <section className="content-panel">
-      <h2>Predmety inventára</h2>
+      <h2>Předměty inventáře</h2>
       <div className="field-row">
         <SelectId
-          label="Predmet"
+          label="Předmět"
           value={item?.id ?? ''}
           values={content.items}
           onChange={setSelected}
@@ -59,13 +59,13 @@ export function ItemsPanel({
             setSelected(id);
           }}
         >
-          + Predmet
+          + Předmět
         </button>
       </div>
       {item && (
         <div key={item.id} className="editor-card">
           <p className="field-note">Stále ID: {item.id}</p>
-          <Field label="Názov predmetu">
+          <Field label="Název předmětu">
             <input
               value={item.label}
               onChange={(event) =>
@@ -80,7 +80,7 @@ export function ItemsPanel({
               }
             />
           </Field>
-          <Field label="Popis predmetu">
+          <Field label="Popis předmětu">
             <textarea
               value={item.description}
               onChange={(event) =>
@@ -95,7 +95,7 @@ export function ItemsPanel({
               }
             />
           </Field>
-          <Field label="Symbol predmetu">
+          <Field label="Symbol předmětu">
             <input
               value={item.icon}
               onChange={(event) =>
@@ -111,7 +111,7 @@ export function ItemsPanel({
             />
           </Field>
           <AssetField
-            label="Inventárová ikonka"
+            label="Inventární ikonka"
             optional
             value={item.image ?? ''}
             assets={assets}
@@ -136,13 +136,13 @@ export function ItemsPanel({
               })
             }
           >
-            Odstrániť predmet
+            Odstranit předmět
           </button>
         </div>
       )}
       <p className="field-note">
-        Predmety sa pridávajú a odoberajú efektmi interakcií. Obrázok je
-        voliteľný; bez neho sa zobrazí symbol.
+        Předměty se přidávají a odebírají efekty interakcí. Obrázek je
+        volitelný; bez něj se zobrazí symbol.
       </p>
     </section>
   );
@@ -183,10 +183,10 @@ export function DialoguesPanel({
   };
   return (
     <section className="content-panel">
-      <h2>Dialógy a odpovede</h2>
+      <h2>Dialogy a odpovědi</h2>
       <div className="field-row">
         <SelectId
-          label="Dialóg"
+          label="Dialog"
           value={dialogue?.id ?? ''}
           values={content.dialogues}
           onChange={(id) => {
@@ -222,25 +222,25 @@ export function DialoguesPanel({
             setNodeId('');
           }}
         >
-          + Dialóg
+          + Dialog
         </button>
       </div>
       {dialogue && (
         <>
           <SelectId
-            label="Začiatočný uzol"
+            label="Počáteční uzel"
             value={dialogue.start}
             values={dialogue.nodes}
             onChange={(start) => updateDialogue({ ...dialogue, start })}
           />
           <p className="field-note">
-            Začiatočný uzol ponúkne možnosti. Výber s ďalším uzlom prehrá
-            repliku cieľa; ďalšie možnosti sa ukážu až po jej dokončení. Pri
-            jedinej replike bez ďalšej vetvy hra ponúkne „Porozprávať sa.“.
+            Počáteční uzel nabídne možnosti. Výběr s dalším uzlem přehraje
+            repliku cíle; další možnosti se ukážou až po jejím dokončení. Při
+            jediné replice bez další větve hra nabídne „Porozprávať sa.“.
           </p>
           <div className="field-row">
             <SelectId
-              label="Uzol dialógu"
+              label="Uzel dialogu"
               value={node?.id ?? ''}
               values={dialogue.nodes}
               onChange={setNodeId}
@@ -266,12 +266,12 @@ export function DialoguesPanel({
                 setNodeId(id);
               }}
             >
-              + Uzol
+              + Uzel
             </button>
           </div>
           {node && (
             <div className="editor-card" key={`${dialogue.id}/${node.id}`}>
-              <Field label="Hovoriaca postava">
+              <Field label="Mluvící postava">
                 <input
                   value={node.speaker}
                   onChange={(event) =>
@@ -292,19 +292,19 @@ export function DialoguesPanel({
                 <p className="field-note">
                   Dabing:{' '}
                   {node.speech.text === node.text
-                    ? 'aktuálny'
-                    : 'text sa zmenil – nahrávka je zastaralá'}
-                  . Správa hlasu, zvuku a lip-syncu je v Animácie → Dabing a
+                    ? 'aktuální'
+                    : 'text se změnil – nahrávka je zastaralá'}
+                  . Zpráva hlasu, zvuku a lip-syncu je v Animace → Dabing a
                   lip-sync.
                 </p>
               )}
-              <h3>Možnosti odpovede</h3>
+              <h3>Možnosti odpovědi</h3>
               {node.choices.map((choice, index) => (
                 <details key={choice.id} className="choice-card" open>
                   <summary>
                     {index + 1}. {choice.text}
                   </summary>
-                  <Field label="Text odpovede">
+                  <Field label="Text odpovědi">
                     <input
                       value={choice.text}
                       onChange={(event) =>
@@ -319,10 +319,10 @@ export function DialoguesPanel({
                     />
                   </Field>
                   <SelectId
-                    label="Ďalší uzol"
+                    label="Další uzel"
                     value={choice.next ?? ''}
                     values={dialogue.nodes}
-                    empty="Ukončiť rozhovor"
+                    empty="Ukončit rozhovor"
                     onChange={(next) =>
                       updateNode({
                         ...node,
@@ -333,7 +333,7 @@ export function DialoguesPanel({
                       })
                     }
                   />
-                  <Field label="Správa po odpovedi">
+                  <Field label="Zpráva po odpovědi">
                     <input
                       value={choice.message ?? ''}
                       onChange={(event) =>
@@ -383,7 +383,7 @@ export function DialoguesPanel({
                       })
                     }
                   >
-                    Odstrániť odpoveď
+                    Odstranit odpověď
                   </button>
                 </details>
               ))}
@@ -404,7 +404,7 @@ export function DialoguesPanel({
                   })
                 }
               >
-                + Odpoveď
+                + Odpověď
               </button>
               <button
                 className="danger-button"
@@ -417,7 +417,7 @@ export function DialoguesPanel({
                   })
                 }
               >
-                Odstrániť uzol
+                Odstranit uzel
               </button>
             </div>
           )}
@@ -432,11 +432,11 @@ export function DialoguesPanel({
               })
             }
           >
-            Odstrániť dialóg
+            Odstranit dialog
           </button>
           <p className="field-note">
-            Odpoveď bez ďalšieho uzla ukončí rozhovor. Na postave otvor dialóg
-            efektom „Otvoriť dialóg“.
+            Odpověď bez dalšího uzlu ukončí rozhovor. Na postavě otevři dialog
+            efektem „Otevřít dialog“.
           </p>
         </>
       )}
@@ -448,15 +448,15 @@ export function PuzzlesPanel({ content, onChange }: Props) {
   const [newFlag, setNewFlag] = useState('');
   return (
     <section className="content-panel">
-      <h2>Herný projekt a hádanky</h2>
-      <Field label="Verzia obsahu">
+      <h2>Herní projekt a hádanky</h2>
+      <Field label="Verze obsahu">
         <input
           value={content.id}
           onChange={(event) => onChange({ ...content, id: event.target.value })}
         />
       </Field>
       <SelectId
-        label="Úvodná lokácia"
+        label="Úvodní lokace"
         value={content.startScene}
         values={content.scenes.map((scene) => ({
           id: scene.id,
@@ -464,7 +464,7 @@ export function PuzzlesPanel({ content, onChange }: Props) {
         }))}
         onChange={(startScene) => onChange({ ...content, startScene })}
       />
-      <Field label="Úvodná správa">
+      <Field label="Úvodní zpráva">
         <textarea
           value={content.initialMessage}
           onChange={(event) =>
@@ -472,17 +472,17 @@ export function PuzzlesPanel({ content, onChange }: Props) {
           }
         />
       </Field>
-      <h3>Príznaky postupu</h3>
+      <h3>Příznaky postupu</h3>
       <p className="field-note">
-        Nepomenované / nenastavené príznaky sú false. Použi ich v podmienkach a
-        nastavuj efektmi.
+        Nepojmenované / nenastavené příznaky jsou false. Použij jejich v
+        podmínkách a nastavuj efekty.
       </p>
       <div className="flag-list">
         {content.flags.map((id) => (
           <span key={id}>
             {id}
             <button
-              aria-label={`Odstrániť príznak ${id}`}
+              aria-label={`Odstranit příznak ${id}`}
               onClick={() =>
                 onChange({
                   ...content,
@@ -496,11 +496,11 @@ export function PuzzlesPanel({ content, onChange }: Props) {
         ))}
       </div>
       <div className="field-row">
-        <Field label="Nový príznak">
+        <Field label="Nový příznak">
           <input
             value={newFlag}
             onChange={(event) => setNewFlag(event.target.value)}
-            placeholder="napr. doorOpen"
+            placeholder="např. doorOpen"
           />
         </Field>
         <button
@@ -513,15 +513,15 @@ export function PuzzlesPanel({ content, onChange }: Props) {
             setNewFlag('');
           }}
         >
-          + Príznak
+          + Příznak
         </button>
       </div>
-      <h3>Kombinácie predmetov</h3>
+      <h3>Kombinace předmětů</h3>
       {content.combinations.map((entry, index) => (
         <div className="editor-card" key={index}>
           <div className="field-row">
             <SelectId
-              label="Prvý predmet"
+              label="První předmět"
               value={entry.items[0]}
               values={content.items}
               onChange={(id) =>
@@ -535,7 +535,7 @@ export function PuzzlesPanel({ content, onChange }: Props) {
               }
             />
             <SelectId
-              label="Druhý predmet"
+              label="Druhý předmět"
               value={entry.items[1]}
               values={content.items}
               onChange={(id) =>
@@ -573,7 +573,7 @@ export function PuzzlesPanel({ content, onChange }: Props) {
               })
             }
           >
-            Odstrániť kombináciu
+            Odstranit kombinaci
           </button>
         </div>
       ))}
@@ -592,7 +592,7 @@ export function PuzzlesPanel({ content, onChange }: Props) {
           })
         }
       >
-        + Kombinácia
+        + Kombinace
       </button>
     </section>
   );

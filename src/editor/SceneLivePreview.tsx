@@ -18,7 +18,7 @@ export function SceneLivePreview({
     [content, sceneId],
   );
   return (
-    <div className="scene-live-preview" aria-label="Živý náhľad vrstiev">
+    <div className="scene-live-preview" aria-label="Živý náhled vrstev">
       <GameCanvas
         scene={scene}
         state={state}

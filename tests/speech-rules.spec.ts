@@ -117,7 +117,7 @@ test('ElevenLabs requires deliberate confirmation, sends server-only credentials
         { text: 'Ahoj', voice },
         { apiKey: 'secret-for-test', fetch: mock },
       ),
-    ).rejects.toThrow('potvrdenie');
+    ).rejects.toThrow('potvrzení');
     expect(calls).toBe(0);
     const result = await createSpeech(
       root,
@@ -205,7 +205,7 @@ test('uploaded WAV runs the phonetic CLI without shell interpolation and publish
       pcmWave(Buffer.alloc(44100, 2)),
     );
     await expect(validateSpeechAssets(root, project)).rejects.toThrow(
-      'nezodpovedá',
+      'neodpovídá',
     );
     await expect(
       analyzeSpeech(
@@ -213,11 +213,11 @@ test('uploaded WAV runs the phonetic CLI without shell interpolation and publish
         { audio: '../../secret.wav' },
         { rhubarbBin: binary },
       ),
-    ).rejects.toThrow('lokálny');
+    ).rejects.toThrow('lokální');
     await symlink(path.join(root, speech.audio), path.join(root, 'link.wav'));
     await expect(
       analyzeSpeech(root, { audio: 'link.wav' }, { rhubarbBin: binary }),
-    ).rejects.toThrow('lokálny');
+    ).rejects.toThrow('lokální');
     await expect(
       analyzeSpeech(
         root,
@@ -361,7 +361,7 @@ test('ElevenLabs auth errors identify the required permission without echoing pr
     }
     expect(message).toContain('HTTP 401');
     expect(message).toContain(
-      body.includes('invalid_api_key') ? 'neplatný' : 'Over API kľúč',
+      body.includes('invalid_api_key') ? 'neplatný' : 'Ověř API klíč',
     );
     expect(message).not.toContain(secret);
   }
@@ -411,7 +411,7 @@ test('ElevenLabs payment errors explain plan and quota limits without retries or
         JSON.stringify({
           detail: { status: 'paid_plan_required', message: secret },
         }),
-        'vyžaduje platený tarif',
+        'vyžaduje placený tarif',
       ],
       [
         JSON.stringify({
@@ -423,7 +423,7 @@ test('ElevenLabs payment errors explain plan and quota limits without retries or
         JSON.stringify({
           detail: { status: 'quota_exceeded', message: secret },
         }),
-        'kreditný limit',
+        'kreditní limit',
       ],
       [
         JSON.stringify({ detail: { status: secret, message: secret } }),
@@ -474,7 +474,7 @@ test('ElevenLabs payment errors explain plan and quota limits without retries or
 
 test('subtitles remove nested audio directions and follow actual character timing including pauses', () => {
   const text =
-    '[laughs] Prvá veta je pomerne dlhá. [whispers] Druhá veta už príde oveľa neskôr.';
+    '[laughs] První veta je pomerne dlhá. [whispers] Druhá veta už príde oveľa později.';
   const chars = [...text],
     next = text.indexOf('Druhá');
   const starts = chars.map((_, i) =>
@@ -492,8 +492,8 @@ test('subtitles remove nested audio directions and follow actual character timin
   );
   expect(stripAudioTags('[laughs][crying]')).toBe('');
   const clean = subtitleText({ text });
-  expect(subtitleText({ text, subtitle: 'Vlastný preklad.' })).toBe(
-    'Vlastný preklad.',
+  expect(subtitleText({ text, subtitle: 'Vlastní preklad.' })).toBe(
+    'Vlastní preklad.',
   );
   expect(subtitleText({ text, subtitle: '  ' })).toBe(clean);
   const track = buildSubtitles(clean, 15, alignment);
@@ -515,12 +515,12 @@ test('subtitles remove nested audio directions and follow actual character timin
   const split = splitSubtitle({
     start: 1,
     end: 5,
-    text: 'Prvá polovica druhá polovica',
+    text: 'První polovica druhá polovica',
   });
   expect(split).toHaveLength(2);
   expect(split[0]!.end).toBe(split[1]!.start);
   expect(split[0]!.text + ' ' + split[1]!.text).toBe(
-    'Prvá polovica druhá polovica',
+    'První polovica druhá polovica',
   );
   expect(
     subtitleTrackIssue({ ...track, cues: [{ start: 2, end: 1, text: 'Zle' }] }),
@@ -626,7 +626,7 @@ test('expressive TTS preserves tags, omits unsupported settings and archives ver
     data.metadata.audioSha256 = 'wrong';
     await writeFile(alignmentFile, JSON.stringify(data));
     await expect(validateSpeechAssets(root, project)).rejects.toThrow(
-      'zarovnanie',
+      'zarovnání',
     );
     expect(modelFeatures('eleven_v4').audioTags).toBe(true);
     expect(modelFeatures('eleven_v4_turbo').speed).toBe(false);

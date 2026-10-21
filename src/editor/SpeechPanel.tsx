@@ -81,21 +81,21 @@ export function VoicePanel({
                 setCatalog(result);
                 setMessage(
                   result.hasMore
-                    ? 'Zobrazených prvých 100 hlasov. Ďalší hlas zadaj cez ID.'
-                    : 'Hlasy načítané.',
+                    ? 'Zobrazených prvních 100 hlasů. Další hlas zadej přes ID.'
+                    : 'Hlasy načtené.',
                 );
               }
             } catch (e) {
               if (mounted.current)
                 setMessage(
-                  e instanceof Error ? e.message : 'Načítanie zlyhalo.',
+                  e instanceof Error ? e.message : 'Načítání selhalo.',
                 );
             } finally {
               if (mounted.current) setBusy(false);
             }
           }}
         >
-          Načítať hlasy a modely
+          Načíst hlasy a modely
         </button>
         <Field label="ElevenLabs Voice ID">
           <input
@@ -119,7 +119,7 @@ export function VoicePanel({
           >
             {!models.some((m) => m.id === voice.modelId) && (
               <option value={voice.modelId}>
-                {voice.modelId} (vlastné ID)
+                {voice.modelId} (vlastní ID)
               </option>
             )}
             {models.map((m) => (
@@ -132,11 +132,11 @@ export function VoicePanel({
         </Field>
         <p className="field-note">
           {catalog
-            ? 'Modely načítané z API.'
-            : 'Predvoľby; dostupnosť overí API pri generovaní.'}{' '}
+            ? 'Modely načtené z API.'
+            : 'Předvolby; dostupnost ověří API při generování.'}{' '}
           {features.audioTags
             ? 'Podporuje [laughs], [crying], [whispers].'
-            : 'Podpora emočných audio tagov nie je potvrdená; pre tagy vyber Eleven v3 alebo v4.'}
+            : 'Podpora emočních audio tagů není potvrzená; pro tagy vyber Eleven v3 nebo v4.'}
         </p>
         <Field label="ElevenLabs Model ID">
           <input
@@ -147,12 +147,12 @@ export function VoicePanel({
         </Field>
         {model?.maxCharacters && (
           <p className="field-note">
-            Limit modelu: {model.maxCharacters} znakov (editor najviac 5000).
+            Limit modelu: {model.maxCharacters} znaků (editor nejvýše 5000).
           </p>
         )}
         {model && !model.languages.includes('sk') && (
           <p className="field-note">
-            Model neuvádza slovenčinu. Vyber model s podporou sk.
+            Model neuvádí slovenštinu. Vyber model s podporou sk.
           </p>
         )}
         {(['stability', 'similarityBoost', 'style', 'speed'] as const).map(
@@ -162,9 +162,9 @@ export function VoicePanel({
               label={
                 {
                   stability: 'Stabilita hlasu',
-                  similarityBoost: 'Podobnosť hlasu',
-                  style: 'Výraznosť prejavu',
-                  speed: 'Rýchlosť reči',
+                  similarityBoost: 'Podobnost hlasu',
+                  style: 'Výraznost projevu',
+                  speed: 'Rychlost řeči',
                 }[key]
               }
             >
@@ -201,10 +201,10 @@ export function VoicePanel({
               update({ ...voice, useSpeakerBoost: e.target.checked })
             }
           />
-          Zvýraznenie podobnosti hlasu
+          Zvýraznění podobnosti hlasu
         </label>
         <p className="field-note">
-          Klient nepozná API kľúč. Generovanie sa spúšťa iba ručne v záložke
+          Klient nepozná API klíč. Generování se spouští pouze ručně v záložce
           Dabing a lip-sync.
         </p>
         {message && <p role="status">{message}</p>}
@@ -215,14 +215,14 @@ export function VoicePanel({
       >
         <summary>Tvary úst Rhubarb</summary>
         {!talk?.region ? (
-          <p>Najprv priraď lokálny klip Rozprávanie.</p>
+          <p>Nejprve přiřaď lokální klip Mluvení.</p>
         ) : (
           <>
             <p className="field-note">
-              Priraď aspoň pokoj X a otvorené ústa C. Bez mapovania hrá bežná
-              slučka. Čísla sú snímky priradeného klipu. X = pokoj, A = zavreté,
-              B = zuby, C/D = otvorené, E/F = zaokrúhlené, G = F/V, H = L.
-              Chýbajúce otvorené tvary použijú C → B → X → prvý snímok; A
+              Přiřaď aspoň klid X a otevřené ústa C. Bez mapování se přehrává
+              běžná smyčka. Čísla jsou snímky přiřazeného klipu. X = klid, A =
+              zavřené, B = zuby, C/D = otevřené, E/F = zaoblené, G = F/V, H = L.
+              Chybějící otevřené tvary použijí C → B → X → první snímek; A
               použije X.
             </p>
             {mouthShapes.map((shape) => (
@@ -233,7 +233,7 @@ export function VoicePanel({
                 empty="Automatický fallback"
                 values={talk.frames.map((_, i) => ({
                   id: String(i),
-                  label: `Snímka ${i + 1}`,
+                  label: `Snímek ${i + 1}`,
                 }))}
                 onChange={(value) => {
                   const map = { ...hotspot.animation?.mouthShapes };
@@ -303,7 +303,7 @@ export function SpeechPanel({
         if (mounted.current) setStatus(s);
       })
       .catch(() => {
-        if (mounted.current) setMessage('Stav služieb sa nepodarilo načítať.');
+        if (mounted.current) setMessage('Stav služeb se nepodařilo načíst.');
       });
     return () => {
       mounted.current = false;
@@ -341,7 +341,7 @@ export function SpeechPanel({
     if (!node || !entry) return;
     setBusy(true);
     setMessage(
-      kind === 'analyze' ? 'Rhubarb analyzuje zvuk…' : 'Pripravujem dabing…',
+      kind === 'analyze' ? 'Rhubarb analyzuje zvuk…' : 'Připravuji dabing…',
     );
     try {
       const result =
@@ -371,11 +371,11 @@ export function SpeechPanel({
       });
       setConfirmed(false);
       setMessage(
-        'Hotovo. Náhľad používa uložený asset. Uložiť do projektu zapíše väzbu do JSON.',
+        'Hotovo. Náhled používá uložený asset. Uložit do projektu zapíše vazbu do JSON.',
       );
     } catch (e) {
       if (mounted.current)
-        setMessage(e instanceof Error ? e.message : 'Spracovanie zlyhalo.');
+        setMessage(e instanceof Error ? e.message : 'Zpracování selhalo.');
     } finally {
       if (mounted.current) setBusy(false);
     }
@@ -387,7 +387,7 @@ export function SpeechPanel({
         <div
           className="speech-caption"
           role="status"
-          aria-label="Náhľad titulkov"
+          aria-label="Náhled titulků"
         >
           {audio.subtitle || '\u00a0'}
         </div>
@@ -415,7 +415,7 @@ export function SpeechPanel({
           />
           {node && (
             <>
-              <Field label="Text dabovanej repliky">
+              <Field label="Text dabované repliky">
                 <textarea
                   value={node.text}
                   onChange={(e) =>
@@ -424,18 +424,18 @@ export function SpeechPanel({
                 />
               </Field>
               <p className="field-note">
-                Text dabingu môže obsahovať audio tagy, napr. [laughs] alebo
-                [whispers], ak ich vybraný model podporuje. Hra ich automaticky
-                skryje v titulkoch.
+                Text dabingu může obsahovat audio tagy, např. [laughs] nebo
+                [whispers], pokud je vybraný model podporuje. Hra je automaticky
+                skryje v titulcích.
               </p>
               <p className="field-note">
-                {node.text.length} znakov. Hlas nastav vľavo v Hlas ElevenLabs.{' '}
+                {node.text.length} znaků. Hlas nastav vlevo v Hlas ElevenLabs.{' '}
                 {status &&
-                  `ElevenLabs: ${status.elevenLabs ? 'pripravené' : 'chýba kľúč'} · Rhubarb: ${status.rhubarb ? 'pripravený' : 'chýba RHUBARB_BIN'}`}
+                  `ElevenLabs: ${status.elevenLabs ? 'připravené' : 'chybí klíč'} · Rhubarb: ${status.rhubarb ? 'připravený' : 'chybí RHUBARB_BIN'}`}
               </p>
               {node.speech && node.speech.text !== node.text && (
                 <p role="alert">
-                  Text sa zmenil. Vytvor alebo nahraj nový dabing; hra zatiaľ
+                  Text se změnil. Vytvoř nebo nahraj nový dabing; hra zatím
                   použije text bez starého audia.
                 </p>
               )}
@@ -445,7 +445,7 @@ export function SpeechPanel({
                   checked={confirmed}
                   onChange={(e) => setConfirmed(e.target.checked)}
                 />
-                Potvrdzujem platené generovanie tejto repliky
+                Potvrzuji placené generování této repliky
               </label>
               <div className="row-actions">
                 <button
@@ -457,12 +457,12 @@ export function SpeechPanel({
                   }
                   onClick={() => void run('generate')}
                 >
-                  Vygenerovať dabing ElevenLabs
+                  Vygenerovat dabing ElevenLabs
                 </button>
                 <label className="upload-button">
-                  Nahrať WAV
+                  Nahrát WAV
                   <input
-                    aria-label="Nahrať dabing WAV"
+                    aria-label="Nahrát dabing WAV"
                     type="file"
                     accept=".wav,audio/wav"
                     onChange={(e) => {
@@ -480,7 +480,7 @@ export function SpeechPanel({
                   }
                   onClick={() => void run('analyze')}
                 >
-                  Analyzovať Rhubarb
+                  Analyzovat Rhubarb
                 </button>
                 <button
                   onClick={() =>
@@ -490,7 +490,7 @@ export function SpeechPanel({
                     })
                   }
                 >
-                  Priradiť hovoriacu postavu
+                  Přiřadit mluvící postavu
                 </button>
                 <button
                   disabled={!node.speech}
@@ -498,15 +498,14 @@ export function SpeechPanel({
                     onNode(entry!.dialogue, { ...node, speech: undefined })
                   }
                 >
-                  Odpojiť dabing
+                  Odpojit dabing
                 </button>
               </div>
               {node.speech && (
                 <p className="field-note">
                   {node.speech.audio}
                   <br />
-                  {node.speech.lipSync ??
-                    'Časovanie úst ešte nie je vytvorené.'}
+                  {node.speech.lipSync ?? 'Časování úst ještě není vytvořené.'}
                 </p>
               )}
               <SubtitleEditor

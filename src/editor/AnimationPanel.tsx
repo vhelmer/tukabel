@@ -14,10 +14,10 @@ import { AssetField, Field, SelectId } from './fields';
 import { AnimationPreview } from './AnimationPreview';
 
 const kinds: Record<AnimationKind, string> = {
-  blink: 'Mrkanie',
-  talk: 'Rozprávanie',
+  blink: 'Mrkání',
+  talk: 'Mluvení',
   idle: 'Idle',
-  expression: 'Výraz / reakcia',
+  expression: 'Výraz / reakce',
 };
 
 export function AnimationPanel({
@@ -61,7 +61,7 @@ export function AnimationPanel({
       null,
   );
   const [kind, setKind] = useState<AnimationKind>('blink');
-  const [label, setLabel] = useState('Mrknutie');
+  const [label, setLabel] = useState('Mrknutí');
   const [files, setFiles] = useState<File[]>([]);
   const [atlas, setAtlas] = useState<unknown>();
   const [animationName, setAnimationName] = useState('');
@@ -97,7 +97,7 @@ export function AnimationPanel({
   }
   async function importFiles() {
     setBusy(true);
-    setMessage('Kontrolujem a ukladám snímky…');
+    setMessage('Kontroluji a ukládám snímky…');
     setPlaying(false);
     try {
       const result = await importAnimationFiles({
@@ -115,11 +115,11 @@ export function AnimationPanel({
       setIndex(0);
       setPreviewMode('clip');
       setMessage(
-        'Snímky sú uložené v src/assets/animations/. Priraď animáciu a použi Uložiť do projektu.',
+        'Snímky jsou uložené v src/assets/animations/. Přiřaď animaci a použij Uložit do projektu.',
       );
     } catch (error) {
       if (mounted.current)
-        setMessage(error instanceof Error ? error.message : 'Import zlyhal.');
+        setMessage(error instanceof Error ? error.message : 'Import selhal.');
     } finally {
       if (mounted.current) setBusy(false);
     }
@@ -148,7 +148,7 @@ export function AnimationPanel({
         : hotspot,
     );
     setMessage(
-      'Animácia je v návrhu. Uložiť do projektu zapíše konfiguráciu do JSON.',
+      'Animace je v návrhu. Uložit do projektu zapíše konfiguraci do JSON.',
     );
   }
   function removeDefinition() {
@@ -171,7 +171,7 @@ export function AnimationPanel({
       )
     ) {
       setMessage(
-        'Animáciu používa iná postava. Najprv odstráň jej priradenie.',
+        'Animaci používá jiná postava. Nejprve odstraň její přiřazení.',
       );
       return;
     }
@@ -227,18 +227,19 @@ export function AnimationPanel({
       region.x + region.width > size.width ||
       region.y + region.height > size.height);
   return (
-    <section className="animation-workspace" aria-label="Animačné štúdio">
+    <section className="animation-workspace" aria-label="Animační studio">
       <div className="animation-binding-column">
         <p className="field-note">
-          Zdroj: {source}. Snímky musia mať rovnaké plátno a zarovnanie ako
-          pôvodný asset. Import nič automaticky neškáluje.
+          Zdroj: {source}. Snímky musí mít stejné plátno a zarovnání jako
+          původní asset. Import nic automaticky neškáluje.
         </p>
-        <h3>Prehrávanie postavy</h3>
+        <h3>Přehrávání postavy</h3>
         {unscopedFace.length > 0 && (
           <p className="field-note">
             Celopostavové klipy: {unscopedFace.map((c) => c.label).join(', ')}.
-            Pre spoľahlivé vrstvenie očí a úst vyber klip a použi Zistiť zmenenú
-            oblasť. Na pohyb celej postavy uprednostni procedurálny idle.
+            Pro spolehlivé vrstvení očí a úst vyber klip a použij Zjistit
+            změněnou oblast. Na pohyb celé postavy upřednostni procedurální
+            idle.
           </p>
         )}
         {(['blink', 'talk', 'idle'] as const).map((key) => (
@@ -246,10 +247,10 @@ export function AnimationPanel({
             key={key}
             label={
               key === 'blink'
-                ? 'Automatické mrkanie'
+                ? 'Automatické mrkání'
                 : key === 'talk'
-                  ? 'Animácia počas dialógu'
-                  : 'Základná animácia'
+                  ? 'Animace během dialogu'
+                  : 'Základní animace'
             }
             value={hotspot.animation?.[key] ?? ''}
             values={compatible.filter(
@@ -270,8 +271,8 @@ export function AnimationPanel({
               key={position}
               label={
                 position === 0
-                  ? 'Mrkanie min. (sekundy)'
-                  : 'Mrkanie max. (sekundy)'
+                  ? 'Mrkání min. (sekundy)'
+                  : 'Mrkání max. (sekundy)'
               }
             >
               <input
@@ -302,10 +303,10 @@ export function AnimationPanel({
           ))}
         </div>
         <SelectId
-          label="Dialóg postavy"
+          label="Dialog postavy"
           value={hotspot.animation?.dialogueId ?? ''}
           values={content.dialogues}
-          empty="Automaticky podľa akcie talk"
+          empty="Automaticky podle akce talk"
           onChange={(dialogueId) =>
             onHotspot({
               ...hotspot,
@@ -316,7 +317,7 @@ export function AnimationPanel({
             })
           }
         />
-        <Field label="Opakovanie základnej animácie">
+        <Field label="Opakování základní animace">
           <select
             value={
               hotspot.animation?.idleLoop === undefined
@@ -336,12 +337,12 @@ export function AnimationPanel({
               })
             }
           >
-            <option value="">Podľa klipu</option>
+            <option value="">Podle klipu</option>
             <option value="true">Smyčka</option>
-            <option value="false">Raz, držať poslednú snímku</option>
+            <option value="false">Jednou, držet poslední snímek</option>
           </select>
         </Field>
-        <Field label="Procedurálny pohyb">
+        <Field label="Procedurální pohyb">
           <select
             value={hotspot.animation?.motion ?? ''}
             onChange={(event) =>
@@ -356,23 +357,23 @@ export function AnimationPanel({
               })
             }
           >
-            <option value="">Žiadny</option>
-            <option value="breath">Jemné dýchanie</option>
-            <option value="sway">Jemné kývanie</option>
+            <option value="">Žádný</option>
+            <option value="breath">Jemné dýchání</option>
+            <option value="sway">Jemné kývání</option>
           </select>
         </Field>
         <VoicePanel hotspot={hotspot} content={content} onHotspot={onHotspot} />
         <details>
-          <summary>Animácia pri interakcii</summary>
+          <summary>Animace při interakci</summary>
           {(['onClick', 'onUse'] as const).map((key) => (
             <SelectId
               key={key}
               label={
-                key === 'onClick' ? 'Pri kliknutí' : 'Pri použití predmetu'
+                key === 'onClick' ? 'Při kliknutí' : 'Při použití předmětu'
               }
               value={hotspot.animation?.[key] ?? ''}
               values={compatible}
-              empty="Žiadna"
+              empty="Žádná"
               onChange={(id) =>
                 onHotspot({
                   ...hotspot,
@@ -382,9 +383,9 @@ export function AnimationPanel({
             />
           ))}
           <p className="field-note">
-            Reakcia sa prehrá raz, potom sa postava vráti k základnej animácii.
-            Lokálne mrkanie a ústa pokračujú nezávisle od reakcie. Celopostavové
-            klipy zachovávajú pôvodnú prioritu.
+            Reakce se přehraje jednou, potom se postava vrátí k základní
+            animaci. Lokálně mrkání a ústa pokračují nezávisle od reakce.
+            Celopostavové klipy zachovávají původní prioritu.
           </p>
         </details>
       </div>
@@ -394,7 +395,7 @@ export function AnimationPanel({
             aria-pressed={previewMode === 'combined'}
             onClick={() => setPreviewMode('combined')}
           >
-            Kombinácia postavy
+            Kombinace postavy
           </button>
           <button
             aria-pressed={previewMode === 'clip'}
@@ -439,15 +440,15 @@ export function AnimationPanel({
             />
           )
         )}
-        <p role="status" aria-label="Stav animácie">
+        <p role="status" aria-label="Stav animace">
           {message}
         </p>
       </div>
       <div className="animation-library-column">
         <details open={!candidate}>
-          <summary>Import hotovej animácie</summary>
+          <summary>Import hotové animace</summary>
           <fieldset className="animation-authoring" disabled={busy}>
-            <Field label="Typ importovanej animácie">
+            <Field label="Typ importované animace">
               <select
                 value={kind}
                 onChange={(event) => {
@@ -463,13 +464,13 @@ export function AnimationPanel({
                 ))}
               </select>
             </Field>
-            <Field label="Názov importovanej animácie">
+            <Field label="Název importované animace">
               <input
                 value={label}
                 onChange={(event) => setLabel(event.target.value)}
               />
             </Field>
-            <Field label="PNG snímky alebo atlas">
+            <Field label="PNG snímky nebo atlas">
               <input
                 type="file"
                 multiple
@@ -484,15 +485,15 @@ export function AnimationPanel({
               />
             </Field>
             <p className="field-note">
-              PNG sekvencia: poradie podľa názvov (frame-01, frame-02…). Atlas:
-              vyber jeden PNG a jeho JSON. Najviac 120 snímkov / 32 MB.
+              PNG sekvence: pořadí podle názvů (frame-01, frame-02…). Atlas:
+              vyber jeden PNG a jeho JSON. Nejvýše 120 snímků / 32 MB.
             </p>
             {files.length > 0 && (
               <p className="field-note">
                 {files.map((file) => file.name).join(' → ')}
               </p>
             )}
-            <Field label="Spritesheet metadáta (JSON, voliteľné)">
+            <Field label="Spritesheet metadata (JSON, volitelné)">
               <input
                 type="file"
                 accept="application/json,.json"
@@ -503,11 +504,11 @@ export function AnimationPanel({
                   if (!file) return;
                   try {
                     if (file.size > 1024 * 1024)
-                      throw new Error('JSON môže mať najviac 1 MB.');
+                      throw new Error('JSON může mít nejvýše 1 MB.');
                     const data: unknown = JSON.parse(await file.text());
                     if (mounted.current) {
                       setAtlas(data);
-                      setMessage('Metadáta atlasu načítané.');
+                      setMessage('Metadata atlasu načtené.');
                     }
                   } catch (error) {
                     if (mounted.current)
@@ -527,11 +528,11 @@ export function AnimationPanel({
                   setAnimationName('');
                 }}
               >
-                Použiť PNG sekvenciu bez metadát
+                Použít PNG sekvenci bez metadat
               </button>
             )}
             {animationNames.length > 0 && (
-              <Field label="Sekvencia v atlase">
+              <Field label="Sekvence v atlase">
                 <select
                   value={animationName || animationNames[0]}
                   onChange={(event) => setAnimationName(event.target.value)}
@@ -547,13 +548,13 @@ export function AnimationPanel({
               disabled={!files.length || !label.trim()}
               onClick={() => void importFiles()}
             >
-              Importovať animáciu
+              Importovat animaci
             </button>
           </fieldset>
         </details>
-        <h3>Knižnica a nastavenia klipu</h3>
+        <h3>Knihovna a nastavení klipu</h3>
         <SelectId
-          label="Animácia na úpravu"
+          label="Animace na úpravu"
           value={candidate?.id ?? ''}
           values={
             candidate && !compatible.some((clip) => clip.id === candidate.id)
@@ -565,7 +566,7 @@ export function AnimationPanel({
         />
         {candidate && (
           <fieldset className="animation-authoring" disabled={busy}>
-            <Field label="Názov animácie">
+            <Field label="Název animace">
               <input
                 value={candidate.label}
                 onChange={(event) =>
@@ -573,7 +574,7 @@ export function AnimationPanel({
                 }
               />
             </Field>
-            <Field label="Typ animácie">
+            <Field label="Typ animace">
               <select
                 value={candidate.kind}
                 onChange={(event) =>
@@ -604,7 +605,7 @@ export function AnimationPanel({
                   })
                 }
               />
-              Nezávislá oblasť
+              Nezávislá oblast
             </label>
             <button
               disabled={busy}
@@ -619,8 +620,8 @@ export function AnimationPanel({
                     });
                     setMessage(
                       result.region
-                        ? 'Oblasť bola nájdená porovnaním s originálom.'
-                        : 'Snímky sú totožné s originálom.',
+                        ? 'Oblast byla nalezena porovnáním s originálem.'
+                        : 'Snímky jsou totožné s originálem.',
                     );
                   }
                 } catch (error) {
@@ -628,21 +629,21 @@ export function AnimationPanel({
                     setMessage(
                       error instanceof Error
                         ? error.message
-                        : 'Kontrola zlyhala.',
+                        : 'Kontrola selhala.',
                     );
                 } finally {
                   if (mounted.current) setBusy(false);
                 }
               }}
             >
-              Zistiť zmenenú oblasť
+              Zjistit změněnou oblast
             </button>
             {candidate.region && (
               <div className="bounds-fields">
                 {(['x', 'y', 'width', 'height'] as const).map((key) => (
                   <Field
                     key={key}
-                    label={`Oblasť · ${{ x: 'X', y: 'Y', width: 'šírka', height: 'výška' }[key]} (px)`}
+                    label={`Oblast · ${{ x: 'X', y: 'Y', width: 'šířka', height: 'výška' }[key]} (px)`}
                   >
                     <input
                       type="number"
@@ -665,16 +666,16 @@ export function AnimationPanel({
             )}
             {regionError && (
               <p role="alert">
-                Oblasť musí byť celočíselný obdĺžnik v pôvodnom obrázku.
+                Oblast musí být celočíselný obdélník v původním obrázku.
               </p>
             )}
             <p className="field-note">
-              Oblasť používa pixely pôvodného obrázka. Mení len túto časť
-              postavy; oči a ústa majú oddelené, neprekrývajúce sa oblasti. Bez
-              oblasti klip nahrádza celý základ postavy. Na idle dýchanie použi
-              procedurálny pohyb.
+              Oblast používá pixely původního obrázku. Mění jen tuto část
+              postavy; oči a ústa mají oddělené, nepřekrývající se oblasti. Bez
+              oblasti klip nahrazuje celý základ postavy. Na idle dýchání použij
+              procedurální pohyb.
             </p>
-            <Field label="Rýchlosť prehrávania (×)">
+            <Field label="Rychlost přehrávání (×)">
               <input
                 type="number"
                 min={0.1}
@@ -689,7 +690,7 @@ export function AnimationPanel({
                 }
               />
             </Field>
-            <Field label="Rýchlosť animácie (fps)">
+            <Field label="Rychlost animace (fps)">
               <input
                 type="number"
                 min={1}
@@ -712,9 +713,9 @@ export function AnimationPanel({
                   setCandidate({ ...candidate, loop: event.target.checked })
                 }
               />
-              Opakovať klip
+              Opakovat klip
             </label>
-            <Field label="Trvanie aktuálnej snímky (ms)">
+            <Field label="Délka aktuální snímky (ms)">
               <input
                 type="number"
                 min={10}
@@ -739,11 +740,11 @@ export function AnimationPanel({
                   setCandidate({ ...candidate, durationsMs: undefined })
                 }
               >
-                Rovnomerné časovanie podľa fps
+                Rovnoměrné časování podle fps
               </button>
             )}
             <AssetField
-              label="Obrázok aktuálnej snímky"
+              label="Obrázek aktuální snímky"
               value={candidate.frames[current] ?? source}
               assets={assets}
               onAssets={onAssets}
@@ -772,7 +773,7 @@ export function AnimationPanel({
                   })
                 }
               >
-                + Snímka
+                + Snímek
               </button>
               <button
                 disabled={candidate.frames.length <= 1}
@@ -787,16 +788,16 @@ export function AnimationPanel({
                   setIndex(Math.max(0, current - 1));
                 }}
               >
-                Odobrať snímku
+                Odebrat snímek
               </button>
               <button disabled={current === 0} onClick={() => reorder(-1)}>
-                ← Snímka
+                ← Snímek
               </button>
               <button
                 disabled={current === candidate.frames.length - 1}
                 onClick={() => reorder(1)}
               >
-                Snímka →
+                Snímek →
               </button>
             </div>
             <div className="row-actions">
@@ -804,14 +805,14 @@ export function AnimationPanel({
                 disabled={Boolean(regionError)}
                 onClick={() => commit(false)}
               >
-                Pridať / aktualizovať animáciu
+                Přidat / aktualizovat animaci
               </button>
               <button
                 disabled={Boolean(regionError)}
                 className="primary-button"
                 onClick={() => commit(true)}
               >
-                Priradiť postave
+                Přiřadit postavě
               </button>
               <button
                 disabled={
@@ -819,14 +820,14 @@ export function AnimationPanel({
                 }
                 onClick={removeDefinition}
               >
-                Odstrániť definíciu
+                Odstranit definici
               </button>
             </div>
             <p className="field-note">
-              Úpravy klipu potvrď tlačidlom Pridať / aktualizovať alebo Priradiť
-              postave. Potom Uložiť do projektu. Mrkanie a reakcie sa vždy
-              prehrajú raz; loop platí pre náhľad, idle a rozprávanie. Súbory sa
-              pri odobratí definície nemažú.
+              Úpravy klipu potvrď tlačítkem Přidat / aktualizovat nebo Přiřadit
+              postavě. Potom Uložit do projektu. Mrkání a reakce se vždy
+              přehrají jednou; loop platí pro náhled, idle a mluvení. Soubory se
+              při odebrání definice nemažou.
             </p>
           </fieldset>
         )}

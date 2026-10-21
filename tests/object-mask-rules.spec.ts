@@ -1,3 +1,6 @@
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+import { access } from 'node:fs/promises';
 import { test, expect } from '@playwright/test';
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -42,7 +45,7 @@ test('alpha PNGs retain all 256 levels and intrinsic alpha is never multiplied t
     expect((await readObjectMask(mask, source)).pixels).toEqual(alpha);
     await expect(
       readObjectMask({ ...mask, matting: undefined }, source),
-    ).rejects.toThrow('Mäkké');
+    ).rejects.toThrow('Měkké');
     await expect(
       readObjectMask(
         { ...mask, matting: { ...mask.matting, decontaminate: 'true' } },
@@ -54,7 +57,23 @@ test('alpha PNGs retain all 256 levels and intrinsic alpha is never multiplied t
       operation: 'cutout',
       objectMask: mask,
     });
-    const decoded = await rgba(path.join(root, result.image));
+    expect(result.cutoutFrame).toEqual({
+      x: 1,
+      y: 0,
+      width: 255,
+      height: 2,
+      sourceWidth: 256,
+      sourceHeight: 2,
+    });
+    const cropped = await rgba(path.join(root, result.image));
+    for (let y = 0; y < 2; y++)
+      for (let x = 0; x < 255; x++)
+        expect(cropped[(y * 255 + x) * 4 + 3]).toBe(
+          Math.min(y === 0 ? 255 : 128, x + 1),
+        );
+    const decoded = await rgba(
+      path.join(root, result.cutoutFull ?? result.image),
+    );
     for (let p = 0; p < alpha.length; p++) {
       expect(decoded[p * 4 + 3]).toBe(Math.min(raw[p * 4 + 3]!, alpha[p]!));
       expect(decoded.subarray(p * 4, p * 4 + 3)).toEqual(
@@ -140,7 +159,9 @@ for (const method of ['closed-form', 'vitmatte'] as const) {
         operation: 'cutout',
         objectMask: result,
       });
-      const raw = await rgba(path.join(root, exported.image));
+      const raw = await rgba(
+        path.join(root, exported.cutoutFull ?? exported.image),
+      );
       let coreChanges = 0,
         correctedEdges = 0,
         alphaChanges = 0;
@@ -209,7 +230,7 @@ for (const method of ['closed-form', 'vitmatte'] as const) {
           { source: 'source.png', method, radius: 0, decontaminate: true },
           { python },
         ),
-      ).rejects.toThrow('nastavenie');
+      ).rejects.toThrow('nastavení');
     });
   });
 }
@@ -355,7 +376,7 @@ test('extraction keeps source pixels exact and publishes the repair margin inste
         }) as typeof fetch,
       },
     );
-    const cutout = await rgba(path.join(root, result.cutout!));
+    const cutout = await rgba(path.join(root, result.cutoutFull!));
     const expectedCutout = Buffer.from(source.raw);
     for (let p = 0; p < pixels.length; p++)
       expectedCutout[p * 4 + 3] = pixels[p] ? source.raw[p * 4 + 3]! : 0;
@@ -400,7 +421,7 @@ test('extraction keeps source pixels exact and publishes the repair margin inste
     expect(
       JSON.parse(await readFile(path.join(root, result.manifest), 'utf8')),
     ).toMatchObject({
-      version: 2,
+      version: 3,
       objectMask: {
         file: 'object-mask.png',
         method: 'manual',
@@ -466,7 +487,7 @@ test('transparent source edge alpha is retained and stale, soft, colored or mis-
           })) as typeof fetch,
       },
     );
-    expect((await rgba(path.join(root, result.cutout!)))[7]).toBe(128);
+    expect((await rgba(path.join(root, result.cutoutFull!)))[7]).toBe(128);
     expect(await rgba(path.join(root, result.reassembled!))).toEqual(raw);
     for (const invalid of [
       { ...mask, sourceSha256: 'stale' },
@@ -498,7 +519,7 @@ test('transparent source edge alpha is retained and stale, soft, colored or mis-
         },
         source,
       ),
-    ).rejects.toThrow('farebných');
+    ).rejects.toThrow('barevných');
     let calls = 0;
     await expect(
       createArtwork(
@@ -518,7 +539,7 @@ test('transparent source edge alpha is retained and stale, soft, colored or mis-
           }) as typeof fetch,
         },
       ),
-    ).rejects.toThrow('zmenenému');
+    ).rejects.toThrow('změněnému');
     expect(calls).toBe(0);
   });
 });
@@ -539,11 +560,13 @@ test('mask brush clips at canvas edges and supports foreground, background and s
   expect(seeds[55]).toBe(64);
 });
 
-for (const method of ['grabcut', 'sam2'] as const) {
+for (const method of ['grabcut', 'sam2', 'sam3'] as const) {
   test(`real local ${method} finds a cartoon clock and yields original-pixel assets`, async () => {
     test.setTimeout(120000);
     const options = {
       python,
+      sam3Python: process.env.SAM3_PYTHON,
+      sam3Model: process.env.SAM3_MODEL,
       modelConfig:
         process.env.SAM2_CONFIG || 'configs/sam2.1/sam2.1_hiera_t.yaml',
       checkpoint:
@@ -554,8 +577,8 @@ for (const method of ['grabcut', 'sam2'] as const) {
     const status = await segmentationStatus(options);
     test.skip(
       !status[method],
-      method === 'sam2'
-        ? 'Install SAM 2 and its local checkpoint; see README'
+      method !== 'grabcut'
+        ? 'Install the selected SAM model and its approved local checkpoint; see README'
         : 'Install local OpenCV with npm run setup:segmentation',
     );
     await fixture(async (root) => {
@@ -611,7 +634,9 @@ for (const method of ['grabcut', 'sam2'] as const) {
         info.outputPath(`${method}-clock-cutout.png`),
         await readFile(path.join(root, cutout.image)),
       );
-      const image = await rgba(path.join(root, cutout.image));
+      const image = await rgba(
+        path.join(root, cutout.cutoutFull ?? cutout.image),
+      );
       let changed = 0;
       for (let p = 0; p < mask.pixels.length; p++)
         if (
@@ -790,7 +815,7 @@ test('SAM source-edge refinement recovers both router antennae and keeps cutout 
       });
       const bytes = await readFile(path.join(root, cutout.image));
       await writeFile(info.outputPath(`router-${mode}.png`), bytes);
-      const raw = await rgba(bytes);
+      const raw = await rgba(path.join(root, cutout.cutoutFull!));
       let alteredPixels = 0;
       for (let p = 0; p < mask.length; p++) {
         const i = p * 4;
@@ -811,4 +836,26 @@ test('SAM source-edge refinement recovers both router antennae and keeps cutout 
     expect(overlaps[1]! - overlaps[0]!).toBeGreaterThan(0.06);
     expect(overlaps[2]!).toBeGreaterThan(0.97);
   });
+});
+
+test('SAM 3 adapter runs offline with real Transformers and restores native non-square mask coordinates', async () => {
+  const binary =
+    process.env.SAM3_PYTHON || path.resolve('.local-tools/sam3/bin/python');
+  test.skip(
+    !(await access(binary).then(
+      () => true,
+      () => false,
+    )),
+    'Install the isolated SAM 3 runtime',
+  );
+  const { stdout } = await promisify(execFile)(
+    binary,
+    ['tests/sam3_smoke.py'],
+    {
+      timeout: 30000,
+      maxBuffer: 131072,
+      env: { ...process.env, HF_HUB_OFFLINE: '1' },
+    },
+  );
+  expect(stdout).toContain('Offline adapter inference passed');
 });

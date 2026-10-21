@@ -17,7 +17,7 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
 - Assety drž lokálně v `src/assets/` a importuj přes Vite. SVG jde upravovat kódem;
   pro finální kreslená pozadí lze použít generované PNG/WebP. Bez ručních editorů,
   vzdálených CDN a kopírování cizích herních assetů.
-- Kód a identifikátory anglicky, hráčské texty slovensky, komunikace/dokumentace česky.
+- Kód a identifikátory anglicky, hráčské texty slovensky, Dev Mode UI a komunikace/dokumentace česky.
 - U asynchronního Pixi init/load ošetři unmount; při úklidu odpoj ResizeObserver,
   listenery a znič aplikaci. React StrictMode zůstává zapnutý.
 
@@ -119,7 +119,7 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
 - Nové soubory publikuj atomicky do `src/assets/scene-art/<uuid>/`. Původní soubor
   nepřepisuj; archivuj source, masku a recipe JSON s otiskem zdroje a parametry.
   Recept není druhá definice herního obsahu. Vazby a klipy zapisuje projektový save.
-  Mimo masku musí AI výsledek zůstat pixelově shodný se zdrojem. Náhled se použije
+  Maskovaná kompozice musí mimo opravnou masku zůstat pixelově shodná se zdrojem. Náhled se použije
   až vědomou akcí; starý výsledek nesmí přepsat změněný zdroj/transformaci nebo souřadnice lokace.
   Úpravy nesouvisejících objektů a názvu lokace mají zůstat zachované.
 
@@ -140,7 +140,10 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
   Po změně masky vyžaduj nový výpočet barev, aby náhled odpovídal exportu.
 - Opravná maska pozadí je samostatná binární podpora (`ownership-mask.png` u mattingu)
   s explicitním přesahem. Nezaměňuj ji s jemnou alfou a nevracej za objekt původní
-  obrysy. Mimo opravu nic neměň. Výřez má celé původní plátno a souřadnice.
+  obrysy. U maskované varianty mimo opravu nic neměň. Statické výřezy ořízni podle
+  nenulové alfy; `cutoutFrame` v receptu v3 uchová nativní offset a velikost zdroje.
+  `croppedPlacement` sdílí contain/stretch i rotaci původního rámu. Pro diagnostiku
+  archivuj `cutout-full.png`; animační sekvence nadále mají celé společné plátno.
   Kontrola reassembly vyžaduje `unexpectedPixels: 0`; zvlášť vykazuje
   `cleanupPixels` v opravném okolí a `edgePixels` na částečných hranách mattingu.
   Ty nelze přesně obnovit z nového pozadí; nulové chyby jádra nedokazují kvalitu hrany.
@@ -154,8 +157,22 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
   surovou odpověď, kontrolní návrat bez AI, vrácený výsledek a finální kompozici.
   `debugOnly` připraví stejné kroky bez API a bez možnosti Apply. `InpaintInspector`
   je pouze Dev Mode. Při hodnocení odlišuj chybu škálování, změnu chráněného
-  kontextu modelu a změny mimo opravnou masku (musí být 0). Nulové metriky
+  kontextu modelu a změny mimo opravnou masku maskované kompozice (musí být 0). Nulové metriky
   nedokazují správný výběr ani barevnou návaznost. Bez automatického color matchingu.
+- Odstranění/oddělení nabízí `backgrounds.restored` (výchozí `provider-restored.png`)
+  a `backgrounds.masked` (`image.png`). Restored je celé zarovnané pozadí AI a může
+  měnit chráněný kontext; maskovaná varianta vrací originál mimo opravu, včetně
+  případných zbytků stínu. Volbu promítni do náhledu i projektového JSON. Surový
+  `provider-returned.png` s letterboxem nikdy nepřiřazuj přímo. `artHistory.ts`
+  načítá pouze známé PNG z reálných UUID adresářů, se stejným zdrojem i hashem,
+  bez API kreditů a bez změny archivů nebo projektu. Metriky reassembly patří
+  maskované kompozici, nikoli celému restored pozadí.
+- `npm run setup:sam3` připraví oddělený CPU runtime a schválené váhy facebook/sam3.
+  `--runtime-only` nestahuje váhy. HF_TOKEN je pouze pro explicitní instalátor;
+  SAM3_PYTHON / SAM3_MODEL jsou serverové cesty. `sam3_adapter.py` používá lokální
+  Sam3TrackerModel/Processor, safetensors a native-size masky; žádný vzdálený kód.
+  Zachovej SAM 2 pro porovnání, tvrdé tahy, detailní průchod i samostatný matting.
+  Bez schválených vah neslibuj ověřenou kvalitu a nepřepínej model potichu.
 - `dev/artSource.ts` sdílí bezpečné načtení/normalizaci; `dev/objectMask.ts` ověřuje
   PNG a hash před placeným voláním. `dev/segmentation.ts` spouští pevné Python
   helpery bez shellu, timeout 300 s, uklízí dočasné soubory. Žádné automatické

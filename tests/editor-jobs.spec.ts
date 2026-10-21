@@ -23,7 +23,7 @@ async function save(page: import('@playwright/test').Page) {
     { timeout: 4000 },
   );
   await page
-    .getByRole('button', { name: 'Uložiť do projektu', exact: true })
+    .getByRole('button', { name: 'Uložit do projektu', exact: true })
     .click();
   expect((await response).ok()).toBe(true);
   await expect(page.locator('.saved-badge')).toBeVisible();
@@ -75,30 +75,30 @@ test.describe('asynchronous character direction', () => {
       .hotspots.find((h) => h.id === 'blink-character')!;
     await page.emulateMedia({ reducedMotion: 'no-preference' });
     await openEditor(page, workspace.url);
-    await page.getByRole('button', { name: 'Animácie', exact: true }).click();
+    await page.getByRole('button', { name: 'Animace', exact: true }).click();
     await page
       .getByLabel('Animovaná postava', { exact: true })
       .selectOption(JSON.stringify(['animation-lab', actor.id]));
-    const panel = page.getByRole('region', { name: 'Textová réžia postavy' });
+    const panel = page.getByRole('region', { name: 'Textová režie postavy' });
     await panel
-      .getByText('Textová réžia · experiment', { exact: true })
+      .getByText('Textová režie · experiment', { exact: true })
       .click();
     await panel
-      .getByLabel('Ako sa má postava správať?', { exact: true })
+      .getByLabel('Jak se má postava chovat?', { exact: true })
       .fill(
         'Mrká nervózne, pri dialógu rozpráva a jemne dýcha. Občas pohne hlavou.',
       );
     await panel
       .getByRole('button', {
-        name: 'Navrhnúť správanie cez AI (API kredit)',
+        name: 'Navrhnout chování přes AI (API kredit)',
         exact: true,
       })
       .click();
     await expect.poll(() => started).toBe(true);
     // This save must complete BEFORE the provider is allowed to finish.
-    await page.getByRole('button', { name: 'Lokácie', exact: true }).click();
+    await page.getByRole('button', { name: 'Lokace', exact: true }).click();
     await page
-      .getByLabel('Názov lokácie', { exact: true })
+      .getByLabel('Název lokace', { exact: true })
       .fill('Ateliér upravený počas AI');
     await save(page);
     expect(calls).toBe(1);
@@ -106,14 +106,14 @@ test.describe('asynchronous character direction', () => {
     await ready(page);
     await page.getByRole('button', { name: 'Dev Mode', exact: true }).click();
     await expect(page.locator('.editor-job-tray')).toContainText(
-      'AI navrhuje nastavenie',
+      'AI navrhuje nastavení',
     );
     release();
     await expect(page.locator('.editor-job-tray')).toContainText(
-      'Pripravené na kontrolu',
+      'Připravené na kontrolu',
     );
     await page
-      .getByRole('button', { name: 'Otvoriť výsledok', exact: true })
+      .getByRole('button', { name: 'Otevřít výsledek', exact: true })
       .click();
     await expect(panel).toContainText('samostatné nové pózy hlavy nevytváram');
     const preview = panel.locator('canvas');
@@ -122,18 +122,18 @@ test.describe('asynchronous character direction', () => {
     await page.waitForTimeout(230);
     expect((await preview.screenshot()).equals(first)).toBe(false);
     await page
-      .getByLabel('Procedurálny pohyb', { exact: true })
+      .getByLabel('Procedurální pohyb', { exact: true })
       .selectOption('');
     await expect(
       panel.getByRole('button', {
-        name: 'Použiť navrhnuté správanie',
+        name: 'Použít navržené chování',
         exact: true,
       }),
     ).toBeDisabled();
-    await page.getByRole('button', { name: 'Späť', exact: true }).click();
+    await page.getByRole('button', { name: 'Zpět', exact: true }).click();
     await expect(
       panel.getByRole('button', {
-        name: 'Použiť navrhnuté správanie',
+        name: 'Použít navržené chování',
         exact: true,
       }),
     ).toBeEnabled();
@@ -141,7 +141,7 @@ test.describe('asynchronous character direction', () => {
       path: info.outputPath('character-direction-preview.png'),
     });
     await panel
-      .getByRole('button', { name: 'Použiť navrhnuté správanie', exact: true })
+      .getByRole('button', { name: 'Použít navržené chování', exact: true })
       .click();
     await save(page);
     const disk = JSON.parse(
@@ -159,7 +159,7 @@ test.describe('asynchronous character direction', () => {
     });
     expect(binding.voice).toEqual(actor.animation!.voice);
     await page
-      .getByRole('button', { name: 'Otestovať odtiaľto ↗', exact: true })
+      .getByRole('button', { name: 'Otestovat odsud ↗', exact: true })
       .click();
     await ready(page);
     await (await object(page, actor.label)).click();
@@ -243,7 +243,7 @@ test.describe('asynchronous artwork pipeline', () => {
     expect(response.status()).toBe(202);
     await expect.poll(() => started).toBe(true);
     await page
-      .getByLabel('Názov lokácie', { exact: true })
+      .getByLabel('Název lokace', { exact: true })
       .fill('Úprava počas opravy pozadia');
     await save(page);
     // Queue operations and project reads remain responsive during provider work.
@@ -286,7 +286,7 @@ test.describe('asynchronous artwork pipeline', () => {
     await page.getByRole('button', { name: 'Dev Mode', exact: true }).click();
     release();
     await expect(page.locator('.editor-job-tray')).toContainText(
-      'Pripravené na kontrolu',
+      'Připravené na kontrolu',
     );
     // An older result carries an older asset catalog. Reviewing it must not
     // forget an unrelated image imported while the result was waiting.
@@ -311,17 +311,17 @@ test.describe('asynchronous artwork pipeline', () => {
       });
     const uploaded = await (await upload).json();
     await expect(
-      page.getByLabel('Obrázok vrstvy', { exact: true }),
+      page.getByLabel('Obrázek vrstvy', { exact: true }),
     ).toHaveValue(uploaded.id);
     await page
-      .getByRole('button', { name: 'Otvoriť výsledok', exact: true })
+      .getByRole('button', { name: 'Otevřít výsledek', exact: true })
       .click();
     const art = page.getByRole('region', { name: 'Grafické nástroje scény' });
     await expect(
-      art.getByAltText('Oddelený transparentný objekt'),
+      art.getByAltText('Oddělený transparentní objekt'),
     ).toBeVisible();
     await art
-      .getByRole('button', { name: 'Použiť výsledok v scéne', exact: true })
+      .getByRole('button', { name: 'Použít výsledek ve scéně', exact: true })
       .click();
     await save(page);
     const disk = JSON.parse(

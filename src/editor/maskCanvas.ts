@@ -3,7 +3,7 @@ export async function pngPixels(data: string, width: number, height: number) {
   image.src = `data:image/png;base64,${data}`;
   await image.decode();
   if (image.naturalWidth !== width || image.naturalHeight !== height)
-    throw Error('Maska má iné rozmery než zdroj.');
+    throw Error('Maska má jiné rozměry než zdroj.');
   const canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
@@ -15,7 +15,7 @@ export async function pngPixels(data: string, width: number, height: number) {
     const i = p * 4,
       value = rgba[i]!;
     if (rgba[i + 1] !== value || rgba[i + 2] !== value || rgba[i + 3] !== 255)
-      throw Error('PNG maska musí byť nepriehľadná v odtieňoch sivej (0–255).');
+      throw Error('PNG maska musí být neprůhledná v odstínech šedi (0–255).');
     result[p] = value;
   }
   return result;

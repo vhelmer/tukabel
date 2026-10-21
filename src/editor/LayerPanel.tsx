@@ -35,7 +35,7 @@ export function LayerPanel({
     <section className="layer-panel" aria-label="Vrstvy scény">
       <h2>Vrstvy</h2>
       <p className="field-note">
-        Vrchná položka je vpredu. Zámok chráni iba úpravy, oko platí aj v hre.
+        Horní položka je vpředu. Zámek chrání pouze úpravy, oko platí i v hře.
       </p>
       <button
         onClick={() => {
@@ -81,9 +81,9 @@ export function LayerPanel({
             >
               {h.decorative ? '▧' : h.animation ? '◉' : '◇'} {h.label}
             </button>
-            <label title="Viditeľnosť">
+            <label title="Viditelnost">
               <input
-                aria-label={`Viditeľnosť · ${h.label}`}
+                aria-label={`Viditelnost · ${h.label}`}
                 type="checkbox"
                 checked={!h.hidden}
                 onChange={(e) =>
@@ -92,19 +92,19 @@ export function LayerPanel({
               />
               oko
             </label>
-            <label title="Zamknutie">
+            <label title="Zamčení">
               <input
-                aria-label={`Zamknutie · ${h.label}`}
+                aria-label={`Zamčení · ${h.label}`}
                 type="checkbox"
                 checked={h.locked ?? false}
                 onChange={(e) =>
                   update({ ...h, locked: e.target.checked || undefined })
                 }
               />
-              zámok
+              zámek
             </label>
             <button
-              aria-label={`Dopredu · ${h.label}`}
+              aria-label={`Dopředu · ${h.label}`}
               disabled={scene.hotspots.at(-1)?.id === h.id}
               onClick={() => reorder(h.id, 1)}
             >
@@ -125,12 +125,12 @@ export function LayerPanel({
             aria-pressed={!selected}
             onClick={() => onSelect('')}
           >
-            ▣ Pozadie
+            ▣ Pozadí
           </button>
           <label>
             <input
               type="checkbox"
-              aria-label="Viditeľnosť · Pozadie"
+              aria-label="Viditelnost · Pozadí"
               checked={!scene.backgroundHidden}
               onChange={(e) =>
                 onChange({
@@ -147,9 +147,9 @@ export function LayerPanel({
         <fieldset disabled={selected.locked}>
           <legend>{selected.label}</legend>
           <label className="editor-field">
-            Krytie vrstvy (%)
+            Krytí vrstvy (%)
             <input
-              aria-label="Krytie vrstvy (%)"
+              aria-label="Krytí vrstvy (%)"
               type="range"
               min="0"
               max="100"
@@ -171,10 +171,10 @@ export function LayerPanel({
                 })
               }
             />{' '}
-            Interaktívny objekt
+            Interaktivní objekt
           </label>
           <AssetField
-            label="Obrázok vrstvy"
+            label="Obrázek vrstvy"
             value={selected.image ?? ''}
             assets={assets}
             onAssets={onAssets}
@@ -197,7 +197,7 @@ export function LayerPanel({
               onSelect('');
             }}
           >
-            Odstrániť vybranú vrstvu
+            Odstranit vybranou vrstvu
           </button>
         </fieldset>
       )}

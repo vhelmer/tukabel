@@ -8,17 +8,17 @@ export function InpaintInspector({ debug }: { debug: InpaintDebug }) {
   const [zoom, setZoom] = useState('fit');
   const [overlay, setOverlay] = useState(true);
   const steps: [keyof InpaintDebug['files'], string][] = [
-    ['original', '1 · Pôvodný obrázok'],
-    ['objectMask', '2 · Maska objektu · biela = objekt'],
-    ['expandedMask', '3 · Rozšírená maska · biela = inpainting'],
-    ['input', '4 · Presný vstup / kontext pre model'],
-    ['returned', '5 · Surový výsledok modelu'],
-    ['final', '6 · Finálna kompozícia celého zdroja'],
-    ['apiMask', 'API maska · priehľadné = povolená úprava'],
-    ['blendMask', 'Prechod kompozície · biela = 100 % výsledku'],
-    ['roundTrip', 'Kontrolný návrat bez AI · iba škálovanie'],
-    ['restored', 'Výsledok po návrate do súradníc scény'],
-    ['difference', 'Rozdiel modelu oproti návratu bez AI · 4×'],
+    ['original', '1 · Původní obrázek'],
+    ['objectMask', '2 · Maska objektu · bílá = objekt'],
+    ['expandedMask', '3 · Rozšířená maska · bílá = inpainting'],
+    ['input', '4 · Přesný vstup / kontext pro model'],
+    ['returned', '5 · Surový výsledek modelu'],
+    ['final', '6 · Maskovaná kompozice celého zdroje'],
+    ['apiMask', 'API maska · průhledné = povolená úprava'],
+    ['blendMask', 'Přechod kompozice · bílá = 100 % výsledku'],
+    ['roundTrip', 'Kontrolní návrat bez AI · pouze škálování'],
+    ['restored', 'Výsledek po návratu do souřadnic scény'],
+    ['difference', 'Rozdíl modelu oproti návratu bez AI · 4×'],
   ];
   const path = debug.files[step];
   const { geometry: g, metrics: m } = debug;
@@ -33,11 +33,11 @@ export function InpaintInspector({ debug }: { debug: InpaintDebug }) {
     <details className="inpaint-inspector" open>
       <summary>Diagnostika inpaintingu · jednotlivé kroky</summary>
       <p>
-        Model dostáva celý zdroj {g.context.width} × {g.context.height}, nie
-        lokálny výrez. Pracovné plátno: {g.canvas.width} × {g.canvas.height};
-        obrázok v ňom: {g.content.width} × {g.content.height}, odsadenie x=
-        {g.content.left}, y={g.content.top}. Výsledok sa vracia tou istou
-        transformáciou. Žiadny color matching.
+        Model dostává celý zdroj {g.context.width} × {g.context.height}, ne
+        lokální výřez. Pracovní plátno: {g.canvas.width} × {g.canvas.height};
+        obrázek v něm: {g.content.width} × {g.content.height}, odsazení x=
+        {g.content.left}, y={g.content.top}. Výsledek se vrací tou stejnou
+        transformací. Žádný color matching.
       </p>
       <div className="art-settings">
         <Field label="Krok diagnostiky">
@@ -48,16 +48,16 @@ export function InpaintInspector({ debug }: { debug: InpaintDebug }) {
             {steps.map(([id, label]) => (
               <option key={id} value={id} disabled={!debug.files[id]}>
                 {label}
-                {!debug.files[id] ? ' · ešte nie je k dispozícii' : ''}
+                {!debug.files[id] ? ' · ještě není k dispozici' : ''}
               </option>
             ))}
           </select>
         </Field>
-        <Field label="Zväčšenie diagnostiky">
+        <Field label="Zvětšení diagnostiky">
           <select value={zoom} onChange={(e) => setZoom(e.target.value)}>
-            <option value="fit">Celý obrázok</option>
-            <option value="1">1:1 · pôvodné pixely</option>
-            <option value="2">2× · kontrola hrán</option>
+            <option value="fit">Celý obrázek</option>
+            <option value="1">1:1 · původní pixely</option>
+            <option value="2">2× · kontrola hran</option>
           </select>
         </Field>
       </div>
@@ -68,7 +68,7 @@ export function InpaintInspector({ debug }: { debug: InpaintDebug }) {
             checked={overlay}
             onChange={(e) => setOverlay(e.target.checked)}
           />{' '}
-          Prekryť masku pôvodným obrázkom
+          Překrýt masku původním obrázkem
         </label>
       )}
       <div className="inpaint-viewport checkerboard">
@@ -88,42 +88,42 @@ export function InpaintInspector({ debug }: { debug: InpaintDebug }) {
                 className="inpaint-overlay"
                 style={{ mixBlendMode: 'screen' }}
                 src={assetUrl(debug.files.original)}
-                alt="Pôvodný obrázok pod maskou"
+                alt="Původní obrázek pod maskou"
               />
             )}
         </div>
       </div>
       {path && (
         <a href={assetUrl(path)} target="_blank" rel="noreferrer">
-          Otvoriť presný PNG súbor ({size.width} × {size.height}) ↗
+          Otevřít přesný PNG soubor ({size.width} × {size.height}) ↗
         </a>
       )}
       {!debug.files.returned && (
         <p>
-          Kontrola prípravy bez API. Model nebol volaný; kroky 5 a 6 vzniknú až
-          po výslovnom spustení AI úpravy.
+          Kontrola přípravy bez API. Model nebyl volaný; kroky 5 a 6 vzniknou až
+          po výslovném spuštění AI úpravy.
         </p>
       )}
       <p>
-        Objekt: {m.objectPixels} px · rozšírená maska: {m.expandedPixels} px ·
-        presah: {m.padding} px · prechod švu: {m.feather} px ({m.featherPixels}{' '}
-        čiastočných pixelov). Stratené pixely objektu po škálovaní masky:{' '}
-        {m.lostObjectPixels}. Najvyšší zásah na vonkajšej hranici:{' '}
+        Objekt: {m.objectPixels} px · rozšířená maska: {m.expandedPixels} px ·
+        přesah: {m.padding} px · přechod švu: {m.feather} px ({m.featherPixels}{' '}
+        částečných pixelů). Ztracené pixely objektu po škálování masky:{' '}
+        {m.lostObjectPixels}. Nejvyšší zásah na vnější hranici:{' '}
         {m.boundaryMaxWeight}/255.
       </p>
       <p>
-        RGB odchýlka samotného škálovania: {m.roundTripMae}/255.
+        RGB odchylka samotného škálování: {m.roundTripMae}/255.
         {m.contextMae !== undefined && (
-          <> Odchýlka modelu v chránenom kontexte: {m.contextMae}/255.</>
+          <> Odchylka modelu v chráněném kontextu: {m.contextMae}/255.</>
         )}
         {m.seamMae !== undefined && (
-          <> Odchýlka v 4px prstenci okolo opravy: {m.seamMae}/255.</>
+          <> Odchylka v 4px prstenci okolo opravy: {m.seamMae}/255.</>
         )}
         {m.outsideChanges !== undefined && (
-          <> Zmeny mimo opravnej masky vo finále: {m.outsideChanges} px.</>
+          <> Změny mimo opravné masky ve finále: {m.outsideChanges} px.</>
         )}{' '}
-        Nulová odchýlka nepotvrdzuje správnosť výberu ani kvalitu hrany;
-        porovnaj obrázky.
+        Nulová odchylka nepotvrzuje správnost výběru ani kvalitu hrany; porovnej
+        obrázky.
       </p>
       {debug.warnings.map((warning) => (
         <p role="note" key={warning}>

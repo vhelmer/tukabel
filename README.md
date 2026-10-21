@@ -24,55 +24,55 @@ hostingu i v podadresáři. `file://` není podporované.
 ## Dev Mode: tvorba → test → Git
 
 1. V lokální aplikaci přepni **Dev Mode**. Editor načte aktuální zdroj a jeho revizi.
-2. V **Lokácie** vyber nebo vytvoř lokaci. Přiřaď pozadí a původní rozměry.
-   **Nakresliť hotspot** vytvoří obdélník tažením v obrázku. Klik na viditelnou část obrázku objekt vybere a tažení jej posune.
+2. V **Lokace** vyber nebo vytvoř lokaci. Přiřaď pozadí a původní rozměry.
+   **Nakreslit hotspot** vytvoří obdélník tažením v obrázku. Klik na viditelnou část obrázku objekt vybere a tažení jej posune.
    Levý horní úchyt přesouvá celý rám (i u průhledného assetu), dolní pravý roh
    proporcionálně mění velikost obrázku. Pro výběr překrytého objektu použij seznam.
    Kruh nad rámem otáčí kolem středu; Shift zarovnává po 15°. Escape nebo zrušení
-   dotyku vrátí rozpracovaný tah. Každý dokončený tah je jedna úprava ve Späť/Znova.
-   Číselná šířka/výška v inspektoru se také mění společně. **Rám podľa obrázka**
+   dotyku vrátí rozpracovaný tah. Každý dokončený tah je jedna úprava ve Zpět/Znovu.
+   Číselná šířka/výška v inspektoru se také mění společně. **Rám podle obrázku**
    přizpůsobí klikací rám viditelné velikosti assetu bez změny jeho zobrazení.
-   **Deformovať** explicitně povolí nezávislou šířku/výšku a protažení obrázku;
-   návrat na **Proporčne** obnoví nativní proporce. Hotspot bez obrázku má volné rozměry.
-   **Priblíženie scény** (50–200 %) a posun ve výřezu mění pouze pohled editoru.
-   Na dotyku zapni **Posun pohľadu** a tažením posuň zvětšený výřez; pro úpravy
+   **Deformovat** explicitně povolí nezávislou šířku/výšku a protažení obrázku;
+   návrat na **Proporčně** obnoví nativní proporce. Hotspot bez obrázku má volné rozměry.
+   **Přiblížení scény** (50–200 %) a posun ve výřezu mění pouze pohled editoru.
+   Na dotyku zapni **Posun pohledu** a tažením posuň zvětšený výřez; pro úpravy
    objektů režim zase vypni. Myší používej posuvníky nebo kolečko.
-   **Pomôcky scény** vypne rámy, popisky a úchyty pro kontrolu čistého obrázku.
+   **Pomůcky scény** vypne rámy, popisky a úchyty pro kontrolu čistého obrázku.
    Editor ukazuje i podmíněně skryté objekty; editace nespouští herní akce.
-   **Nakresliť polygón** přidává vrcholy kliknutím nebo dotykem přímo nad pozadím.
-   Klik na první bod, Enter nebo **Dokončiť polygón** pod scénou uzavře tvar;
+   **Nakreslit polygon** přidává vrcholy kliknutím nebo dotykem přímo nad pozadím.
+   Klik na první bod, Enter nebo **Dokončit polygon** pod scénou uzavře tvar;
    Backspace odebere poslední bod, Escape návrh zruší. Vrcholy lze táhnout,
    **+** na hraně přidá nový bod a vybraný vrchol lze odebrat tlačítkem či Delete
    (zůstávají alespoň tři). Tab a šipky umožňují úpravy klávesnicí, Shift posouvá
    po deseti jednotkách. Tažení uvnitř přesune celý polygon; platí i stávající
-   úchyty přesunu, velikosti a rotace. **Previesť na polygón / Použiť obdĺžnik**
+   úchyty přesunu, velikosti a rotace. **Převést na polygon / Použít obdélník**
    převede vybraný rám oběma směry. Křížící se hrany se neuloží. Jeden dokončený
-   tah nebo úprava bodů je jedna změna ve Späť/Znova.
-3. V inspektoru nastav jméno, obrázek, viditelnost a pravidla **Kliknutie na objekt**.
+   tah nebo úprava bodů je jedna změna ve Zpět/Znovu.
+3. V inspektoru nastav jméno, obrázek, viditelnost a pravidla **Kliknutí na objekt**.
    Prázdný seznam je tichá interaktivní kulisa; komentář je volitelný.
    Podmínky i efekty mají formuláře a výběr existujících ID.
    Pravidla a efekty lze přidávat, odstraňovat a přesouvat nahoru.
    Sekce použití inventáře nastavuje reakce na konkrétní předmět.
-4. V **Predmety** vytvoř inventární položky, popisy a symboly/obrázky.
-   **Dialógy** spravují rozhovory, uzly, odpovědi, další uzly, podmínky a efekty.
+4. V **Předměty** vytvoř inventární položky, popisy a symboly/obrázky.
+   **Dialogy** spravují rozhovory, uzly, odpovědi, další uzly, podmínky a efekty.
    **Hádanky** obsahují herní příznaky, kombinace, úvodní zprávu a výchozí lokaci.
 5. **Mapa logiky** zobrazuje podmínky → konkrétní akce/odpovědi → efekty včetně
    inventáře, příznaků, lokací a pokračování dialogů. Filtruj podle ID/textu,
    klikem otevři definici. Zelená hodnotí podmínky vůči poslednímu hernímu náhledu;
    graf nenahrazuje kontrolu pořadí pravidel ani důkaz řešitelnosti hádanky.
-6. **Game Mode** nebo **Otestovať odtiaľto** spustí aktuální návrh od začátku
+6. **Game Mode** nebo **Otestovat odsud** spustí aktuální návrh od začátku
    vybrané lokace, s prázdným inventářem a nenastavenými příznaky. Zápis na disk
    není potřeba. Návrat do Dev Mode zachová rozpracovaný obsah. Chybná data
    blokují test i uložení a editor zobrazí konkrétní chyby.
-7. **Uložiť do projektu** skutečně zapíše `src/game/content/project.json`.
+7. **Uložit do projektu** skutečně zapíše `src/game/content/project.json`.
    Zdroj se ukládá jako formátovaný JSON atomickým přejmenováním dočasného souboru.
-   Uložení neobnovuje stránku a zachová pracovní návrh. **Späť / Znova** drží
+   Uložení neobnovuje stránku a zachová pracovní návrh. **Zpět / Znovu** drží
    posledních 50 úprav v paměti; jeden dokončený tah hotspotu je jedna úprava.
 8. Prohlédni `git diff` a commitni JSON a případné nové assety. Editor Git příkazy
    nespouští. Neuložený návrh se při obnovení stránky ztratí.
 
 Změní-li soubor jiná záložka nebo coding agent, server vrátí konflikt a novější
-soubor nepřepíše. **Zahodiť zmeny a načítať** explicitně převezme zdroj z disku;
+soubor nepřepíše. **Zahodit změny a načíst** explicitně převezme zdroj z disku;
 předchozí návrh ještě lze vrátit přes Späť. Automatické slučování změn není implementované.
 ID nových objektů jsou automatická a stabilní. Při mazání používaného předmětu,
 příznaku nebo dialogu oprav i související odkazy, případně operaci vrať.
@@ -86,105 +86,121 @@ přímo do repozitáře. Názvy assetů používej bez mezer a diakritiky (`a-z`
 
 ## Vrstvy a grafické úpravy lokací
 
-V **Dev Mode → Lokácie** zůstává scéna rozložená na pozadí a samostatné vrstvy.
+V **Dev Mode → Lokace** zůstává scéna rozložená na pozadí a samostatné vrstvy.
 Seznam **Vrstvy** ukazuje přední objekty nahoře. Šipky mění pořadí vykreslování;
 oko nastavuje viditelnost i ve hře, zámek chrání editorové tahy a vlastnosti.
 Krytí se ukládá jako 0–1. **+ Obrázková vrstva** přidá dekoraci; její PNG/WebP/JPEG
-lze importovat přímo v poli **Obrázok vrstvy**. Vyber ji ze seznamu nebo za viditelné
-pixely a přesuň/zvětši/otoč existujícími úchyty. **Interaktívny objekt** zapne běžné
+lze importovat přímo v poli **Obrázek vrstvy**. Vyber ji ze seznamu nebo za viditelné
+pixely a přesuň/zvětši/otoč existujícími úchyty. **Interaktivní objekt** zapne běžné
 hotspotové reakce a inventární pravidla v pravém inspektoru. Dekorace propouštějí
 herní hover, kliknutí i drop na objekty pod nimi. Zamknutí nemění chování hry.
 
-1. V **Zdroj grafickej úpravy** vyber pozadí nebo právě vybranou obrázkovou vrstvu.
-2. Nad scénou zvol **Vybrať obdĺžnik** a táhni, nebo **Vybrať polygón** a přidávej body.
-   Polygon uzavři Enterem, prvním bodem nebo **Dokončiť polygón**. Escape ruší návrh.
+1. V **Zdroj grafické úpravy** vyber pozadí nebo právě vybranou obrázkovou vrstvu.
+2. Nad scénou zvol **Vybrat obdélník** a táhni, nebo **Vybrat polygon** a přidávej body.
+   Polygon uzavři Enterem, prvním bodem nebo **Dokončit polygon**. Escape ruší návrh.
    Oblast není nový herní hotspot. Výběr se převádí přes zoom, natočení a contain-fit
    do původních pixelů konkrétního obrázku; část mimo něj se odmítne.
-3. V **Výber a grafika** zvol operaci a název výsledku:
-   - **Kópia výberu** zkopíruje původní pixely do transparentního PNG. Pro přesný
+3. V **Výběr a grafika** zvol operaci a název výsledku:
+   - **Kopie výběru** zkopíruje původní pixely do transparentního PNG. Pro přesný
      tvar objektu obkresli polygon; obdélník zachová i pozadí uvnitř obdélníku.
      Zdroj se při této místní operaci nemaže ani neopravuje.
-   - **Plynulá PNG slučka** vytvoří 4–24 stejně zarovnaných snímků. Voda vlní texturu,
+   - **Plynulá PNG smyčka** vytvoří 4–24 stejně zarovnaných snímků. Voda vlní texturu,
      mraky ji posouvají tam a zpět, kouř ji jemně vlní a posouvá svisle. Jde o
      periodické deformace původních pixelů s pevnými okraji, nikoli AI video nebo
      simulaci kapaliny. Nastav sílu v pixelech zdroje, počet snímků a fps.
-   - **AI upraviť** upraví vybranou oblast; bez výběru celý zdroj. **AI odstrániť**
-     doplní pozadí za výběrem. **AI oddeliť** provede stejnou opravu a současně
+   - **AI upravit** upraví vybranou oblast; bez výběru celý zdroj. **AI odstranit**
+     doplní pozadí za výběrem. **AI oddělit** provede stejnou opravu a současně
      zachová původní výřez jako samostatnou transparentní vrstvu.
-   - **AI nová lokácia** použije současné pozadí jako stylovou referenci a vytvoří
+   - **AI nová lokace** použije současné pozadí jako stylovou referenci a vytvoří
      další lokaci, aniž přepíše současnou.
-4. **Vytvoriť lokálny asset** nebo výslovné **Spustiť AI úpravu (API kredit)**
+4. **Vytvořit lokální asset** nebo výslovné **Spustit AI úpravu (API kredit)**
    založí úlohu na pozadí. Můžeš mezitím upravovat i ukládat projekt, měnit
    záložku nebo přejít do Game Mode. Přehled **Úlohy na pozadí** ukazuje kroky
-   a nabízí **Otvoriť výsledok**, které obnoví správnou lokaci a zdroj.
+   a nabízí **Otevřít výsledek**, které obnoví správnou lokaci a zdroj.
    Smyčku lze přehrát i procházet po snímcích.
-   **Použiť výsledok v scéne** teprve přiřadí assety a případný animační klip.
-   Operace tvoří jeden krok **Späť**. Pokud mezitím změníš zdroj, jeho umístění
+   **Použít výsledek ve scéně** teprve přiřadí assety a případný animační klip.
+   Operace tvoří jeden krok **Zpět**. Pokud mezitím změníš zdroj, jeho umístění
    nebo rozměry lokace, starý náhled nelze použít přes novější úpravy. Přejmenování
    lokace nebo úpravy jiných objektů mu nevadí. Změna obrázku odpojí jeho původní animace.
-5. **Živý náhľad animácií** přepne pracovní plochu na stejný Pixi renderer jako hra.
-   **Otestovať odtiaľto ↗** otevře interaktivní Game Mode. **Uložiť do projektu**
+5. **Živý náhled animací** přepne pracovní plochu na stejný Pixi renderer jako hra.
+   **Otestovat odsud ↗** otevře interaktivní Game Mode. **Uložit do projektu**
    zapíše pořadí, vlastnosti, vazby i klipy do `src/game/content/project.json`.
 
 ### Přesné oddělení objektu a oprava pozadí
 
-1. Vyber **Zdroj grafickej úpravy → Pozadie lokácie** a operaci
-   **AI · oddeliť objekt + opraviť pozadie**. Nad scénou zvol **Vybrať obdĺžnik**
-   nebo **Vybrať polygón** a volně obkresli celý objekt včetně obrysu. Zdroj je
+1. Vyber **Zdroj grafické úpravy → Pozadí lokace** a operaci
+   **AI · oddělit objekt + opravit pozadí**. Nad scénou zvol **Vybrat obdélník**
+   nebo **Vybrat polygon** a volně obkresli celý objekt včetně obrysu. Zdroj je
    ve výchozím stavu pozadí, i když je vybraná postava. Pro úpravu samostatného
    assetu výslovně zvol **Vybraná obrázková vrstva**; změna zdroje polygon nemaže.
-2. Klikni na **Spresniť / upraviť masku objektu**. Zelený štětec ponechává pixely
+2. Klikni na **Zpřesnit / upravit masku objektu**. Zelený štětec ponechává pixely
    objektu, červený odstraňuje pozadí a umí vytvořit i otvory uvnitř objektu.
    Tyto tahy zároveň určují jisté popředí/pozadí pro segmentaci. Označ několik
    charakteristických barev a také tenké černé obrysy, které mají zůstat.
-3. **Spresniť hranice objektu** spustí vybraný lokální nástroj. U SAM nech zapnuté
-   **Dotiahnuť obrysy a tenké časti**: po rozpoznání objektu se hranice dotáhnou
+3. **Zpřesnit hranice objektu** spustí vybraný lokální nástroj. U SAM nech zapnuté
+   **Dotáhnout obrysy a tenké části**: po rozpoznání objektu se hranice dotáhnou
    podle původních pixelů, což pomáhá například anténám routeru. Pro srovnání lze
-   přepínač vypnout a vrátit se pomocí **Späť v maske**. Tento krok vytvoří základní
+   přepínač vypnout a vrátit se pomocí **Zpět v masce**. Tento krok vytvoří základní
    binární masku; jemnou alfu dopočítá následující samostatný krok.
-   Výsledek zkontroluj a případně uprav štětcem nebo segmentaci zopakuj. **Priblížiť
+   Výsledek zkontroluj a případně uprav štětcem nebo segmentaci zopakuj. **Přiblížit
    objekt**, zoom až 8×, původní obrázek, barevná maska a šachovnice pomohou odhalit
-   chybějící čáry. **Späť v maske** vrací celé tahy i segmentaci; přerušený tah nic
-   neukládá. PNG masku lze také načíst tlačítkem **Načítať PNG masku**; šedé hodnoty
+   chybějící čáry. **Zpět v masce** vrací celé tahy i segmentaci; přerušený tah nic
+   neukládá. PNG masku lze také načíst tlačítkem **Načíst PNG masku**; šedé hodnoty
    0–255 se zachovávají. V panelu **2. Jemné hrany · alpha matting** vyber
-   **ViTMatte + presné kreslené hrany** a klikni **Vypočítať jemnú alfu**.
+   **ViTMatte + přesné kreslené hrany** a klikni **Vypočítat jemnou alfu**.
    Výchozí pásmo 4 px určuje nejisté okolí hrany v původním rozlišení. Oranžovým
    štětcem uvolni chybný pevný okraj, zeleným označ jistý objekt, červeným jisté
    pozadí a výpočet zopakuj. Automaticky chybějící část nejprve přidej zeleně.
-   **Odstrániť farebný lem** odhadne původní barvu pouze v částečných hranách;
+   **Odstranit barevný lem** odhadne původní barvu pouze v částečných hranách;
    vypnutí zachová všechna původní RGB. Změna nastavení se projeví až novým výpočtem.
    Po ruční opravě masky je při odstranění lemu nutný nový výpočet barev před exportem.
    Prohlédni výřez na **bílé i černé** a v režimu **Alfa**; samotná šachovnice
    barevné lemy snadno skryje. Undo vrací i předchozí alfu a odhad barev.
-4. U oddělení/odstranění nastav **Dočistenie pozadia za obrysom** (výchozí 12 px,
+4. U oddělení/odstranění nastav **Dočištění pozadí za obrysem** (výchozí 12 px,
    rozsah 0–64 v původních pixelech). Odstraní i zbytky obrysů nebo stínu mimo
    masku objektu; přesah se skutečně použije na publikované pozadí a šev se
    uvnitř něj jemně spojí. Hodnota 0 zachová původní pozadí přesně mimo objekt.
-   **Prechod švu** (výchozí 2 px, 0–32) určuje plynulý přechod uvnitř přesahu;
+   **Přechod švu** (výchozí 2 px, 0–32) určuje plynulý přechod uvnitř přesahu;
    skutečná šířka je nejvýše velikost přesahu. Na jeho vnější hranici má nulovou
    sílu, samotný objekt se vždy opravuje plně. Hodnota 0 umožní porovnat tvrdý šev.
-   Náhled **Maska opravy pozadia** ukazuje dovolený rozsah změn.
-   **Použiť masku** vrátí schválenou masku do grafického panelu. Teprve **Spustiť AI
+   Náhled **Maska opravy pozadí** ukazuje dovolený rozsah změn.
+   **Použít masku** vrátí schválenou masku do grafického panelu. Teprve **Spustit AI
    úpravu (API kredit)** pošle zdroj a samostatnou opravnou masku službě pro doplnění
    pozadí. Objekt se nikdy negeneruje. Bez placeného API lze místo oddělení zvolit
-   **Kópia výberu → transparentná vrstva**, která použije tutéž masku a původní pixely.
+   **Kopie výběru → transparentní vrstva**, která použije tutéž masku a původní pixely.
 5. V náhledu porovnej originál s opraveným pozadím a vráceným objektem pomocí
    posuvníku. Lze zobrazit také samotný výřez, pozadí nebo rozdílový obraz. Kontrola
-   musí hlásit **0 chýb pri zachovaní pôvodných pixelov a zarovnania**.
+   musí hlásit **0 chyb při zachování původních pixelů a zarovnání**.
    Zlatý rozdíl označuje úmyslné dočištění pozadí v opravném přesahu, modrý změny
    částečných hran při mattingu; červený by
    znamenal chybu objektu nebo změnu vzdáleného okolí a nesmí se publikovat.
    U mattingu se přesně kontroluje jádro a vzdálené okolí; částečné hrany se na novém
    pozadí záměrně liší. To ověřuje zarovnání; správné rozpoznání objektu je potřeba
    zkontrolovat na šachovnici. Přesné složení samo nepozná omylem přibalené pozadí.
-6. **Použiť výsledok v scéne → Uložiť do projektu** nahradí pozadí a přidá oddělenou
+6. V **Pozadí pro scénu** zvol **Celý obnovený výsledek · provider-restored.png**
+   (výchozí) nebo **Kompozice přes masku · image.png**. První varianta použije celý
+   výsledek AI po přesném návratu do původních souřadnic a nevrací původní stíny.
+   Může ale změnit i vzdálené okolí; zkontroluj celé pozadí. Druhá varianta ponechá
+   původní pixely mimo masku, takže při těsném výběru může vrátit stín nebo obrys.
+   Porovnání a nulové metriky dále hodnotí **maskovanou kompozici**, nikoli volitelné
+   celé pozadí AI. Surový `provider-returned.png` obsahuje modelový letterbox,
+   proto se přímo do scény nepřiřazuje.
+7. **Použít výsledek ve scéně → Uložit do projektu** nahradí pozadí a přidá oddělenou
    vrstvu na původní místo. Scéna proto může vypadat stejně. Novou vrstvu skryj nebo
    přesuň, abys viděl opravené pozadí. Konfigurace a assety lze běžně commitnout.
 
+Dřívější výsledek lze otevřít bez regenerace: jako **Zdroj grafické úpravy** zvol
+**Pozadí lokace** (původní zdroj nebo už použité `image.png` / `provider-restored.png`), klikni **Načíst dřívější výsledky (bez API)** a vyber
+**Uložený výsledek**. Pak zvol variantu pozadí a použij výsledek. Archiv lze otevřít
+i po restartu Vite. U už použitého výsledku se vymění pouze pozadí, objekt se
+nezduplikuje. Nabízí pouze odstranění/oddělení se shodnou cestou i SHA-256
+zdroje a platnými PNG. U změněného zdroje se nic nepoužije. Starší výřezy v2
+zůstávají v původních rozměrech, nové operace už vytvářejí oříznuté assety.
+
 ### Diagnostika inpaintingu
 
-U **AI · odstrániť a opraviť pozadie** nebo **AI · oddeliť objekt + opraviť pozadie**
-nastav výběr/masku, přesah a přechod a klikni **Skontrolovať prípravu (bez API)**.
+U **AI · odstranit a opravit pozadí** nebo **AI · oddělit objekt + opravit pozadí**
+nastav výběr/masku, přesah a přechod a klikni **Zkontrolovat přípravu (bez API)**.
 Tato úloha nevolá model, nepotřebuje klíč a nemá použitelné tlačítko pro změnu scény.
 V **Diagnostika inpaintingu** přepínej původní obrázek, masku objektu, rozšířenou masku,
 přesný vstup pro model, API masku a kontrolní návrat bez AI. Zoom 1:1/2× a posuvný
@@ -212,7 +228,7 @@ U odstranění/oddělení se nyní archivují navíc:
 - `round-trip.png` — odeslaný obrázek vrácený zpět **bez AI**, kontrola převzorkování;
 - `provider-restored.png` — odpověď vrácená do původních souřadnic před kompozicí;
 - `provider-difference.png` — absolutní RGB rozdíl odpovědi proti kontrolnímu návratu, zesílený 4×;
-- `image.png` — finální pozadí; `recipe.json` obsahuje parametry, geometrii, metriky a upozornění.
+- `image.png` — maskovaná kompozice, volitelná varianta pozadí; `recipe.json` obsahuje parametry, geometrii, metriky a upozornění.
 
 Při kontrole postupuj od masky: nezůstaly obrysy/stín mimo rozšířenou oblast, není
 naopak přesah příliš velký? Pak ověř přesný vstup a API masku. `round-trip.png`
@@ -228,8 +244,8 @@ Audit odhalil nenulovou sílu starého švu na vnější hranici (u jednoho ulo�
 výřezu 134–204/255 těsně vedle nuly). Nový přechod končí nulou, nezměkčuje masku
 samotného assetu. Testy používají identickou odpověď modelu, řízený barevný posun,
 chybnou velikost, tenké části při zmenšení i částečnou alfu; žádné placené generování.
-Existující artefakty neobsahují původní surovou odpověď, takže příčinu jejich barevné
-odchylky nelze zpětně jednoznačně určit. Nový skutečný výsledek posuzuj těmito kroky
+U starších artefaktů bez surové odpovědi nelze příčinu barevné
+odchylky zpětně jednoznačně určit. Nový skutečný výsledek posuzuj těmito kroky
 dříve než změnou modelu nebo barevným dorovnáváním.
 
 Lokální automatické spřesnění nainstaluj jednou pomocí **`npm run setup:segmentation`**
@@ -256,9 +272,9 @@ Checkpoint má 156 008 466 bajtů a SHA-256
 Do ignorovaného `.env.local` nastav `SAM2_CHECKPOINT` na absolutní cestu k tomuto
 souboru; `SAM2_CONFIG=configs/sam2.1/sam2.1_hiera_t.yaml`. Pokud nepoužíváš výše
 uvedený interpreter, nastav i `SEGMENTATION_PYTHON`. Restartuj `npm run dev`.
-V okně **Spresniť / upraviť masku objektu → Segmentácia hraníc** se zpřístupní
-**SAM 2 · lokálny AI model**; vyber ho a klikni **Spresniť hranice objektu**.
-Volitelný experimentální **Detailný prechod** analyzuje navíc kontextový výřez, takže má model
+V okně **Zpřesnit / upravit masku objektu → Segmentace hranic** se zpřístupní
+**SAM 2 · lokální AI model**; vyber ho a klikni **Zpřesnit hranice objektu**.
+Volitelný experimentální **Detailní přechod** analyzuje navíc kontextový výřez, takže má model
 k dispozici více pixelů samotného objektu. Odlišnou interpretaci výřezu odmítne;
 oba průchody i finální maska respektují explicitní tahy štětce. Výřez nemusí
 být lepší pro každý objekt, proto je výchozí vypnutý.
@@ -309,12 +325,42 @@ Vite ignoruje `.local-tools/`, aby prostředí a modely nevyčerpávaly file wat
 Pipeline vychází z propojení segmentace a trimapu v
 [Matte Anything](https://github.com/hustvl/Matte-Anything), ale zachovává současný
 editor. **SAM 2 určí objekt → ViTMatte odhadne alfu → úzký closed-form průchod podle
-původních barev zpřesní kreslené hrany.** Samostatný **Closed-form · pôvodné farby**
+původních barev zpřesní kreslené hrany.** Samostatný **Closed-form · původní barvy**
 je dostupný pro porovnání. Pracujeme v původním rozlišení, u větších obrázků v
 překrývaných dlaždicích 768 px; žádné zmenšení ani posun výsledného plátna.
 Známé popředí/pozadí z trimapu zůstává pevné, proto špatný jistý pixel oprav štětcem.
-Nejde o generativní překreslování. SAM 3 ani BiRefNet nejsou přidané jako další závislosti;
-pro tento experiment jsme potřebovali doladit již vybraný konkrétní objekt.
+Nejde o generativní překreslování. SAM 3 je volitelná segmentační alternativa popsaná níže;
+BiRefNet není závislostí. Matting zůstává samostatný krok, protože nový segmentační
+model sám o sobě nezaručuje lepší antialiasing kreslené hrany.
+
+### Volitelný SAM 3
+
+Segmentaci pomocí bodů a rámu zajišťuje lokální
+[SAM 3 Tracker v Transformers](https://huggingface.co/docs/transformers/model_doc/sam3_tracker).
+Zelené/červené tahy, detailní průchod, dotažení původních hran a následný ViTMatte
+fungují stejně jako u SAM 2. Výsledkem je maska v původním rozlišení, žádné nové RGB.
+SAM 2 zůstává dostupný pro srovnání; automatický fallback na jiný model neprobíhá.
+
+```sh
+npm run setup:sam3 -- --runtime-only  # izolovaný CPU runtime, bez vah
+npm run setup:sam3                   # runtime + explicitní stažení schválených vah
+```
+
+Instalátor používá Python 3.12 a samostatné `.local-tools/sam3/` (PyTorch 2.7.1 CPU,
+Transformers 5.20.2), takže nemění fungující SAM 2 / ViTMatte. Oficiální váhy
+[facebook/sam3](https://huggingface.co/facebook/sam3) vyžadují schválený přístup.
+Schval jej na stránce modelu a vlož `HF_TOKEN` do ignorovaného `.env.local` nebo
+prostředí shellu. Instalátor neodsouhlasí podmínky za uživatele a token nevypisuje.
+Model uloží do `.local-tools/models/sam3/`; pak restartuj Vite a zvol
+**Segmentace hranic → SAM 3 · lokální AI model**. Volitelné serverové `SAM3_PYTHON`
+a `SAM3_MODEL` umožňují jiné lokální cesty. Za běhu editoru se nic nestahuje,
+načítají se pouze lokální safetensors bez vzdáleného modelového kódu.
+
+V tomto prostředí je ověřený runtime a skutečný offline průchod adaptérem na malé
+náhodně inicializované testovací architektuře (tvary vstupů a nativní souřadnice,
+nikoli kvalita). Chybí schválený přístup k vahám; reálné srovnání SAM 3 proti SAM 2
+proto zatím není ověřené. Pravidlový test s naučenými vahami se do jejich instalace
+výslovně přeskočí. Produkce model ani Python nepotřebuje.
 
 **`npm run compare:matting`** reprodukuje porovnání na routeru ze zkušební lokace a
 druhém kresleném objektu s tenkou čárou a otvorem. Vyžaduje instalovaný SAM 2 Large
@@ -347,7 +393,12 @@ kontroly. Recept není další definice obsahu; vazby zapisuje projektový JSON.
 Masku lze znovu importovat nad odpovídajícím původním zdrojem. Hash a rozměry se
 kontrolují na serveru před publikováním. Originály se nepřepisují.
 
-Výřez má **celé původní plátno a stejné souřadnice**. Binární režim zachovává původní
+Statický výřez (`cutout` / `extract`) je **oříznutý na minimální rám všech pixelů
+s nenulovou alfou**. `recipe.json` v3 a výsledek obsahují `cutoutFrame` s nativním
+`x,y,width,height,sourceWidth,sourceHeight`. Editor přes `croppedPlacement` přepočítá
+contain/stretch i rotaci kolem původního středu; při vložení zůstávají všechny pixely
+na stejném místě. `cutout-full.png` je pouze archivní celé plátno pro diagnostiku.
+PNG sekvence prostředí a postav si zachovávají společné celé plátno. Binární režim zachovává původní
 RGB/alfa; v matting režimu je výstupní alfa `min(alfa zdroje, matte)` a neaplikuje se
 dvakrát. Plně kryté jádro je pixelově původní. U vyhlazeného okraje neprůhledné
 fotografie či kresby už původní RGB obsahuje směs s pozadím: samotné přidání alfy
@@ -357,7 +408,7 @@ nových detailů; může však změnit jejich RGB. Pro absolutní shodu všech R
 U již transparentního zdroje se jeho barvy nepřepočítávají.
 
 Oprava pozadí používá jinou masku s přesahem (výchozí 12 px), aby nezůstávaly staré
-čáry. Mimo opravu zůstává původní pozadí. Kontrola složení vyžaduje
+čáry. U maskované varianty mimo opravu zůstává původní pozadí. Kontrola maskovaného složení vyžaduje
 `unexpectedPixels: 0`, zvlášť eviduje `cleanupPixels` v opravném okolí a `edgePixels`
 na částečných hranách mattingu. Přesnou rekonstrukci těchto hran nad novým pozadím
 nelze slíbit; náhled a porovnání nesmějí tvrdit opak. Starší vytvořené PNG se nemění,
@@ -376,7 +427,7 @@ Pro AI nastav serverové `OPENAI_API_KEY` a volitelně `OPENAI_IMAGE_MODEL` /
 `OPENAI_IMAGE_QUALITY` v ignorovaném `.env.local`, pak restartuj Vite. Výchozí adaptér v `dev/sceneArt.ts` používá
 [OpenAI Images edit API](https://developers.openai.com/api/reference/resources/images/methods/edit)
 a model **`gpt-image-2.5-sunburst` s kvalitou `high`**. V grafickém panelu vyber AI operaci
-a nastav **AI model obrázkov** / **Kvalita AI obrázka**. Pro porovnání lze přímo přepnout
+a nastav **AI model obrázků** / **Kvalita AI obrázku**. Pro porovnání lze přímo přepnout
 na `gpt-image-1.5`; běžné kvality jsou `low`, `medium`, `high`, `auto`, Sunburst nabízí
 také `xhigh` a `max`. Při přepnutí na model bez podpory vyšší kvality se výběr vrátí
 na `high`. Samotné přepnutí nic negeneruje. Jiný nebo datovaný model lze nabídnout
@@ -416,18 +467,18 @@ Chyba ani výpadek spojení nikdy automaticky neopakuje placenou operaci.
 Rozpracované i hotové úlohy přežijí reload stránky, **nikoli restart Vite** — jde
 záměrně o frontu v paměti serveru, bez další služby nebo databáze. Před restartem
 použij a ulož potřebné výsledky. Vytvořené grafické soubory a recepty zůstanou na
-disku i po restartu; projektové vazby mění výhradně **Použiť** a projektový save.
+disku i po restartu; projektové vazby mění výhradně **Použít** a projektový save.
 Obnovení stránky samo neuchovává neuložený návrh projektu, proto jej nejdřív ulož.
 
-V **Dev Mode → Animácie** vyber postavu a rozbal **Textová réžia · experiment**:
+V **Dev Mode → Animace** vyber postavu a rozbal **Textová režie · experiment**:
 
 1. Zadej pokyn, např. „Občas nervózně mrkne, během dialogu mluví a jemně dýchá.“
-2. Výslovně spusť **Navrhnúť správanie cez AI (API kredit)**. Editor posílá text,
+2. Výslovně spusť **Navrhnout chování přes AI (API kredit)**. Editor posílá text,
    popisy dostupných klipů a současná nastavení; neposílá obrázek ani celé herní dialogy.
 3. Později otevři výsledek ve frontě. Návrh vysvětlí změny a omezení. Náhled umožňuje
    samostatně zapínat oči, ústa a idle, přiblížit postavu nebo vyvolat mrknutí.
-4. **Použiť navrhnuté správanie** změní návrh postavy v jednom kroku Undo. Potom
-   **Uložiť do projektu** a **Otestovať odtiaľto ↗**. Hlasy, dialogy, reakce a mapy
+4. **Použít navržené chování** změní návrh postavy v jednom kroku Undo. Potom
+   **Uložit do projektu** a **Otestovat odsud ↗**. Hlasy, dialogy, reakce a mapy
    Rhubarb zůstávají zachované; při změně talk klipu se stará mapa jeho snímků odpojí.
 
 Tato první verze **konfiguruje existující klipy**, nevyrábí nové kreslené snímky.
@@ -470,7 +521,7 @@ hlavního okna. Na úzkém displeji má inventář horizontální posun. Celá s
 - Inventární předmět **přetáhni na druhý předmět** nebo **do scény**. Pointer
   capture podporuje myš i dotyk; vizuální náhled předmětu a cíl potvrzují drop.
   Neplatný/cancelovaný drop nic nespotřebuje. Inventář má vlastní `item.image`
-  (**Inventárová ikonka**); nemusí odpovídat obrázku hotspotu. Nový předmět krátce
+  (**Inventární ikonka**); nemusí odpovídat obrázku hotspotu. Nový předmět krátce
   povyroste, zprůhlední a přeletí do kapsy. Načtení uložené hry tento efekt nespouští.
 - Alternativa bez tažení: klikni/tapni na předmět a následně na cíl. Výběr zároveň
   zobrazí jeho popis. Tab/Enter ovládá skutečná HTML tlačítka; **Objekty** nabízí
@@ -487,7 +538,7 @@ hlavního okna. Na úzkém displeji má inventář horizontální posun. Celá s
 - Escape ruší výběr/tah nebo zavírá menu. Rozhovor ukončuje jeho autorská volba
   bez `next`; Escape jej nezavírá. Dialog blokuje akce světa.
   Efekty a animace respektují reduced motion; drag/drop zůstává funkční.
-- **Menu** obsahuje ruční **Uložiť hru**, **Načítať hru** a **Nová hra**. Postup
+- **Menu** obsahuje ruční **Uložit hru**, **Načíst hru** a **Nová hra**. Postup
   zůstává v jednom verzovaném localStorage slotu daného originu, oddělený od obsahu.
   Načítá se až na požádání a obnovuje nabídku aktuálního dialogového uzlu. Nová hra slot nemaže.
   Poškozené, nekompatibilní či nedostupné úložiště nepřepíše aktuální postup.
@@ -579,7 +630,7 @@ i ve hře; pro původní protažený vzhled nastav explicitně `stretch`.
 Obrázky automaticky reagují jen na pixely s alfa hodnotou alespoň 32/255;
 průhledné okraje, díry a volný prostor při `contain` propouštějí hover, kliky
 i dropy na další objekt pod nimi. To platí pro PNG/WebP i rasterizované SVG.
-V inspektoru **Klikateľná oblasť** přepíná automatickou masku a ruční obdélník:
+V inspektoru **Klikatelná oblast** přepíná automatickou masku a ruční obdélník:
 `hitTest: "bounds"` dává přednost celému autorskému `bounds` včetně rotace.
 Bez obrázku a polygonu se používá obdélník; `hitTest: "alpha"` nebo chybějící nastavení
 volí automatickou masku. `alphaThreshold` lze nastavit na celé číslo 1–255.
@@ -665,21 +716,21 @@ Instrukce pro agenty jsou v [AGENTS.md](AGENTS.md).
 
 ## Animace postav v Dev Mode: hotové PNG a spritesheety
 
-1. V **Lokácie** vyber postavu a stiskni **Otvoriť animačné štúdio**, nebo otevři
-   samostatnou záložku **Animácie** a vyber **Animovaná postava**. Celý pracovní
+1. V **Lokace** vyber postavu a stiskni **Otevřít animační studio**, nebo otevři
+   samostatnou záložku **Animace** a vyber **Animovaná postava**. Celý pracovní
    prostor nabízí velký Pixi náhled, přiřazení vlevo a knihovnu/nastavení vpravo.
-   Na menší obrazovce se části skládají pod sebe. **Priblíženie postavy** zvětší
+   Na menší obrazovce se části skládají pod sebe. **Přiblížení postavy** zvětší
    detail tváře až 4×. Všechny pózy musí mít stejné plátno,
    pozici postavy a průhledné okraje jako zdroj; individuální ořez nebo změna
    rozměrů způsobuje poskakování a import jej proto odmítne.
-2. Vyber typ (blink / talk / idle / expression), název a **PNG snímky alebo atlas**.
+2. Vyber typ (blink / talk / idle / expression), název a **PNG snímky nebo atlas**.
    PNG sekvence se řadí přirozeně podle názvů (`frame-2` před `frame-10`).
-   Pro spritesheet vyber jediný PNG a jeho JSON do **Spritesheet metadáta**.
+   Pro spritesheet vyber jediný PNG a jeho JSON do **Spritesheet metadata**.
    Podporovaný je Pixi/TexturePacker objekt `frames`, volitelné `animations`,
    `duration`, `sourceSize` a `spriteSourceSize`. Vyber sekvenci, pokud jich atlas
    obsahuje víc. Oříznuté snímky se doplní průhlednými okraji podle metadat;
    otočená políčka atlasu (`rotated: true`) nejsou podporovaná — exportuj bez rotace.
-3. **Importovať animáciu** validuje soubory a uloží nový adresář
+3. **Importovat animaci** validuje soubory a uloží nový adresář
    `src/assets/animations/<uuid>/` se snímky `frame-001.png` atd. Celý adresář se
    zveřejní atomicky až po úspěšném importu. Limit je 120 snímků, 32 MB vstupu
    a 64 milionů pixelů výsledných pláten. Nic se automaticky neškáluje.
@@ -687,31 +738,31 @@ Instrukce pro agenty jsou v [AGENTS.md](AGENTS.md).
    `atlas.png` + `atlas.json`; `clip.json` je importní záznam se SHA-256 zdroje.
    Jediná aktuální konfigurace hry nadále patří do `project.json`.
    U blink/talk import navíc porovná snímky s originálem a najde oblast změn.
-   Stejnou kontrolu pro starší klip spustí **Zistiť zmenenú oblasť**. Transparentní
+   Stejnou kontrolu pro starší klip spustí **Zjistit změněnou oblast**. Transparentní
    RGB šum se nepočítá jako změna. Při příliš rozsáhlých změnách vymez oblast
    ručně v původních pixelech; okolí mimo ni se při přehrávání ignoruje.
 4. Přehrávej náhled, vybírej snímky, měň pořadí, fps nebo délku konkrétního snímku.
-   Atlasová `duration` se zachová. **Rýchlosť prehrávania (×)** násobí rychlost
-   celého klipu; **Rovnomerné časovanie podľa fps** odstraní individuální délky.
-   **Opakovať klip** řídí náhled, idle a talk; jednorázový idle drží poslední pózu.
-5. **Priradiť postave** uloží klip do návrhu a podle typu jej přiřadí jako blink,
-   talk, idle nebo reakci při kliknutí (expression). Existující klipy vybírej v **Animácia na úpravu**; změny klipu
-   potvrď **Pridať / aktualizovať animáciu** nebo znovu **Priradiť postave**.
+   Atlasová `duration` se zachová. **Rychlost přehrávání (×)** násobí rychlost
+   celého klipu; **Rovnoměrné časování podle fps** odstraní individuální délky.
+   **Opakovat klip** řídí náhled, idle a talk; jednorázový idle drží poslední pózu.
+5. **Přiřadit postavě** uloží klip do návrhu a podle typu jej přiřadí jako blink,
+   talk, idle nebo reakci při kliknutí (expression). Existující klipy vybírej v **Animace na úpravu**; změny klipu
+   potvrď **Přidat / aktualizovat animaci** nebo znovu **Přiřadit postavě**.
    Jedna postava může mít různé kompatibilní klipy pro každý způsob spouštění.
 6. Nastav automatické mrkání (náhodný interval), animaci během konkrétního dialogu,
-   základní idle nebo **Animácia pri interakcii** pro kliknutí nebo použití předmětu. Reakce
+   základní idle nebo **Animace při interakci** pro kliknutí nebo použití předmětu. Reakce
    i mrknutí se přehrají jednou a vrátí svou oblast k základu. Lokální mrkání
    pokračuje i během mluvení. Procedurální pohyb se aplikuje na celou sestavu.
-   **Kombinácia postavy** umožňuje zvlášť testovat oči, ústa a idle, pozastavit
-   přehrávání, vynutit **Mrknúť teraz** a zobrazit oblasti. Testovací přepínače
+   **Kombinace postavy** umožňuje zvlášť testovat oči, ústa a idle, pozastavit
+   přehrávání, vynutit **Mrknout teď** a zobrazit oblasti. Testovací přepínače
    nemění přiřazení. **Vybraný klip** nabízí samostatný náhled a časovou osu.
-7. **Game Mode** nebo **Otestovať odtiaľto** okamžitě testuje návrh.
-   **Uložiť do projektu** zapíše konfiguraci a vazby do JSON; potom commitni JSON
+7. **Game Mode** nebo **Otestovat odsud** okamžitě testuje návrh.
+   **Uložit do projektu** zapíše konfiguraci a vazby do JSON; potom commitni JSON
    i nové assety. Neuložené změny klipu zůstanou jen v panelu. Při odstranění
    definice se soubory automaticky nemažou; jiné postavy je mohou stále používat.
 
 První příklad: v editoru zvol lokaci **Animačný ateliér**, pak
-**Otestovať odtiaľto**. Postava z `woman.png` náhodně mrká po 3–6 s a mrkne také
+**Otestovat odsud**. Postava z `woman.png` náhodně mrká po 3–6 s a mrkne také
 při kliknutí. V dialogu zvol **Porozprávať sa.** pro repliku s nezávislou animací úst;
 mrkání i idle pohyb pokračují. Dva nové lokální snímky úst reprodukuje
 `python3 experiments/woman-blink/generate_talk.py` (Pillow); zachovávají alfa kanál
@@ -768,8 +819,8 @@ automaticky nemažou. `OPENAI_API_KEY` lze použít pro grafické úpravy lokac�
    pro svůj systém. Zachovej i jeho doprovodný adresář `res/`. Nastav
    `RHUBARB_BIN=/absolutni/cesta/rhubarb` (Windows: `rhubarb.exe`), nebo jej přidej
    do PATH; restartuj Vite. Ověřeno s 1.14.0. Binárku lze držet v ignorovaném `.local-tools/`; necommituje se a produkce ji nepotřebuje.
-3. V **Animácie** vyber postavu. Vlevo otevři **Hlas ElevenLabs**, stiskni
-   **Načítať hlasy a modely** a přiřaď Voice ID a vyber **Model ElevenLabs**.
+3. V **Animace** vyber postavu. Vlevo otevři **Hlas ElevenLabs**, stiskni
+   **Načíst hlasy a modely** a přiřaď Voice ID a vyber **Model ElevenLabs**.
    Seznam obsahuje všechny TTS modely vrácené `/v1/models`; ID lze vložit i přímo.
    Bez API jsou k dispozici označené předvolby, jejich dostupnost ověří server.
    Katalog vrací prvních 100 hlasů. Vyber model/hlas vhodný pro slovenštinu.
@@ -783,30 +834,30 @@ automaticky nemažou. `OPENAI_API_KEY` lze použít pro grafické úpravy lokac�
    Při 402 ověř tarif a kredity: [hlasy z Voice Library nejsou na bezplatném tarifu dostupné přes API](https://elevenlabs.io/docs/eleven-creative/voices/voice-library),
    i když je lze přehrát na webu. Vyber hlas dostupný pro svůj tarif nebo importuj WAV.
 4. Otevři **Dabing a lip-sync**. Vyber repliku z existujících dialogů a uprav text
-   (nové uzly a větvení dál vytvářej v **Dialógy**). Potvrď zaškrtávátko placeného
-   generování této repliky a stiskni **Vygenerovať dabing ElevenLabs**. Po úspěchu
+   (nové uzly a větvení dál vytvářej v **Dialogy**). Potvrď zaškrtávátko placeného
+   generování této repliky a stiskni **Vygenerovat dabing ElevenLabs**. Po úspěchu
    se potvrzení zruší; změna textu sama žádné API volání nevyvolává. Požadavky se
    automaticky neopakují. Samotné načtení katalogu negeneruje audio.
-5. Alternativně **Nahrať WAV** importuje vlastní nahrávku bez API. Vstup je
+5. Alternativně **Nahrát WAV** importuje vlastní nahrávku bez API. Vstup je
    nekomprimovaný WAV PCM 16-bit, mono/stereo, 8–48 kHz, max. 20 MB / 180 s.
    Jiné kodeky nejprve exportuj do tohoto formátu. ElevenLabs vrací `pcm_22050`,
    server doplní WAV hlavičku — není potřeba FFmpeg ani placený 44.1kHz WAV export.
-6. **Analyzovať Rhubarb** spustí místní CLI s `-r phonetic -f json --threads 2`.
+6. **Analyzovat Rhubarb** spustí místní CLI s `-r phonetic -f json --threads 2`.
    Režim phonetic nevyžaduje anglický text a je vhodný pro slovenské repliky.
    Analýza má timeout 120 s, běží bez shellu a dostává pouze ověřený lokální WAV.
-7. Vlevo v **Tvary úst Rhubarb** přiřaď snímky regionálního klipu **Rozprávanie**.
+7. Vlevo v **Tvary úst Rhubarb** přiřaď snímky regionálního klipu **Mluvení**.
    Vyplň alespoň X (klid) a C (otevřená ústa). A/B/C/D/E/F/G/H/X odpovídají
    [tvarům Rhubarbu](https://github.com/DanielSWolf/rhubarb-lip-sync#mouth-shapes).
    Chybějící A použije X → A → snímek 1; ostatní otevřené tvary C → B → X → snímek 1.
    Bez mapování se při přehrávání zvuku použije běžná smyčka talk.
 8. Přehrávej/pozastavuj audio v náhledu, posouvej jeho čas a přibliž tvář. Oči
-   náhodně mrkají a idle pokračuje nezávisle. **Uložiť do projektu** zapíše vazby,
+   náhodně mrkají a idle pokračuje nezávisle. **Uložit do projektu** zapíše vazby,
    hlas a mapování do JSON. **Game Mode** okamžitě přehraje tentýž návrh.
 
 **Titulky** se upravují ve stejném panelu pod správou dabingu. `text` uzlu je
 původní text pro TTS včetně tagů. Hráč ve výchozím stavu vidí text bez hranatých
-závorek a jejich obsahu (včetně vnořených tagů). Volitelné **Vlastný text titulkov**
-(`subtitle` uzlu, také v záložce Dialógy) jej nahradí; prázdné pole obnoví automatiku.
+závorek a jejich obsahu (včetně vnořených tagů). Volitelné **Vlastní text titulků**
+(`subtitle` uzlu, také v záložce Dialogy) jej nahradí; prázdné pole obnoví automatiku.
 Změna titulků neznehodnotí audio ani lip-sync.
 
 Nové generování používá [Create speech with timing](https://elevenlabs.io/docs/api-reference/text-to-speech/convert-with-timestamps)
@@ -817,9 +868,9 @@ chybějící zarovnání nebo odlišný vlastní přepis používají **označen
 délky textu; nejde o rozpoznání řeči. Nové audio kvůli titulkům automaticky nevzniká.
 
 V seznamu úseků můžeš změnit text, začátek/konec v sekundách a posunout náhled.
-**Rozdeliť úsek** dělí v pozici kurzoru v textu, jinak u nejbližšího prostředního
-slova; **Zlúčiť** spojí následující úsek. **Obnoviť automatické titulky** zahodí ruční
-časování a přepočte úseky lokálně. Poté použij **Uložiť do projektu**. Úseky jsou
+**Rozdělit úsek** dělí v pozici kurzoru v textu, jinak u nejbližšího prostředního
+slova; **Sloučit** spojí následující úsek. **Obnovit automatické titulky** zahodí ruční
+časování a přepočte úseky lokálně. Poté použij **Uložit do projektu**. Úseky jsou
 v `speech.subtitles` (`text` je otisk výchozího zobrazeného textu, `timing` původ
 časování, `cues` obsahuje `start`, `end`, `text`). Změna celého textu titulků dočasně
 použije nové automatické úseky místo starých ručních; pro jejich zápis stiskni obnovu.
@@ -845,7 +896,7 @@ Konfigurace repliky vypadá například takto:
 ```
 
 `actor` určuje konkrétní postavu pro daný uzel; při generování/importu se přiřadí
-vybraná postava. **Priradiť hovoriacu postavu** ji změní bez generování audia.
+vybraná postava. **Přiřadit mluvící postavu** ji změní bez generování audia.
 `speech.text` je kopie namluveného textu: po editaci repliky editor ukáže upozornění
 a hra staré audio nepřehraje. Nová generace/import staré časování odpojí. Uložit lze
 záměrně i rozpracovaný zastaralý dabing. Save/check ověřují skutečný WAV, délku a
@@ -866,7 +917,7 @@ motion ponechá původní kresbu, audio se přehrává dál.
 startovního uzlu, jeho úvodní text se automaticky nepřehrává. `choice.next` spustí
 repliku cíle; volba bez `next` ukončí rozhovor a zachová své efekty/zprávu. Bez
 navazujících větví nabízí vstupní fáze **Porozprávať sa.** k poslechu samotného uzlu.
-Vytváření témat i vazeb dál probíhá v **Dialógy**; není potřeba nový datový formát.
+Vytváření témat i vazeb dál probíhá v **Dialogy**; není potřeba nový datový formát.
 Souběžné kliknutí spotřebuje synchronní zámek před React renderem, přechody mají
 300ms prodlevu proti dvojkliku/dvojitému tapnutí, která se při dalších tapnutích
 prodlouží až do klidu vstupu; opakování držených kláves

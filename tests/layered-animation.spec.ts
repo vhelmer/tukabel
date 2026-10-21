@@ -86,7 +86,7 @@ async function seed(workspace: { root: string; source: string }) {
             id: 'start',
             speaker: 'Test',
             text: 'Mrkám aj rozprávam.',
-            choices: [{ id: 'end', text: 'Koniec' }],
+            choices: [{ id: 'end', text: 'Konec' }],
           },
         ],
       },
@@ -180,10 +180,10 @@ async function color(
 }
 async function save(page: Page) {
   await page
-    .getByRole('button', { name: 'Uložiť do projektu', exact: true })
+    .getByRole('button', { name: 'Uložit do projektu', exact: true })
     .click();
   await expect(
-    page.getByRole('status', { name: 'Stav editora' }),
+    page.getByRole('status', { name: 'Stav editoru' }),
   ).toContainText('Uložené do');
 }
 
@@ -195,38 +195,38 @@ test('independent regional playback preserves alpha, ignores unrelated frame edi
   await seed(workspace);
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await openEditor(page, workspace.url);
-  await page.getByRole('button', { name: 'Animácie', exact: true }).click();
+  await page.getByRole('button', { name: 'Animace', exact: true }).click();
   await page
     .getByLabel('Animovaná postava', { exact: true })
     .selectOption(JSON.stringify(['room', 'actor']));
   const canvas = page.locator('.character-preview-canvas canvas');
   await expect(canvas).toHaveCount(1);
-  await page.getByRole('button', { name: 'Mrknúť teraz', exact: true }).click();
+  await page.getByRole('button', { name: 'Mrknout teď', exact: true }).click();
   await color(canvas, 160, 240, 80, 50, [20, 40, 160]);
   await color(canvas, 160, 240, 80, 110, [28, 23, 32]);
   // Source alpha=180 is drawn once, not doubled by an overlay above the body.
   await color(canvas, 160, 240, 70, 150, [36, 134, 94]);
-  await page.getByLabel('Testovať mrkanie', { exact: true }).uncheck();
+  await page.getByLabel('Testovat mrkání', { exact: true }).uncheck();
   await color(canvas, 160, 240, 80, 50, [250, 220, 0]);
   await color(canvas, 160, 240, 80, 110, [28, 23, 32]);
-  await page.getByLabel('Testovať rozprávanie', { exact: true }).uncheck();
+  await page.getByLabel('Testovat mluvení', { exact: true }).uncheck();
   await color(canvas, 160, 240, 80, 110, [160, 30, 40]);
-  await page.getByLabel('Testovať mrkanie', { exact: true }).check();
-  await page.getByRole('button', { name: 'Mrknúť teraz', exact: true }).click();
+  await page.getByLabel('Testovat mrkání', { exact: true }).check();
+  await page.getByRole('button', { name: 'Mrknout teď', exact: true }).click();
   await color(canvas, 160, 240, 80, 50, [20, 40, 160]);
   await color(canvas, 160, 240, 80, 110, [160, 30, 40]);
-  await page.getByLabel('Testovať rozprávanie', { exact: true }).check();
+  await page.getByLabel('Testovat mluvení', { exact: true }).check();
   await page
-    .getByRole('button', { name: 'Pozastaviť kombináciu', exact: true })
+    .getByRole('button', { name: 'Pozastavit kombinaci', exact: true })
     .click();
   const still = await canvas.screenshot();
   await page.waitForTimeout(150);
   expect(await canvas.screenshot()).toEqual(still);
   await page
-    .getByRole('button', { name: 'Prehrať kombináciu', exact: true })
+    .getByRole('button', { name: 'Přehrát kombinaci', exact: true })
     .click();
   await page
-    .getByLabel('Procedurálny pohyb', { exact: true })
+    .getByLabel('Procedurální pohyb', { exact: true })
     .selectOption('breath');
   await save(page);
   await page
@@ -245,10 +245,10 @@ test('independent regional playback preserves alpha, ignores unrelated frame edi
   await page
     .getByRole('button', { name: 'Dokončiť repliku', exact: true })
     .click();
-  await page.getByRole('button', { name: 'Koniec', exact: true }).click();
+  await page.getByRole('button', { name: 'Konec', exact: true }).click();
   await page.getByRole('button', { name: 'Dev Mode', exact: true }).click();
   await page
-    .getByLabel('Základná animácia', { exact: true })
+    .getByLabel('Základní animace', { exact: true })
     .selectOption('mouth');
   await save(page);
   await page.getByRole('button', { name: 'Game Mode', exact: true }).click();
@@ -404,26 +404,26 @@ test('existing Codex blink and mouth demo run simultaneously in a dialogue', asy
     path: testInfo.outputPath('codex-simultaneous-dialogue.png'),
   });
   await page.getByRole('button', { name: 'Dev Mode', exact: true }).click();
-  await page.getByRole('button', { name: 'Animácie', exact: true }).click();
+  await page.getByRole('button', { name: 'Animace', exact: true }).click();
   await page
     .getByLabel('Animovaná postava', { exact: true })
     .selectOption(JSON.stringify(['animation-lab', 'blink-character']));
   await page
-    .getByRole('button', { name: 'Zistiť zmenenú oblasť', exact: true })
+    .getByRole('button', { name: 'Zjistit změněnou oblast', exact: true })
     .click();
-  await expect(page.getByLabel('Oblasť · X (px)', { exact: true })).toHaveValue(
+  await expect(page.getByLabel('Oblast · X (px)', { exact: true })).toHaveValue(
     String(eyes.x),
   );
   await expect(
-    page.getByLabel('Oblasť · šírka (px)', { exact: true }),
+    page.getByLabel('Oblast · šířka (px)', { exact: true }),
   ).toHaveValue(String(eyes.width));
   await page
-    .getByLabel('Priblíženie postavy', { exact: true })
+    .getByLabel('Přiblížení postavy', { exact: true })
     .selectOption('4');
-  await page.getByLabel('Zobraziť oblasti', { exact: true }).check();
+  await page.getByLabel('Zobrazit oblasti', { exact: true }).check();
   await expect(page.locator('.character-preview-canvas canvas')).toHaveCount(1);
   await expect(page.locator('.character-preview-canvas')).not.toContainText(
-    'Načítavam',
+    'Načítám',
   );
   await page.screenshot({
     path: testInfo.outputPath('codex-animation-studio.png'),

@@ -34,6 +34,7 @@ export function MaskEditor({
   available?: {
     grabcut: boolean;
     sam2: boolean;
+    sam3?: boolean;
     vitmatte?: boolean;
     closedForm?: boolean;
   };
@@ -75,7 +76,7 @@ export function MaskEditor({
   const [revision, setRevision] = useState(0),
     [ready, setReady] = useState(false),
     [busy, setBusy] = useState(false),
-    [message, setMessage] = useState('Načítavam pôvodné pixely…');
+    [message, setMessage] = useState('Načítám původní pixely…');
   const [tool, setTool] = useState<'add' | 'erase' | 'unknown' | 'inspect'>(
       'add',
     ),
@@ -83,8 +84,8 @@ export function MaskEditor({
     [radius, setRadius] = useState(8),
     [zoom, setZoom] = useState(1),
     [frameWidth, setFrameWidth] = useState(900);
-  const [method, setMethod] = useState<'grabcut' | 'sam2'>(
-    available?.sam2 ? 'sam2' : 'grabcut',
+  const [method, setMethod] = useState<'grabcut' | 'sam2' | 'sam3'>(
+    available?.sam3 ? 'sam3' : available?.sam2 ? 'sam2' : 'grabcut',
   );
   const [refineEdges, setRefineEdges] = useState(initial?.refineEdges ?? true);
   const [detailPass, setDetailPass] = useState(initial?.detailPass ?? false);
@@ -198,11 +199,11 @@ export function MaskEditor({
         setReady(true);
         redraw();
         setMessage(
-          'Zeleným štetcom označ objekt, červeným pozadie. Spresnenie hľadá hranice v pôvodnom obrázku; farby nemení.',
+          'Zeleným štětcem označ objekt, červeným pozadí. Zpřesnění hledá hranice v původním obrázku; barvy nemění.',
         );
       } catch (e) {
         if (!disposed)
-          setMessage(e instanceof Error ? e.message : 'Načítanie zlyhalo.');
+          setMessage(e instanceof Error ? e.message : 'Načítání selhalo.');
       }
     })();
     return () => {
@@ -362,7 +363,7 @@ export function MaskEditor({
     if (!d || busy) return;
     setBusy(true);
     setMessage(
-      `${method === 'sam2' ? (refineEdges ? 'SAM 2 + pôvodné hrany' : 'SAM 2') : 'GrabCut'} hľadá hranice objektu…`,
+      `${method === 'grabcut' ? 'GrabCut' : `SAM ${method === 'sam3' ? '3' : '2'}${refineEdges ? ' + původní hrany' : ''}`} hledá hranice objektu…`,
     );
     try {
       const before = snapshot();
@@ -392,11 +393,11 @@ export function MaskEditor({
       redraw();
       setView('cutout');
       setMessage(
-        'Skontroluj obrys, diery aj tenké čiary. Štetcom oprav chyby; spresnenie môžeš zopakovať.',
+        'Zkontroluj obrys, díry i tenké čáry. Štětcem oprav chyby; zpřesnění můžeš zopakovat.',
       );
     } catch (e) {
       if (alive.current)
-        setMessage(e instanceof Error ? e.message : 'Segmentácia zlyhala.');
+        setMessage(e instanceof Error ? e.message : 'Segmentace selhala.');
     } finally {
       if (alive.current) setBusy(false);
     }
@@ -406,7 +407,7 @@ export function MaskEditor({
     if (!d || busy) return;
     setBusy(true);
     setMessage(
-      `${mattingMethod === 'vitmatte' ? 'ViTMatte' : 'Closed-form'} počíta alfu a farby hrany…`,
+      `${mattingMethod === 'vitmatte' ? 'ViTMatte' : 'Closed-form'} počíta alfu a barvy hrany…`,
     );
     try {
       const before = snapshot();
@@ -439,11 +440,11 @@ export function MaskEditor({
       redraw();
       setView('cutout');
       setMessage(
-        'Alfa je hotová. Porovnaj hrany na bielej aj čiernej, prípadne uprav isté pixely štetcom a zopakuj matting.',
+        'Alfa je hotová. Porovnej hrany na bílé i černé, případně uprav jisté pixely štětcem a zopakuj matting.',
       );
     } catch (e) {
       if (alive.current)
-        setMessage(e instanceof Error ? e.message : 'Matting zlyhal.');
+        setMessage(e instanceof Error ? e.message : 'Matting selhal.');
     } finally {
       if (alive.current) setBusy(false);
     }
@@ -464,10 +465,10 @@ export function MaskEditor({
     >
       <header>
         <div>
-          <h2>Presná maska objektu</h2>
-          <p>Výrez tvorí pôvodná kresba. AI neskôr opraví iba pozadie.</p>
+          <h2>Přesná maska objektu</h2>
+          <p>Výřez tvoří původní kresba. AI později opraví pouze pozadí.</p>
         </div>
-        <button onClick={onClose}>Zavrieť bez použitia</button>
+        <button onClick={onClose}>Zavřít bez použití</button>
       </header>
       <fieldset disabled={!ready || busy}>
         <div className="mask-toolbar">
@@ -476,15 +477,15 @@ export function MaskEditor({
               value={tool}
               onChange={(e) => setTool(e.target.value as typeof tool)}
             >
-              <option value="add">+ Ponechať objekt · zelený štetec</option>
-              <option value="erase">− Odobrať pozadie · červený štetec</option>
+              <option value="add">+ Ponechat objekt · zelený štětec</option>
+              <option value="erase">− Odebrat pozadí · červený štětec</option>
               <option value="unknown">
-                Hrana na prepočet · oranžový štetec
+                Hrana na přepočet · oranžový štětec
               </option>
-              <option value="inspect">Prehliadať / posúvať</option>
+              <option value="inspect">Prohlížet / posouvat</option>
             </select>
           </Field>
-          <Field label="Polomer štetca (px zdroja)">
+          <Field label="Poloměr štětce (px zdroje)">
             <input
               type="number"
               min={1}
@@ -497,25 +498,25 @@ export function MaskEditor({
               }
             />
           </Field>
-          <Field label="Zobrazenie masky">
+          <Field label="Zobrazení masky">
             <select value={view} onChange={(e) => setView(e.target.value)}>
-              <option value="mask">Zelená = objekt · červená = pozadie</option>
-              <option value="cutout">Výrez na šachovnici</option>
-              <option value="alpha">Alfa · čierna až biela 0–255</option>
-              <option value="original">Pôvodný obrázok</option>
+              <option value="mask">Zelená = objekt · červená = pozadí</option>
+              <option value="cutout">Výřez na šachovnici</option>
+              <option value="alpha">Alfa · černá až bílá 0–255</option>
+              <option value="original">Původní obrázek</option>
             </select>
           </Field>
-          <Field label="Pozadie kontroly hrán">
+          <Field label="Pozadí kontroly hran">
             <select
               value={previewBackground}
               onChange={(e) => setPreviewBackground(e.target.value)}
             >
-              <option value="checker">Šachovnica</option>
+              <option value="checker">Šachovnice</option>
               <option value="white">Biele</option>
-              <option value="black">Čierne</option>
+              <option value="black">Černé</option>
             </select>
           </Field>
-          <Field label="Priblíženie masky">
+          <Field label="Přiblížení masky">
             <select
               value={zoom}
               onChange={(e) => setZoom(Number(e.target.value))}
@@ -527,7 +528,7 @@ export function MaskEditor({
               ))}
             </select>
           </Field>
-          <button onClick={focusObject}>Priblížiť objekt</button>
+          <button onClick={focusObject}>Přiblížit objekt</button>
           <button
             disabled={!undoCount}
             onClick={() => {
@@ -536,7 +537,7 @@ export function MaskEditor({
               redraw();
             }}
           >
-            Späť v maske
+            Zpět v masce
           </button>
         </div>
       </fieldset>
@@ -546,7 +547,7 @@ export function MaskEditor({
             ref={canvas}
             width={size.width}
             height={size.height}
-            aria-label="Plátno segmentačnej masky"
+            aria-label="Plátno segmentační masky"
             style={{
               width: size.width * scale,
               height: size.height * scale,
@@ -611,7 +612,7 @@ export function MaskEditor({
       </div>
       <p role="status">{message}</p>
       <label className="upload-button">
-        Načítať PNG masku
+        Načíst PNG masku
         <input
           type="file"
           accept="image/png"
@@ -621,7 +622,7 @@ export function MaskEditor({
               d = working.current;
             if (!file || !d) return;
             if (file.size > 4 * 1024 * 1024) {
-              setMessage('PNG maska môže mať najviac 4 MB.');
+              setMessage('PNG maska může mít nejvýše 4 MB.');
               return;
             }
             try {
@@ -649,33 +650,36 @@ export function MaskEditor({
               redraw();
               setView('cutout');
               setMessage(
-                'Maska načítaná. Biela ponecháva objekt, čierna ho odstráni; rozmery a pixely zdroja zostávajú pôvodné.',
+                'Maska načtená. Bílá ponechává objekt, černá ho odstraní; rozměry a pixely zdroje zůstávají původní.',
               );
             } catch (error) {
               if (alive.current)
                 setMessage(
                   error instanceof Error
                     ? error.message
-                    : 'Masku sa nepodarilo načítať.',
+                    : 'Masku se nepodařilo načíst.',
                 );
             }
           }}
         />
       </label>
       <div className="mask-toolbar">
-        <Field label="Segmentácia hraníc">
+        <Field label="Segmentace hranic">
           <select
             value={method}
             disabled={busy}
             onChange={(e) => setMethod(e.target.value as typeof method)}
           >
-            <option value="grabcut">GrabCut · lokálne farby a hrany</option>
+            <option value="grabcut">GrabCut · lokálně barvy a hrany</option>
+            <option value="sam3" disabled={!available?.sam3}>
+              SAM 3 · lokální AI model
+            </option>
             <option value="sam2" disabled={!available?.sam2}>
-              SAM 2 · lokálny AI model
+              SAM 2 · lokální AI model
             </option>
           </select>
         </Field>
-        {method === 'sam2' && (
+        {method !== 'grabcut' && (
           <label className="mask-edge-toggle">
             <input
               type="checkbox"
@@ -683,10 +687,10 @@ export function MaskEditor({
               disabled={busy}
               onChange={(e) => setDetailPass(e.target.checked)}
             />{' '}
-            Detailný prechod · experimentálny
+            Detailní přechod · experimentální
           </label>
         )}
-        {method === 'sam2' && (
+        {method !== 'grabcut' && (
           <label className="mask-edge-toggle">
             <input
               type="checkbox"
@@ -694,20 +698,27 @@ export function MaskEditor({
               disabled={busy}
               onChange={(e) => setRefineEdges(e.target.checked)}
             />{' '}
-            Dotiahnuť obrysy a tenké časti
+            Dotáhnout obrysy a tenké části
           </label>
         )}
         <button
           disabled={!ready || busy || !available?.[method]}
           onClick={() => void refine()}
         >
-          Spresniť hranice objektu
+          Zpřesnit hranice objektu
         </button>
       </div>
+      {!available?.sam3 && (
+        <p className="field-note">
+          SAM 3 není připravený. Spusť npm run setup:sam3; váhy vyžadují
+          schválený přístup na Hugging Face. SAM 2 a ruční úpravy zůstávají
+          dostupné.
+        </p>
+      )}
       <fieldset disabled={!ready || busy} className="mask-matting">
         <legend>2. Jemné hrany · alpha matting</legend>
         <div className="mask-toolbar">
-          <Field label="Metóda alpha mattingu">
+          <Field label="Metoda alpha mattingu">
             <select
               value={mattingMethod}
               onChange={(e) =>
@@ -715,14 +726,14 @@ export function MaskEditor({
               }
             >
               <option value="vitmatte" disabled={!available?.vitmatte}>
-                ViTMatte + presné kreslené hrany
+                ViTMatte + přesné kreslené hrany
               </option>
               <option value="closed-form" disabled={!available?.closedForm}>
-                Closed-form · pôvodné farby
+                Closed-form · původní barvy
               </option>
             </select>
           </Field>
-          <Field label="Pásmo neistých hrán (px zdroja)">
+          <Field label="Pásmo nejistých hran (px zdroje)">
             <input
               type="number"
               min={1}
@@ -744,7 +755,7 @@ export function MaskEditor({
               checked={decontaminate}
               onChange={(e) => setDecontaminate(e.target.checked)}
             />
-            Odstrániť farebný lem
+            Odstranit barevný lem
           </label>
           <button
             disabled={
@@ -754,15 +765,15 @@ export function MaskEditor({
             }
             onClick={() => void applyMatting()}
           >
-            Vypočítať jemnú alfu
+            Vypočítat jemnou alfu
           </button>
         </div>
         <p className="field-note">
-          Najprv vyber objekt alebo spresni SAM. Zelená/červená určujú isté
-          vnútro/pozadie, oranžová uvoľní hranu na prepočet. Model mení alfu,
-          nie kresbu. Odstránenie lemu odhaduje pôvodnú farbu iba na
-          polopriehľadnom okraji; vypnutím zachováš všetky RGB. Nástroje: npm
-          run setup:matting.
+          Nejprve vyber objekt nebo zpřesni SAM. Zelená/červená určují jisté
+          vnitřek/pozadí, oranžová uvolní hranu na přepočet. Model mění alfu, ne
+          kresbu. Odstranění lemu odhaduje původní barvu pouze na poloprůhledném
+          okraji; vypnutím zachováš všechna RGB. Nástroje: npm run
+          setup:matting.
         </p>
       </fieldset>
       <div className="mask-toolbar">
@@ -772,7 +783,7 @@ export function MaskEditor({
           onClick={() => {
             const d = working.current!;
             if (!d.pixels.some((v) => v > 0)) {
-              setMessage('Maska je prázdna. Označ objekt zeleným štetcom.');
+              setMessage('Maska je prázdná. Označ objekt zeleným štětcem.');
               return;
             }
             onDone({
@@ -786,33 +797,33 @@ export function MaskEditor({
             });
           }}
         >
-          Použiť masku
+          Použít masku
         </button>
         {foregroundDirty && (
           <p className="field-note">
-            Po úprave masky znovu vypočítaj jemnú alfu, aby náhľad farieb
-            zodpovedal exportu. Alebo vypni odstránenie lemu a prepočítaj.
+            Po úpravě masky znovu vypočítej jemnou alfu, aby náhled barev
+            odpovídal exportu. Nebo vypni odstranění lemu a přepočítej.
           </p>
         )}
       </div>
       {!available?.grabcut && (
         <p className="field-note">
-          Automatické spresnenie: spusti npm run setup:segmentation a reštartuj
-          Vite. Ručné maskovanie funguje aj bez Pythonu.
+          Automatické zpřesnění: spusť npm run setup:segmentation a restartuj
+          Vite. Ruční maskování funguje i bez Pythonu.
         </p>
       )}
-      {method === 'sam2' && (
+      {method !== 'grabcut' && (
         <p className="field-note">
-          SAM 2 odhadne tvar objektu. Dotiahnutie obrysov použije farby a hrany
-          pôvodného obrázka v pásme 12 px okolo hranice. Chýbajúcu anténu alebo
-          čiaru prejdi zeleným štetcom, nežiaduce pozadie červeným. Tieto pixely
-          zostanú zachované aj po ďalšom spresnení.
+          SAM odhadne tvar objektu. Dotažení obrysů použije barvy a hrany
+          původního obrázku v pásmu 12 px okolo hranice. Chybějící anténu nebo
+          čáru přejeď zeleným štětcem, nežádoucí pozadí červeným. Tyto pixely
+          zůstanou zachované i po dalším zpřesnění.
         </p>
       )}
       <p className="field-note">
-        Výber má pôvodné rozmery a zarovnanie. Binárny výrez zachová pôvodné RGB
-        a alfu. Matting zachová všetky pevné pixely; priehľadnosť hrany a
-        prípadné dočistenie farby sa ukladajú samostatne v recepte.
+        Výběr má původní rozměry a zarovnání. Binární výřez zachová původní RGB
+        a alfu. Matting zachová všechny pevné pixely; průhlednost hrany a
+        případné dočištění barvy se ukládají samostatně v receptu.
       </p>
     </dialog>
   );

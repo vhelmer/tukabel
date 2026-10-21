@@ -46,7 +46,7 @@ export function CharacterPreview({
       height = (size?.height ?? 1) / zoom;
     return {
       id: 'character-preview',
-      title: 'Náhľad postavy',
+      title: 'Náhled postavy',
       width,
       height,
       background,
@@ -109,11 +109,11 @@ export function CharacterPreview({
   );
   return (
     <div className="character-preview">
-      <Field label="Priblíženie postavy">
+      <Field label="Přiblížení postavy">
         <select value={zoom} onChange={(e) => setZoom(Number(e.target.value))}>
           {[1, 2, 3, 4].map((n) => (
             <option key={n} value={n}>
-              {n}×{n > 1 ? ' · detail tváre' : ''}
+              {n}×{n > 1 ? ' · detail tváře' : ''}
             </option>
           ))}
         </select>
@@ -131,7 +131,7 @@ export function CharacterPreview({
             onInteract={noop}
           />
         ) : (
-          <p>Načítavam postavu…</p>
+          <p>Načítám postavu…</p>
         )}
       </div>
     </div>
@@ -175,10 +175,10 @@ export function CombinedPreview({
     <div className="combined-preview">
       <div className="preview-switches">
         {[
-          [eyes, setEyes, 'Testovať mrkanie'],
-          [mouth, setMouth, 'Testovať rozprávanie'],
-          [idle, setIdle, 'Testovať idle'],
-          [regions, setRegions, 'Zobraziť oblasti'],
+          [eyes, setEyes, 'Testovat mrkání'],
+          [mouth, setMouth, 'Testovat mluvení'],
+          [idle, setIdle, 'Testovat idle'],
+          [regions, setRegions, 'Zobrazit oblasti'],
         ].map(([checked, set, label]) => (
           <label key={String(label)}>
             <input
@@ -206,18 +206,18 @@ export function CombinedPreview({
             onPlaybackChange?.(!playing);
           }}
         >
-          {playing ? 'Pozastaviť kombináciu' : 'Prehrať kombináciu'}
+          {playing ? 'Pozastavit kombinaci' : 'Přehrát kombinaci'}
         </button>
         <button
           disabled={!binding.blink}
           onClick={() => setBlinkNonce((n) => n + 1)}
         >
-          Mrknúť teraz
+          Mrknout teď
         </button>
       </div>
       <p className="field-note">
-        Testovacie prepínače nemenia priradenia postavy. Rozprávanie simuluje
-        aktívny dialóg. Náhľad používa rovnaký Pixi renderer ako hra.
+        Testovací přepínače nemění přiřazení postavy. Mluvení simuluje aktivní
+        dialog. Náhled používá stejný Pixi renderer jako hra.
       </p>
     </div>
   );

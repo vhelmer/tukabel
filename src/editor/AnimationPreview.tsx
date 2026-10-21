@@ -85,7 +85,7 @@ export function AnimationPreview({
             onPlaying(!playing);
           }}
         >
-          {playing ? 'Zastaviť náhľad' : 'Prehrať náhľad'}
+          {playing ? 'Zastavit náhled' : 'Přehrát náhled'}
         </button>
         <span>
           {current + 1} / {animation.frames.length} · {animation.speed ?? 1}×
@@ -94,7 +94,7 @@ export function AnimationPreview({
       <div className="animation-timeline">
         {animation.frames.map((frame, position) => (
           <button
-            aria-label={`Snímka ${position + 1}`}
+            aria-label={`Snímek ${position + 1}`}
             aria-pressed={position === current}
             key={position}
             onClick={() => {
