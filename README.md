@@ -343,18 +343,26 @@ SAM 2 zůstává dostupný pro srovnání; automatický fallback na jiný model 
 
 ```sh
 npm run setup:sam3 -- --runtime-only  # izolovaný CPU runtime, bez vah
+npm run setup:sam3 -- --check-access  # ověření tokenu a přístupu, bez stahování vah
 npm run setup:sam3                   # runtime + explicitní stažení schválených vah
 ```
 
 Instalátor používá Python 3.12 a samostatné `.local-tools/sam3/` (PyTorch 2.7.1 CPU,
 Transformers 5.20.2), takže nemění fungující SAM 2 / ViTMatte. Oficiální váhy
 [facebook/sam3](https://huggingface.co/facebook/sam3) vyžadují schválený přístup.
-Schval jej na stránce modelu a vlož `HF_TOKEN` do ignorovaného `.env.local` nebo
-prostředí shellu. Instalátor neodsouhlasí podmínky za uživatele a token nevypisuje.
-Model uloží do `.local-tools/models/sam3/`; pak restartuj Vite a zvol
+Požádej o něj na stránce modelu pod účtem, kterému patří tvůj `HF_TOKEN`, a počkej
+na schválení. Samotné vytvoření tokenu přístup k modelu neuděluje. Token vlož do
+ignorovaného `.env.local` nebo prostředí shellu (shell má přednost). HTTP 401 znamená
+odmítnutý token; HTTP 403 při platném tokenu znamená chybějící přístup k modelu nebo
+oprávnění tokenu. Fine-grained token musí povolovat čtení modelu i přístup k veřejným
+gated repozitářům, ke kterým má účet přístup. Instalátor chyby rozlišuje, neodsouhlasí
+podmínky za uživatele a token nevypisuje. Připravený runtime při dalším spuštění
+znovu neinstaluje. Po schválení zopakuj `npm run setup:sam3`.
+Model uloží do `.local-tools/models/sam3/` (nebo `SAM3_MODEL`); pak restartuj Vite a zvol
 **Segmentace hranic → SAM 3 · lokální AI model**. Volitelné serverové `SAM3_PYTHON`
 a `SAM3_MODEL` umožňují jiné lokální cesty. Za běhu editoru se nic nestahuje,
 načítají se pouze lokální safetensors bez vzdáleného modelového kódu.
+Editor povolí SAM 3 až po stažení všech částí checkpointu; samotný stažený index nestačí.
 
 V tomto prostředí je ověřený runtime a skutečný offline průchod adaptérem na malé
 náhodně inicializované testovací architektuře (tvary vstupů a nativní souřadnice,

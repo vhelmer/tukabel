@@ -168,7 +168,11 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
   bez API kreditů a bez změny archivů nebo projektu. Metriky reassembly patří
   maskované kompozici, nikoli celému restored pozadí.
 - `npm run setup:sam3` připraví oddělený CPU runtime a schválené váhy facebook/sam3.
-  `--runtime-only` nestahuje váhy. HF_TOKEN je pouze pro explicitní instalátor;
+  `--runtime-only` nestahuje váhy; `--check-access` ověří token a přístup bez vah.
+  Instalátor znovu používá ověřený runtime, rozlišuje HTTP 401/403 a nevypisuje
+  token ani odpověď poskytovatele. `setup_sam3.py` sdílí kontrolu úplnosti všech
+  částí checkpointu s detekcí dostupnosti v `segment.py`.
+  HF_TOKEN je pouze pro explicitní instalátor;
   SAM3_PYTHON / SAM3_MODEL jsou serverové cesty. `sam3_adapter.py` používá lokální
   Sam3TrackerModel/Processor, safetensors a native-size masky; žádný vzdálený kód.
   Zachovej SAM 2 pro porovnání, tvrdé tahy, detailní průchod i samostatný matting.

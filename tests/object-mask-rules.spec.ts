@@ -859,3 +859,19 @@ test('SAM 3 adapter runs offline with real Transformers and restores native non-
   );
   expect(stdout).toContain('Offline adapter inference passed');
 });
+
+test('SAM 3 installer distinguishes credentials, model approval, scopes and partial downloads without leaking secrets', async () => {
+  const run = promisify(execFile);
+  let hasPython = true;
+  try {
+    await run('python3', ['--version']);
+  } catch {
+    hasPython = false;
+  }
+  test.skip(!hasPython, 'Python 3 is needed for local installer tests');
+  const { stderr } = await run('python3', ['tests/sam3_setup.py'], {
+    timeout: 10000,
+    env: { ...process.env, HF_HUB_OFFLINE: '1' },
+  });
+  expect(stderr).toContain('OK');
+});

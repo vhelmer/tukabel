@@ -3,13 +3,14 @@ import importlib.util
 import json
 import os
 import sys
+from setup_sam3 import model_files_ready
 
 
 def capabilities():
     grabcut = all(importlib.util.find_spec(m) for m in ("cv2", "numpy"))
     sam2 = grabcut and importlib.util.find_spec("sam2") is not None and os.path.isfile(os.environ.get("TUKABEL_SAM2_CHECKPOINT", ""))
     model = os.environ.get("TUKABEL_SAM3_MODEL", "")
-    sam3 = grabcut and importlib.util.find_spec("transformers") is not None and os.path.isfile(os.path.join(model, "config.json")) and (os.path.isfile(os.path.join(model, "model.safetensors")) or os.path.isfile(os.path.join(model, "model.safetensors.index.json")))
+    sam3 = grabcut and importlib.util.find_spec("transformers") is not None and model_files_ready(model)
     return {"grabcut": bool(grabcut), "sam2": bool(sam2), "sam3": bool(sam3)}
 
 
