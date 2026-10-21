@@ -138,6 +138,9 @@ export interface ArtworkResult {
   repairMask?: string;
   model?: string;
   quality?: import('./artSettings').ImageQuality;
+  debugOnly?: boolean;
+  blockedReason?: string;
+  debug?: import('./inpaintDebug').InpaintDebug;
   reconstruction?: {
     changedPixels: number;
     selectedPixels: number;

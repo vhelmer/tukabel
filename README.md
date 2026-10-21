@@ -160,6 +160,9 @@ herní hover, kliknutí i drop na objekty pod nimi. Zamknutí nemění chování
    rozsah 0–64 v původních pixelech). Odstraní i zbytky obrysů nebo stínu mimo
    masku objektu; přesah se skutečně použije na publikované pozadí a šev se
    uvnitř něj jemně spojí. Hodnota 0 zachová původní pozadí přesně mimo objekt.
+   **Prechod švu** (výchozí 2 px, 0–32) určuje plynulý přechod uvnitř přesahu;
+   skutečná šířka je nejvýše velikost přesahu. Na jeho vnější hranici má nulovou
+   sílu, samotný objekt se vždy opravuje plně. Hodnota 0 umožní porovnat tvrdý šev.
    Náhled **Maska opravy pozadia** ukazuje dovolený rozsah změn.
    **Použiť masku** vrátí schválenou masku do grafického panelu. Teprve **Spustiť AI
    úpravu (API kredit)** pošle zdroj a samostatnou opravnou masku službě pro doplnění
@@ -177,6 +180,57 @@ herní hover, kliknutí i drop na objekty pod nimi. Zamknutí nemění chování
 6. **Použiť výsledok v scéne → Uložiť do projektu** nahradí pozadí a přidá oddělenou
    vrstvu na původní místo. Scéna proto může vypadat stejně. Novou vrstvu skryj nebo
    přesuň, abys viděl opravené pozadí. Konfigurace a assety lze běžně commitnout.
+
+### Diagnostika inpaintingu
+
+U **AI · odstrániť a opraviť pozadie** nebo **AI · oddeliť objekt + opraviť pozadie**
+nastav výběr/masku, přesah a přechod a klikni **Skontrolovať prípravu (bez API)**.
+Tato úloha nevolá model, nepotřebuje klíč a nemá použitelné tlačítko pro změnu scény.
+V **Diagnostika inpaintingu** přepínej původní obrázek, masku objektu, rozšířenou masku,
+přesný vstup pro model, API masku a kontrolní návrat bez AI. Zoom 1:1/2× a posuvný
+náhled umožňují kontrolovat tenké obrysy; masky lze překrýt originálem nebo otevřít
+PNG samostatně. Poté vědomě spusť AI úpravu. U jejího výsledku přibudou surová odpověď,
+návrat do původních souřadnic, finální pozadí a rozdíl vůči kontrolnímu návratu.
+Diagnostika hotové úlohy přežije reload a lze ji otevřít z fronty; restart serveru
+frontu zruší, archivované soubory a recept na disku zůstávají.
+
+Model dostává **celý zdroj, nikoli lokální crop**. Ten se proporcionálně vloží do
+pracovního rámu 1536×1024 / 1024×1536 / 1024×1024. U 1280×720 je obsah 1536×864,
+odsazený o 0,80 px. Návrat vyřízne přesně tento obsah a přepočítá jej na původní
+plátno. Geometrii vždy ukazuje diagnostika a ukládá recept. Nativní binární maska
+se rozšiřuje čtvercovým okolím o zvolený poloměr. Při zmenšení pracovní masky se
+použije konzervativní pokrytí pixelů, aby nezmizela tenká anténa; okolí se může
+rozšířit nejvýše o pracovní pixel. Alfa API masky je opačná: průhledné = povolená
+oprava, neprůhledné = chráněné; okraje pracovního plátna jsou chráněné.
+
+U odstranění/oddělení se nyní archivují navíc:
+
+- `expanded-mask.png` — binární oprava v původních souřadnicích;
+- `repair-mask.png` — skutečná síla kompozice 0–255, včetně přechodu;
+- `provider-input.png`, `provider-mask.png` — přesné PNG bajty odeslané modelu;
+- `provider-returned.png` — přesné vrácené PNG před úpravami;
+- `round-trip.png` — odeslaný obrázek vrácený zpět **bez AI**, kontrola převzorkování;
+- `provider-restored.png` — odpověď vrácená do původních souřadnic před kompozicí;
+- `provider-difference.png` — absolutní RGB rozdíl odpovědi proti kontrolnímu návratu, zesílený 4×;
+- `image.png` — finální pozadí; `recipe.json` obsahuje parametry, geometrii, metriky a upozornění.
+
+Při kontrole postupuj od masky: nezůstaly obrysy/stín mimo rozšířenou oblast, není
+naopak přesah příliš velký? Pak ověř přesný vstup a API masku. `round-trip.png`
+odděluje ztrátu detailů při škálování od změn modelu. Diagnostika měří RGB MAE v
+chráněném kontextu i v 4px prstenci kolem opravy vůči tomuto kontrolnímu návratu.
+Je to měření změny, nikoli důkaz správnosti inpaintingu ani automatický color matching.
+Finální kompozice musí mít **0 změněných pixelů mimo opravnou masku**. Rozdílné rozměry
+odpovědi se již potichu neroztahují: vrácené PNG se zpřístupní k diagnostice, ale
+výsledek nelze použít. Skládání částečně průhledných pixelů interpoluje premultiplied
+příspěvky a ukládá straight RGBA, aby skryté RGB nevytvářelo barevný lem.
+
+Audit odhalil nenulovou sílu starého švu na vnější hranici (u jednoho uloženého
+výřezu 134–204/255 těsně vedle nuly). Nový přechod končí nulou, nezměkčuje masku
+samotného assetu. Testy používají identickou odpověď modelu, řízený barevný posun,
+chybnou velikost, tenké části při zmenšení i částečnou alfu; žádné placené generování.
+Existující artefakty neobsahují původní surovou odpověď, takže příčinu jejich barevné
+odchylky nelze zpětně jednoznačně určit. Nový skutečný výsledek posuzuj těmito kroky
+dříve než změnou modelu nebo barevným dorovnáváním.
 
 Lokální automatické spřesnění nainstaluj jednou pomocí **`npm run setup:segmentation`**
 (Python 3 s podporou `venv`; vytvoří ignorované `.local-tools/segmentation/` s připnutými

@@ -144,6 +144,18 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
   Kontrola reassembly vyžaduje `unexpectedPixels: 0`; zvlášť vykazuje
   `cleanupPixels` v opravném okolí a `edgePixels` na částečných hranách mattingu.
   Ty nelze přesně obnovit z nového pozadí; nulové chyby jádra nedokazují kvalitu hrany.
+- `dev/inpaint.ts` sdílí přípravu modelového plátna, návrat i kompozici. Zachovej
+  přesnou geometrii celého zdroje v letterboxu; jinou velikost odpovědi archivuj,
+  ale blokuj Apply, nikdy ji potichu neroztahuj. Zmenšení opravné masky zachovává
+  tenké části konzervativním pokrytím. `repairFeather` (výchozí 2 px, 0–32, nejvýše
+  přesah) tvoří inward přechod k nule na vnější hranici; objekt zůstává plně opravený.
+  Částečnou alfu míchej přes premultiplied příspěvky, PNG ukládej straight RGBA.
+- Odstranění/oddělení archivuje `debug` v receptu: skutečný vstup/masku API,
+  surovou odpověď, kontrolní návrat bez AI, vrácený výsledek a finální kompozici.
+  `debugOnly` připraví stejné kroky bez API a bez možnosti Apply. `InpaintInspector`
+  je pouze Dev Mode. Při hodnocení odlišuj chybu škálování, změnu chráněného
+  kontextu modelu a změny mimo opravnou masku (musí být 0). Nulové metriky
+  nedokazují správný výběr ani barevnou návaznost. Bez automatického color matchingu.
 - `dev/artSource.ts` sdílí bezpečné načtení/normalizaci; `dev/objectMask.ts` ověřuje
   PNG a hash před placeným voláním. `dev/segmentation.ts` spouští pevné Python
   helpery bez shellu, timeout 300 s, uklízí dočasné soubory. Žádné automatické

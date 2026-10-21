@@ -251,6 +251,123 @@ test('layer editing, scene-space selection and local ambient clips save real ass
   ).toBeTruthy();
 });
 
+test('inpainting preparation is inspectable without an API key, survives reload and cannot change the scene', async ({
+  page,
+  workspace,
+  isMobile,
+}, info) => {
+  await seed(workspace.root, workspace.source);
+  const before = await readFile(workspace.source, 'utf8');
+  await openEditor(page, workspace.url);
+  await rectangle(page, isMobile);
+  await art(page)
+    .getByLabel('Grafická operácia', { exact: true })
+    .selectOption('remove');
+  await art(page)
+    .getByLabel('Dočistenie pozadia za obrysom (px zdroja)', { exact: true })
+    .fill('8');
+  await art(page)
+    .getByLabel('Prechod švu (px zdroja)', { exact: true })
+    .fill('4');
+  await expect(
+    art(page).getByRole('button', {
+      name: 'Spustiť AI úpravu (API kredit)',
+      exact: true,
+    }),
+  ).toBeDisabled();
+  await art(page)
+    .getByRole('button', {
+      name: 'Skontrolovať prípravu (bez API)',
+      exact: true,
+    })
+    .click();
+  await expect(
+    art(page).getByRole('status', {
+      name: 'Stav grafickej operácie',
+      exact: true,
+    }),
+  ).toContainText('Assety sú uložené');
+  await expect(
+    art(page).getByRole('button', {
+      name: 'Použiť výsledok v scéne',
+      exact: true,
+    }),
+  ).toBeDisabled();
+  const step = art(page).getByLabel('Krok diagnostiky', { exact: true });
+  await expect(step.locator('option[value="returned"]')).toBeDisabled();
+  await expect(step.locator('option[value="final"]')).toBeDisabled();
+  for (const id of [
+    'original',
+    'objectMask',
+    'expandedMask',
+    'blendMask',
+    'input',
+    'apiMask',
+    'roundTrip',
+  ]) {
+    await step.selectOption(id);
+    await expect(
+      art(page).getByAltText('Diagnostický krok inpaintingu'),
+    ).toBeVisible();
+    await expect(
+      art(page).getByAltText('Diagnostický krok inpaintingu'),
+    ).toHaveJSProperty('complete', true);
+  }
+  await step.selectOption('expandedMask');
+  await art(page)
+    .getByLabel('Zväčšenie diagnostiky', { exact: true })
+    .selectOption('2');
+  await expect(
+    art(page).getByAltText('Diagnostický krok inpaintingu'),
+  ).toHaveCSS('width', '2560px');
+  await art(page)
+    .getByLabel('Zväčšenie diagnostiky', { exact: true })
+    .selectOption('fit');
+  await art(page)
+    .locator('.inpaint-inspector')
+    .screenshot({ path: info.outputPath('inpaint-preparation.png') });
+  const data = await (
+    await page.request.get(`${workspace.url}__tukabel/editor/jobs`)
+  ).json();
+  const result = data.jobs[0].result;
+  expect(result.debugOnly).toBe(true);
+  expect(result.debug.metrics).toMatchObject({
+    padding: 8,
+    feather: 4,
+    lostObjectPixels: 0,
+    boundaryMaxWeight: 0,
+  });
+  expect(result.debug.geometry).toMatchObject({
+    canvas: { width: 1536, height: 1024 },
+    content: { width: 1536, height: 864, left: 0, top: 80 },
+  });
+  const recipe = JSON.parse(
+    await readFile(
+      path.join(workspace.root, 'src/assets', result.manifest),
+      'utf8',
+    ),
+  );
+  expect(recipe).toMatchObject({
+    debugOnly: true,
+    pipeline: { context: 'full-source-letterbox' },
+  });
+  expect(await readFile(workspace.source, 'utf8')).toBe(before);
+  await openEditor(page, workspace.url);
+  await page
+    .getByRole('button', { name: 'Otvoriť výsledok', exact: true })
+    .click();
+  await expect(
+    art(page).getByLabel('Krok diagnostiky', { exact: true }),
+  ).toBeVisible();
+  await expect(
+    art(page).getByRole('button', {
+      name: 'Použiť výsledok v scéne',
+      exact: true,
+    }),
+  ).toBeDisabled();
+  expect(await readFile(workspace.source, 'utf8')).toBe(before);
+});
+
 test.describe('scene AI provider boundary', () => {
   test.use({
     artTools: {
@@ -276,8 +393,8 @@ test.describe('scene AI provider boundary', () => {
         const [width, height] = (body.size as string).split('x').map(Number);
         const bytes = await sharp({
           create: {
-            width: width!,
-            height: height!,
+            width: body.prompt.includes('wrong dimensions') ? 1024 : width!,
+            height: body.prompt.includes('wrong dimensions') ? 1024 : height!,
             channels: 4,
             background: '#496947',
           },
@@ -331,6 +448,15 @@ test.describe('scene AI provider boundary', () => {
     await expect(
       art(page).getByAltText('Oddelený transparentný objekt'),
     ).toBeVisible();
+    const debugStep = art(page).getByLabel('Krok diagnostiky', { exact: true });
+    await debugStep.selectOption('returned');
+    await expect(
+      art(page).getByAltText('Diagnostický krok inpaintingu'),
+    ).toHaveJSProperty('naturalWidth', 1536);
+    await debugStep.selectOption('final');
+    await expect(
+      art(page).getByAltText('Diagnostický krok inpaintingu'),
+    ).toHaveJSProperty('naturalWidth', 1280);
     await expect(page.getByLabel('Názov lokácie', { exact: true })).toHaveValue(
       'Rozpracovaná lokácia',
     );
@@ -448,6 +574,49 @@ test.describe('scene AI provider boundary', () => {
       `${workspace.url}__tukabel/editor/art/status`,
     );
     expect(await status.text()).not.toContain('mock-openai-art-key');
+  });
+  test('a wrong-sized model result remains inspectable but cannot be applied or alter source JSON', async ({
+    page,
+    workspace,
+    isMobile,
+  }) => {
+    await seed(workspace.root, workspace.source);
+    const before = await readFile(workspace.source, 'utf8');
+    await openEditor(page, workspace.url);
+    await rectangle(page, isMobile);
+    await art(page)
+      .getByLabel('Grafická operácia', { exact: true })
+      .selectOption('remove');
+    await art(page)
+      .getByLabel('Pokyny pre AI', { exact: true })
+      .fill('wrong dimensions');
+    await art(page)
+      .getByRole('button', {
+        name: 'Spustiť AI úpravu (API kredit)',
+        exact: true,
+      })
+      .click();
+    await expect(art(page).getByRole('alert')).toContainText(
+      'očakávané 1536 × 1024',
+    );
+    await expect(
+      art(page).getByRole('button', {
+        name: 'Použiť výsledok v scéne',
+        exact: true,
+      }),
+    ).toBeDisabled();
+    await art(page)
+      .getByLabel('Krok diagnostiky', { exact: true })
+      .selectOption('returned');
+    await expect(
+      art(page).getByAltText('Diagnostický krok inpaintingu'),
+    ).toHaveJSProperty('naturalWidth', 1024);
+    await expect(
+      art(page)
+        .getByLabel('Krok diagnostiky', { exact: true })
+        .locator('option[value="final"]'),
+    ).toBeDisabled();
+    expect(await readFile(workspace.source, 'utf8')).toBe(before);
   });
 });
 

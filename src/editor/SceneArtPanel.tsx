@@ -9,6 +9,7 @@ import { submitEditorJob, getArtStatus } from './api';
 import type { ArtworkResult } from './api';
 import { MaskEditor } from './MaskEditor';
 import { ExtractionComparison } from './ExtractionComparison';
+import { InpaintInspector } from './InpaintInspector';
 import type { ObjectMask } from './masks';
 import { AnimationPreview } from './AnimationPreview';
 import { Field } from './fields';
@@ -83,6 +84,7 @@ export function SceneArtPanel({
     targetChoice.jobId === selectedJob ? targetChoice.value : jobTarget;
   const [prompt, setPrompt] = useState('');
   const [repairPadding, setRepairPadding] = useState(12);
+  const [repairFeather, setRepairFeather] = useState(2);
   const [modelChoice, setModelChoice] = useState<string>();
   const [qualityChoice, setQualityChoice] = useState<ImageQuality>();
   const [label, setLabel] = useState('Nový výrez');
@@ -211,7 +213,7 @@ export function SceneArtPanel({
     }
     return { placement, points };
   }
-  async function run() {
+  async function run(debugOnly = false) {
     if (!size || busy) return;
     let geometry: ReturnType<typeof sourceSelection>;
     try {
@@ -225,14 +227,18 @@ export function SceneArtPanel({
     setPlaying(false);
 
     setMessage(
-      ai
-        ? 'AI spracúva obrázok… Môže to trvať niekoľko minút. Požiadavka sa neopakuje.'
-        : 'Pripravujem a ukladám PNG assety…',
+      debugOnly
+        ? 'Pripravujem diagnostiku masky a kontextu bez API…'
+        : ai
+          ? 'AI spracúva obrázok… Môže to trvať niekoľko minút. Požiadavka sa neopakuje.'
+          : 'Pripravujem a ukladám PNG assety…',
     );
     try {
       const submitted = await submitEditorJob({
         kind: 'art',
-        label: label.trim() || 'Grafická úprava',
+        label: debugOnly
+          ? `Diagnostika · ${label.trim() || 'výber'}`
+          : label.trim() || 'Grafická úprava',
         context: {
           sceneId: scene.id,
           targetId: object?.id ?? '',
@@ -258,6 +264,8 @@ export function SceneArtPanel({
           quality: ai ? quality : undefined,
           confirmed: ai ? true : undefined,
           repairPadding,
+          repairFeather,
+          debugOnly,
           motion,
           amplitude,
           fps,
@@ -282,6 +290,8 @@ export function SceneArtPanel({
     if (
       !result ||
       !job ||
+      result.data.debugOnly ||
+      result.data.blockedReason ||
       applied.current === job.id ||
       object?.locked ||
       result.data.source !== source ||
@@ -555,27 +565,57 @@ export function SceneArtPanel({
               </Field>
             </div>
             {['extract', 'remove'].includes(operation) && (
-              <Field label="Dočistenie pozadia za obrysom (px zdroja)">
-                <input
-                  type="number"
-                  aria-label="Dočistenie pozadia za obrysom (px zdroja)"
-                  min={0}
-                  max={64}
-                  value={repairPadding}
-                  onChange={(e) =>
-                    setRepairPadding(
-                      Math.max(
-                        0,
-                        Math.min(64, Math.round(Number(e.target.value) || 0)),
-                      ),
-                    )
-                  }
-                />
-                <span className="field-note">
-                  Odstráni aj zvyšky čiar a tieňa okolo objektu. Mení pozadie v
-                  tomto presahu, veľkosť výrezu zostáva pôvodná.
-                </span>
-              </Field>
+              <>
+                <Field label="Dočistenie pozadia za obrysom (px zdroja)">
+                  <input
+                    type="number"
+                    aria-label="Dočistenie pozadia za obrysom (px zdroja)"
+                    min={0}
+                    max={64}
+                    value={repairPadding}
+                    onChange={(e) =>
+                      setRepairPadding(
+                        Math.max(
+                          0,
+                          Math.min(64, Math.round(Number(e.target.value) || 0)),
+                        ),
+                      )
+                    }
+                  />
+                  <span className="field-note">
+                    Odstráni aj zvyšky čiar a tieňa okolo objektu. Mení pozadie
+                    v tomto presahu, veľkosť výrezu zostáva pôvodná.
+                  </span>
+                </Field>
+                <Field label="Prechod švu (px zdroja)">
+                  <input
+                    type="number"
+                    aria-label="Prechod švu (px zdroja)"
+                    min={0}
+                    max={32}
+                    value={repairFeather}
+                    onChange={(e) =>
+                      setRepairFeather(
+                        Math.max(
+                          0,
+                          Math.min(32, Math.round(Number(e.target.value) || 0)),
+                        ),
+                      )
+                    }
+                  />
+                  <span className="field-note">
+                    Prechod k pôvodnému pozadiu iba v opravnom presahu. Účinná
+                    šírka: {Math.min(repairPadding, repairFeather)} px. Nula =
+                    tvrdý šev; objekt sa nezmäkčuje.
+                  </span>
+                </Field>
+                <button
+                  disabled={!size || (!selection && !preparedMask)}
+                  onClick={() => void run(true)}
+                >
+                  Skontrolovať prípravu (bez API)
+                </button>
+              </>
             )}
             <Field label="Pokyny pre AI">
               <textarea
@@ -641,7 +681,15 @@ export function SceneArtPanel({
       )}
       {result && (
         <div className="art-result">
-          <h3>Náhľad výsledku</h3>
+          <h3>
+            {result.data.debugOnly ? 'Kontrola prípravy' : 'Náhľad výsledku'}
+          </h3>
+          {result.data.debugOnly && (
+            <p>Diagnostika prípravy · bez volania AI a bez zmien scény.</p>
+          )}
+          {result.data.blockedReason && (
+            <p role="alert">{result.data.blockedReason}</p>
+          )}
           {result.data.model && (
             <p className="field-note">
               OpenAI · {result.data.model} ·{' '}
@@ -655,7 +703,8 @@ export function SceneArtPanel({
               novú úlohu.
             </p>
           )}
-          {result.data.animation ? (
+          {result.data.debugOnly || result.data.blockedReason ? null : result
+              .data.animation ? (
             <AnimationPreview
               active={active}
               animation={result.data.animation}
@@ -687,6 +736,12 @@ export function SceneArtPanel({
             </div>
           )}
           <ExtractionComparison result={result.data} />
+          {result.data.debug && (
+            <InpaintInspector
+              key={result.data.manifest}
+              debug={result.data.debug}
+            />
+          )}
           <p className="field-note">
             Originál, maska a recept: {result.data.manifest}
           </p>
@@ -695,6 +750,8 @@ export function SceneArtPanel({
               className="primary-button"
               disabled={
                 result.data.source !== source ||
+                result.data.debugOnly ||
+                Boolean(result.data.blockedReason) ||
                 object?.locked ||
                 result.fingerprint !== artFingerprint(scene, result.targetId)
               }

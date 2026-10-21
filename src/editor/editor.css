@@ -1154,6 +1154,36 @@
 .extraction-comparison {
   margin-top: 1rem;
 }
+.inpaint-inspector {
+  margin-block: 1rem;
+  padding: 0.75rem;
+  border: 1px solid #749887;
+  border-radius: 8px;
+}
+.inpaint-inspector summary {
+  cursor: pointer;
+  font-weight: bold;
+}
+.inpaint-inspector a {
+  color: #e5c47f;
+}
+.inpaint-viewport {
+  overflow: auto;
+  max-height: 65dvh;
+  margin-block: 0.75rem;
+}
+.inpaint-image {
+  position: relative;
+}
+.inpaint-image img {
+  width: 100%;
+  display: block;
+}
+.inpaint-image .inpaint-overlay {
+  position: absolute;
+  inset: 0;
+  opacity: 0.55;
+}
 .mask-editor header {
   position: sticky;
   top: -1rem;

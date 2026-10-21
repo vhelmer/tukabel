@@ -16,6 +16,13 @@ import { matteForeground, type SegmentationOptions } from './segmentation.ts';
 import { polygonBounds, polygonIssue } from '../src/game/polygon.ts';
 import type { AnimationDefinition } from '../src/game/types.ts';
 import type { Point } from '../src/game/transforms.ts';
+import type { InpaintDebug } from '../src/editor/inpaintDebug.ts';
+import {
+  featherRepair,
+  prepareInpaint,
+  composeRepair,
+  rgbMae,
+} from './inpaint.ts';
 import {
   defaultImageModel,
   defaultImageQuality,
@@ -48,6 +55,9 @@ export interface ArtResult {
   reassembled?: string;
   difference?: string;
   repairMask?: string;
+  debugOnly?: boolean;
+  blockedReason?: string;
+  debug?: InpaintDebug;
   model?: string;
   quality?: ImageQuality;
   reconstruction?: {
@@ -172,7 +182,15 @@ export async function createArtwork(
   )
     throw Error('Neplatná grafická operácia.');
   const operation = input.operation as ArtOperation;
-  const ai = aiOperations.includes(operation);
+  const debugOnly = input.debugOnly === true;
+  if (
+    (input.debugOnly !== undefined && typeof input.debugOnly !== 'boolean') ||
+    (debugOnly && !['extract', 'remove'].includes(operation))
+  )
+    throw Error(
+      'Diagnostika prípravy je dostupná pre oddelenie a odstránenie objektu.',
+    );
+  const ai = aiOperations.includes(operation) && !debugOnly;
   if (ai && input.confirmed !== true)
     throw Error('AI generovanie musíš výslovne spustiť.');
   if (
@@ -183,7 +201,7 @@ export async function createArtwork(
   )
     throw Error('Zadaj pokyny pre AI (najviac 4000 znakov).');
   let settings: ReturnType<typeof imageSettings> | undefined;
-  if (ai) {
+  if (ai || debugOnly) {
     const configuredModel = options.model || defaultImageModel;
     const model = input.model ?? configuredModel;
     if (
@@ -254,7 +272,7 @@ export async function createArtwork(
   // Extraction uses a binary pixel ownership mask. Soft polygon coverage used
   // twice (repair + source-over) changes the original outlines on reassembly.
   const exact =
-    operation === 'extract' || operation === 'cutout' || !!suppliedMask;
+    ['extract', 'remove', 'cutout'].includes(operation) || !!suppliedMask;
   if (exact) {
     for (let p = 0; p < width * height; p++)
       coverage[p * 4 + 3] = suppliedMask
@@ -290,27 +308,31 @@ export async function createArtwork(
         .raw()
         .toBuffer()
     : objectPixels;
-  const repairCoverage = Buffer.from(providerMask);
-  if (Number(repairPadding) > 0) {
-    const soft = await sharp(providerMask, {
-      raw: { width, height, channels: 1 },
-    })
-      .blur(1)
-      .greyscale()
-      .raw()
-      .toBuffer();
-    for (let p = 0; p < repairCoverage.length; p++)
-      // Feather only inside the permitted repair; never soften the cutout.
-      repairCoverage[p] = Math.max(
-        objectPixels[p]!,
-        Math.min(providerMask[p]!, soft[p]!),
-      );
-  }
-  if (suppliedMask?.matting?.decontaminate)
+  const requestedFeather = input.repairFeather ?? 2;
+  if (
+    !Number.isInteger(requestedFeather) ||
+    Number(requestedFeather) < 0 ||
+    Number(requestedFeather) > 32
+  )
+    throw Error('Prechod švu musí byť 0–32 px.');
+  const feather = Math.min(Number(requestedFeather), Number(repairPadding));
+  const repairCoverage = await featherRepair(
+    objectPixels,
+    providerMask,
+    width,
+    height,
+    feather,
+  );
+  if (!debugOnly && suppliedMask?.matting?.decontaminate)
     options.onStage?.('Oddeľujem farbu pozadia iba v jemných hranách');
-  const cutoutRaw = suppliedMask?.matting?.decontaminate
-    ? await matteForeground(original, suppliedMask.pixels, options.segmentation)
-    : Buffer.from(raw);
+  const cutoutRaw =
+    !debugOnly && suppliedMask?.matting?.decontaminate
+      ? await matteForeground(
+          original,
+          suppliedMask.pixels,
+          options.segmentation,
+        )
+      : Buffer.from(raw);
   const maskRaw = Buffer.alloc(raw.length, 255);
   for (let i = 0; i < raw.length; i += 4) {
     cutoutRaw[i + 3] = suppliedMask?.matting
@@ -324,39 +346,20 @@ export async function createArtwork(
       .toBuffer();
   const cutout = await png(cutoutRaw);
   const mask = await png(maskRaw);
-  let image = cutout;
+  let image = debugOnly ? source : cutout;
+  let pipeline: Awaited<ReturnType<typeof prepareInpaint>> | undefined;
+  let returned: Buffer | undefined, restored: Buffer | undefined;
+  let blockedReason: string | undefined;
+  let returnedSize: { width: number; height: number } | undefined;
+  if (ai || debugOnly) {
+    if ((points || suppliedMask) && !providerMask.some((v) => v > 0))
+      throw Error('Maska je prázdna v pôvodnom rozlíšení. Zväčši výber.');
+    pipeline = await prepareInpaint(source, providerMask, width, height);
+  }
   if (ai) {
-    // Letterbox rather than distort input/mask into the provider's standard canvas.
-    const work =
-      width > height
-        ? { width: 1536, height: 1024 }
-        : width < height
-          ? { width: 1024, height: 1536 }
-          : { width: 1024, height: 1024 };
-    const scale = Math.min(work.width / width, work.height / height);
-    const w = Math.max(1, Math.round(width * scale)),
-      h = Math.max(1, Math.round(height * scale));
-    const left = Math.floor((work.width - w) / 2),
-      top = Math.floor((work.height - h) / 2);
-    const extent = {
-      left,
-      top,
-      right: work.width - w - left,
-      bottom: work.height - h - top,
-    };
-    const workingImage = await sharp(source)
-      .resize(w, h)
-      .extend({ ...extent, background: '#281e2b' })
-      .png()
-      .toBuffer();
-    const workingMask =
-      points || suppliedMask
-        ? await sharp(mask)
-            .resize(w, h, { kernel: 'nearest' })
-            .extend({ ...extent, background: '#ffffff' })
-            .png()
-            .toBuffer()
-        : undefined;
+    const { input: workingImage, apiMask, geometry, restore } = pipeline!;
+    const workingMask = points || suppliedMask ? apiMask : undefined;
+    const work = geometry.canvas;
     const instruction =
       operation === 'remove' || operation === 'extract'
         ? 'Remove the selected object completely, including thin protrusions, outline strokes, contact shadows and detached remnants within the repair mask. Reconstruct continuous scenery and line work behind it seamlessly. Do not leave a duplicate or a silhouette. '
@@ -371,37 +374,28 @@ export async function createArtwork(
       `${work.width}x${work.height}`,
       { ...options, ...settings },
     );
-    const normalized = await sharp(generated)
-      .resize(work.width, work.height, { fit: 'fill' })
-      .png()
-      .toBuffer();
-    const crop = await sharp(normalized)
-      .extract({ left, top, width: w, height: h })
-      .png()
-      .toBuffer();
-    const result = await sharp(crop)
-      .resize(width, height)
-      .ensureAlpha()
-      .raw()
-      .toBuffer();
-    if (points || suppliedMask) {
-      const merged = Buffer.from(raw);
-      for (let i = 0; i < raw.length; i += 4) {
-        const weight = ['extract', 'remove'].includes(operation)
-          ? repairCoverage[i / 4]!
-          : coverage[i + 3]!;
-        for (let c = 0; c < 4; c++)
-          merged[i + c] = Math.round(
-            (raw[i + c]! * (255 - weight) + result[i + c]! * weight) / 255,
-          );
-      }
-      if (operation === 'extract') {
-        for (let i = 0; i < raw.length; i += 4) {
-          if (coverage[i + 3] && raw[i + 3]! < 255) merged.fill(0, i, i + 4);
+    returned = generated;
+    const meta = await sharp(generated).metadata();
+    returnedSize = { width: meta.width!, height: meta.height! };
+    // A differently sized response cannot be aligned reliably. Archive it for
+    // inspection instead of silently stretching it and publishing a shifted edit.
+    if (meta.width !== work.width || meta.height !== work.height) {
+      blockedReason = `AI vrátila ${meta.width} × ${meta.height}, očakávané ${work.width} × ${work.height}. Výsledok sa neškáluje ani nepoužije; skontroluj diagnostiku.`;
+      image = source;
+    } else {
+      restored = await restore(generated);
+      if (points || suppliedMask) {
+        const selectedCoverage = ['extract', 'remove'].includes(operation)
+          ? repairCoverage
+          : Buffer.from(coverage.filter((_v, i) => i % 4 === 3));
+        const merged = composeRepair(raw, restored, selectedCoverage);
+        if (operation === 'extract') {
+          for (let i = 0; i < raw.length; i += 4)
+            if (coverage[i + 3] && raw[i + 3]! < 255) merged.fill(0, i, i + 4);
         }
-      }
-      image = await png(merged);
-    } else image = await png(result);
+        image = await png(merged);
+      } else image = await png(restored);
+    }
   }
   const folder = path.join(root, 'scene-art');
   await mkdir(folder, { recursive: true });
@@ -438,7 +432,7 @@ export async function createArtwork(
         await maskPng(objectPixels, width, height),
         { flag: 'wx' },
       );
-    if (operation === 'extract') {
+    if (operation === 'extract' && !debugOnly && !blockedReason) {
       await writeFile(path.join(staging, 'cutout.png'), cutout, { flag: 'wx' });
       const background = await sharp(image).ensureAlpha().raw().toBuffer();
       const combined = Buffer.from(background),
@@ -620,6 +614,161 @@ export async function createArtwork(
         loop: true,
       };
     }
+    let debug: InpaintDebug | undefined;
+    if (pipeline && ['extract', 'remove'].includes(operation)) {
+      const files: InpaintDebug['files'] = {
+        original: `${prefix}/source.png`,
+        objectMask: `${prefix}/object-mask.png`,
+        expandedMask: `${prefix}/expanded-mask.png`,
+        blendMask: `${prefix}/repair-mask.png`,
+        input: `${prefix}/provider-input.png`,
+        apiMask: `${prefix}/provider-mask.png`,
+        roundTrip: `${prefix}/round-trip.png`,
+        returned: returned ? `${prefix}/provider-returned.png` : undefined,
+        restored: restored ? `${prefix}/provider-restored.png` : undefined,
+        final: restored && !blockedReason ? `${prefix}/image.png` : undefined,
+        difference: restored ? `${prefix}/provider-difference.png` : undefined,
+      };
+      const finalRaw = await sharp(image).ensureAlpha().raw().toBuffer();
+      let objectCount = 0,
+        expandedCount = 0,
+        featherPixels = 0,
+        lostObjectPixels = 0,
+        outsideChanges = 0,
+        boundaryMaxWeight = 0;
+      for (let p = 0; p < objectPixels.length; p++) {
+        if (objectPixels[p]) objectCount++;
+        if (providerMask[p]) expandedCount++;
+        if (repairCoverage[p]! > 0 && repairCoverage[p]! < 255) featherPixels++;
+        if (objectPixels[p] && !pipeline.mappedMask[p]) lostObjectPixels++;
+        const i = p * 4;
+        if (
+          !providerMask[p] &&
+          (raw[i] !== finalRaw[i] ||
+            raw[i + 1] !== finalRaw[i + 1] ||
+            raw[i + 2] !== finalRaw[i + 2] ||
+            raw[i + 3] !== finalRaw[i + 3])
+        )
+          outsideChanges++;
+        const x = p % width,
+          y = Math.floor(p / width);
+        if (
+          providerMask[p] &&
+          ((x > 0 && !providerMask[p - 1]) ||
+            (x + 1 < width && !providerMask[p + 1]) ||
+            (y > 0 && !providerMask[p - width]) ||
+            (y + 1 < height && !providerMask[p + width]))
+        )
+          boundaryMaxWeight = Math.max(boundaryMaxWeight, repairCoverage[p]!);
+      }
+      if (outsideChanges)
+        throw Error(
+          'Kompozícia zmenila pixely mimo opravy. Výsledok sa nepublikoval.',
+        );
+      const roundTripMae = rgbMae(raw, pipeline.roundTrip, () => true);
+      const contextMae = restored
+        ? rgbMae(pipeline.roundTrip, restored, (p) => !providerMask[p])
+        : undefined;
+      const ring = restored
+        ? await sharp(providerMask, { raw: { width, height, channels: 1 } })
+            .erode(9)
+            .greyscale()
+            .raw()
+            .toBuffer()
+        : undefined;
+      const seamMae =
+        restored && ring
+          ? rgbMae(
+              pipeline.roundTrip,
+              restored,
+              (p) => !providerMask[p] && !!ring[p],
+            )
+          : undefined;
+      const warnings: string[] = [];
+      if (!repairPadding)
+        warnings.push(
+          'Presah je nulový: tiene a obrysy mimo masky sa neopravujú, šev je tvrdý.',
+        );
+      else if (feather >= Number(repairPadding))
+        warnings.push(
+          'Prechod švu zaberá celý presah. Ak ostávajú stopy objektu, zväčši presah oproti šírke prechodu.',
+        );
+      if (
+        providerMask.subarray(0, width).some((v) => v > 0) ||
+        providerMask.subarray((height - 1) * width).some((v) => v > 0) ||
+        providerMask.some(
+          (v, p) => !!v && (p % width === 0 || p % width === width - 1),
+        )
+      )
+        warnings.push(
+          'Opravná maska dosahuje okraj zdroja; presah je na ňom orezaný.',
+        );
+      if (expandedCount > width * height * 0.5)
+        warnings.push(
+          'Opravná maska zaberá viac než polovicu obrázka; skontroluj výber a presah.',
+        );
+      if (lostObjectPixels)
+        warnings.push(
+          `Maska po škálovaní stráca ${lostObjectPixels} pixelov objektu.`,
+        );
+      if (boundaryMaxWeight)
+        warnings.push(
+          'Na vonkajšej hranici opravy ostáva nenulový zásah. Skontroluj prechod švu a presah.',
+        );
+      if (roundTripMae > 1)
+        warnings.push(
+          'Samotné škálovanie mení detaily. Porovnaj kontrolný návrat bez AI s originálom.',
+        );
+      if (
+        (contextMae !== undefined && contextMae > 1) ||
+        (seamMae !== undefined && seamMae > 1)
+      )
+        warnings.push(
+          'Model zmenil aj chránený kontext. Rozdiel oproti kontrolnému návratu môže vysvetliť farebný šev; color matching sa nepoužíva.',
+        );
+      if (blockedReason) warnings.push(blockedReason);
+      debug = {
+        files,
+        geometry: { ...pipeline.geometry, returned: returnedSize },
+        metrics: {
+          objectPixels: objectCount,
+          expandedPixels: expandedCount,
+          featherPixels,
+          feather,
+          padding: Number(repairPadding),
+          lostObjectPixels,
+          roundTripMae,
+          contextMae,
+          seamMae,
+          outsideChanges: restored ? outsideChanges : undefined,
+          boundaryMaxWeight,
+        },
+        warnings,
+      };
+      const artifacts: [string, Buffer][] = [
+        ['expanded-mask.png', await maskPng(providerMask, width, height)],
+        ['provider-input.png', pipeline.input],
+        ['provider-mask.png', pipeline.apiMask],
+        ['round-trip.png', await png(pipeline.roundTrip)],
+      ];
+      if (returned) artifacts.push(['provider-returned.png', returned]);
+      if (restored) {
+        artifacts.push(['provider-restored.png', await png(restored)]);
+        const difference = Buffer.alloc(raw.length, 255);
+        for (let i = 0; i < raw.length; i += 4)
+          for (let c = 0; c < 3; c++)
+            difference[i + c] = Math.min(
+              255,
+              Math.abs(restored[i + c]! - pipeline.roundTrip[i + c]!) * 4,
+            );
+        artifacts.push(['provider-difference.png', await png(difference)]);
+      }
+      await Promise.all(
+        artifacts.map(([name, bytes]) =>
+          writeFile(path.join(staging, name), bytes, { flag: 'wx' }),
+        ),
+      );
+    }
     const manifest = {
       version: 2,
       source: input.source,
@@ -640,6 +789,20 @@ export async function createArtwork(
           }
         : undefined,
       repairPadding,
+      repairFeather: feather,
+      debugOnly: debugOnly || undefined,
+      blockedReason,
+      debug,
+      pipeline: debug
+        ? {
+            context: 'full-source-letterbox',
+            expansion: 'square-radius-native-pixels',
+            imageResampling: 'lanczos3',
+            maskDownsampling: 'conservative-pixel-footprints',
+            feather: 'inward-smoothstep-chamfer',
+            composition: 'premultiplied-interpolation-to-straight-rgba',
+          }
+        : undefined,
       repairMask: ['extract', 'remove'].includes(operation)
         ? 'repair-mask.png'
         : undefined,
@@ -671,8 +834,14 @@ export async function createArtwork(
       operation,
       source: input.source,
       ...settings,
+      debugOnly: debugOnly || undefined,
+      blockedReason,
+      debug,
       image: `${prefix}/image.png`,
-      cutout: operation === 'extract' ? `${prefix}/cutout.png` : undefined,
+      cutout:
+        operation === 'extract' && !debugOnly && !blockedReason
+          ? `${prefix}/cutout.png`
+          : undefined,
       animation,
       width,
       height,
