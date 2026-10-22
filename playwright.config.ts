@@ -9,6 +9,7 @@ export default defineConfig({
     'scene-art-rules.spec.ts',
     'editor-jobs-rules.spec.ts',
     'object-mask-rules.spec.ts',
+    'codex-rules.spec.ts',
   ],
   fullyParallel: true,
   workers: 4,

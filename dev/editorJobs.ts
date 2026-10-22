@@ -15,8 +15,9 @@ export function createEditorJobs() {
   const jobs: EditorJob[] = [];
   const tasks = new Map<
     string,
-    (stage: (text: string) => void) => Promise<Result>
+    (stage: (text: string) => void, signal: AbortSignal) => Promise<Result>
   >();
+  const controllers = new Map<string, AbortController>();
   let running = false,
     closed = false;
   async function drain() {
@@ -28,10 +29,16 @@ export function createEditorJobs() {
         if (!job) break;
         job.status = 'running';
         job.stage = 'Připravuji vstup';
+        const controller = new AbortController();
+        controllers.set(job.id, controller);
         try {
           const result = await tasks.get(job.id)!((stage) => {
+            if (controller.signal.aborted) return;
             job.stage = stage;
-          });
+            if (job.kind === 'codex' && job.log?.at(-1) !== stage)
+              job.log = [...(job.log ?? []), stage].slice(-40);
+          }, controller.signal);
+          if (controller.signal.aborted) continue;
           // Job kind and runner are paired by the local API, never by model output.
           Object.assign(job, {
             result,
@@ -39,11 +46,13 @@ export function createEditorJobs() {
             stage: 'Připravené na kontrolu',
           });
         } catch (error) {
+          if (controller.signal.aborted) continue;
           job.status = 'failed';
           job.stage = 'Úloha selhala · bez automatického opakování';
           job.error = error instanceof Error ? error.message : 'Úloha selhala.';
         } finally {
           tasks.delete(job.id);
+          controllers.delete(job.id);
         }
       }
     } finally {
@@ -55,7 +64,10 @@ export function createEditorJobs() {
     submit(
       input: JobInput,
       label: string,
-      run: (stage: (text: string) => void) => Promise<Result>,
+      run: (
+        stage: (text: string) => void,
+        signal: AbortSignal,
+      ) => Promise<Result>,
     ) {
       if (closed || jobs.length >= 20)
         throw Error('Fronta je plná (20 úloh). Odlož hotové výsledky.');
@@ -75,6 +87,12 @@ export function createEditorJobs() {
     },
     cancel(id: string) {
       const job = jobs.find((j) => j.id === id);
+      if (job?.status === 'running' && job.kind === 'codex') {
+        controllers.get(id)?.abort();
+        job.status = 'cancelled';
+        job.stage = 'Agent se zastavuje · výsledek se nepoužije';
+        return;
+      }
       if (!job || job.status !== 'queued')
         throw Error(
           'Zrušit lze pouze čekající úlohu. Běžící požadavek se dokončí.',
@@ -91,6 +109,10 @@ export function createEditorJobs() {
     },
     close() {
       closed = true;
+      for (const job of jobs) {
+        if (job.kind === 'codex' && job.status === 'running')
+          controllers.get(job.id)?.abort();
+      }
     },
   };
 }

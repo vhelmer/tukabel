@@ -21,6 +21,12 @@ import {
 import { artworkHistory } from './artHistory.ts';
 import { createEditorJobs } from './editorJobs.ts';
 import {
+  codexInput,
+  codexStatus,
+  createCodexAnimation,
+  type CodexOptions,
+} from './codexAgent.ts';
+import {
   directionInput,
   directionStatus,
   proposeAnimation,
@@ -101,6 +107,7 @@ export function editorPlugin(
     art?: ArtOptions;
     direction?: DirectionOptions;
     segmentation?: SegmentationOptions;
+    codex?: CodexOptions;
   } = {},
 ): Plugin {
   return {
@@ -142,6 +149,10 @@ export function editorPlugin(
         ...options.segmentation,
       };
       const jobs = createEditorJobs();
+      const codexOptions: CodexOptions = {
+        bin: process.env.CODEX_BIN || env.CODEX_BIN,
+        ...options.codex,
+      };
       server.httpServer?.once('close', () => jobs.close());
       let queue = Promise.resolve();
       server.middlewares.use((req, res, next) => {
@@ -179,6 +190,10 @@ export function editorPlugin(
           }
           const parsedUrl = new URL(req.url!, host);
           const endpoint = parsedUrl.pathname;
+          if (endpoint === API + '/codex/status' && req.method === 'GET') {
+            respond(200, await codexStatus(codexOptions));
+            return;
+          }
           if (endpoint === `${API}/art/status` && req.method === 'GET') {
             respond(200, {
               ...artStatus(artOptions),
@@ -301,6 +316,37 @@ export function editorPlugin(
                 async (stage) => {
                   stage('AI navrhuje nastavení existujúcich klipů');
                   return proposeAnimation(input, directionOptions);
+                },
+              );
+              respond(202, job);
+              return;
+            }
+            if (body.kind === 'codex') {
+              const input = {
+                ...(body.input as object),
+                context: body.context,
+              };
+              const { context } = codexInput(input);
+              const job = jobs.submit(
+                { kind: 'codex', context },
+                body.label,
+                async (stage, signal) => {
+                  const result = await createCodexAnimation(
+                    assetsRoot,
+                    input,
+                    codexOptions,
+                    stage,
+                    signal,
+                  );
+                  const modules =
+                    server.environments.client.moduleGraph.getModulesByFile(
+                      path.resolve(server.config.root, 'src/game/assets.ts'),
+                    );
+                  for (const module of modules ?? [])
+                    server.environments.client.moduleGraph.invalidateModule(
+                      module,
+                    );
+                  return { ...result, assets: await listAssets(assetsRoot) };
                 },
               );
               respond(202, job);
@@ -508,6 +554,7 @@ export function editorPlugin(
           // Atomic folder publication can be reported as update/delete as well
           // as create; none may refresh away the current artwork draft.
           context.file.includes('/src/assets/scene-art/') ||
+          context.file.includes('/src/assets/codex/') ||
           (context.type === 'create' &&
             (context.file.includes('/src/assets/imported/') ||
               context.file.includes('/src/assets/animations/') ||

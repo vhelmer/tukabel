@@ -11,6 +11,7 @@ playwright-report/
 # Pracovní adresáře importu; finální snímky a metadata se verzují.
 src/assets/animations/.*.tmp/
 src/assets/speech/.*.tmp/
+src/assets/codex/.*.tmp/
 
 # Lokální nástroje a modely pro tvorbu obsahu; produkce je nepotřebuje.
 .local-tools/

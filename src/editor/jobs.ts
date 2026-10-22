@@ -4,6 +4,7 @@ import type {
   Hotspot,
 } from '../game/types';
 import type { ArtworkResult } from './api';
+import type { CodexContext, CodexResult } from './codex';
 
 export interface ArtContext {
   sceneId: string;
@@ -36,8 +37,10 @@ export type EditorJob = {
   status: 'queued' | 'running' | 'succeeded' | 'failed' | 'cancelled';
   stage: string;
   error?: string;
+  log?: string[];
 } & (
   | { kind: 'art'; context: ArtContext; result?: ArtworkResult }
+  | { kind: 'codex'; context: CodexContext; result?: CodexResult }
   | {
       kind: 'animation';
       context: AnimationContext;
