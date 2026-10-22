@@ -48,7 +48,14 @@ export function useEditorJobs(active: boolean) {
           .filter((j) => j.id !== id || type !== 'dismiss')
           .map((j) =>
             j.id === id
-              ? { ...j, status: 'cancelled', stage: 'Zrušené před spuštěním' }
+              ? {
+                  ...j,
+                  status: 'cancelled',
+                  stage:
+                    j.status === 'running'
+                      ? 'Agent se zastavuje · výsledek se nepoužije'
+                      : 'Zrušené před spuštěním',
+                }
               : j,
           ),
       );

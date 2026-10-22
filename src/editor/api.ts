@@ -169,9 +169,12 @@ export const getArtStatus = () =>
 export const listEditorJobs = () =>
   request<{ jobs: import('./jobs').EditorJob[] }>('jobs');
 export const submitEditorJob = (input: {
-  kind: 'art' | 'animation';
+  kind: 'art' | 'animation' | 'codex';
   label: string;
-  context: import('./jobs').ArtContext | import('./jobs').AnimationContext;
+  context:
+    | import('./jobs').ArtContext
+    | import('./jobs').AnimationContext
+    | import('./codex').CodexContext;
   input: unknown;
 }) => request<import('./jobs').EditorJob>('jobs', 'POST', input);
 export const editorJobAction = (id: string, action: 'cancel' | 'dismiss') =>
@@ -180,6 +183,8 @@ export const getDirectionStatus = () =>
   request<{ configured: boolean; model: string }>(
     'animations/direction/status',
   );
+export const getCodexStatus = () =>
+  request<import('./codex').CodexStatus>('codex/status');
 
 export const getMaskSource = (source: string) =>
   request<import('./masks').MaskSource>('art/source', 'POST', { source });

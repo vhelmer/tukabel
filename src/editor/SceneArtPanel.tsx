@@ -21,6 +21,7 @@ import { Field } from './fields';
 import { artFingerprint } from './jobs';
 import type { EditorJob } from './jobs';
 import { nextId } from './model';
+import { CodexPanel } from './CodexPanel';
 import {
   defaultImageModel,
   defaultImageQuality,
@@ -45,6 +46,7 @@ export function SceneArtPanel({
   onSubmitted,
   onDismiss,
   content,
+  assets,
   scene,
   hotspot,
   selection,
@@ -60,6 +62,7 @@ export function SceneArtPanel({
   onSubmitted: (job: EditorJob) => void;
   onDismiss: (id: string) => void;
   content: GameContent;
+  assets: readonly string[];
   scene: SceneDefinition;
   hotspot?: Hotspot;
   selection?: readonly Point[];
@@ -73,7 +76,8 @@ export function SceneArtPanel({
     useState<ArtworkResult['operation']>('cutout');
   const openedJob = jobs.find(
     (job) =>
-      job.kind === 'art' &&
+      (job.kind === 'art' ||
+        (job.kind === 'codex' && job.context.mode === 'scene')) &&
       job.id === selectedJob &&
       job.context.sceneId === scene.id &&
       job.context.targetId === (hotspot?.id ?? ''),
@@ -206,7 +210,7 @@ export function SceneArtPanel({
       disposed = true;
     };
   }, []);
-  function sourceSelection() {
+  function sourceSelection(forceSelection = false) {
     if (!size) throw Error('Počkej na načítání zdroje.');
     const placement: Pick<Hotspot, 'bounds' | 'rotation' | 'imageFit'> =
       object ?? {
@@ -214,7 +218,7 @@ export function SceneArtPanel({
         imageFit: 'stretch' as const,
       };
     let points: Point[] | undefined;
-    if (selection && operation !== 'generate') {
+    if (selection && (forceSelection || operation !== 'generate')) {
       const b = imagePlacement(placement.bounds, size, placement.imageFit);
       points = selection.map((p) => {
         const local = rotateAround(
@@ -688,6 +692,42 @@ export function SceneArtPanel({
           </button>
         </div>
       </fieldset>
+      <CodexPanel
+        locked={object?.locked}
+        active={active}
+        context={{
+          mode: 'scene',
+          sceneId: scene.id,
+          targetId: object?.id ?? '',
+          source,
+          label: label || 'Animovaná oblast',
+          fingerprint: artFingerprint(scene, object?.id ?? ''),
+          placement: object
+            ? {
+                bounds: object.bounds,
+                rotation: object.rotation,
+                imageFit: object.imageFit,
+              }
+            : {
+                bounds: {
+                  x: 0,
+                  y: 0,
+                  width: scene.width,
+                  height: scene.height,
+                },
+                imageFit: 'stretch',
+              },
+        }}
+        selection={() => sourceSelection(true).points}
+        content={content}
+        assets={assets}
+        jobs={jobs}
+        selectedJob={selectedJob}
+        onSubmitted={onSubmitted}
+        onDismiss={onDismiss}
+        onAssets={onAssets}
+        onChange={onChange}
+      />
       <div className="art-history">
         <button
           disabled={busy || !size}

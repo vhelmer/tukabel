@@ -283,7 +283,12 @@ export default function DevWorkspace({
           }
           onScene(job.context.sceneId);
           setHotspotId(job.context.targetId);
-          setTab(job.kind === 'art' ? 'scenes' : 'animations');
+          setTab(
+            job.kind === 'art' ||
+              (job.kind === 'codex' && job.context.mode === 'scene')
+              ? 'scenes'
+              : 'animations',
+          );
           setSelectedJob(job.id);
         }}
       />
@@ -474,6 +479,7 @@ export default function DevWorkspace({
                     key={`${artScope}/${hotspot?.image ?? ''}`}
                     active={active}
                     content={document}
+                    assets={assets}
                     jobs={jobQueue.jobs}
                     selectedJob={selectedJob}
                     onSubmitted={(job) => {

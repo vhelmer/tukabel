@@ -76,7 +76,7 @@ test('Codex results publish atomically, retain exact pixels, detect disjoint reg
       effort: 'high',
       sourceSha256: result.sourceSha256,
     });
-    expect(recipe.scripts).toEqual(['script-0.py']);
+    expect(recipe.scripts).toEqual(['generate.py']);
     expect(stages.at(-1)).toContain('Ověřuji snímky');
     expect(
       (await readdir(path.join(root, 'codex'))).some((f) => f.startsWith('.')),

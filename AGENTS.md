@@ -198,6 +198,22 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
   Vite přežije reload klienta, nikoli restart serveru; žádné automatické retry.
   Čekající lze zrušit, běžící se dokončí. Úlohy samy nikdy nemění projektový JSON.
   Výsledky otevři podle zachyceného cíle; zaniklý či změněný cíl nepřepisuj.
+- **dev/codexAgent.ts** spouští skutečný místní codex exec (GPT-6.1-Sol / high),
+  pouze výslovnou úlohou codex v Dev Mode. CODEX_BIN je serverová cesta;
+  používá uložené přihlášení CLI bez OPENAI_API_KEY a bez uživatelského configu.
+  Agent pracuje nad kopií v dočasné složce mimo repo, workspace-write, bez
+  eskalací, síťových příkazů a dalších agentů. Nepoužívej shellovou interpolaci,
+  automatické retry nebo neomezená oprávnění. Přenášej jen omezené zprávy JSONL,
+  nikoli stderr, výstupy příkazů či reasoning. Běžícího Codexe lze zastavit;
+  abort / zavření serveru ukončí procesní skupinu a nesmí zablokovat frontu.
+  PNG snímky, zdroj, zadání, skripty a recept publikuj atomicky do
+  src/assets/codex/UUID/. Recept není druhý zdroj herního obsahu.
+  Ověř skutečné PNG, plátno, původní alfu postavy, krajní snímky mrknutí,
+  odlišné pózy, nezávislé oblasti očí/úst a shodu mimo výběr. Zdroj kontroluj
+  hashem, cíl fingerprintem. CodexPanel používá stejný projektový návrh,
+  validaci i Pixi náhled; Apply je jeden undo krok a zachová nesouvisející editace.
+  Agent sám nemění projektový JSON. Testy mockují běh CLI a nikdy samy
+  nespouštějí placené generování.
 - `dev/animationDirection.ts` převádí text jen na omezený návrh existujících
   blink/talk/idle klipů, intervalů a celkového motion. Serverové `OPENAI_API_KEY`
   a `OPENAI_ANIMATION_MODEL`; Responses Structured Outputs + vlastní validace.

@@ -37,9 +37,22 @@ export function JobTray({
             {job.status === 'succeeded' && (
               <button onClick={() => onOpen(job)}>Otevřít výsledek</button>
             )}
-            {job.status === 'queued' && (
+            {job.log && job.log.length > 0 && (
+              <details className="codex-log">
+                <summary>Průběh agenta</summary>
+                <ol>
+                  {job.log.map((line, i) => (
+                    <li key={i}>{line}</li>
+                  ))}
+                </ol>
+              </details>
+            )}
+            {(job.status === 'queued' ||
+              (job.status === 'running' && job.kind === 'codex')) && (
               <button onClick={() => onAction(job.id, 'cancel')}>
-                Zrušit čekající úlohu
+                {job.status === 'running'
+                  ? 'Zastavit agenta'
+                  : 'Zrušit čekající úlohu'}
               </button>
             )}
             {!['queued', 'running'].includes(job.status) && (

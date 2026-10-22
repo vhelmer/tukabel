@@ -4,6 +4,7 @@ import type { ArtContext } from './jobs';
 
 export type CodexTask = 'blink' | 'talk' | 'blink-talk' | 'ambient';
 export interface CodexContext extends ArtContext {
+  instruction?: string;
   mode: 'character' | 'scene';
   source: string;
   selection?: readonly Point[];
@@ -38,10 +39,13 @@ export function applyCodexResult(
       if (scene.id !== context.sceneId) return scene;
       if (context.mode === 'scene') {
         const clip = result.clips[0]!;
+        const position = context.targetId
+          ? scene.hotspots.findIndex((h) => h.id === context.targetId) + 1
+          : 0;
         return {
           ...scene,
           hotspots: [
-            ...scene.hotspots,
+            ...scene.hotspots.slice(0, position),
             {
               id: clip.id,
               label: context.label,
@@ -51,6 +55,7 @@ export function applyCodexResult(
               decorative: true,
               animation: { idle: clip.id, idleLoop: true },
             },
+            ...scene.hotspots.slice(position),
           ],
         };
       }

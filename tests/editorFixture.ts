@@ -1,5 +1,5 @@
 import { test as base, expect } from '@playwright/test';
-import { cp, mkdtemp, rm, symlink, writeFile } from 'node:fs/promises';
+import { chmod, cp, mkdtemp, rm, symlink, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { tmpdir } from 'node:os';
 import { createServer } from 'vite';
@@ -9,6 +9,7 @@ import { editorPlugin } from '../dev/editorPlugin';
 import type { SpeechOptions } from '../dev/speech';
 import type { DirectionOptions } from '../dev/animationDirection';
 import type { ArtOptions } from '../dev/sceneArt';
+import type { CodexOptions } from '../dev/codexAgent';
 import { ready } from './helpers';
 
 // Every test gets an isolated source checkout. Browser saves never touch the real
@@ -17,13 +18,15 @@ export const test = base.extend<{
   speechTools: SpeechOptions;
   artTools: ArtOptions;
   directionTools: DirectionOptions;
+  codexTools: CodexOptions;
   workspace: { url: string; source: string; root: string };
 }>({
   speechTools: [{}, { option: true }],
   artTools: [{ apiKey: '' }, { option: true }],
   directionTools: [{ apiKey: '' }, { option: true }],
+  codexTools: [{ bin: '/nonexistent/tukabel-test-codex' }, { option: true }],
   workspace: async (
-    { browserName, speechTools, artTools, directionTools },
+    { browserName, speechTools, artTools, directionTools, codexTools },
     use,
   ) => {
     const root = await mkdtemp(
@@ -57,6 +60,15 @@ export const test = base.extend<{
           .png()
           .toBuffer(),
       );
+      const codex = { ...codexTools };
+      if (codex.run) {
+        codex.bin = path.join(root, 'mock-codex');
+        await writeFile(
+          codex.bin,
+          '#!/usr/bin/env node\nconsole.log("codex-cli test");\n',
+        );
+        await chmod(codex.bin, 0o700);
+      }
       server = await createServer({
         configFile: false,
         plugins: [
@@ -65,6 +77,7 @@ export const test = base.extend<{
             speech: speechTools,
             art: artTools,
             direction: directionTools,
+            codex,
           }),
         ],
         base: './',

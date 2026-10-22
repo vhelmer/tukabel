@@ -117,7 +117,10 @@ export function codexInput(value: unknown): {
   if (c.mode === 'scene' && !c.selection)
     throw Error('Nejprve označ oblast scény.');
   return {
-    context: structuredClone(c) as unknown as CodexContext,
+    context: {
+      ...structuredClone(c),
+      instruction: value.prompt.trim(),
+    } as unknown as CodexContext,
     prompt: value.prompt.trim(),
     task: value.task as CodexTask,
     count: Number(value.count),
@@ -587,9 +590,10 @@ export async function createCodexAnimation(
       if (typeof name !== 'string' || !/\.(py|mjs|js)$/.test(name))
         throw Error('Reprodukční skript musí být Python nebo JavaScript.');
       const bytes = await safeFile(work, name, 1024 * 1024);
-      const target = 'script-' + i + path.extname(name);
-      await writeFile(path.join(staging, target), bytes);
-      scripts.push(target);
+      // Keep module names/relative imports intact for reproducible multi-file scripts.
+      await mkdir(path.dirname(path.join(staging, name)), { recursive: true });
+      await writeFile(path.join(staging, name), bytes, { flag: 'wx' });
+      scripts.push(name);
     }
     if (!scripts.length) throw Error('Chybí reprodukční skript.');
     signal.throwIfAborted();

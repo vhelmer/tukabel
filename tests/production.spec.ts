@@ -115,6 +115,12 @@ test('production serves a static game without editor code or write endpoints', a
       data: { files: [] },
     });
     expect(animationWrite.status()).toBe(404);
+    const codexStatus = await page.request.get(
+      new URL('__tukabel/editor/codex/status', url).href,
+    );
+    expect(codexStatus.headers()['content-type']).not.toContain(
+      'application/json',
+    );
     for (const operation of ['generate', 'import', 'analyze', 'catalog']) {
       const speechWrite = await page.request.post(
         new URL(`__tukabel/editor/speech/${operation}`, url).href,
@@ -143,6 +149,8 @@ test('production serves a static game without editor code or write endpoints', a
           'api.openai.com/v1/images',
           'api.openai.com/v1/responses',
           'OPENAI_ANIMATION_MODEL',
+          'CODEX_BIN',
+          'Spustit místního Codex agenta',
           'SAM2_CHECKPOINT',
           'SAM3_PYTHON',
           'SAM3_MODEL',

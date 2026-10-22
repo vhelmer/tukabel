@@ -470,13 +470,76 @@ editorové API ani AI klíč a přehrává pouze lokální PNG. Testy provider m
 
 Fronta je lokální, sériová a omezená na 20 úloh; jeden náročný požadavek běží,
 ostatní čekají. Čekající lze zrušit před voláním API, hotové nebo chybné odložit.
-Běžící požadavek se nechá dokončit; přepnutí režimu ani zavření náhledu jej neruší.
+Běžící API požadavek se nechá dokončit; místního Codex agenta lze zastavit.
+Přepnutí režimu ani zavření náhledu úlohu neruší.
 Chyba ani výpadek spojení nikdy automaticky neopakuje placenou operaci.
 Rozpracované i hotové úlohy přežijí reload stránky, **nikoli restart Vite** — jde
 záměrně o frontu v paměti serveru, bez další služby nebo databáze. Před restartem
 použij a ulož potřebné výsledky. Vytvořené grafické soubory a recepty zůstanou na
 disku i po restartu; projektové vazby mění výhradně **Použít** a projektový save.
 Obnovení stránky samo neuchovává neuložený návrh projektu, proto jej nejdřív ulož.
+
+### Místní Codex agent: tvorba nových animačních snímků
+
+Editor spouští skutečný **Codex CLI na tvém počítači**, s modelem
+**GPT-6.1-Sol / high**. Používá uložené přihlášení z **codex login**; tento
+workflow nepotřebuje OPENAI_API_KEY. Model a přihlášení vyžadují připojení ke službě
+Codex. Dostupnost CLI nezaručuje oprávnění k modelu nebo volné limity účtu.
+
+V terminálu ověř **codex --version** a **codex login status**, případně spusť
+**codex login**. Vite musí mít codex ve svém PATH; jinak nastav absolutní
+CODEX_BIN v ignorovaném .env.local a restartuj server. Použij aktuální CLI
+s podporou exec --json, --ignore-user-config a sandboxu workspace-write.
+Integrace vychází z [neinteraktivního Codex CLI](https://learn.chatgpt.com/docs/non-interactive-mode).
+
+**Postava:**
+
+1. V **Dev Mode → Animace** vyber postavu a rozbal
+   **Codex CLI · připravit nové animační snímky**.
+2. Zvol **Mrkání**, **Tvary úst pro mluvení** nebo obojí. Zadej pokyny, počet
+   snímků každého klipu (5–24) a fps (1–30).
+3. Klikni **Spustit místního Codex agenta**. V **Úlohy na pozadí** uvidíš průběh
+   a zprávy. Můžeš pokračovat v práci, uložit projekt nebo obnovit stránku.
+   **Zastavit agenta** ukončí jeho procesy; další čekající úloha pak pokračuje.
+4. **Otevřít výsledek** vrátí správnou postavu. Zkontroluj jednotlivé snímky nebo
+   společný Pixi náhled očí, úst a idle. **Přiřadit výsledek do návrhu** je jeden
+   krok Undo; **Uložit do projektu** zapíše klipy a vazby do projektového JSON.
+   Hlasy a reakce zůstávají; po výměně úst znovu přiřaď jejich mapu Rhubarb,
+   protože indexy nových póz mohou mít jiný význam.
+
+**Mraky, voda a další oblasti:** v **Lokace → Výběr a grafika** vyber zdroj,
+označ obdélník/polygon nad scénou a rozbal stejný panel Codexu. Zadej požadovanou
+plynulou smyčku. Výsledek vytvoří samostatnou dekorativní animovanou vrstvu ve
+stejném rámu; původní pozadí se neopravuje ani nemaže. Pro celkový přesun objektu
+nejdřív použij oddělení objektu a opravu pozadí. Výběr se předává v původních
+pixelech obrázku, včetně převodu contain/stretch, zoomu a rotace.
+
+Agent dostane zdroj a zadání v dočasné pracovní složce mimo repozitář.
+Spouští se bez shellové interpolace, s pevným modelem, workspace-write, bez
+eskalací, síťových příkazů a dalších agentů. Uživatelský config.toml se nenačítá;
+uložené přihlášení CLI zůstává dostupné. Vývojové API klíče se agentovi
+nepředávají. Limit je 20 minut a žádné automatické opakování.
+Produkce nemá tento panel, endpointy ani závislost na CLI.
+
+Runner kontroluje skutečné PNG, stejné rozměry a alfu postavy, původní krajní
+snímky mrknutí, alespoň tři odlišné fáze mrknutí / pět tvarů úst a nepřekrývající
+se oblasti očí a úst. U výběru nepovolí změnu pixelů mimo polygon. Tyto kontroly
+ověřují technickou konzistenci; výtvarnou kvalitu posuď v náhledu.
+Chybný výstup se nepřiřadí ani částečně nepublikuje.
+
+Hotové snímky, source.png, request.json, reprodukční skripty Python/JavaScript
+a recipe.json se atomicky uloží do **src/assets/codex/UUID/**. Recept zachovává
+prompt, model, otisk zdroje, výběr a výstupní manifest. Skripty se po importu
+automaticky nespouštějí. Zdroj ani projektový JSON agent nepřepisuje.
+Při změně zdroje nebo cílové vrstvy se staré přiřazení zablokuje; nesouvisející
+úpravy scény zůstávají. Fronta je v paměti: před restartem Vite přiřaď a ulož
+potřebné výsledky, soubory na disku zůstanou.
+
+Ověřeno skutečným během CLI nad kopií woman.png: pět nových snímků mrknutí,
+vizuální kontrola a kontrola rozměrů, alfy i krajních snímků. Automatické testy
+používají mock agenta, dočasné projekty a žádná placená volání.
+
+### Textová režie: nastavení již hotových klipů
 
 V **Dev Mode → Animace** vyber postavu a rozbal **Textová režie · experiment**:
 

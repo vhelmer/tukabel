@@ -51,6 +51,10 @@ export function createEditorJobs() {
           job.stage = 'Úloha selhala · bez automatického opakování';
           job.error = error instanceof Error ? error.message : 'Úloha selhala.';
         } finally {
+          if (job.kind === 'codex' && controller.signal.aborted) {
+            job.status = 'cancelled';
+            job.stage = 'Agent zastaven · výsledek se nepoužil';
+          }
           tasks.delete(job.id);
           controllers.delete(job.id);
         }
