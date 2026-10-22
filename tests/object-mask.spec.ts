@@ -174,6 +174,12 @@ test('source-pixel masks support real segmentation, manual touchups, zoom, compa
   const segmentation = (await status.json()).segmentation;
   const available = segmentation.grabcut;
   const method = segmentation.sam2 ? 'sam2' : 'grabcut';
+  // Installed alternatives (e.g. SAM 3) may change the editor's default.
+  // Exercise this test's declared method rather than relying on that default.
+  if (available)
+    await editor
+      .getByLabel('Segmentace hranic', { exact: true })
+      .selectOption(method);
   if (segmentation.sam2) {
     const detail = editor.getByRole('checkbox', {
       name: 'Detailní přechod · experimentální',
@@ -197,6 +203,7 @@ test('source-pixel masks support real segmentation, manual touchups, zoom, compa
     );
     await refine.click();
     const sent = (await request).postDataJSON();
+    expect(sent.method).toBe(method);
     expect(sent.refineEdges).toBe(true);
     expect(sent.detailPass).toBe(segmentation.sam2);
     await expect(editor.getByRole('status')).toContainText('Zkontroluj obrys', {
