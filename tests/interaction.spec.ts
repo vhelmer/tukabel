@@ -33,19 +33,25 @@ test('pickup flies into a distinct inventory icon; hover shows a name and a conv
     await page.mouse.move(0, 0);
   }
   await activate(page, 190, 630, isMobile);
-  await expect(page.locator('.pickup-flight')).toBeVisible();
+  await expect(page.locator('.canvas-host')).toHaveAttribute(
+    'data-pickups',
+    '1',
+  );
   const flightSrc = await page
-    .locator('.pickup-flight img')
-    .getAttribute('src');
+    .locator('.canvas-host')
+    .getAttribute('data-pickup-image');
   const cable = page.getByRole('button', {
     name: 'Poškodený kábel',
     exact: true,
   });
-  const inventorySrc = await cable.locator('img').getAttribute('src');
+  const inventorySrc = await cable.getAttribute('data-image');
   expect(flightSrc).toBeTruthy();
   expect(inventorySrc).toBeTruthy();
   expect(inventorySrc).not.toEqual(flightSrc);
-  await expect(page.locator('.pickup-flight')).toHaveCount(0);
+  await expect(page.locator('.canvas-host')).toHaveAttribute(
+    'data-pickups',
+    '0',
+  );
   await page.screenshot({ path: testInfo.outputPath('context-game.png') });
   await expect(page.locator('.verb-controls')).toHaveCount(0);
   expect(errors).toEqual([]);

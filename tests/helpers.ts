@@ -1,5 +1,6 @@
 import { expect } from '@playwright/test';
 import type { Locator, Page } from '@playwright/test';
+import { gameViewport } from '../src/game/hudLayout';
 
 export async function ready(page: Page) {
   await expect(page.locator('.canvas-host canvas')).toHaveCount(1);
@@ -11,8 +12,16 @@ export async function ready(page: Page) {
       page.locator('.canvas-host canvas').evaluate((canvas) => {
         const host = canvas.parentElement!;
         return (
+          Boolean(host) &&
           canvas.clientWidth === host.clientWidth &&
-          canvas.clientHeight === host.clientHeight
+          canvas.clientHeight === host.clientHeight &&
+          (!host.closest('.game-window') ||
+            (host.parentElement?.querySelector<HTMLElement>(
+              '.hud-accessibility',
+            )?.dataset.width === String(canvas.clientWidth) &&
+              host.parentElement?.querySelector<HTMLElement>(
+                '.hud-accessibility',
+              )?.dataset.height === String(canvas.clientHeight)))
         );
       }),
     )
@@ -21,10 +30,28 @@ export async function ready(page: Page) {
 export async function pointInScene(page: Page, x: number, y: number) {
   const box = await page.locator('.canvas-host canvas').boundingBox();
   if (!box) throw new Error('Scene has no bounds');
-  const scale = Math.min(box.width / 1280, box.height / 720);
+  const dimensions = await page
+    .locator('.canvas-host canvas')
+    .evaluate((canvas) => ({
+      width: canvas.clientWidth,
+      height: canvas.clientHeight,
+      hud: Boolean(canvas.closest('.game-window')),
+    }));
+  const area = gameViewport(
+    dimensions.width,
+    dimensions.height,
+    dimensions.hud,
+  );
+  const scale = Math.min(area.width / 1280, area.height / 720);
   return {
-    x: box.x + (box.width - 1280 * scale) / 2 + x * scale,
-    y: box.y + (box.height - 720 * scale) / 2 + y * scale,
+    x:
+      box.x +
+      (((area.width - 1280 * scale) / 2 + x * scale) * box.width) /
+        dimensions.width,
+    y:
+      box.y +
+      ((area.y + (area.height - 720 * scale) / 2 + y * scale) * box.height) /
+        dimensions.height,
   };
 }
 export async function activate(
@@ -40,7 +67,7 @@ export async function activate(
 export async function object(page: Page, name: string) {
   const toggle = page.getByRole('button', { name: 'Objekty', exact: true });
   if ((await toggle.getAttribute('aria-expanded')) !== 'true')
-    await toggle.click();
+    await hudClick(page, toggle);
   return page
     .locator('.objects-popover')
     .getByRole('button', { name: `${name} ↗`, exact: true });
@@ -104,7 +131,10 @@ export async function dragItem(
           },
         ],
       });
-    await expect(page.locator('.drag-ghost')).toBeVisible();
+    await expect(page.locator('.canvas-host')).toHaveAttribute(
+      'data-dragging',
+      'true',
+    );
     await session.send('Input.dispatchTouchEvent', {
       type: 'touchEnd',
       touchPoints: [],
@@ -114,17 +144,35 @@ export async function dragItem(
     await page.mouse.move(start.x, start.y);
     await page.mouse.down();
     await page.mouse.move(end.x, end.y, { steps: 8 });
-    await expect(page.locator('.drag-ghost')).toBeVisible();
+    await expect(page.locator('.canvas-host')).toHaveAttribute(
+      'data-dragging',
+      'true',
+    );
     await page.mouse.up();
   }
-  await expect(page.locator('.drag-ghost')).toHaveCount(0);
+  await expect(page.locator('.canvas-host')).toHaveAttribute(
+    'data-dragging',
+    'false',
+  );
 }
 export async function menuAction(page: Page, name: string, close = true) {
-  await page.getByRole('button', { name: 'Menu', exact: true }).click();
+  await hudClick(page, page.getByRole('button', { name: 'Menu', exact: true }));
   await page
     .getByRole('dialog', { name: 'Herné menu' })
     .getByRole('button', { name, exact: true })
     .click();
   if (close && name !== 'Nová hra')
     await page.getByRole('button', { name: 'Pokračovať v hre' }).click();
+}
+
+// Semantic controls have the same bounds as their Pixi targets, but never
+// intercept a pointer. Exercise the canvas itself, not a DOM handler.
+export async function hudClick(page: Page, control: Locator, touch = false) {
+  await expect(control).toBeEnabled();
+  const box = await control.boundingBox();
+  if (!box) throw new Error('HUD control has no bounds');
+  const x = box.x + box.width / 2,
+    y = box.y + box.height / 2;
+  if (touch) await page.touchscreen.tap(x, y);
+  else await page.mouse.click(x, y);
 }

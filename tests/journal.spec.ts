@@ -1,3 +1,4 @@
+import { hudClick } from './helpers';
 import { expect, type Page } from '@playwright/test';
 import { readFile, writeFile } from 'node:fs/promises';
 import { test, openEditor } from './editorFixture';
@@ -15,8 +16,7 @@ import type { GameContent } from '../src/game/types';
 
 async function openJournal(page: Page, touch: boolean) {
   const button = page.getByRole('button', { name: /^Denník/ });
-  if (touch) await button.tap();
-  else await button.click();
+  await hudClick(page, button, touch);
   const journal = page.getByRole('dialog', {
     name: 'Denník úloh',
     exact: true,
@@ -29,8 +29,7 @@ async function closeJournal(page: Page, touch: boolean) {
     name: 'Zavrieť denník',
     exact: true,
   });
-  if (touch) await button.tap();
-  else await button.click();
+  await hudClick(page, button, touch);
   await expect(
     page.getByRole('dialog', { name: 'Denník úloh', exact: true }),
   ).toHaveCount(0);
@@ -57,7 +56,8 @@ test('upper HUD supports real drags; journal discovers and strikes tasks through
     .getByRole('group', { name: 'Inventár', exact: true })
     .boundingBox();
   const scene = await page.locator('.play-area').boundingBox();
-  expect(inventory!.y + inventory!.height).toBeLessThanOrEqual(scene!.y + 1);
+  expect(inventory!.y).toBeGreaterThanOrEqual(scene!.y);
+  expect(inventory!.y + inventory!.height).toBeLessThan(scene!.y + 130);
   let journal = await openJournal(page, isMobile);
   await expect(
     journal.locator('[data-task-id="power-router"]'),
@@ -112,6 +112,7 @@ test('upper HUD supports real drags; journal discovers and strikes tasks through
     'completed',
   );
   await page.setViewportSize({ width: 720, height: 400 });
+  await ready(page);
   const book = await journal.boundingBox(),
     game = await page.locator('.game-window').boundingBox();
   expect(book!.x).toBeGreaterThanOrEqual(game!.x);

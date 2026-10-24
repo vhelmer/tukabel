@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { PointerEvent as ReactPointerEvent } from 'react';
 import type {
   GameAction,
   AnimationTrigger,
@@ -12,18 +11,16 @@ import { useConversation } from './useConversation';
 import { subtitleText } from '../game/subtitles';
 import { getDialogueNode } from '../game/state';
 import { reduceGame } from '../game/state';
-import { SceneCursor, PickupFlight } from './SceneCursor';
-import type { Pickup } from './SceneCursor';
+import { SceneCursor } from './SceneCursor';
+import type { HudController, InventoryPointer } from '../game/createHud';
+import { gameViewport, sceneViewportRect } from '../game/hudLayout';
 import { matches } from '../game/state';
 import { scenePoint } from '../game/coordinates';
 import type { ScenePicker } from '../game/hitTest';
 import { rotatedBounds } from '../game/transforms';
 import { saveGame, loadGame } from '../game/storage';
 import { GameCanvas } from './GameCanvas';
-import { Inventory } from './Inventory';
 import { DialoguePanel } from './DialoguePanel';
-import { TaskJournal, NotebookIcon } from './TaskJournal';
-import { useButtonActivation } from './useButtonActivation';
 
 type Target = { type: 'item'; id: string } | { type: 'hotspot'; id: string };
 interface Drag {
@@ -55,17 +52,22 @@ export function GameWindow({
   const [menu, setMenu] = useState(false);
   const [journal, setJournal] = useState(false);
   const modalOpen = menu || journal;
-  const activeTaskCount = Object.values(state.tasks).filter(
-    (status) => status === 'active',
-  ).length;
-  const journalButton = useRef<HTMLButtonElement>(null);
+  const hudController = useRef<HudController | null>(null);
+  const registerHud = useCallback((controller: HudController | null) => {
+    hudController.current = controller;
+  }, []);
+  function focusHud(id: string) {
+    gameRef.current
+      ?.querySelector<HTMLButtonElement>('[data-hud-control="' + id + '"]')
+      ?.focus();
+  }
   const [objectsOpen, setObjectsOpen] = useState(false);
   const [storageMessage, setStorageMessage] = useState(
     'Pozícia sa uloží až tlačidlom Uložiť hru.',
   );
   const [drag, setDrag] = useState<Drag | null>(null);
   const dragRef = useRef<
-    | (Drag & { startX: number; startY: number; element: HTMLButtonElement })
+    | (Drag & { startX: number; startY: number; element: HTMLCanvasElement })
     | null
   >(null);
   const suppressClick = useRef(false);
@@ -75,19 +77,11 @@ export function GameWindow({
     y: number;
     inScene: boolean;
   } | null>(null);
-  const [pickups, setPickups] = useState<Pickup[]>([]);
-  const pickupNonce = useRef(0);
-  const finishPickup = useCallback(
-    (id: number) =>
-      setPickups((previous) => previous.filter((p) => p.id !== id)),
-    [],
-  );
   const viewport = useRef<HTMLDivElement>(null);
   const picker = useRef<ScenePicker | null>(null);
   const registerPicker = useCallback((next: ScenePicker | null) => {
     picker.current = next;
   }, []);
-  const menuButton = useRef<HTMLButtonElement>(null);
   const [areaSize, setAreaSize] = useState({ width: 0, height: 0 });
   useEffect(() => {
     const element = viewport.current;
@@ -160,8 +154,10 @@ export function GameWindow({
       const added = next.inventory.filter(
         (id) => !state.inventory.includes(id),
       );
-      const rootBox = gameRef.current?.getBoundingClientRect();
-      const viewBox = viewport.current?.getBoundingClientRect();
+      const rootBox = viewport.current?.getBoundingClientRect();
+      const viewBox = viewport.current
+        ? sceneViewportRect(viewport.current)
+        : undefined;
       if (
         added.length &&
         rootBox &&
@@ -190,23 +186,21 @@ export function GameWindow({
           rootBox.y +
           (viewBox.height - location.height * scale) / 2 +
           (origin?.y ?? location.height * 0.6) * scale;
-        setPickups((previous) => [
-          ...previous,
-          ...added.map((id) => {
-            const item = content.items.find((i) => i.id === id)!;
-            return {
-              id: ++pickupNonce.current,
-              itemId: id,
-              image: actor?.image ?? item.image,
-              icon: item.icon,
-              x,
-              y,
-              width,
-              height,
-              rotation: actor?.rotation ?? 0,
-            };
-          }),
-        ]);
+        for (const id of added) {
+          const item = content.items.find((i) => i.id === id)!;
+          const sx = viewport.current!.clientWidth / rootBox.width;
+          const sy = viewport.current!.clientHeight / rootBox.height;
+          hudController.current?.pickup({
+            itemId: id,
+            image: actor?.image ?? item.image,
+            icon: item.icon,
+            x: x * sx,
+            y: y * sy,
+            width: width * sx,
+            height: height * sy,
+            rotation: actor?.rotation ?? 0,
+          });
+        }
       }
       dispatchGame(action);
     },
@@ -244,7 +238,7 @@ export function GameWindow({
   const finishDrag = useCallback(() => {
     const current = dragRef.current;
     dragRef.current = null;
-    if (current?.active) suppressClick.current = true;
+    if (current) suppressClick.current = true;
     if (current?.element.hasPointerCapture(current.pointerId))
       current.element.releasePointerCapture(current.pointerId);
     setDrag(null);
@@ -254,12 +248,12 @@ export function GameWindow({
       if (event.key === 'Escape') {
         if (journal) {
           setJournal(false);
-          journalButton.current?.focus();
+          focusHud('journal');
           return;
         }
         if (menu) {
           setMenu(false);
-          menuButton.current?.focus();
+          focusHud('menu');
           return;
         }
         finishDrag();
@@ -281,9 +275,10 @@ export function GameWindow({
     const targetAt = (event: PointerEvent): Target | null => {
       if (modalOpen) return null;
       const element = document.elementFromPoint(event.clientX, event.clientY);
-      const inventory = element?.closest<HTMLElement>('[data-inventory-id]');
-      if (inventory && !inventory.closest('fieldset:disabled'))
-        return { type: 'item', id: inventory.dataset.inventoryId! };
+      const inventory = element?.closest('.canvas-host')
+        ? hudController.current?.itemAt(event.clientX, event.clientY)
+        : null;
+      if (inventory) return { type: 'item', id: inventory };
       if (
         !element?.closest('.canvas-host') ||
         !viewport.current ||
@@ -292,7 +287,7 @@ export function GameWindow({
       )
         return null;
       const point = scenePoint(
-        viewport.current.getBoundingClientRect(),
+        sceneViewportRect(viewport.current),
         scene,
         event.clientX,
         event.clientY,
@@ -312,12 +307,19 @@ export function GameWindow({
       current.y = event.clientY;
       current.target = targetAt(event);
       if (current.active) {
+        suppressClick.current = true;
         event.preventDefault();
-        const box = gameRef.current?.getBoundingClientRect();
+        const box = viewport.current?.getBoundingClientRect();
         setDrag({
           ...current,
-          x: current.x - (box?.x ?? 0),
-          y: current.y - (box?.y ?? 0),
+          x:
+            (current.x - (box?.x ?? 0)) *
+            (viewport.current ? viewport.current.clientWidth / box!.width : 1),
+          y:
+            (current.y - (box?.y ?? 0)) *
+            (viewport.current
+              ? viewport.current.clientHeight / box!.height
+              : 1),
         });
       }
     };
@@ -354,11 +356,11 @@ export function GameWindow({
       window.removeEventListener('lostpointercapture', cancel);
     };
   }, [scene, hotspots, state.dialogue, dispatch, modalOpen, finishDrag]);
-  function startDrag(event: ReactPointerEvent<HTMLButtonElement>, id: string) {
+  function startDrag(id: string, event: InventoryPointer) {
     if (event.button !== 0 || state.dialogue || modalOpen || dragRef.current)
       return;
     suppressClick.current = false;
-    event.currentTarget.setPointerCapture(event.pointerId);
+    event.element.setPointerCapture(event.pointerId);
     dragRef.current = {
       id,
       pointerId: event.pointerId,
@@ -368,7 +370,7 @@ export function GameWindow({
       startY: event.clientY,
       active: false,
       target: null,
-      element: event.currentTarget,
+      element: event.element,
     };
   }
   const dragItem = content.items.find((entry) => entry.id === drag?.id);
@@ -378,38 +380,52 @@ export function GameWindow({
     setSelectedItem(null);
     setHovered(null);
     setObjectsOpen(false);
-    setPickups([]);
     setJournal(false);
   }
 
-  const journalControl = useButtonActivation(() => {
-    finishDrag();
-    setSelectedItem(null);
-    setObjectsOpen(false);
-    setHovered(null);
-    setMenu(false);
-    setJournal((value) => !value);
-  });
-  const objectsControl = useButtonActivation(() =>
-    setObjectsOpen((value) => !value),
-  );
-  const menuControl = useButtonActivation(() => {
-    finishDrag();
-    setJournal(false);
-    setMenu((value) => !value);
-  });
+  function hudAction(id: string, pointer: boolean) {
+    if (id.startsWith('item:')) {
+      if (state.dialogue || modalOpen) return;
+      const itemId = id.slice(5);
+      if (pointer && suppressClick.current) {
+        suppressClick.current = false;
+        return;
+      }
+      if (selected && selected !== itemId) {
+        dispatch({ type: 'combine', first: selected, second: itemId });
+        setSelectedItem(null);
+      } else {
+        setSelectedItem(selected === itemId ? null : itemId);
+        dispatch({ type: 'inspectItem', itemId });
+      }
+    } else if (id === 'journal' || id === 'journal-close') {
+      finishDrag();
+      setSelectedItem(null);
+      setObjectsOpen(false);
+      setHovered(null);
+      setMenu(false);
+      setJournal((value) => (id === 'journal-close' ? false : !value));
+    } else if (id === 'menu') {
+      finishDrag();
+      setJournal(false);
+      setMenu((value) => !value);
+    } else if (id === 'objects' && !state.dialogue && !modalOpen)
+      setObjectsOpen((value) => !value);
+  }
+  const sceneArea = gameViewport(areaSize.width, areaSize.height);
   const sceneScale = Math.min(
     areaSize.width / scene.width,
-    areaSize.height / scene.height,
+    sceneArea.height / scene.height,
   );
   const sceneLeft = (areaSize.width - scene.width * sceneScale) / 2;
-  const sceneTop = (areaSize.height - scene.height * sceneScale) / 2;
+  const sceneTop =
+    sceneArea.y + (sceneArea.height - scene.height * sceneScale) / 2;
   const labelPadding = Math.min(150, areaSize.width / 2);
 
   return (
     <section
       ref={gameRef}
-      className={`game-window ${pointer?.inScene && (currentHover || selected) && !modalOpen && !state.dialogue ? 'has-scene-cursor' : ''} ${drag?.active ? 'is-dragging' : ''}`}
+      className={`game-window ${pointer?.inScene && (currentHover || selected) && !modalOpen && !state.dialogue ? 'has-scene-cursor' : ''} ${drag?.active ? 'is-dragging' : ''} ${journal ? 'is-journal-open' : ''}`}
       aria-label="Herné okno"
       onPointerMove={(event) => {
         if (event.pointerType === 'touch') return;
@@ -419,7 +435,16 @@ export function GameWindow({
           y: event.clientY - box.y,
           inScene:
             event.target instanceof Element &&
-            Boolean(event.target.closest('.canvas-host')),
+            Boolean(event.target.closest('.canvas-host')) &&
+            Boolean(
+              viewport.current &&
+              scenePoint(
+                sceneViewportRect(viewport.current),
+                scene,
+                event.clientX,
+                event.clientY,
+              ),
+            ),
         });
       }}
       onPointerLeave={() => {
@@ -427,69 +452,6 @@ export function GameWindow({
         setHovered(null);
       }}
     >
-      <header className="game-topbar game-hud">
-        <div className="hud-heading">
-          <div className="game-brand">
-            <span aria-hidden="true">↯</span> TUKABEL
-          </div>
-          <span className="scene-title">{scene.title}</span>
-          <div className="game-tools">
-            <button
-              ref={journalButton}
-              className="journal-toggle"
-              aria-expanded={journal}
-              {...journalControl}
-            >
-              <NotebookIcon />
-              <span>Denník</span>
-              <span
-                className="journal-badge"
-                aria-label={'Aktívne úlohy: ' + activeTaskCount}
-              >
-                {activeTaskCount}
-              </span>
-            </button>
-            <button
-              aria-expanded={objectsOpen}
-              disabled={Boolean(state.dialogue) || modalOpen}
-              {...objectsControl}
-            >
-              Objekty
-            </button>
-            <button ref={menuButton} aria-expanded={menu} {...menuControl}>
-              Menu
-            </button>
-          </div>
-        </div>
-        <div className="game-dock">
-          <div className="inventory-tools">
-            <span className="eyebrow">VRECKÁ PLNÉ MOŽNOSTÍ</span>
-          </div>
-          <Inventory
-            content={content}
-            state={state}
-            blocked={modalOpen}
-            selectedItem={selected}
-            draggingItem={drag?.id ?? null}
-            dropItem={drag?.target?.type === 'item' ? drag.target.id : null}
-            onPointerDown={startDrag}
-            onSelect={(id, pointer) => {
-              if (pointer && suppressClick.current) {
-                suppressClick.current = false;
-                return;
-              }
-              if (selected && selected !== id) {
-                dispatch({ type: 'combine', first: selected, second: id });
-                setSelectedItem(null);
-              } else {
-                setSelectedItem(selected === id ? null : id);
-                dispatch({ type: 'inspectItem', itemId: id });
-              }
-            }}
-            onInspect={(id) => dispatch({ type: 'inspectItem', itemId: id })}
-          />
-        </div>
-      </header>
       <div className="play-area" ref={viewport}>
         <GameCanvas
           scene={scene}
@@ -498,6 +460,18 @@ export function GameWindow({
           animationTrigger={animationTrigger}
           speechPlayback={speechPlayback}
           onPickerReady={registerPicker}
+          hud={{
+            content,
+            state,
+            selectedItem: selected,
+            drag,
+            journal,
+            menu,
+            objectsOpen,
+          }}
+          onHudReady={registerHud}
+          onHudAction={hudAction}
+          onItemDown={startDrag}
           onHover={setHovered}
           onInteract={act}
           blocked={modalOpen || Boolean(drag?.active)}
@@ -629,7 +603,7 @@ export function GameWindow({
                     'Nová hra. Ručne uložená pozícia ostáva dostupná.',
                   );
                   setMenu(false);
-                  menuButton.current?.focus();
+                  focusHud('menu');
                 }}
               >
                 Nová hra
@@ -640,7 +614,7 @@ export function GameWindow({
               <button
                 onClick={() => {
                   setMenu(false);
-                  menuButton.current?.focus();
+                  focusHud('menu');
                 }}
               >
                 Pokračovať v hre
@@ -649,31 +623,6 @@ export function GameWindow({
           </div>
         )}
       </div>
-      <div className="game-help">
-        {item ? (
-          <>
-            <span>
-              Použiť: <strong>{item.label}</strong>
-            </span>
-            <button onClick={() => setSelectedItem(null)}>Zrušiť výber</button>
-          </>
-        ) : (
-          <span>
-            Klik / dotyk · Potiahni predmety · Tab a Enter · Escape zruší výber
-          </span>
-        )}
-        <span>{scene.title}</span>
-      </div>
-      {journal && (
-        <TaskJournal
-          content={content}
-          state={state}
-          onClose={() => {
-            setJournal(false);
-            journalButton.current?.focus();
-          }}
-        />
-      )}
       {pointer?.inScene &&
         currentHover &&
         !drag?.active &&
@@ -703,19 +652,6 @@ export function GameWindow({
             <span>{item.label}</span>
           </div>
         )}
-      {pickups.map((pickup) => (
-        <PickupFlight key={pickup.id} pickup={pickup} onDone={finishPickup} />
-      ))}
-      {drag?.active && dragItem && (
-        <div
-          className={`drag-ghost ${drag.target && !(drag.target.type === 'item' && drag.target.id === drag.id) ? 'valid-drop' : ''}`}
-          style={{ left: drag.x, top: drag.y }}
-          aria-hidden="true"
-        >
-          {dragItem.image ? <img src={dragItem.image} alt="" /> : dragItem.icon}
-          <span>{dragItem.label}</span>
-        </div>
-      )}
     </section>
   );
 }

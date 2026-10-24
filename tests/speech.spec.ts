@@ -1,3 +1,5 @@
+import { pointInScene } from './helpers';
+import { hudClick } from './helpers';
 import { expect, type Locator, type Page } from '@playwright/test';
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -245,7 +247,7 @@ test('studio explicitly generates, analyzes, previews, saves and reloads speech 
   const gameAudio = page.locator('.dialogue-panel audio');
   await audioAt(gameAudio, 0.9);
   await gameAudio.evaluate((el) => void (el as HTMLAudioElement).play());
-  await page.getByRole('button', { name: 'Menu', exact: true }).click();
+  await hudClick(page, page.getByRole('button', { name: 'Menu', exact: true }));
   await expect
     .poll(() => gameAudio.evaluate((el) => (el as HTMLAudioElement).paused))
     .toBe(true);
@@ -408,8 +410,10 @@ base(
       { width: 1086, height: 1448 },
       actor.imageFit,
     );
-    const box = (await canvas.boundingBox())!,
-      scale = Math.min(box.width / 1280, box.height / 720);
+    const box = (await canvas.boundingBox())!;
+    const origin = await pointInScene(page, 0, 0),
+      edge = await pointInScene(page, 1280, 720);
+    const scale = (edge.x - origin.x) / 1280;
     const sharp = (await import('sharp')).default;
     async function patch(bytes: Buffer, id: string) {
       const r = project.animations!.find((c) => c.id === id)!.region!,
@@ -418,12 +422,14 @@ base(
       return sharp(bytes)
         .extract({
           left: Math.round(
-            ((box.width - 1280 * scale) / 2 +
+            (origin.x -
+              box.x +
               (placed.x + (r.x / 1086) * placed.width) * scale) *
               ratio,
           ),
           top: Math.round(
-            ((box.height - 720 * scale) / 2 +
+            (origin.y -
+              box.y +
               (placed.y + (r.y / 1448) * placed.height) * scale) *
               ratio,
           ),
@@ -627,7 +633,7 @@ test('models and editable subtitle segments survive save/reload and follow the a
     'Druhá upravená veta pre hráča.',
   );
   await gameAudio.evaluate((el) => void (el as HTMLAudioElement).play());
-  await page.getByRole('button', { name: 'Menu', exact: true }).click();
+  await hudClick(page, page.getByRole('button', { name: 'Menu', exact: true }));
   await expect
     .poll(() => gameAudio.evaluate((el) => (el as HTMLAudioElement).paused))
     .toBe(true);

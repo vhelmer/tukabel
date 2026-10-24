@@ -3,7 +3,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
 import { test, openEditor } from './editorFixture';
-import { ready } from './helpers';
+import { ready, pointInScene } from './helpers';
 import { createArtwork } from '../dev/sceneArt';
 import { artHash } from '../dev/artSource';
 import { maskPng } from '../dev/objectMask';
@@ -309,10 +309,14 @@ test('Canvas, PNG export and Pixi agree on straight alpha and transparent colors
     .removeAlpha()
     .raw()
     .toBuffer({ resolveWithObject: true });
-  const { width, height } = screenshot.info,
-    scale = Math.min(width / 1280, height / 720),
-    ox = (width - 1280 * scale) / 2,
-    oy = (height - 720 * scale) / 2;
+  const { width } = screenshot.info;
+  const origin = await pointInScene(page, 0, 0),
+    edge = await pointInScene(page, 1280, 720);
+  const box = (await page.locator('.canvas-host canvas').boundingBox())!;
+  const ratio = width / box.width;
+  const scale = ((edge.x - origin.x) / 1280) * ratio,
+    ox = (origin.x - box.x) * ratio,
+    oy = (origin.y - box.y) * ratio;
   const pixel = (x: number, y: number) =>
     screenshot.data.subarray(
       (Math.round(oy + y * scale) * width + Math.round(ox + x * scale)) * 3,

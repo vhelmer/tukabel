@@ -281,15 +281,15 @@ export function createScene(
       syncHover();
       render();
     },
-    resize(width: number, height: number) {
+    resize(width: number, height: number, left = 0, top = 0) {
       const scale = Math.min(
         width / definition.width,
         height / definition.height,
       );
       root.scale.set(scale);
       root.position.set(
-        (width - definition.width * scale) / 2,
-        (height - definition.height * scale) / 2,
+        left + (width - definition.width * scale) / 2,
+        top + (height - definition.height * scale) / 2,
       );
       render();
     },

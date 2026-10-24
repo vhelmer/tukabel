@@ -1,3 +1,4 @@
+import { hudClick } from './helpers';
 import { expect, type Locator } from '@playwright/test';
 import { readFile, writeFile } from 'node:fs/promises';
 import { test } from './editorFixture';
@@ -121,7 +122,7 @@ test('subtitle clicks finish voiced replies while authored choices control branc
   await expect(panel.locator('.dialogue-close,.speech-toggle')).toHaveCount(0);
   await page.keyboard.press('Escape');
   await expect(panel).toHaveClass(/is-speaking/);
-  await page.getByRole('button', { name: /^Denník/ }).click();
+  await hudClick(page, page.getByRole('button', { name: /^Denník/ }));
   const journal = page.getByRole('dialog', {
     name: 'Denník úloh',
     exact: true,
@@ -141,12 +142,12 @@ test('subtitle clicks finish voiced replies while authored choices control branc
   expect(
     await audio.evaluate((el) => (el as HTMLAudioElement).currentTime),
   ).toBeCloseTo(heldTime, 2);
-  await journal.getByRole('button', { name: 'Zavrieť denník' }).click();
+  await hudClick(page, journal.getByRole('button', { name: 'Zavrieť denník' }));
   await expect
     .poll(() => audio.evaluate((el) => (el as HTMLAudioElement).paused))
     .toBe(false);
   await expect(panel).toHaveClass(/is-speaking/);
-  await page.getByRole('button', { name: 'Menu', exact: true }).click();
+  await hudClick(page, page.getByRole('button', { name: 'Menu', exact: true }));
   await expect
     .poll(() => audio.evaluate((el) => (el as HTMLAudioElement).paused))
     .toBe(true);

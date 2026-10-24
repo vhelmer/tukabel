@@ -1,3 +1,4 @@
+import { hudClick } from './helpers';
 import { expect, test } from '@playwright/test';
 import {
   activate,
@@ -72,7 +73,10 @@ test('complete adventure supports real inventory drags, scene drops, transitions
   expect(await original!.evaluate((element) => element.isConnected)).toBe(true);
   await activate(page, 1220, 440, isMobile);
   await ready(page);
-  await expect(page.locator('.scene-title')).toHaveText('Skúšobný dvor');
+  await expect(page.locator('.scene-frame')).toHaveAttribute(
+    'aria-label',
+    'Lokácia: Skúšobný dvor',
+  );
   await activate(page, 820, 320, isMobile);
   await expect(reaction(page)).toContainText('Ukážka dokončená!');
   await menuAction(page, 'Uložiť hru');
@@ -80,7 +84,10 @@ test('complete adventure supports real inventory drags, scene drops, transitions
   await ready(page);
   await menuAction(page, 'Načítať hru');
   await ready(page);
-  await expect(page.locator('.scene-title')).toHaveText('Skúšobný dvor');
+  await expect(page.locator('.scene-frame')).toHaveAttribute(
+    'aria-label',
+    'Lokácia: Skúšobný dvor',
+  );
   await activate(page, 180, 350, isMobile);
   await ready(page);
   await activate(page, 440, 480, isMobile);
@@ -94,7 +101,10 @@ test('complete adventure supports real inventory drags, scene drops, transitions
       () => document.documentElement.scrollHeight <= window.innerHeight + 1,
     ),
   ).toBe(true);
-  for (const selector of ['.play-area', '.inventory', '.inventory-tools']) {
+  for (const selector of [
+    '.play-area',
+    '.hud-accessibility [aria-label="Inventár"]',
+  ]) {
     const box = await page.locator(selector).boundingBox();
     const game = await page.locator('.game-window').boundingBox();
     expect(box!.y).toBeGreaterThanOrEqual(game!.y);
@@ -132,7 +142,7 @@ test('context clicks, silent props, keyboard dialogue and resizing remain usable
   ).toBeFocused();
   await expect(
     page.getByRole('group', { name: 'Inventár', exact: true }),
-  ).toHaveAttribute('disabled', '');
+  ).toHaveAttribute('aria-disabled', 'true');
   await page.keyboard.press('Enter');
   await finishLine(page);
   await expect(
@@ -228,19 +238,15 @@ test('missing background is recoverable and late loads cannot recreate an abando
   const request = page.waitForRequest('**/demo-room.svg');
   await page.reload();
   await request;
-  await getTape(page);
-  await (await object(page, 'Kábel pri stoličke')).click();
+  // HUD now mounts with its Pixi canvas. Leave the loading scene through the
+  // development workspace instead of relying on an unrelated HTML inventory.
+  await page.getByRole('button', { name: 'Dev Mode', exact: true }).click();
   await page
-    .getByRole('button', { name: 'Poškodený kábel', exact: true })
-    .click();
+    .getByLabel('Aktivní lokace', { exact: true })
+    .selectOption('courtyard');
   await page
-    .getByRole('button', { name: 'Izolačná páska', exact: true })
+    .getByRole('button', { name: 'Otestovat odsud ↗', exact: true })
     .click();
-  await page
-    .getByRole('button', { name: 'Opravený kábel', exact: true })
-    .click();
-  await (await object(page, 'Router')).click();
-  await (await object(page, 'Dvere do dvora')).click();
   await ready(page);
   const response = page.waitForResponse('**/demo-room.svg');
   release();
@@ -248,7 +254,7 @@ test('missing background is recoverable and late loads cannot recreate an abando
   await (await object(page, 'Späť do skúšobne')).click();
   await ready(page);
   await (await object(page, 'Router')).click();
-  await expect(reaction(page)).toContainText('Router svieti');
+  await expect(reaction(page)).toContainText('Chýba mu opravený kábel');
 });
 
 test('canceling drags never selects an item and menu keyboard focus stays contained', async ({
@@ -274,27 +280,39 @@ test('canceling drags never selects an item and menu keyboard focus stays contai
       type: 'touchMove',
       touchPoints: [{ x: start.x + 14, y: start.y, id: 1 }],
     });
-    await expect(page.locator('.drag-ghost')).toBeVisible();
+    await expect(page.locator('.canvas-host')).toHaveAttribute(
+      'data-dragging',
+      'true',
+    );
     await session.send('Input.dispatchTouchEvent', {
       type: 'touchCancel',
       touchPoints: [],
     });
-    await expect(page.locator('.drag-ghost')).toHaveCount(0);
+    await expect(page.locator('.canvas-host')).toHaveAttribute(
+      'data-dragging',
+      'false',
+    );
     await session.detach();
   } else {
     await page.mouse.move(start.x, start.y);
     await page.mouse.down();
     await page.mouse.move(start.x + 14, start.y, { steps: 3 });
-    await expect(page.locator('.drag-ghost')).toBeVisible();
+    await expect(page.locator('.canvas-host')).toHaveAttribute(
+      'data-dragging',
+      'true',
+    );
     await page.keyboard.press('Escape');
     await page.mouse.up();
-    await expect(page.locator('.drag-ghost')).toHaveCount(0);
+    await expect(page.locator('.canvas-host')).toHaveAttribute(
+      'data-dragging',
+      'false',
+    );
   }
   await expect(cable).toHaveAttribute('aria-pressed', 'false');
   await cable.focus();
   await page.keyboard.press('Enter');
   await expect(cable).toHaveAttribute('aria-pressed', 'true');
-  await page.getByRole('button', { name: 'Menu', exact: true }).click();
+  await hudClick(page, page.getByRole('button', { name: 'Menu', exact: true }));
   await expect(
     page.getByRole('button', { name: 'Uložiť hru', exact: true }),
   ).toBeFocused();

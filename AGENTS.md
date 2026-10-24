@@ -7,7 +7,8 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
 ## Konvence
 
 - TypeScript strict, React + Vite, PixiJS 8. Používej npm a commitovaný lockfile.
-- React vlastní UI a stav; Pixi vlastní canvas, vykreslování a pointer interakce.
+- React vlastní stav, dialogové překryvy a Dev Mode; Pixi vlastní canvas, scénu,
+  HUD, inventář, deník a jejich pointer interakce.
   Nevytvářej obecný engine, ECS, event bus ani backend bez konkrétní potřeby.
 - Autorský obsah je v `src/game/content/project.json` (včetně lokací), typy
   v `src/game/types.ts`, Pixi v `src/game/createScene.ts`, React UI v `src/ui/`.
@@ -95,12 +96,16 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
   audio ovládání; hra pouze klikací titulky bez pauza/skip tlačítek a portrétů.
 - Inventární `item.image` je samostatná ikonka. Pickup efekt je pouze vizuální,
   spouští ho skutečné získání přes akci, nikoli load/reset nebo přepnutí režimu.
-- Horní HUD obsahuje inventář, Denník, Objekty a Menu; souřadnice scény dál
-  počítá její vlastní viewport. Deník je modal uvnitř herního okna, pozastaví
+- `createHud.ts` kreslí horní HUD, inventář, deník, drag náhled i pickup efekt
+  v samostatné neškálované Pixi vrstvě nad scénou. `hudLayout.ts` sdílí viewport
+  pod lištou pro resize, hover, drop i popisky; autorské souřadnice se nemění.
+  Inventář stránkuje šipkami, dlouhý deník posouvá obsah pod maskou. Deník pozastaví
   řeč/lip-sync, zablokuje svět a inventář, drží focus a Escape jej zavře.
-  Stav otevření deníku nepatří do save. useButtonActivation řeší dotykový tap
-  na pointerup a spotřebuje případný následný click; myš/klávesnice používají
-  nativní click. Zachovej práh pohybu a pointercancel, aby tah neaktivoval tlačítko.
+  Stav otevření/posunu nepatří do save. Tlačítka reagují na Pixi pointerup s prahem
+  pohybu a zrušením tahu, bez závislosti na syntetickém clicku po dotyku.
+  `HudAccessibility` je pouze neviditelná HTML sémantika/klávesnice se souřadnicemi
+  z Pixi, vždy `pointer-events: none`; focus kreslí Pixi. Nepřidávej druhý viditelný
+  HTML HUD. Titulky/dialogové volby a save menu zůstávají ve stávajícím React UI.
 - Volitelný registr tasks obsahuje id/text/startWhen/completeWhen. Chybějící
   podmínka znamená pouze ruční efekt startTask/completeTask; prázdné all spouští
   okamžitě. Podmínky jsou společné s ostatní logikou. Stav tasks v GameState

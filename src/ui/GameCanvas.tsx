@@ -1,10 +1,19 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Application, Assets } from 'pixi.js';
 import type { Texture } from 'pixi.js';
 import { scenePoint } from '../game/coordinates';
 import { loadAlphaMask } from '../game/alphaMasks';
 import type { ScenePicker } from '../game/hitTest';
 import { createScene } from '../game/createScene';
+import { createHud } from '../game/createHud';
+import type {
+  HudState,
+  HudController,
+  HudLayout,
+  InventoryPointer,
+} from '../game/createHud';
+import { gameViewport } from '../game/hudLayout';
+import { HudAccessibility } from './HudAccessibility';
 import type {
   AnimationDefinition,
   SceneSpeechPlayback,
@@ -24,6 +33,10 @@ interface GameCanvasProps extends SceneCallbacks {
   animationPreview?: AnimationPreviewState;
   speechPlayback?: SceneSpeechPlayback;
   onPickerReady?: (picker: ScenePicker | null) => void;
+  hud?: HudState;
+  onHudAction?: (id: string, pointer: boolean) => void;
+  onItemDown?: (id: string, event: InventoryPointer) => void;
+  onHudReady?: (controller: HudController | null) => void;
 }
 
 const noAnimations: readonly AnimationDefinition[] = [];
@@ -43,7 +56,27 @@ function MountedCanvas({
   onHover,
   onInteract,
   onPickerReady,
+  hud,
+  onHudAction,
+  onItemDown,
+  onHudReady,
 }: GameCanvasProps) {
+  const hudRef = useRef<ReturnType<typeof createHud> | null>(null);
+  const hudSnapshot = useRef(hud);
+  useLayoutEffect(() => {
+    hudSnapshot.current = hud;
+    if (hud) hudRef.current?.update(hud);
+  }, [hud]);
+  const [hudController, setHudController] = useState<HudController | null>(
+    null,
+  );
+  const [hudLayout, setHudLayout] = useState<HudLayout | null>(null);
+  const [effects, setEffects] = useState({
+    dragging: false,
+    pickups: 0,
+    pickupImage: undefined as string | undefined,
+  });
+  const hudContent = hud?.content;
   const currentState = useRef({
     state,
     blocked,
@@ -54,10 +87,10 @@ function MountedCanvas({
     currentState.current = { state, blocked, animationPreview, speechPlayback };
   }, [state, blocked, animationPreview, speechPlayback]);
   const lastTrigger = useRef(0);
-  const callbacks = useRef({ onHover, onInteract });
+  const callbacks = useRef({ onHover, onInteract, onHudAction, onItemDown });
   useEffect(() => {
-    callbacks.current = { onHover, onInteract };
-  }, [onHover, onInteract]);
+    callbacks.current = { onHover, onInteract, onHudAction, onItemDown };
+  }, [onHover, onInteract, onHudAction, onItemDown]);
   const playbackRef = useRef<(() => void) | null>(null);
   const hostRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<ReturnType<typeof createScene> | null>(null);
@@ -73,6 +106,7 @@ function MountedCanvas({
     let initialized = false;
     let destroyed = false;
     let pickerPublished = false;
+    let hudPublished = false;
     let observer: ResizeObserver | undefined;
     let stopPlayback: (() => void) | undefined;
 
@@ -80,6 +114,11 @@ function MountedCanvas({
       if (pickerPublished) {
         onPickerReady?.(null);
         pickerPublished = false;
+      }
+      if (hudPublished) {
+        onHudReady?.(null);
+        hudRef.current = null;
+        hudPublished = false;
       }
       observer?.disconnect();
       stopPlayback?.();
@@ -108,6 +147,9 @@ function MountedCanvas({
         const urls = [
           ...new Set([
             scene.background,
+            ...(hudContent?.items.flatMap((item) =>
+              item.image ? [item.image] : [],
+            ) ?? []),
             ...animations
               .filter((animation) =>
                 scene.hotspots.some((hotspot) =>
@@ -196,6 +238,7 @@ function MountedCanvas({
             throw new Error(`${clip.label}: frame canvas differs from source`);
         }
         if (disposed) return;
+        let syncPlayback = () => {};
         const mountedScene = createScene(
           scene,
           texture,
@@ -218,22 +261,59 @@ function MountedCanvas({
         pickerPublished = true;
         sceneRef.current = mountedScene;
         app.stage.addChild(mountedScene.root);
+        const mountedHud = hudSnapshot.current
+          ? createHud(
+              app.canvas,
+              textures,
+              hudSnapshot.current,
+              {
+                onAction: (id, pointer) =>
+                  callbacks.current.onHudAction?.(id, pointer),
+                onItemDown: (id, event) =>
+                  callbacks.current.onItemDown?.(id, event),
+                onLayout: setHudLayout,
+                onEffects: (next) =>
+                  setEffects((previous) =>
+                    previous.dragging === next.dragging &&
+                    previous.pickups === next.pickups &&
+                    previous.pickupImage === next.pickupImage
+                      ? previous
+                      : { ...next, pickupImage: next.pickupImage },
+                  ),
+              },
+              () => app.render(),
+              () => syncPlayback(),
+            )
+          : null;
+        if (mountedHud) {
+          hudRef.current = mountedHud;
+          setHudController(mountedHud.controller);
+          app.stage.addChild(mountedHud.root);
+          mountedHud.update(hudSnapshot.current!);
+          hudPublished = true;
+          onHudReady?.(mountedHud.controller);
+        }
         const reducedMotion = window.matchMedia(
           '(prefers-reduced-motion: reduce)',
         );
         app.ticker.maxFPS = 30;
-        app.ticker.add((ticker) =>
-          mountedScene.animate(Math.min(100, ticker.deltaMS)),
-        );
-        const syncPlayback = () => {
+        app.ticker.add((ticker) => {
+          const delta = Math.min(100, ticker.deltaMS);
+          mountedScene.animate(delta);
+          if (mountedHud?.active) mountedHud.animate(delta);
+        });
+        syncPlayback = () => {
           if (
             reducedMotion.matches ||
             document.hidden ||
-            !mountedScene.hasActiveAnimations
+            (!mountedScene.hasActiveAnimations && !mountedHud?.active)
           )
             app.stop();
           else app.start();
-          if (reducedMotion.matches) mountedScene.resetMotion();
+          if (reducedMotion.matches) {
+            mountedScene.resetMotion();
+            if (mountedHud?.active) mountedHud.resetEffects();
+          }
         };
         // Keep a scene-space pointer for stationary hover as animation silhouettes
         // change. Reuse the existing animation ticker instead of another ticker.
@@ -241,14 +321,23 @@ function MountedCanvas({
         const syncPointer = () =>
           mountedScene.hoverAt(
             pointer
-              ? scenePoint(
-                  app.canvas.getBoundingClientRect(),
-                  scene,
-                  pointer.x,
-                  pointer.y,
-                )
+              ? scenePoint(sceneRect(), scene, pointer.x, pointer.y)
               : null,
           );
+        const sceneRect = () => {
+          const rect = app.canvas.getBoundingClientRect();
+          const area = gameViewport(
+            app.screen.width,
+            app.screen.height,
+            Boolean(mountedHud),
+          );
+          return {
+            left: rect.left,
+            top: rect.top + (area.y * rect.height) / app.screen.height,
+            width: rect.width,
+            height: (area.height * rect.height) / app.screen.height,
+          };
+        };
         const movePointer = (event: PointerEvent) => {
           pointer =
             event.pointerType === 'touch'
@@ -281,7 +370,9 @@ function MountedCanvas({
           const width = Math.max(1, host.clientWidth);
           const height = Math.max(1, host.clientHeight);
           app.renderer.resize(width, height);
-          mountedScene.resize(width, height);
+          const area = gameViewport(width, height, Boolean(mountedHud));
+          mountedScene.resize(area.width, area.height, area.x, area.y);
+          mountedHud?.resize(width, height);
           syncPointer();
         };
         observer = new ResizeObserver(resize);
@@ -304,7 +395,7 @@ function MountedCanvas({
       sceneRef.current = null;
       destroy();
     };
-  }, [scene, animations, onPickerReady]);
+  }, [scene, animations, onPickerReady, hudContent, onHudReady]);
 
   useEffect(() => {
     if (status === 'ready') {
@@ -335,7 +426,20 @@ function MountedCanvas({
 
   return (
     <div className="scene-frame" aria-label={`Lokácia: ${scene.title}`}>
-      <div className="canvas-host" ref={hostRef} />
+      <div
+        className="canvas-host"
+        ref={hostRef}
+        data-dragging={effects.dragging}
+        data-pickups={effects.pickups}
+        data-pickup-image={effects.pickupImage}
+      />
+      {hud && hudLayout && (
+        <HudAccessibility
+          layout={hudLayout}
+          hud={hud}
+          controller={hudController}
+        />
+      )}
       {status === 'loading' && (
         <div className="scene-notice" role="status">
           Pripravujem lokáciu…

@@ -259,7 +259,10 @@ test('forms create linked locations, items, uploaded assets, branching dialogue 
     .getByRole('button', { name: 'Otestovat odsud', exact: false })
     .click();
   await ready(page);
-  await expect(page.locator('.scene-title')).toHaveText('Testovací ateliér');
+  await expect(page.locator('.scene-frame')).toHaveAttribute(
+    'aria-label',
+    'Lokácia: Testovací ateliér',
+  );
   await (await object(page, 'Testovací správca')).click();
   await expect(page.getByRole('dialog')).not.toContainText(
     'Tu je testovací žetón',

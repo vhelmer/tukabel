@@ -1,3 +1,4 @@
+import { hudClick } from './helpers';
 import { test, expect } from '@playwright/test';
 import { preview } from 'vite';
 import { readFile, readdir } from 'node:fs/promises';
@@ -32,7 +33,10 @@ test('production serves a static game without editor code or write endpoints', a
         state: { ...initialState(project), sceneId: 'animation-lab' },
       },
     );
-    await page.getByRole('button', { name: 'Menu', exact: true }).click();
+    await hudClick(
+      page,
+      page.getByRole('button', { name: 'Menu', exact: true }),
+    );
     await page
       .getByRole('button', { name: 'Načítať hru', exact: true })
       .click();

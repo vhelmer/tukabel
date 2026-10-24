@@ -1,3 +1,5 @@
+import { pointInScene } from './helpers';
+import { hudClick } from './helpers';
 import { expect } from '@playwright/test';
 import type { Page } from '@playwright/test';
 import { readFile, readdir, writeFile } from 'node:fs/promises';
@@ -69,18 +71,16 @@ async function actorPixels(page: Page, baseline?: Buffer) {
   const box = (await canvas.boundingBox())!;
   const bytes = await canvas.screenshot({ animations: 'disabled' });
   const metadata = await sharp(bytes).metadata();
-  const scale = Math.min(box.width / 1280, box.height / 720);
+  const head = await pointInScene(page, 850, 60);
+  const edge = await pointInScene(page, 1150, 270);
+  const scale = (edge.x - head.x) / 300;
   const resolution = metadata.width! / box.width;
   // Crop the character's head above reaction/dialogue overlays. Locator
   // screenshots include overlapping DOM, even when the locator is a canvas.
   const { data, info } = await sharp(bytes)
     .extract({
-      left: Math.round(
-        ((box.width - 1280 * scale) / 2 + 850 * scale) * resolution,
-      ),
-      top: Math.round(
-        ((box.height - 720 * scale) / 2 + 60 * scale) * resolution,
-      ),
+      left: Math.round((head.x - box.x) * resolution),
+      top: Math.round((head.y - box.y) * resolution),
       width: Math.floor(300 * scale * resolution),
       height: Math.floor(210 * scale * resolution),
     })
@@ -197,7 +197,7 @@ test('PNG blink imports, previews, saves, reloads and plays with stable placemen
   await page.waitForTimeout(250);
   expect((await actorPixels(page)).equals(still)).toBe(true);
   await page.emulateMedia({ reducedMotion: 'no-preference' });
-  await page.getByRole('button', { name: 'Menu', exact: true }).click();
+  await hudClick(page, page.getByRole('button', { name: 'Menu', exact: true }));
   const paused = await actorPixels(page);
   await page.waitForTimeout(200);
   expect((await actorPixels(page)).equals(paused)).toBe(true);
