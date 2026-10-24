@@ -13,6 +13,10 @@ import sharp from 'sharp';
 import { readArtSource, ART_MAX_PIXELS, artHash as hash } from './artSource.ts';
 import { readObjectMask, maskPng } from './objectMask.ts';
 import { matteForeground, type SegmentationOptions } from './segmentation.ts';
+import {
+  prepareGeneratedAsset,
+  placeGeneratedAsset,
+} from './generatedAsset.ts';
 import { polygonBounds, polygonIssue } from '../src/game/polygon.ts';
 import type { AnimationDefinition } from '../src/game/types.ts';
 import type { Point } from '../src/game/transforms.ts';
@@ -40,12 +44,13 @@ export interface ArtOptions {
   segmentation?: SegmentationOptions;
 }
 export type ArtOperation =
-  'cutout' | 'loop' | 'edit' | 'extract' | 'remove' | 'generate';
+  'cutout' | 'loop' | 'edit' | 'extract' | 'remove' | 'generate' | 'asset';
 export interface ArtResult {
   operation: ArtOperation;
   source: string;
   image: string;
   cutout?: string;
+  preview?: string;
   cutoutFull?: string;
   cutoutFrame?: import('../src/game/transforms.ts').CropFrame;
   backgrounds?: { restored: string; masked: string };
@@ -75,7 +80,7 @@ const MAX_PIXELS = ART_MAX_PIXELS;
 const MAX_BYTES = 24 * 1024 * 1024;
 const object = (v: unknown): v is Record<string, unknown> =>
   v !== null && typeof v === 'object' && !Array.isArray(v);
-const aiOperations = ['edit', 'extract', 'remove', 'generate'];
+const aiOperations = ['edit', 'extract', 'remove', 'generate', 'asset'];
 function imageSettings(model: string, quality: unknown) {
   if (!imageQualities(model).includes(quality as ImageQuality))
     throw Error(
@@ -98,6 +103,7 @@ async function editImage(
   prompt: string,
   size: string,
   options: ArtOptions,
+  output?: { transparent: true; guide: Buffer },
 ) {
   const { model, quality } = artStatus(options);
   if (!options.apiKey)
@@ -106,7 +112,15 @@ async function editImage(
     model,
     images: [
       { image_url: `data:image/png;base64,${image.toString('base64')}` },
+      ...(output
+        ? [
+            {
+              image_url: `data:image/png;base64,${output.guide.toString('base64')}`,
+            },
+          ]
+        : []),
     ],
+    ...(output ? { background: 'transparent' } : {}),
     mask: mask
       ? { image_url: `data:image/png;base64,${mask.toString('base64')}` }
       : undefined,
@@ -256,12 +270,16 @@ export async function createArtwork(
       throw Error('Výběr se nesmí křížit a musí mít plochu.');
   }
   if (
-    ['cutout', 'loop', 'extract', 'remove'].includes(operation) &&
+    ['cutout', 'loop', 'extract', 'remove', 'asset'].includes(operation) &&
     !points &&
     !suppliedMask
   )
     throw Error('Nejprve vyber oblast obrázku.');
   if (operation === 'generate') points = undefined;
+  const assetRequest =
+    operation === 'asset'
+      ? await prepareGeneratedAsset(source, points!, width, height)
+      : undefined;
   const coverage = points
     ? await sharp(
         Buffer.from(
@@ -347,7 +365,7 @@ export async function createArtwork(
     sharp(data, { raw: { width, height, channels: 4 } })
       .png()
       .toBuffer();
-  const cutout = await png(cutoutRaw);
+  let cutout = await png(cutoutRaw);
   // Crop only still cutouts. Animation frames retain their shared source canvas.
   let cutoutFrame: ArtResult['cutoutFrame'];
   let croppedCutout = cutout;
@@ -393,12 +411,40 @@ export async function createArtwork(
   let returned: Buffer | undefined, restored: Buffer | undefined;
   let blockedReason: string | undefined;
   let returnedSize: { width: number; height: number } | undefined;
-  if (ai || debugOnly) {
+  if ((ai || debugOnly) && !assetRequest) {
     if ((points || suppliedMask) && !providerMask.some((v) => v > 0))
       throw Error('Maska je prázdná v původním rozlišení. Zvětši výběr.');
     pipeline = await prepareInpaint(source, providerMask, width, height);
   }
-  if (ai) {
+  let assetPreview: Buffer | undefined;
+  if (assetRequest) {
+    options.onStage?.(
+      'AI vytváří transparentní objekt podle pozadí a označeného místa',
+    );
+    const generated = await editImage(
+      assetRequest.reference,
+      undefined,
+      `Create ONLY one new isolated 2D adventure game object. Image 1 is the original scenery reference. Image 2 marks the intended placement area in pink; use that area and its surroundings to infer the object's scale, viewpoint, support surface, lighting, palette and ink outlines. Do not redraw or include the scenery, the pink guide, existing objects, a floor patch, annotations, watermarks, UI overlays or a checkerboard. Render only the requested new object, centered and completely visible, with at least 8% transparent margin on every side. Use genuine transparent alpha around it, including holes and translucent material. Preserve the reference cartoon drawing style and perspective. The sprite will be fitted proportionally into the selected ${assetRequest.target.width} by ${assetRequest.target.height} source-pixel area. User instructions: ${input.prompt as string}`,
+      assetRequest.size,
+      { ...options, ...settings },
+      { transparent: true, guide: assetRequest.guide },
+    );
+    const placed = await placeGeneratedAsset(
+      generated,
+      assetRequest.target,
+      width,
+      height,
+    );
+    returned = generated;
+    image = placed.image;
+    croppedCutout = placed.image;
+    cutout = placed.full;
+    cutoutFrame = placed.frame;
+    assetPreview = await sharp(source)
+      .composite([{ input: placed.full }])
+      .png()
+      .toBuffer();
+  } else if (ai) {
     const { input: workingImage, apiMask, geometry, restore } = pipeline!;
     const workingMask = points || suppliedMask ? apiMask : undefined;
     const work = geometry.canvas;
@@ -457,6 +503,15 @@ export async function createArtwork(
         await maskPng(repairCoverage, width, height),
         { flag: 'wx' },
       );
+    if (assetRequest && returned && assetPreview) {
+      for (const [name, bytes] of [
+        ['provider-input.png', assetRequest.reference],
+        ['placement-guide.png', assetRequest.guide],
+        ['provider-returned.png', returned],
+        ['preview.png', assetPreview],
+      ] as const)
+        await writeFile(path.join(staging, name), bytes, { flag: 'wx' });
+    }
     let reconstruction: ArtResult['reconstruction'];
     if (exact)
       await writeFile(
@@ -821,6 +876,17 @@ export async function createArtwork(
     }
     const manifest = {
       version: 3,
+      assetPlacement: assetRequest
+        ? {
+            target: assetRequest.target,
+            fit: 'contain',
+            anchor: 'bottom-center',
+            background: 'unchanged',
+            guide: 'placement-guide.png',
+            provider: 'provider-returned.png',
+          }
+        : undefined,
+      preview: assetPreview ? 'preview.png' : undefined,
       cutoutFrame,
       cutoutFull: cutoutFrame && !blockedReason ? 'cutout-full.png' : undefined,
       backgrounds:
@@ -898,6 +964,7 @@ export async function createArtwork(
       blockedReason,
       debug,
       image: `${prefix}/image.png`,
+      preview: assetPreview ? `${prefix}/preview.png` : undefined,
       cutoutFrame: blockedReason ? undefined : cutoutFrame,
       cutoutFull:
         cutoutFrame && !blockedReason ? `${prefix}/cutout-full.png` : undefined,

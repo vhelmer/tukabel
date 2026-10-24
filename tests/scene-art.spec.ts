@@ -390,6 +390,20 @@ test.describe('scene AI provider boundary', () => {
             throw Error('Missing legacy fidelity');
         } else if ('input_fidelity' in body)
           throw Error('Unsupported Sunburst fidelity');
+        if (body.background === 'transparent') {
+          if (body.images.length !== 2 || body.mask)
+            throw Error('Assets require two references and no inpainting mask');
+          const bytes = await sharp(
+            Buffer.from(
+              '<svg xmlns="http://www.w3.org/2000/svg" width="256" height="512"><path d="M112 56h32v92l38 48v240H74V196l38-48Z" fill="#348652" stroke="#292b25" stroke-width="10"/><path d="M88 240h80v95H88Z" fill="#d2b579"/><path d="M91 202h7v205h-7Z" fill="#ffffff60"/></svg>',
+            ),
+          )
+            .png()
+            .toBuffer();
+          return Response.json({
+            data: [{ b64_json: bytes.toString('base64') }],
+          });
+        }
         const [width, height] = (body.size as string).split('x').map(Number);
         const bytes = await sharp({
           create: {
@@ -406,6 +420,175 @@ test.describe('scene AI provider boundary', () => {
         });
       }) as typeof fetch,
     },
+  });
+  test('AI creates a transparent asset without changing the background; placement, undo, saving and inventory pickup work', async ({
+    page,
+    workspace,
+    isMobile,
+  }, info) => {
+    test.setTimeout(60000);
+    await seed(workspace.root, workspace.source);
+    const original = JSON.parse(
+      await readFile(workspace.source, 'utf8'),
+    ) as GameContent;
+    const background = original.scenes[0]!.background;
+    const backgroundBytes = await readFile(
+      path.join(workspace.root, 'src/assets', background),
+    );
+    await openEditor(page, workspace.url);
+    await art(page)
+      .getByLabel('Grafická operace', { exact: true })
+      .selectOption('asset');
+    await expect(
+      art(page).getByLabel('Zdroj grafické úpravy', { exact: true }),
+    ).toBeDisabled();
+    await expect(
+      art(page).getByLabel('Zdroj grafické úpravy', { exact: true }),
+    ).toHaveValue('background');
+    const generate = art(page).getByRole('button', {
+      name: 'Spustit AI úpravu (API kredit)',
+      exact: true,
+    });
+    await expect(generate).toBeDisabled();
+    await rectangle(page, isMobile, { x: 650, y: 390 }, { x: 850, y: 650 });
+    await art(page)
+      .getByLabel('Pokyny pro AI', { exact: true })
+      .fill('Přidej sem láhev od piva.');
+    await art(page)
+      .getByLabel('Název výsledné vrstvy nebo lokace', { exact: true })
+      .fill('Skúšobná fľaša');
+    const before = await readFile(workspace.source, 'utf8');
+    await generate.click();
+    await expect(
+      art(page).getByAltText('Nový asset na původním pozadí'),
+    ).toBeVisible();
+    await expect(
+      art(page).getByAltText('Výsledek grafické operace'),
+    ).toBeVisible();
+    expect(await readFile(workspace.source, 'utf8')).toBe(before);
+    expect(
+      (
+        await readFile(path.join(workspace.root, 'src/assets', background))
+      ).equals(backgroundBytes),
+    ).toBe(true);
+    const apply = art(page).getByRole('button', {
+      name: 'Použít výsledek ve scéně',
+      exact: true,
+    });
+    await page
+      .getByLabel('Název lokace', { exact: true })
+      .fill('Lokácia s novým assetom');
+    await page.getByLabel('Šířka lokace', { exact: true }).fill('1290');
+    await expect(apply).toBeDisabled();
+    await page.getByRole('button', { name: 'Zpět', exact: true }).click();
+    await expect(apply).toBeEnabled();
+    await page.screenshot({
+      path: info.outputPath('generated-asset-review.png'),
+      fullPage: true,
+    });
+    await apply.click();
+    const layerId = await page
+      .getByLabel('Vybraný objekt', { exact: true })
+      .inputValue();
+    const image = await page
+      .getByLabel('Obrázek objektu', { exact: true })
+      .inputValue();
+    expect(image).toMatch(/^scene-art\/[^/]+\/image.png$/);
+    await page.getByRole('button', { name: 'Zpět', exact: true }).click();
+    await expect(
+      page
+        .getByLabel('Vybraný objekt', { exact: true })
+        .locator(`option[value="${layerId}"]`),
+    ).toHaveCount(0);
+    await page.getByRole('button', { name: 'Znovu', exact: true }).click();
+    await page
+      .getByLabel('Vybraný objekt', { exact: true })
+      .selectOption(layerId);
+    await expect(page.getByLabel('Pozadí lokace', { exact: true })).toHaveValue(
+      background,
+    );
+    await save(page);
+    const saved = JSON.parse(
+      await readFile(workspace.source, 'utf8'),
+    ) as GameContent;
+    const layer = saved.scenes[0]!.hotspots.at(-1)!;
+    expect(layer).toMatchObject({
+      id: layerId,
+      label: 'Skúšobná fľaša',
+      image,
+      decorative: false,
+      onClick: [],
+    });
+    expect(saved.scenes[0]!.title).toBe('Lokácia s novým assetom');
+    expect(saved.scenes[0]!.background).toBe(background);
+    expect(saved.scenes[0]!.hotspots.slice(0, -1)).toEqual(
+      original.scenes[0]!.hotspots,
+    );
+    expect(layer.bounds.x).toBeGreaterThanOrEqual(649);
+    expect(layer.bounds.y).toBeGreaterThanOrEqual(389);
+    expect(layer.bounds.x + layer.bounds.width).toBeLessThanOrEqual(851);
+    expect(layer.bounds.y + layer.bounds.height).toBeCloseTo(650, 0);
+    expect(
+      (await sharp(path.join(workspace.root, 'src/assets', image)).metadata())
+        .hasAlpha,
+    ).toBe(true);
+    // Configure pickup using the existing content editor, without new game code.
+    await page.getByRole('button', { name: 'Předměty', exact: true }).click();
+    await page.getByRole('button', { name: '+ Předmět', exact: true }).click();
+    const itemId = await page
+      .getByLabel('Předmět', { exact: true })
+      .inputValue();
+    await page
+      .getByLabel('Název předmětu', { exact: true })
+      .fill('Skúšobná fľaša');
+    await page
+      .getByLabel('Inventární ikonka', { exact: true })
+      .selectOption(image);
+    await page.getByRole('button', { name: 'Lokace', exact: true }).click();
+    await page
+      .getByLabel('Vybraný objekt', { exact: true })
+      .selectOption(layerId);
+    const rules = page.locator('.scene-inspector .rules-field').first();
+    await rules
+      .getByRole('button', { name: '+ Pravidlo', exact: true })
+      .click();
+    await rules
+      .getByLabel('Reakce', { exact: true })
+      .fill('Fľašu si odložil do vrecka.');
+    await rules.getByRole('button', { name: '+ Efekt', exact: true }).click();
+    await rules.getByLabel('Efekt', { exact: true }).selectOption('addItem');
+    await rules.getByLabel('Cíl efektu', { exact: true }).selectOption(itemId);
+    await page
+      .getByLabel('Viditelnost objektu: typ', { exact: true })
+      .selectOption('not');
+    await page
+      .getByLabel('Nesmí platit: typ', { exact: true })
+      .selectOption('item');
+    await page
+      .getByLabel('Požadovaný předmět', { exact: true })
+      .selectOption(itemId);
+    await save(page);
+    await page.reload();
+    await ready(page);
+    await activate(
+      page,
+      layer.bounds.x + layer.bounds.width / 2,
+      layer.bounds.y + layer.bounds.height * 0.7,
+      isMobile,
+    );
+    await expect(
+      page.getByRole('button', { name: 'Skúšobná fľaša', exact: true }),
+    ).toBeVisible();
+    await expect(page.getByRole('status', { name: 'Reakcia' })).toContainText(
+      'Fľašu si odložil',
+    );
+    const objects = await object(page, 'Skúšobná fľaša');
+    await expect(objects).toHaveCount(0);
+    expect(
+      (
+        await readFile(path.join(workspace.root, 'src/assets', background))
+      ).equals(backgroundBytes),
+    ).toBe(true);
   });
   test('AI extraction previews before applying, protects newer edits and creates a separate editable object and location', async ({
     page,

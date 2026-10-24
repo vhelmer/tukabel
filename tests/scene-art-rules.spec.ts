@@ -18,6 +18,7 @@ import type { GameContent } from '../src/game/types';
 import { readArtSource } from '../dev/artSource';
 import { maskPng } from '../dev/objectMask';
 import { composeRepair, featherRepair, prepareInpaint } from '../dev/inpaint';
+import { placeGeneratedAsset } from '../dev/generatedAsset';
 const rectangle = [
   { x: 8, y: 8 },
   { x: 56, y: 8 },
@@ -47,6 +48,216 @@ async function fixture(run: (root: string, original: Buffer) => Promise<void>) {
 }
 const rgba = (file: string | Buffer) =>
   sharp(file).ensureAlpha().raw().toBuffer();
+
+test('AI assets use scenery and placement references, real alpha, proportional source placement and never change the source', async () => {
+  for (const model of ['gpt-image-2.5-sunburst', 'gpt-image-1.5'])
+    await fixture(async (root, original) => {
+      let calls = 0;
+      const generated = await sharp(
+        Buffer.from(
+          '<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96"><path d="M44 12h8v18l8 8v40H36V38l8-8Z" fill="#22834f" stroke="#202b22" stroke-width="3"/><path fill="#ffffff80" d="M40 42h3v28h-3Z"/></svg>',
+        ),
+      )
+        .png()
+        .toBuffer();
+      const result = await createArtwork(
+        root,
+        {
+          source: 'source.png',
+          operation: 'asset',
+          selection: rectangle,
+          prompt: 'Přidej láhev od piva.',
+          confirmed: true,
+          model,
+        },
+        {
+          apiKey: 'test-asset-secret',
+          fetch: (async (_url, init) => {
+            calls++;
+            const body = JSON.parse(init!.body as string);
+            expect(body).toMatchObject({
+              model,
+              background: 'transparent',
+              output_format: 'png',
+              quality: 'high',
+              n: 1,
+              size: '1536x1024',
+            });
+            expect(body.mask).toBeUndefined();
+            expect(body.images).toHaveLength(2);
+            expect(body.prompt).toContain('Přidej láhev od piva.');
+            expect(body.prompt).toContain(
+              'Image 2 marks the intended placement',
+            );
+            const reference = Buffer.from(
+              body.images[0].image_url.split(',')[1],
+              'base64',
+            );
+            const guide = Buffer.from(
+              body.images[1].image_url.split(',')[1],
+              'base64',
+            );
+            expect((await rgba(reference)).equals(await rgba(original))).toBe(
+              true,
+            );
+            expect((await rgba(guide)).equals(await rgba(original))).toBe(
+              false,
+            );
+            if (model === 'gpt-image-1.5')
+              expect(body.input_fidelity).toBe('high');
+            else expect(body).not.toHaveProperty('input_fidelity');
+            return Response.json({
+              data: [{ b64_json: generated.toString('base64') }],
+            });
+          }) as typeof fetch,
+        },
+      );
+      expect(calls).toBe(1);
+      expect(
+        (await readFile(path.join(root, 'source.png'))).equals(original),
+      ).toBe(true);
+      expect(result.backgrounds).toBeUndefined();
+      expect(result.animation).toBeUndefined();
+      expect(result.cutoutFrame).toMatchObject({
+        sourceWidth: 64,
+        sourceHeight: 48,
+      });
+      const frame = result.cutoutFrame!;
+      expect(frame.x).toBeGreaterThanOrEqual(8);
+      expect(frame.y).toBeGreaterThanOrEqual(8);
+      expect(frame.x + frame.width).toBeLessThanOrEqual(56);
+      expect(frame.y + frame.height).toBe(40);
+      const meta = await sharp(path.join(root, result.image)).metadata();
+      expect(meta).toMatchObject({
+        width: frame.width,
+        height: frame.height,
+        hasAlpha: true,
+      });
+      const alphas = (await rgba(path.join(root, result.image))).filter(
+        (_v, i) => i % 4 === 3,
+      );
+      expect(alphas.some((a) => a === 0)).toBe(true);
+      expect(alphas.some((a) => a > 0 && a < 255)).toBe(true);
+      const full = await rgba(path.join(root, result.cutoutFull!));
+      const preview = await rgba(path.join(root, result.preview!));
+      const source = await rgba(original);
+      for (let p = 0; p < 64 * 48; p++)
+        if (full[p * 4 + 3] === 0)
+          expect(preview.subarray(p * 4, p * 4 + 4)).toEqual(
+            source.subarray(p * 4, p * 4 + 4),
+          );
+      expect(
+        (
+          await readFile(
+            path.join(
+              root,
+              path.dirname(result.image),
+              'provider-returned.png',
+            ),
+          )
+        ).equals(generated),
+      ).toBe(true);
+      const recipe = await readFile(path.join(root, result.manifest), 'utf8');
+      expect(recipe).not.toContain('test-asset-secret');
+      expect(JSON.parse(recipe)).toMatchObject({
+        operation: 'asset',
+        assetPlacement: {
+          fit: 'contain',
+          anchor: 'bottom-center',
+          background: 'unchanged',
+        },
+      });
+    });
+});
+
+test('generated assets keep their aspect and bottom anchor rather than clipping to selection contours', async () => {
+  const png = await sharp({
+    create: { width: 64, height: 64, channels: 4, background: '#00000000' },
+  })
+    .composite([
+      {
+        input: await sharp({
+          create: {
+            width: 24,
+            height: 12,
+            channels: 4,
+            background: '#16a96780',
+          },
+        })
+          .png()
+          .toBuffer(),
+        left: 12,
+        top: 20,
+      },
+    ])
+    .png()
+    .toBuffer();
+  const placed = await placeGeneratedAsset(
+    png,
+    { x: 8, y: 8, width: 48, height: 32 },
+    64,
+    48,
+  );
+  expect(placed.frame).toEqual({
+    x: 8,
+    y: 16,
+    width: 48,
+    height: 24,
+    sourceWidth: 64,
+    sourceHeight: 48,
+  });
+  expect((await sharp(placed.image).metadata()).hasAlpha).toBe(true);
+});
+
+test('asset generation rejects missing selections, opaque, empty or clipped provider images without publishing or retrying', async () => {
+  await fixture(async (root, original) => {
+    const input = {
+      source: 'source.png',
+      operation: 'asset',
+      selection: rectangle,
+      prompt: 'Láhev',
+      confirmed: true,
+    };
+    let calls = 0;
+    const options = {
+      apiKey: 'test-asset-secret',
+      fetch: (async () => {
+        calls++;
+        throw Error('must not run');
+      }) as typeof fetch,
+    };
+    await expect(
+      createArtwork(root, { ...input, selection: undefined }, options),
+    ).rejects.toThrow('vyber oblast');
+    await expect(
+      createArtwork(root, { ...input, confirmed: false }, options),
+    ).rejects.toThrow('výslovně');
+    expect(calls).toBe(0);
+    for (const background of ['#256840', '#00000000', '#22664480']) {
+      const bytes = await sharp({
+        create: { width: 64, height: 64, channels: 4, background },
+      })
+        .png()
+        .toBuffer();
+      await expect(
+        createArtwork(root, input, {
+          apiKey: 'test-asset-secret',
+          fetch: (async () => {
+            calls++;
+            return Response.json({
+              data: [{ b64_json: bytes.toString('base64') }],
+            });
+          }) as typeof fetch,
+        }),
+      ).rejects.toThrow(/průhledným okrajem|prázdný/);
+    }
+    expect(calls).toBe(3);
+    expect(
+      (await readFile(path.join(root, 'source.png'))).equals(original),
+    ).toBe(true);
+    expect(await readdir(root)).toEqual(['source.png']);
+  });
+});
 
 test('repair feather reaches zero at the outer boundary, preserves the object and blends straight alpha correctly', async () => {
   const width = 40,

@@ -140,6 +140,14 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
   neplatné kombinace odmítej před API. `input_fidelity: high` patří jen ke starším
   `gpt-image-1` / `gpt-image-1.5`, u Sunburst jej neposílej. Žádný automatický fallback.
   Produkce žádné grafické API nepotřebuje ani nevystavuje.
+- Operace `asset` vytváří nový samostatný transparentní objekt; pozadí používá
+  pouze jako referenci a nikdy je nepřepisuje. `dev/generatedAsset.ts` připravuje
+  čistou referenci a označené vodítko pro Image API (`background: transparent`,
+  bez inpainting masky). Výběr určuje cílový rám, nikoli ořezovou masku. Ořízni
+  podle skutečné alfy, zachovej proporce a zarovnej dolní střed; nativní offset
+  ulož do `cutoutFrame`. Odmítni prázdný/neprůhledný/useknutý výstup bez retry.
+  Archivuj provider PNG i náhled na původním pozadí. Apply přidá přední
+  interaktivní vrstvu s prázdným `onClick`; pickup nastavují existující pravidla.
 - Nové soubory publikuj atomicky do `src/assets/scene-art/<uuid>/`. Původní soubor
   nepřepisuj; archivuj source, masku a recipe JSON s otiskem zdroje a parametry.
   Recept není druhá definice herního obsahu. Vazby a klipy zapisuje projektový save.

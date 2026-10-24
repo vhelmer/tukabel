@@ -31,6 +31,7 @@ import {
 } from './artSettings';
 
 const presets: Record<string, string> = {
+  asset: '',
   edit: 'Uprav označený detail. Zachovej kreslený styl, perspektivu a světlo původní lokace.',
   extract:
     'Odstraň označený objekt a přirozeně dokresli pozadí za ním ve stejném výtvarném stylu.',
@@ -137,7 +138,9 @@ export function SceneArtPanel({
   const [index, setIndex] = useState(0),
     [playing, setPlaying] = useState(false);
   const object =
-    target === 'object' && operation !== 'generate' ? hotspot : undefined;
+    target === 'object' && !['generate', 'asset'].includes(operation)
+      ? hotspot
+      : undefined;
   const source = object?.image ?? scene.background;
   const maskScope = JSON.stringify([
     source,
@@ -191,9 +194,13 @@ export function SceneArtPanel({
   }, [resultData, onAssets]);
   const size = useImageSize(source);
   const ai = !['cutout', 'loop'].includes(operation);
-  const needsSelection = ['cutout', 'loop', 'extract', 'remove'].includes(
-    operation,
-  );
+  const needsSelection = [
+    'cutout',
+    'loop',
+    'extract',
+    'remove',
+    'asset',
+  ].includes(operation);
   useEffect(() => {
     let disposed = false;
     void getArtStatus()
@@ -377,7 +384,7 @@ export function SceneArtPanel({
         : { ...next, background: backgroundImage! };
     }
     let layerId = '';
-    if (['cutout', 'loop', 'extract'].includes(data.operation)) {
+    if (['cutout', 'loop', 'extract', 'asset'].includes(data.operation)) {
       layerId = nextId(
         'layer',
         next.hotspots.map((h) => h.id),
@@ -390,14 +397,17 @@ export function SceneArtPanel({
           : placement),
         image: data.cutout ?? data.image,
         onClick: [],
-        decorative: true,
+        decorative: data.operation !== 'asset',
         animation: data.animation
           ? { idle: data.animation.id, idleLoop: true }
           : undefined,
       };
-      const position = targetId
-        ? next.hotspots.findIndex((h) => h.id === targetId) + 1
-        : 0;
+      const position =
+        data.operation === 'asset'
+          ? next.hotspots.length
+          : targetId
+            ? next.hotspots.findIndex((h) => h.id === targetId) + 1
+            : 0;
       next = {
         ...next,
         hotspots: [
@@ -434,7 +444,7 @@ export function SceneArtPanel({
           <Field label="Zdroj grafické úpravy">
             <select
               value={target}
-              disabled={operation === 'generate'}
+              disabled={['generate', 'asset'].includes(operation)}
               onChange={(e) => {
                 setTargetChoice({ jobId: selectedJob, value: e.target.value });
                 setMaskError(undefined);
@@ -452,6 +462,10 @@ export function SceneArtPanel({
               onChange={(e) => {
                 const op = e.target.value as ArtworkResult['operation'];
                 setOperation(op);
+                if (op === 'asset') {
+                  setTargetChoice({ jobId: selectedJob, value: 'background' });
+                  if (label === 'Nový výřez') setLabel('Nový asset');
+                }
                 setPrompt(presets[op] ?? '');
               }}
             >
@@ -460,6 +474,7 @@ export function SceneArtPanel({
               </option>
               <option value="loop">Výběr → plynulá PNG smyčka</option>
               <option value="edit">AI · upravit výběr / celý obrázek</option>
+              <option value="asset">AI · vytvořit asset</option>
               <option value="remove">AI · odstranit a opravit pozadí</option>
               <option value="extract">
                 AI · oddělit objekt + opravit pozadí
@@ -475,6 +490,15 @@ export function SceneArtPanel({
           Zdroj: {source} {size && `· ${size.width} × ${size.height} px`} ·{' '}
           {selection ? `${selection.length} bodů výběru` : 'celý obrázek'}
         </p>
+        {operation === 'asset' && (
+          <p className="field-note">
+            Označ místo pro nový objekt. Výběr určuje jeho umístění a maximální
+            velikost, nikoli obrys. Základna objektu se zarovná na dolní hranu
+            výběru. AI dostane pozadí a vyznačené místo jako reference a vytvoří
+            transparentní PNG. Původní pozadí se nemění. Výsledek nejprve
+            zkontroluj v náhledu a potom ho vlož jako novou interaktivní vrstvu.
+          </p>
+        )}
         {['cutout', 'extract', 'remove', 'edit'].includes(operation) && (
           <div className="mask-launcher">
             <button
@@ -657,6 +681,11 @@ export function SceneArtPanel({
             <Field label="Pokyny pro AI">
               <textarea
                 maxLength={4000}
+                placeholder={
+                  operation === 'asset'
+                    ? 'Např. Přidej sem láhev od piva.'
+                    : undefined
+                }
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 rows={3}
@@ -664,14 +693,20 @@ export function SceneArtPanel({
             </Field>
             <p className="field-note">
               {status?.configured
-                ? `OpenAI · ${model} · ${quality} · odesílá se celý zdroj a maska výběru. Spuštění spotřebuje API kredit.`
+                ? `OpenAI · ${model} · ${quality} · ${operation === 'asset' ? 'referenční pozadí a vodítko umístění; výstup s průhledností' : 'odesílá se celý zdroj a maska výběru'}. Spuštění spotřebuje API kredit.`
                 : 'AI vyžaduje OPENAI_API_KEY v .env.local a restart Vite. Lokální výřezy a smyčky ho nepotřebují.'}{' '}
-              V maskované variantě mimo výběr
-              {['extract', 'remove'].includes(operation)
-                ? ' a opravného přesahu'
-                : ''}{' '}
-              zůstanou původní pixely. Celé obnovené pozadí lze zvolit po
-              generování. Úprava obrázku odpojí jeho staré animace.
+              {operation === 'asset' ? (
+                'Vznikne samostatný asset bez přepsání pozadí. Chování při kliknutí a případné sebrání do inventáře nastavíš v editoru nové vrstvy.'
+              ) : (
+                <>
+                  V maskované variantě mimo výběr
+                  {['extract', 'remove'].includes(operation)
+                    ? ' a opravného přesahu'
+                    : ''}{' '}
+                  zůstanou původní pixely. Celé obnovené pozadí lze zvolit po
+                  generování. Úprava obrázku odpojí jeho staré animace.
+                </>
+              )}
             </p>
           </>
         )}
@@ -680,7 +715,9 @@ export function SceneArtPanel({
             className="primary-button"
             disabled={
               !size ||
-              (needsSelection && !selection && !preparedMask) ||
+              (needsSelection &&
+                !selection &&
+                (operation === 'asset' || !preparedMask)) ||
               (ai && (!status?.configured || !prompt.trim()))
             }
             onClick={() => void run()}
@@ -895,6 +932,17 @@ export function SceneArtPanel({
             />
           ) : (
             <div className="art-comparison">
+              {result.data.preview && (
+                <figure>
+                  <img
+                    src={assetUrl(result.data.preview)}
+                    alt="Nový asset na původním pozadí"
+                  />
+                  <figcaption>
+                    Náhled umístění · pozadí zůstává původní
+                  </figcaption>
+                </figure>
+              )}
               <figure>
                 <img
                   src={assetUrl(backgroundImage!)}

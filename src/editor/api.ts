@@ -123,10 +123,12 @@ export async function uploadSpeech(
 }
 
 export interface ArtworkResult {
-  operation: 'cutout' | 'loop' | 'edit' | 'extract' | 'remove' | 'generate';
+  operation:
+    'cutout' | 'loop' | 'edit' | 'extract' | 'remove' | 'generate' | 'asset';
   source: string;
   image: string;
   cutout?: string;
+  preview?: string;
   cutoutFull?: string;
   cutoutFrame?: import('../game/transforms').CropFrame;
   backgrounds?: { restored: string; masked: string };

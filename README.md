@@ -111,6 +111,8 @@ herní hover, kliknutí i drop na objekty pod nimi. Zamknutí nemění chování
    - **AI upravit** upraví vybranou oblast; bez výběru celý zdroj. **AI odstranit**
      doplní pozadí za výběrem. **AI oddělit** provede stejnou opravu a současně
      zachová původní výřez jako samostatnou transparentní vrstvu.
+   - **AI · vytvořit asset** vytvoří nový transparentní objekt podle pozadí
+     a vyznačeného místa. Původní pozadí se nemění.
    - **AI nová lokace** použije současné pozadí jako stylovou referenci a vytvoří
      další lokaci, aniž přepíše současnou.
 4. **Vytvořit lokální asset** nebo výslovné **Spustit AI úpravu (API kredit)**
@@ -125,6 +127,32 @@ herní hover, kliknutí i drop na objekty pod nimi. Zamknutí nemění chování
 5. **Živý náhled animací** přepne pracovní plochu na stejný Pixi renderer jako hra.
    **Otestovat odsud ↗** otevře interaktivní Game Mode. **Uložit do projektu**
    zapíše pořadí, vlastnosti, vazby i klipy do `src/game/content/project.json`.
+
+### Vytvoření nového objektu pomocí AI
+
+1. V **Výběr a grafika** zvol **AI · vytvořit asset**. Zdrojem je pozadí lokace.
+   Nad scénou vyber obdélník nebo polygon tam, kam má nový objekt přijít.
+   Výběr určuje maximální velikost a umístění, nikoli přesný obrys objektu.
+2. Zadej název vrstvy a pokyn, například „Přidej sem láhev od piva“.
+   Klikni na **Spustit AI úpravu (API kredit)**. Jde o jedno vědomé volání
+   stávajícího OpenAI Image API se zvoleným modelem a kvalitou, bez opakování.
+   Klíč zůstává v serverovém `OPENAI_API_KEY`; produkce ho nepotřebuje.
+3. Zkontroluj samostatný objekt na šachovnici a náhled na původním pozadí.
+   **Použít výsledek ve scéně** přidá novou přední interaktivní vrstvu.
+   Objekt se ořízne podle alfy a proporcionálně vejde do výběru; jeho základna
+   se zarovná na dolní hranu výběru. Potom ho lze běžně přesunout či zmenšit.
+4. Nová vrstva má zatím prázdná pravidla kliknutí. Pro sebrání vytvoř položku
+   v **Předměty**, vrstvě přidej pravidlo **Kliknutí na objekt → Přidat předmět**
+   a viditelnost „hráč tento předmět nemá“. Inventářová ikona může použít stejné PNG.
+   **Uložit do projektu** zapíše vrstvu a pravidla do verzovaného JSON.
+
+AI dostane čisté referenční pozadí a druhou kopii s vyznačeným místem; vrací
+nativně transparentní PNG, nikoli opravené pozadí. Neprůhledný, prázdný nebo
+na hraně plátna useknutý výsledek se odmítne. Výběr objekt neořezává polygonem.
+Do `src/assets/scene-art/<uuid>/` se archivují zdroj, vodítko, původní odpověď
+modelu, oříznutý asset, plný transparentní snímek, náhled a recept s původním
+offsetem. Náhled je pouze pro kontrolu; nikdy nenahrazuje pozadí lokace.
+Použití tvoří jeden undo krok a odmítne mezitím změněný zdroj nebo rozměry lokace.
 
 ### Přesné oddělení objektu a oprava pozadí
 
