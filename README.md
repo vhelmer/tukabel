@@ -675,6 +675,15 @@ B/G → 2, C/D/H → 1, E/F → 3 (kulaté). Čísla jsou nulové indexy; příb
 sdílejí dostupnou pózu. Mrkání zůstává nezávislé. Titulky používají zarovnání
 poskytovatele, pokud ho vrátil; ostatní repliky mají označený odhad.
 
+Předání láhve přetažením spustí Cigyho dabované poděkování; babka ji s dabovanou
+reakcí odmítne a nechá v inventáři. Pro vlastní reakci vytvoř dialog a v
+**Dialogy → Začátek dialogu** zvol **Přehrát úvodní repliku automaticky**
+(`entry: "speech"`). Nastav herce, text a případný dabing; prázdné odpovědi
+znamenají návrat do hry po konci/přeskočení repliky. V pravidle použití předmětu
+pak přidej **Otevřít dialog** s tímto ID. Efekty odebrání předmětu a příznaků
+patří k přijetí, při odmítnutí je vynech. S odpověďmi může reakce pokračovat
+normálním rozhovorem; běžné dialogy dál začínají nabídkou témat.
+
 ## Obsah a architektura
 
 - `src/game/content/project.json` — **jediný zdroj autorského obsahu**: lokace,

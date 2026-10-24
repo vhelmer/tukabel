@@ -233,10 +233,25 @@ export function DialoguesPanel({
             values={dialogue.nodes}
             onChange={(start) => updateDialogue({ ...dialogue, start })}
           />
+          <Field label="Začátek dialogu">
+            <select
+              value={dialogue.entry ?? 'choices'}
+              onChange={(event) =>
+                updateDialogue({
+                  ...dialogue,
+                  entry: event.target.value === 'speech' ? 'speech' : undefined,
+                })
+              }
+            >
+              <option value="choices">Nabídnout možnosti</option>
+              <option value="speech">Přehrát úvodní repliku automaticky</option>
+            </select>
+          </Field>
           <p className="field-note">
-            Počáteční uzel nabídne možnosti. Výběr s dalším uzlem přehraje
-            repliku cíle; další možnosti se ukážou až po jejím dokončení. Při
-            jediné replice bez další větve hra nabídne „Porozprávať sa.“.
+            Běžný rozhovor začne možnostmi. Automatická replika se hodí pro
+            reakci na předmět: v pravidle jeho použití přidej efekt „Otevřít
+            dialog“ a vyber tento dialog. Bez odpovědí se po dohrání či
+            přeskočení sám zavře; jinak teprve nabídne další možnosti.
           </p>
           <div className="field-row">
             <SelectId

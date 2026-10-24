@@ -39,7 +39,14 @@ test('bus stop bottle trades through dialogue or use exactly once and tagged act
     } else {
       act({ type: 'interact', hotspotId: 'layer1', itemId: 'stop-bottle' });
       expect(state.inventory).toContain('stop-bottle');
+      expect(state.dialogue?.id).toBe('stop-granny-bottle');
+      act({ type: 'closeDialogue' });
       act({ type: 'interact', hotspotId: 'layer2', itemId: 'stop-bottle' });
+      expect(state.dialogue?.id).toBe('stop-cigy-bottle');
+      const speaking = state;
+      act({ type: 'interact', hotspotId: 'layer3' });
+      expect(state).toBe(speaking);
+      act({ type: 'closeDialogue' });
     }
     expect(state.inventory).toEqual([]);
     expect(state.flags['stop-bottle-returned']).toBe(true);
@@ -60,7 +67,15 @@ test('bus stop bottle trades through dialogue or use exactly once and tagged act
       expect(subtitleText(node)).not.toContain('[');
       const actor = scene.hotspots.find((h) => h.id === node.actor?.hotspotId)!;
       expect(actor.decorative).toBe(false);
-      expect(actor.animation?.dialogueId).toBe(dialogue.id);
+      expect(
+        [...actor.onClick, ...Object.values(actor.uses ?? {}).flat()].some(
+          (rule) =>
+            rule.effects?.some(
+              (effect) =>
+                effect.type === 'dialogue' && effect.id === dialogue.id,
+            ),
+        ),
+      ).toBe(true);
       for (const kind of ['blink', 'talk'] as const)
         expect(
           project.animations!.find(
@@ -69,6 +84,27 @@ test('bus stop bottle trades through dialogue or use exactly once and tagged act
         ).toBe(actor.image);
     }
   }
+});
+
+test('automatic dialogue entry is validated without changing the default choice-first conversations', () => {
+  const project = JSON.parse(
+    readFileSync('src/game/content/project.json', 'utf8'),
+  ) as GameContent;
+  const reaction = project.dialogues.find((d) => d.id === 'stop-cigy-bottle')!;
+  expect(reaction.entry).toBe('speech');
+  expect(reaction.nodes[0]!.choices).toEqual([]);
+  expect(
+    project.dialogues.find((d) => d.id === 'stop-cigy')!.entry,
+  ).toBeUndefined();
+  expect(
+    validateProject({
+      ...project,
+      dialogues: project.dialogues.map((d) =>
+        d.id === reaction.id ? { ...d, entry: 'invalid' } : d,
+      ),
+    }).join(' '),
+  ).toContain('expected choices or speech');
+  expect(validateProject(project)).toEqual([]);
 });
 
 const content: GameContent = {

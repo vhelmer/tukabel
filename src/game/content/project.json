@@ -478,14 +478,14 @@
           "uses": {
             "stop-bottle": [
               {
-                "message": "Cigy: Pätnásť centov! Konečne niečo, čo má vyššiu hodnotu prázdne než plné. Vďaka, šéfe.",
                 "effects": [
                   { "type": "removeItem", "id": "stop-bottle" },
                   {
                     "type": "flag",
                     "id": "stop-bottle-returned",
                     "value": true
-                  }
+                  },
+                  { "type": "dialogue", "id": "stop-cigy-bottle" }
                 ]
               }
             ]
@@ -536,7 +536,7 @@
           "uses": {
             "stop-bottle": [
               {
-                "message": "Babka: Prázdna? Mladý pán, urážať dôchodcu sa dá aj bez rekvizít. Skús Cigyho, ten zbiera aj sklamania."
+                "effects": [{ "type": "dialogue", "id": "stop-granny-bottle" }]
               }
             ]
           }
@@ -1373,6 +1373,77 @@
               ]
             },
             "lipSync": "speech/cd1458a3-5b00-4ae4-b68c-8eb822ba6b6c/track.lipsync.json"
+          }
+        }
+      ]
+    },
+    {
+      "id": "stop-cigy-bottle",
+      "start": "thanks",
+      "entry": "speech",
+      "nodes": [
+        {
+          "id": "thanks",
+          "speaker": "Cigy",
+          "actor": { "sceneId": "scene1", "hotspotId": "layer2" },
+          "text": "[excited] Pätnásť centov! Konečne tekuté aktíva, ktoré netečú. [laughs] Vďaka, šéfe. Práve si zachránil môj penzijný fond pred osobným bankrotom.",
+          "choices": [],
+          "speech": {
+            "audio": "speech/c0019ca6-278e-4f29-843d-5142224fafa1/audio.wav",
+            "text": "[excited] Pätnásť centov! Konečne tekuté aktíva, ktoré netečú. [laughs] Vďaka, šéfe. Práve si zachránil môj penzijný fond pred osobným bankrotom.",
+            "subtitles": {
+              "text": "Pätnásť centov! Konečne tekuté aktíva, ktoré netečú. Vďaka, šéfe. Práve si zachránil môj penzijný fond pred osobným bankrotom.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 3.96032,
+                  "text": "Pätnásť centov! Konečne tekuté aktíva, ktoré netečú."
+                },
+                {
+                  "start": 3.96032,
+                  "end": 9.52,
+                  "text": "Vďaka, šéfe. Práve si zachránil môj penzijný fond pred osobným bankrotom."
+                }
+              ]
+            },
+            "lipSync": "speech/d9ac9703-2e2a-4d0c-bebe-8b8cd87e40dc/track.lipsync.json"
+          }
+        }
+      ]
+    },
+    {
+      "id": "stop-granny-bottle",
+      "start": "refuse",
+      "entry": "speech",
+      "nodes": [
+        {
+          "id": "refuse",
+          "speaker": "Babka",
+          "actor": { "sceneId": "scene1", "hotspotId": "layer1" },
+          "text": "[sarcastic] Prázdna? Mladý pán, urážať dôchodcu sa dá aj bez rekvizít. [sighs] Skús Cigyho, ten zbiera aj sklamania.",
+          "choices": [],
+          "speech": {
+            "audio": "speech/40bb9b5b-f289-4fc6-a0d2-3ff16c94948a/audio.wav",
+            "text": "[sarcastic] Prázdna? Mladý pán, urážať dôchodcu sa dá aj bez rekvizít. [sighs] Skús Cigyho, ten zbiera aj sklamania.",
+            "subtitles": {
+              "text": "Prázdna? Mladý pán, urážať dôchodcu sa dá aj bez rekvizít. Skús Cigyho, ten zbiera aj sklamania.",
+              "timing": "alignment",
+              "cues": [
+                {
+                  "start": 0.08,
+                  "end": 6,
+                  "text": "Prázdna? Mladý pán, urážať dôchodcu sa dá aj bez rekvizít."
+                },
+                {
+                  "start": 7.04,
+                  "end": 10.4,
+                  "text": "Skús Cigyho, ten zbiera aj sklamania."
+                }
+              ]
+            },
+            "alignment": "speech/40bb9b5b-f289-4fc6-a0d2-3ff16c94948a/alignment.json",
+            "lipSync": "speech/eb322a56-a442-4dd2-a068-84978baf6572/track.lipsync.json"
           }
         }
       ]

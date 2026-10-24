@@ -425,9 +425,14 @@ export function validateProject(
     asset(item.image, `${path}.image`, true);
   });
   list(value.dialogues, 'dialogues', (dialogue, path) => {
-    if (!object(dialogue, path, ['id', 'start', 'nodes'])) return;
+    if (!object(dialogue, path, ['id', 'start', 'entry', 'nodes'])) return;
     string(dialogue.id, `${path}.id`);
     string(dialogue.start, `${path}.start`);
+    if (
+      dialogue.entry !== undefined &&
+      !['choices', 'speech'].includes(String(dialogue.entry))
+    )
+      errors.push(`${path}.entry: expected choices or speech`);
     list(dialogue.nodes, `${path}.nodes`, (node, key) => {
       if (
         !object(node, key, [

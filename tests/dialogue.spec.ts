@@ -1,7 +1,7 @@
 import { hudClick } from './helpers';
 import { expect, type Locator } from '@playwright/test';
 import { readFile, writeFile } from 'node:fs/promises';
-import { test } from './editorFixture';
+import { test, openEditor } from './editorFixture';
 import { finishLine, object, ready } from './helpers';
 import type { DialogueNode, GameContent } from '../src/game/types';
 
@@ -83,6 +83,56 @@ async function burst(button: Locator) {
     for (let i = 0; i < 12; i++) (el as HTMLButtonElement).click();
   });
 }
+
+test('editor persists automatic speech entry; its opening line finishes into choices without replaying', async ({
+  page,
+  workspace,
+}) => {
+  await seed(workspace.source);
+  await openEditor(page, workspace.url);
+  await page.getByRole('button', { name: 'Dialogy', exact: true }).click();
+  await page
+    .getByLabel('Dialog', { exact: true })
+    .selectOption('animation-demo');
+  await page
+    .getByLabel('Počáteční uzel', { exact: true })
+    .selectOption('reply');
+  await page
+    .getByLabel('Začátek dialogu', { exact: true })
+    .selectOption('speech');
+  await page
+    .getByRole('button', { name: 'Uložit do projektu', exact: true })
+    .click();
+  await expect(
+    page.getByRole('status', { name: 'Stav editoru' }),
+  ).toContainText('Uložené do');
+  const saved = JSON.parse(
+    await readFile(workspace.source, 'utf8'),
+  ) as GameContent;
+  expect(saved.dialogues.find((d) => d.id === 'animation-demo')).toMatchObject({
+    entry: 'speech',
+    start: 'reply',
+  });
+  await page.reload();
+  await ready(page);
+  await (await object(page, 'Skúšobná postava')).click();
+  const panel = page.locator('.dialogue-panel');
+  await expect(panel).toHaveClass(/is-speaking/);
+  await expect(panel.locator('audio')).toHaveCount(1);
+  await expect(panel.locator('.dialogue-choices')).toHaveCount(0);
+  await expect(
+    panel.getByRole('button', { name: 'Porozprávať sa.', exact: true }),
+  ).toHaveCount(0);
+  await finishLine(page);
+  await expect(
+    panel.getByRole('button', { name: 'Vezmem si pásku.', exact: true }),
+  ).toBeEnabled();
+  await expect(panel.locator('audio')).toHaveCount(0);
+  await panel
+    .getByRole('button', { name: 'Už musím ísť.', exact: true })
+    .click();
+  await expect(panel).toHaveCount(0);
+});
 
 test('subtitle clicks finish voiced replies while authored choices control branching and exit', async ({
   page,

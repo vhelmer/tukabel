@@ -1,0 +1,15 @@
+{
+  "text": "[sarcastic] Prázdna? Mladý pán, urážať dôchodcu sa dá aj bez rekvizít. [sighs] Skús Cigyho, ten zbiera aj sklamania.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "VnZ7lswb6C7FxwHfvIR6",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 10.4,
+  "audioSha256": "986869ccd1645860eb92b10d670715d9d1034d9f53aaa88ac02b33c97e739a7a"
+}

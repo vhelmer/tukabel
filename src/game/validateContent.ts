@@ -271,7 +271,7 @@ export function validateContent(content: GameContent): string[] {
         node.choices.map((entry) => entry.id),
         path,
       );
-      if (!node.choices.length)
+      if (!node.choices.length && dialogue.entry !== 'speech')
         errors.push(`${path}: no choices (add an exit choice)`);
       for (const choice of node.choices) {
         condition(choice.when, path);

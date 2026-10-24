@@ -207,6 +207,8 @@ export interface DialogueNode {
 export interface DialogueDefinition {
   readonly id: string;
   readonly start: string;
+  // Item handoffs and other reactions can speak immediately, without a menu.
+  readonly entry?: 'choices' | 'speech';
   readonly nodes: readonly DialogueNode[];
 }
 

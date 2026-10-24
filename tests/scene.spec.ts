@@ -113,11 +113,48 @@ editorTest(
     await activate(page, 525, 578, isMobile);
     await expect(bottle).toHaveCount(1);
     await dragItem(page, bottle, await pointInScene(page, 730, 430), isMobile);
-    await expect(reaction(page)).toContainText('Prázdna?');
+    await expect(dialogue).toHaveClass(/is-speaking/);
+    await expect(dialogue).toContainText('Prázdna?');
+    await expect(dialogue.locator('audio')).toHaveCount(1);
+    await expect(dialogue.locator('.dialogue-choices')).toHaveCount(0);
     await expect(bottle).toBeVisible();
+    await expect
+      .poll(() =>
+        dialogue
+          .locator('audio')
+          .evaluate((el) => (el as HTMLAudioElement).paused),
+      )
+      .toBe(false);
+    await dialogue
+      .getByRole('button', { name: 'Dokončiť repliku', exact: true })
+      .click();
+    await expect(dialogue).toHaveCount(0);
     await dragItem(page, bottle, await pointInScene(page, 250, 400), isMobile);
-    await expect(reaction(page)).toContainText('Pätnásť centov');
+    await expect(dialogue).toHaveClass(/is-speaking/);
+    await expect(dialogue).toContainText('Pätnásť centov');
+    await expect(dialogue.locator('audio')).toHaveCount(1);
     await expect(bottle).toHaveCount(0);
+    await expect
+      .poll(() =>
+        dialogue
+          .locator('audio')
+          .evaluate((el) => Number.isFinite((el as HTMLAudioElement).duration)),
+      )
+      .toBe(true);
+    await expect
+      .poll(() =>
+        dialogue
+          .locator('audio')
+          .evaluate((el) => (el as HTMLAudioElement).paused),
+      )
+      .toBe(false);
+    await page.screenshot({ path: info.outputPath('voiced-item-handoff.png') });
+    await dialogue.locator('audio').evaluate(async (el) => {
+      const audio = el as HTMLAudioElement;
+      audio.currentTime = audio.duration - 0.08;
+      await audio.play();
+    });
+    await expect(dialogue).toHaveCount(0);
     await activate(page, 250, 360, isMobile);
     await expect(
       dialogue.getByRole('button', { name: 'Čo podnikneš s tou zálohou?' }),

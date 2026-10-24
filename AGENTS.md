@@ -84,7 +84,7 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
 - Hotspot má jediná pravidla `onClick` a volitelné `uses` pro inventář. Žádná
   slovesa / hráčské režimy ani obrysy při hoveru. `onClick: []` je tichá kulisa;
   `message` pravidla je volitelná. Kurzory se nastavují daty v editoru.
-- Rozhovor začíná nabídkou startovního uzlu. `choice.next` přehraje cílovou repliku;
+- Rozhovor standardně začíná nabídkou startovního uzlu. `choice.next` přehraje cílovou repliku;
   volby se vracejí až po konci audia nebo kliknutí/tapnutí na titulkovou plochu
   (také Enter/mezerník). Stejná plocha potvrzuje text bez audia a hned zastaví lip-sync.
   Jednořádková ukázka bez navazující větve nabízí Porozprávať sa. `useConversation`
@@ -94,6 +94,13 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
   Ignoruj opakování drženého Enteru/mezerníku. Ukončení řídí
   autorská volba bez `next`, nikoli Escape/křížek. Náhled dabingu v editoru má plné
   audio ovládání; hra pouze klikací titulky bez pauza/skip tlačítek a portrétů.
+- `dialogue.entry: "speech"` spustí úvodní repliku automaticky, například jako
+  reakci na předání předmětu přes existující efekt `dialogue` v `hotspot.uses`.
+  V tomto režimu je povolené `choices: []`: konec audia/potvrzení titulků dialog
+  zavře; jinak nabídne odpovědi. Výchozí `choices` zachovává nabídku témat.
+  Odebrání předmětu a příznaky proveď jednou v původním pravidle, nikdy z audio
+  callbacku. Odmítnutí předmět nespotřebuje. Dabovaná reakce uvádí `node.actor`,
+  takže stejná postava používá svou mapu úst i mimo hlavní `animation.dialogueId`.
 - Inventární `item.image` je samostatná ikonka. Pickup efekt je pouze vizuální,
   spouští ho skutečné získání přes akci, nikoli load/reset nebo přepnutí režimu.
 - `createHud.ts` kreslí horní HUD, inventář, deník, drag náhled i pickup efekt

@@ -13,6 +13,9 @@ export function useConversation(
   paused: boolean,
 ) {
   const node = getDialogueNode(content, state);
+  const autoEntry =
+    content.dialogues.find((d) => d.id === state.dialogue?.id)?.entry ===
+    'speech';
   const key = state.dialogue
     ? `${state.dialogue.id}/${state.dialogue.nodeId}`
     : '';
@@ -21,7 +24,7 @@ export function useConversation(
     phase: 'entry' as 'entry' | 'speech' | 'choices',
     nonce: 0,
   });
-  const phase = flow.key === key ? flow.phase : 'entry';
+  const phase = flow.key === key ? flow.phase : autoEntry ? 'speech' : 'entry';
   const token = `${key}:${flow.nonce}:${phase}`;
   const [armed, setArmed] = useState({ token: '', paused });
   // Invalidate readiness when the menu changes, even if this is the same line.
@@ -71,11 +74,13 @@ export function useConversation(
       return;
     }
     setFlow((previous) =>
-      previous.key === key &&
-      previous.nonce === flow.nonce &&
-      previous.phase === 'speech'
-        ? { ...previous, phase: 'choices' }
-        : previous,
+      previous.key !== key && autoEntry
+        ? { key, phase: 'choices', nonce: previous.nonce }
+        : previous.key === key &&
+            previous.nonce === flow.nonce &&
+            previous.phase === 'speech'
+          ? { ...previous, phase: 'choices' }
+          : previous,
     );
   };
   return {
