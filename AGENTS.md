@@ -18,6 +18,11 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
 - Assety drž lokálně v `src/assets/` a importuj přes Vite. SVG jde upravovat kódem;
   pro finální kreslená pozadí lze použít generované PNG/WebP. Bez ručních editorů,
   vzdálených CDN a kopírování cizích herních assetů.
+- Nepoužívané generace uklízej přes `npm run assets:clean` (audit), poté
+  `-- --apply`. Zachovej aktuální i commitovaný obsah, kódové odkazy, úplné
+  používané generace a tranzitivní podklady receptů. Čerstvé výstupy jsou hodinu
+  chráněné; úklid je přesune do ignorované `.local-tools/asset-trash/`, odkud je
+  obnoví `-- --restore <id>`. Modely a experimenty do úklidu assetů nepatří.
 - Kód a identifikátory anglicky, hráčské texty slovensky, Dev Mode UI a komunikace/dokumentace česky.
 - U asynchronního Pixi init/load ošetři unmount; při úklidu odpoj ResizeObserver,
   listenery a znič aplikaci. React StrictMode zůstává zapnutý.

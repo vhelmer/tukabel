@@ -14,6 +14,7 @@ npm run dev
 npm run check             # lint, formát, validace JSON/odkazů, pravidla, typy, build
 npm run validate:content  # skutečný projekt včetně dostupnosti assetů
 npm run test:rules        # reducer, validátor, save/load a souřadnice bez prohlížeče
+npm run assets:clean      # pouze audit nepoužívaných generací/importů
 npm run preview          # produkční hra z dist/, bez editoru a zápisového API
 ```
 
@@ -80,9 +81,24 @@ příznaku nebo dialogu oprav i související odkazy, případně operaci vrať.
 Existující obrázky se vybírají ze `src/assets/`. PNG/JPEG/WebP do 6 MB lze importovat
 přímo z formuláře; import ihned vytvoří nový soubor v `src/assets/imported/` a přiřadí
 jej. Nový soubor má jedinečné jméno, nic nepřepisuje. Importované soubory zůstávají
-na disku i při vrácení úpravy; nepoužité případně ručně odstraň. SVG a AVIF lze přidat
+na disku i při vrácení úpravy; jejich úklid je popsaný níže. SVG a AVIF lze přidat
 přímo do repozitáře. Názvy assetů používej bez mezer a diakritiky (`a-z`, číslice,
 `_`, `-`, podadresáře). Assety se při buildu importují přes Vite; žádné CDN.
+
+Nepoužívané generace můžeš uklidit přes **`npm run assets:clean`** (pouze výpis)
+a **`npm run assets:clean -- --apply`**. Skript zkontroluje současný projekt,
+projekt v Git HEAD, odkazy v kódu/testech/dokumentaci a návazné recepty.
+Používanou UUID generaci zachová celou včetně masek, původního zdroje a skriptů.
+Zachová také registrované, zatím nepřiřazené animace a hodinu chrání čerstvé
+výstupy kvůli neuloženým náhledům. Uklízí pouze generované UUID složky a soubory
+v `imported/`; ručně pojmenované zdroje, ikony, experimenty a modely nemění.
+
+Úklid přesune nepoužívané výstupy z `src/assets/` do ignorované
+`.local-tools/asset-trash/<id>/` s manifestem. Zmizí tím i příslušné staré
+generace z nabídky/historie editoru. Zálohu obnovíš příkazem, který skript vypíše:
+**`npm run assets:clean -- --restore <id>`**; existující soubory nepřepíše.
+Záloha stále zabírá místo na disku a nemaže se automaticky. Před úklidem ulož
+aktuální návrh v editoru; po něm spusť `npm run validate:content` a build.
 
 ## Vrstvy a grafické úpravy lokací
 
