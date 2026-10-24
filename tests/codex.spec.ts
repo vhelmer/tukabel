@@ -120,8 +120,14 @@ test.describe('local Codex agent', () => {
     expect(updated.animation?.talk).toMatch(/^codex-/);
     expect(updated.animation?.voice).toEqual(actor.animation?.voice);
     expect(updated.animation?.mouthShapes).toBeUndefined();
-    const clips = saved.animations!.filter((c) => c.id.startsWith('codex-'));
+    const clips = saved.animations!.filter(
+      (c) =>
+        c.id.startsWith('codex-') &&
+        !original.animations?.some((existing) => existing.id === c.id),
+    );
     expect(clips).toHaveLength(2);
+    for (const existing of original.animations ?? [])
+      expect(saved.animations).toContainEqual(existing);
     expect(clips[0]!.region!.y).not.toBe(clips[1]!.region!.y);
     for (const clip of clips)
       expect(
