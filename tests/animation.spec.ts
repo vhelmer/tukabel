@@ -116,6 +116,7 @@ test('PNG blink imports, previews, saves, reloads and plays with stable placemen
   page,
   workspace,
 }, testInfo) => {
+  test.setTimeout(60000);
   const clickProject = JSON.parse(
     await readFile(workspace.source, 'utf8'),
   ) as GameContent;
@@ -206,7 +207,21 @@ test('PNG blink imports, previews, saves, reloads and plays with stable placemen
   await page.getByLabel('Automatické mrkání', { exact: true }).selectOption('');
   await page.getByText('Animace při interakci', { exact: true }).click();
   await page.getByLabel('Při kliknutí', { exact: true }).selectOption(blink.id);
+  // Give software-WebGL screenshots a reliable window to observe a one-shot
+  // pose; this test also exercises the authored speed setting after reload.
+  await page
+    .getByLabel('Rychlost přehrávání (×)', { exact: true })
+    .fill('0.25');
+  await page
+    .getByRole('button', { name: 'Přidat / aktualizovat animaci', exact: true })
+    .click();
   await saveProject(page);
+  const reactionConfig = JSON.parse(
+    await readFile(workspace.source, 'utf8'),
+  ) as GameContent;
+  expect(
+    reactionConfig.animations!.find((clip) => clip.id === blink.id)!.speed,
+  ).toBe(0.25);
   await page.reload();
   await ready(page);
   await page.getByRole('button', { name: 'Dev Mode', exact: true }).click();

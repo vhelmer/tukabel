@@ -363,19 +363,20 @@ export function createHud(
     )!;
     const frame = sceneFrame(width, height, scene);
     const top = frame.y + 6;
+    const compact = frame.width < 600;
+    const leading = compact ? 94 : 0;
+    const desiredWidth = compact
+      ? Math.max(220, 150 + snapshot.state.inventory.length * 60)
+      : Math.max(310, 100 + snapshot.state.inventory.length * 68);
     const inventoryWidth = Math.max(
       75,
-      Math.min(
-        700,
-        Math.max(310, 100 + snapshot.state.inventory.length * 68),
-        frame.width - 180,
-      ),
+      Math.min(700, desiredWidth, frame.width - (compact ? 80 : 180)),
     );
     const inventory = {
       x: frame.x + 8,
       y: top,
       width: inventoryWidth,
-      height: 78,
+      height: compact ? 60 : 78,
     };
     layout = { width, height, controls: [], inventory };
     shelfBounds = inventory;
@@ -408,9 +409,8 @@ export function createHud(
       (status) => status === 'active',
     ).length;
     const right = frame.x + frame.width - 6;
-    const compact = frame.width < 600;
-    const toolsX = compact ? inventory.x + inventory.width - 94 : right - 160;
-    const toolsY = compact ? top + 60 : top + 4;
+    const toolsX = compact ? inventory.x + 1 : right - 160;
+    const toolsY = compact ? top : top + 4;
     const notebook = { x: right - 60, y: top - 2, width: 60, height: 72 };
     button(
       {
@@ -455,7 +455,15 @@ export function createHud(
       '≡',
       28,
     );
-    const slots = Math.max(1, Math.floor((inventoryWidth - 40) / 65));
+    const slots = Math.max(
+      1,
+      Math.floor(
+        (inventoryWidth -
+          leading -
+          (compact && snapshot.state.inventory.length <= 2 ? 36 : 72)) /
+          (compact ? 56 : 65),
+      ),
+    );
     inventoryPage = Math.max(
       0,
       Math.min(
@@ -464,15 +472,17 @@ export function createHud(
       ),
     );
     const paged = snapshot.state.inventory.length > slots;
-    const inset = paged ? 37 : 18;
+    const inset = leading + (paged ? 37 : 18);
+    const trailing = paged ? 37 : 18;
     if (!snapshot.state.inventory.length) {
       const empty = text(
         panels,
         'Prázdne vrecká… zatiaľ.',
-        inventory.x + 24,
-        top + 22,
-        inventoryWidth < 220 ? 11 : 13,
+        inventory.x + leading + 12,
+        top + (compact ? 14 : 22),
+        compact ? 11 : 13,
         0xebd4a0,
+        inventoryWidth - leading - 26,
       );
       empty.style.stroke = { color: 0x312723, width: 3, join: 'round' };
     }
@@ -481,7 +491,12 @@ export function createHud(
         {
           id: 'inventory-prev',
           label: 'Predchádzajúce predmety',
-          bounds: { x: inventory.x - 1, y: top + 7, width: 36, height: 48 },
+          bounds: {
+            x: inventory.x + leading - 1,
+            y: top + 7,
+            width: 36,
+            height: 48,
+          },
           disabled: inventoryPage === 0 || blocked,
         },
         '‹',
@@ -511,7 +526,7 @@ export function createHud(
     );
     const slotWidth = Math.min(
       78,
-      (inventoryWidth - inset * 2) / Math.max(1, visibleItems.length),
+      (inventoryWidth - inset - trailing) / Math.max(1, visibleItems.length),
     );
     visibleItems.forEach((id, index) => {
       const item = snapshot.content.items.find((i) => i.id === id)!;
@@ -519,7 +534,7 @@ export function createHud(
         x: inventory.x + inset + index * slotWidth,
         y: top + 1,
         width: slotWidth - 3,
-        height: 52,
+        height: compact ? 44 : 52,
       };
       const c = button(
         {
@@ -539,7 +554,7 @@ export function createHud(
         x: 6,
         y: 0,
         width: b.width - 12,
-        height: 44,
+        height: compact ? 34 : 44,
       });
       if (snapshot.drag?.id === id) c.alpha = 0.4;
       if (

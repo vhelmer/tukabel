@@ -123,7 +123,7 @@ test('drawn HUD overlays the full location; shelf alpha blocks only visible timb
     x: shelf.x + shelf.width * 0.5,
     y: shelf.y + shelf.height * 0.64,
   };
-  const gap = { x: shelf.x + shelf.width * 0.5, y: shelf.y + 8 };
+  const gap = { x: shelf.x + shelf.width - 12, y: shelf.y + 8 };
   const token = page.getByRole('button', { name: 'Žetón', exact: true });
   if (isMobile) await page.touchscreen.tap(solid.x, solid.y);
   else await page.mouse.click(solid.x, solid.y);
@@ -150,6 +150,42 @@ test('drawn HUD overlays the full location; shelf alpha blocks only visible timb
   await expect(page.getByRole('status', { name: 'Reakcia' })).toHaveText(
     /Predmet prešiel/,
   );
+  if (!isMobile) {
+    // The Pixi button gets replaced when the object list opens. Its old
+    // pointerout will never run, so its tooltip must be explicitly discarded.
+    await page.mouse.move(0, 0);
+    const objects = page.getByRole('button', { name: 'Objekty', exact: true });
+    const control = (await objects.boundingBox())!;
+    const canvas = page.locator('.canvas-host canvas');
+    const box = (await canvas.boundingBox())!;
+    async function belowButton() {
+      const bytes = await canvas.screenshot({
+        animations: 'disabled',
+        style: '.reaction,.scene-label{visibility:hidden!important}',
+      });
+      const meta = await sharp(bytes).metadata();
+      const ratio = meta.width! / box.width;
+      return sharp(bytes)
+        .extract({
+          left: Math.round((control.x - box.x - 16) * ratio),
+          top: Math.round((control.y + control.height + 5 - box.y) * ratio),
+          width: Math.floor((control.width + 32) * ratio),
+          height: Math.floor(32 * ratio),
+        })
+        .raw()
+        .toBuffer();
+    }
+    const before = await belowButton();
+    await hudClick(page, objects);
+    await page
+      .getByRole('button', { name: 'Pozadie pod HUD ↗', exact: true })
+      .click();
+    await page.mouse.move(0, 0);
+    expect(
+      (await belowButton()).equals(before),
+      'Replaced HUD controls left a stale tooltip over the scene',
+    ).toBe(true);
+  }
   for (const size of [
     { width: 720, height: 400 },
     { width: 430, height: 900 },

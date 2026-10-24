@@ -196,26 +196,66 @@ async function gameImage(page: Page) {
   const width = right - left + 1,
     height = bottom - top + 1;
   expect(Math.abs(width / height - 1280 / 720)).toBeLessThan(0.02);
-  return sharp(bytes)
-    .extract({ left, top, width, height })
-    .resize(1280, 720)
-    .removeAlpha()
-    .raw()
-    .toBuffer();
+  const canvasBox = (await page.locator('canvas').boundingBox())!;
+  const ratio = info.width / canvasBox.width;
+  const controls = await page
+    .locator(
+      '.hud-accessibility [data-hud-control], .hud-accessibility [aria-label="Inventár"]',
+    )
+    .evaluateAll((elements) =>
+      elements.map((element) => {
+        const box = element.getBoundingClientRect();
+        return { x: box.x, y: box.y, width: box.width, height: box.height };
+      }),
+    );
+  const overlays = controls.map((r) => ({
+    x: (((r.x - canvasBox.x) * ratio - left) / width) * 1280 - 3,
+    y: (((r.y - canvasBox.y) * ratio - top) / height) * 720 - 3,
+    width: ((r.width * ratio) / width) * 1280 + 6,
+    height: ((r.height * ratio) / height) * 720 + 6,
+  }));
+  return {
+    pixels: await sharp(bytes)
+      .extract({ left, top, width, height })
+      .resize(1280, 720)
+      .removeAlpha()
+      .raw()
+      .toBuffer(),
+    overlays,
+  };
 }
-function difference(a: Buffer, b: Buffer, hotspot: Hotspot) {
+function difference(
+  a: Buffer,
+  image: Awaited<ReturnType<typeof gameImage>>,
+  hotspot: Hotspot,
+) {
   const r = rotatedBounds(hotspot.bounds, hotspot.rotation);
   let sum = 0,
     count = 0;
   for (let y = Math.ceil(r.y); y < Math.floor(r.y + r.height); y++)
-    for (let x = Math.ceil(r.x); x < Math.floor(r.x + r.width); x++)
+    for (let x = Math.ceil(r.x); x < Math.floor(r.x + r.width); x++) {
+      // The game intentionally overlays artwork with the HUD. Compare the
+      // visible scene pixels; the HUD itself has independent raster tests.
+      if (
+        image.overlays.some(
+          (b) =>
+            x >= b.x && x <= b.x + b.width && y >= b.y && y <= b.y + b.height,
+        )
+      )
+        continue;
       for (let c = 0; c < 3; c++) {
         const i = (y * 1280 + x) * 3 + c;
-        sum += Math.abs(a[i]! - b[i]!);
+        sum += Math.abs(a[i]! - image.pixels[i]!);
         count++;
       }
+    }
+  expect(
+    count,
+    'Too little unobscured artwork for a meaningful comparison',
+  ).toBeGreaterThan(300);
   return sum / count;
 }
+
 async function save(page: Page) {
   await page
     .getByRole('button', { name: 'Uložit do projektu', exact: true })

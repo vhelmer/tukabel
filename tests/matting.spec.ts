@@ -283,7 +283,8 @@ test('Canvas, PNG export and Pixi agree on straight alpha and transparent colors
             {
               id: 'half-alpha',
               label: 'Alpha',
-              bounds: { x: 80, y: 150, width: 128, height: 128 },
+              // Keep alpha reference pixels below the deliberately overlaid HUD.
+              bounds: { x: 80, y: 350, width: 128, height: 128 },
               image: cutout.image,
               decorative: true,
               onClick: [],
@@ -291,7 +292,7 @@ test('Canvas, PNG export and Pixi agree on straight alpha and transparent colors
             {
               id: 'hidden-color',
               label: 'PMA',
-              bounds: { x: 400, y: 150, width: 128, height: 128 },
+              bounds: { x: 400, y: 350, width: 128, height: 128 },
               rotation: 17,
               image: 'scene-art/render-fixture/hidden-colors.png',
               decorative: true,
@@ -322,12 +323,12 @@ test('Canvas, PNG export and Pixi agree on straight alpha and transparent colors
       (Math.round(oy + y * scale) * width + Math.round(ox + x * scale)) * 3,
       (Math.round(oy + y * scale) * width + Math.round(ox + x * scale)) * 3 + 3,
     );
-  const center = pixel(144, 214);
+  const center = pixel(144, 414);
   for (const [i, expected] of [120, 40, 12].entries())
     expect(Math.abs(center[i]! - expected)).toBeLessThanOrEqual(2);
   let coloredFringes = 0,
     filteredEdge = 0;
-  for (let y = 135; y < 295; y++)
+  for (let y = 335; y < 495; y++)
     for (let x = 385; x < 545; x++) {
       const p = pixel(x, y);
       if (p[0]! > 2 || p[2]! > 2) coloredFringes++;
@@ -342,7 +343,7 @@ test('Canvas, PNG export and Pixi agree on straight alpha and transparent colors
   const stage = page.locator('.editor-stage');
   await expect(stage).toBeVisible();
   const point = await stage.evaluate((el) => {
-    const p = new DOMPoint(144, 214).matrixTransform(
+    const p = new DOMPoint(144, 414).matrixTransform(
       (el as SVGSVGElement).getScreenCTM()!,
     );
     const b = el.getBoundingClientRect();

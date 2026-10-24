@@ -581,7 +581,7 @@ PixiJS vykresluje inventář jako kreslenou dřevěnou poličku, ikonku potrhan�
 zápisníku a malé cedulky **Objekty** (oko) / **Menu** (tři čárky). Pozadí pokračuje
 pod HUD; nevzniká žádná lišta ani vyhrazený okraj. Při tvorbě lokace nech horní
 část obrazu volnější. HUD zůstává uvnitř obrazu i na vysokém displeji s letterboxem;
-na úzkém obrazu visí pomocné cedulky pod poličkou. Polička se prodlužuje podle
+na úzkém obrazu jsou pomocné cedulky v levém konci poličky. Polička se prodlužuje podle
 počtu předmětů, její konce se nedeformují. Další předměty zobrazí šipky.
 Názvy se ukážou při najetí nebo zaměření klávesnicí, výběr předmětu zobrazí popis.
 Viditelné dřevo a ovládací prvky blokují svět pod sebou; průhledná místa HUDu
