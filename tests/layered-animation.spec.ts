@@ -141,13 +141,8 @@ async function pixel(
   const dimensions = await canvas.evaluate((element) => ({
     width: element.clientWidth,
     height: element.clientHeight,
-    hud: Boolean(element.closest('.game-window')),
   }));
-  const area = gameViewport(
-    dimensions.width,
-    dimensions.height,
-    dimensions.hud,
-  );
+  const area = gameViewport(dimensions.width, dimensions.height);
   const { data, info } = await sharp(
     await canvas.screenshot({
       style:

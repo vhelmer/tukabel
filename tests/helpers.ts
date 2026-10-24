@@ -35,13 +35,8 @@ export async function pointInScene(page: Page, x: number, y: number) {
     .evaluate((canvas) => ({
       width: canvas.clientWidth,
       height: canvas.clientHeight,
-      hud: Boolean(canvas.closest('.game-window')),
     }));
-  const area = gameViewport(
-    dimensions.width,
-    dimensions.height,
-    dimensions.hud,
-  );
+  const area = gameViewport(dimensions.width, dimensions.height);
   const scale = Math.min(area.width / 1280, area.height / 720);
   return {
     x:

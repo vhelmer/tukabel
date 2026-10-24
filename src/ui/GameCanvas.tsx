@@ -13,6 +13,7 @@ import type {
   InventoryPointer,
 } from '../game/createHud';
 import { gameViewport } from '../game/hudLayout';
+import { hudArt } from '../game/hudArt';
 import { HudAccessibility } from './HudAccessibility';
 import type {
   AnimationDefinition,
@@ -147,6 +148,7 @@ function MountedCanvas({
         const urls = [
           ...new Set([
             scene.background,
+            ...(hudContent ? Object.values(hudArt) : []),
             ...(hudContent?.items.flatMap((item) =>
               item.image ? [item.image] : [],
             ) ?? []),
@@ -194,6 +196,7 @@ function MountedCanvas({
             ];
           }),
         );
+        if (hudContent) maskUrls.add(hudArt.shelf);
         const [loaded, alpha] = await Promise.all([
           Promise.all(
             urls.map(
@@ -283,6 +286,7 @@ function MountedCanvas({
               },
               () => app.render(),
               () => syncPlayback(),
+              new Map(alpha).get(hudArt.shelf)!,
             )
           : null;
         if (mountedHud) {
@@ -320,24 +324,12 @@ function MountedCanvas({
         let pointer: { x: number; y: number } | null = null;
         const syncPointer = () =>
           mountedScene.hoverAt(
-            pointer
+            pointer &&
+              !mountedHud?.controller.blocksPointer(pointer.x, pointer.y)
               ? scenePoint(sceneRect(), scene, pointer.x, pointer.y)
               : null,
           );
-        const sceneRect = () => {
-          const rect = app.canvas.getBoundingClientRect();
-          const area = gameViewport(
-            app.screen.width,
-            app.screen.height,
-            Boolean(mountedHud),
-          );
-          return {
-            left: rect.left,
-            top: rect.top + (area.y * rect.height) / app.screen.height,
-            width: rect.width,
-            height: (area.height * rect.height) / app.screen.height,
-          };
-        };
+        const sceneRect = () => app.canvas.getBoundingClientRect();
         const movePointer = (event: PointerEvent) => {
           pointer =
             event.pointerType === 'touch'
@@ -370,7 +362,7 @@ function MountedCanvas({
           const width = Math.max(1, host.clientWidth);
           const height = Math.max(1, host.clientHeight);
           app.renderer.resize(width, height);
-          const area = gameViewport(width, height, Boolean(mountedHud));
+          const area = gameViewport(width, height);
           mountedScene.resize(area.width, area.height, area.x, area.y);
           mountedHud?.resize(width, height);
           syncPointer();

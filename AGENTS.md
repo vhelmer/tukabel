@@ -97,8 +97,12 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
 - Inventární `item.image` je samostatná ikonka. Pickup efekt je pouze vizuální,
   spouští ho skutečné získání přes akci, nikoli load/reset nebo přepnutí režimu.
 - `createHud.ts` kreslí horní HUD, inventář, deník, drag náhled i pickup efekt
-  v samostatné neškálované Pixi vrstvě nad scénou. `hudLayout.ts` sdílí viewport
-  pod lištou pro resize, hover, drop i popisky; autorské souřadnice se nemění.
+  v Pixi vrstvě přímo přes obraz lokace. HUD nesmí rezervovat okraj canvasu ani
+  zmenšovat scénu. `hudLayout.ts` sdílí plný viewport a contain rám obrazu;
+  HUD kotvi k obrazu i při letterboxu. Kreslené assety jsou v `src/assets/hud/`.
+  Polička je nine-slice sprite s pevnými konci; alfa cílení musí invertovat stejné
+  natažení z cachované masky, neblokovat průhledná místa a platit také pro drop
+  a ruční hover scény. Aktivní ovládací prvky mají vlastní dotykové cíle.
   Inventář stránkuje šipkami, dlouhý deník posouvá obsah pod maskou. Deník pozastaví
   řeč/lip-sync, zablokuje svět a inventář, drží focus a Escape jej zavře.
   Stav otevření/posunu nepatří do save. Tlačítka reagují na Pixi pointerup s prahem

@@ -283,7 +283,8 @@ export function GameWindow({
         !element?.closest('.canvas-host') ||
         !viewport.current ||
         state.dialogue ||
-        modalOpen
+        modalOpen ||
+        hudController.current?.blocksPointer(event.clientX, event.clientY)
       )
         return null;
       const point = scenePoint(
@@ -436,6 +437,10 @@ export function GameWindow({
           inScene:
             event.target instanceof Element &&
             Boolean(event.target.closest('.canvas-host')) &&
+            !hudController.current?.blocksPointer(
+              event.clientX,
+              event.clientY,
+            ) &&
             Boolean(
               viewport.current &&
               scenePoint(

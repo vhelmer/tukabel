@@ -1,14 +1,22 @@
 import type { Bounds } from './transforms';
 
-// CSS-pixel UI coordinates, independent of the location's authored coordinates.
-// The scene, pointer conversion and React captions all use this same viewport.
-export function gameViewport(
+// The HUD is an overlay. It must never reserve space or resize the location.
+export function gameViewport(width: number, height: number): Bounds {
+  return { x: 0, y: 0, width, height: Math.max(1, height) };
+}
+
+export function sceneFrame(
   width: number,
   height: number,
-  hud = true,
+  scene: { width: number; height: number },
 ): Bounds {
-  const top = hud ? (height < 420 ? 100 : 126) : 0;
-  return { x: 0, y: top, width, height: Math.max(1, height - top) };
+  const scale = Math.min(width / scene.width, height / scene.height);
+  return {
+    x: (width - scene.width * scale) / 2,
+    y: (height - scene.height * scale) / 2,
+    width: scene.width * scale,
+    height: scene.height * scale,
+  };
 }
 
 export function contains(rect: Bounds, x: number, y: number) {
@@ -21,15 +29,5 @@ export function contains(rect: Bounds, x: number, y: number) {
 }
 
 export function sceneViewportRect(element: HTMLElement) {
-  const rect = element.getBoundingClientRect();
-  const view = gameViewport(element.clientWidth, element.clientHeight);
-  const scaleY = rect.height / element.clientHeight;
-  return {
-    x: rect.x,
-    y: rect.y + view.y * scaleY,
-    left: rect.left,
-    top: rect.top + view.y * scaleY,
-    width: rect.width,
-    height: view.height * scaleY,
-  };
+  return element.getBoundingClientRect();
 }

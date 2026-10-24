@@ -56,9 +56,9 @@ test('upper HUD supports real drags; journal discovers and strikes tasks through
   const inventory = await page
     .getByRole('group', { name: 'Inventár', exact: true })
     .boundingBox();
-  const scene = await page.locator('.play-area').boundingBox();
-  expect(inventory!.y).toBeGreaterThanOrEqual(scene!.y);
-  expect(inventory!.y + inventory!.height).toBeLessThan(scene!.y + 130);
+  const sceneTop = await pointInScene(page, 0, 0);
+  expect(inventory!.y).toBeGreaterThanOrEqual(sceneTop.y);
+  expect(inventory!.y + inventory!.height).toBeLessThan(sceneTop.y + 90);
   let journal = await openJournal(page, isMobile);
   await expect(
     journal.locator('[data-task-id="power-router"]'),
@@ -341,8 +341,8 @@ test('HUD and notebook pixels belong to the canvas; semantic HTML never captures
     .raw()
     .toBuffer({ resolveWithObject: true });
   const scale = pixels.width / area.width;
-  const x = Math.floor((book.x + 30 - area.x) * scale),
-    y = Math.floor((book.y + 105 - area.y) * scale);
+  const x = Math.floor((book.x + book.width * 0.5 - area.x) * scale),
+    y = Math.floor((book.y + book.height * 0.23 - area.y) * scale);
   const offset = (y * pixels.width + x) * pixels.channels;
   expect(data[offset]).toBeGreaterThan(180);
   expect(data[offset + 1]).toBeGreaterThan(150);

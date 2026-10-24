@@ -2,6 +2,7 @@ import {
   CanvasTextMetrics,
   Container,
   Graphics,
+  NineSliceSprite,
   Rectangle,
   Sprite,
   Text,
@@ -9,7 +10,9 @@ import {
 import type { FederatedPointerEvent, Texture } from 'pixi.js';
 import type { GameContent, GameState } from './types';
 import type { Bounds } from './transforms';
-import { contains, gameViewport } from './hudLayout';
+import { contains, sceneFrame } from './hudLayout';
+import { hudArt } from './hudArt';
+import type { AlphaMask } from './hitTest';
 
 export interface InventoryPointer {
   pointerId: number;
@@ -71,6 +74,7 @@ export interface HudCallbacks {
   }) => void;
 }
 export interface HudController {
+  blocksPointer: (clientX: number, clientY: number) => boolean;
   itemAt: (clientX: number, clientY: number) => string | null;
   activate: (id: string) => void;
   focus: (id: string | null) => void;
@@ -85,6 +89,7 @@ export function createHud(
   callbacks: HudCallbacks,
   render: () => void,
   syncPlayback: () => void,
+  shelfMask: AlphaMask,
 ) {
   const root = new Container({ label: 'game-hud' });
   const panels = root.addChild(new Container());
@@ -105,6 +110,10 @@ export function createHud(
     controls: [],
     inventory: { x: 0, y: 0, width: 0, height: 0 },
   };
+  const tooltip = root.addChild(new Container());
+  tooltip.eventMode = 'none';
+  let hoverId: string | null = null;
+  let shelfBounds: Bounds | null = null;
   let ghost: Container | null = null;
   let ghostId: string | null = null;
   let structuralKey = '';
@@ -137,30 +146,61 @@ export function createHud(
     parent.addChild(view);
     return view;
   }
-  function plate(
-    parent: Container,
-    box: Bounds,
-    fill: number,
-    edge = 0x987044,
-  ) {
-    return parent.addChild(
-      new Graphics()
-        .poly([
-          box.x + 4,
-          box.y,
-          box.x + box.width - 5,
-          box.y + 1,
-          box.x + box.width,
-          box.y + box.height - 5,
-          box.x + box.width - 5,
-          box.y + box.height,
-          box.x + 2,
-          box.y + box.height - 1,
-          box.x,
-          box.y + 5,
-        ])
-        .fill(fill)
-        .stroke({ width: 2, color: edge }),
+  function art(parent: Container, url: string, bounds: Bounds) {
+    const sprite = parent.addChild(new Sprite(textures.get(url)!));
+    sprite.position.set(bounds.x, bounds.y);
+    sprite.width = bounds.width;
+    sprite.height = bounds.height;
+    sprite.eventMode = 'none';
+    return sprite;
+  }
+  function shelfContains(x: number, y: number) {
+    const b = shelfBounds;
+    if (!b || !contains(b, x, y)) return false;
+    // Invert the same nine-slice stretch used by the timber sprite: its carved
+    // ends keep their proportions, only the middle plank changes length.
+    const scale = b.height / 116;
+    const localX = (x - b.x) / scale,
+      localWidth = b.width / scale;
+    const sourceX =
+      localX < 70
+        ? localX
+        : localX >= localWidth - 90
+          ? 900 - (localWidth - localX)
+          : 70 + ((localX - 70) / Math.max(1, localWidth - 160)) * 740;
+    const px = Math.min(
+      shelfMask.width - 1,
+      Math.floor((sourceX / 900) * shelfMask.width),
+    );
+    const py = Math.floor(((y - b.y) / b.height) * shelfMask.height);
+    return shelfMask.alpha[py * shelfMask.width + px]! >= 32;
+  }
+  function syncTooltip() {
+    tooltip
+      .removeChildren()
+      .forEach((child) => child.destroy({ children: true }));
+    if (snapshot.journal || snapshot.menu || snapshot.drag) return;
+    const control = layout.controls.find((c) => c.id === (hoverId ?? focused));
+    if (!control || control.disabled) return;
+    const title = text(
+      tooltip,
+      control.label,
+      0,
+      0,
+      13,
+      0xffedbd,
+      Math.min(200, width - 30),
+    );
+    title.style.stroke = { color: 0x211c22, width: 4, join: 'round' };
+    title.position.set(
+      Math.max(
+        8,
+        Math.min(
+          width - title.width - 8,
+          control.bounds.x + control.bounds.width / 2 - title.width / 2,
+        ),
+      ),
+      control.bounds.y + control.bounds.height + 9,
     );
   }
   function activate(id: string, pointer = false) {
@@ -181,19 +221,41 @@ export function createHud(
       rebuild();
     } else callbacks.onAction(id, pointer);
   }
-  function button(control: HudControl, label = control.label, size = 14) {
+  function button(
+    control: HudControl,
+    label = control.label,
+    size = 14,
+    skin: 'tag' | 'bare' | 'notebook' = 'tag',
+  ) {
     layout.controls.push(control);
     const c = panels.addChild(new Container());
     const b = control.bounds;
     c.position.set(b.x, b.y);
     c.hitArea = new Rectangle(0, 0, b.width, b.height);
-    c.eventMode = control.disabled ? 'none' : 'static';
+    c.eventMode = 'static';
     c.cursor = 'pointer';
-    const bg = plate(
-      c,
-      { x: 0, y: 0, width: b.width, height: b.height },
-      control.pressed || control.expanded ? 0x735736 : 0x38282a,
-    );
+    const bg =
+      skin === 'bare'
+        ? c.addChild(
+            new Graphics()
+              .ellipse(b.width / 2, b.height - 7, b.width * 0.37, 7)
+              .fill({
+                color: control.pressed ? 0xf2cf80 : 0x19171a,
+                alpha: control.pressed ? 0.6 : 0.22,
+              }),
+          )
+        : art(c, skin === 'notebook' ? hudArt.notebook : hudArt.tag, {
+            x: 0,
+            y: 0,
+            width: b.width,
+            height: b.height,
+          });
+    if (control.pressed && skin === 'bare')
+      c.addChild(
+        new Graphics()
+          .ellipse(b.width / 2, b.height / 2, b.width * 0.4, b.height * 0.4)
+          .stroke({ color: 0xf4d18a, width: 2 }),
+      );
     const caption = text(c, label, 0, 0, size);
     if (caption.width > b.width - 10)
       caption.scale.set((b.width - 10) / caption.width);
@@ -202,17 +264,23 @@ export function createHud(
       (b.height - caption.height) / 2,
     );
     if (control.disabled) c.alpha = 0.45;
-    c.on('pointerover', () => {
-      bg.tint = 0xffdda0;
+    c.on('pointerover', (event: FederatedPointerEvent) => {
+      if (event.pointerType === 'touch') return;
+      hoverId = control.id;
+      bg.tint = 0xffe2b3;
+      syncTooltip();
       render();
     });
     c.on('pointerout', () => {
+      hoverId = null;
       bg.tint = 0xffffff;
+      syncTooltip();
       render();
     });
     let origin: { x: number; y: number; id: number } | null = null;
     c.on('pointerdown', (e: FederatedPointerEvent) => {
       e.stopPropagation();
+      if (control.disabled) return;
       origin = { x: e.clientX, y: e.clientY, id: e.pointerId };
       if (control.itemId)
         callbacks.onItemDown(control.itemId, {
@@ -284,87 +352,110 @@ export function createHud(
     }
   }
   function rebuild() {
+    // Destroyed controls cannot emit pointerout. Never retain their tooltip
+    // when opening a menu, dropping an item or moving between dialogue phases.
+    hoverId = null;
     panels
       .removeChildren()
       .forEach((child) => child.destroy({ children: true }));
-    layout = {
-      width,
-      height,
-      controls: [],
-      inventory: {
-        x: 8,
-        y: 55,
-        width: Math.max(1, width - 16),
-        height: gameViewport(width, height).y - 61,
-      },
-    };
-    const top = gameViewport(width, height).y;
-    const wood = panels.addChild(
-      new Graphics().rect(0, 0, width, top).fill(0x38292a),
+    const scene = snapshot.content.scenes.find(
+      (s) => s.id === snapshot.state.sceneId,
+    )!;
+    const frame = sceneFrame(width, height, scene);
+    const top = frame.y + 6;
+    const inventoryWidth = Math.max(
+      75,
+      Math.min(
+        700,
+        Math.max(310, 100 + snapshot.state.inventory.length * 68),
+        frame.width - 180,
+      ),
     );
-    for (let y = 2; y < top; y += 12)
-      wood
-        .moveTo(0, y)
-        .lineTo(width, y + 2)
-        .stroke({ color: y % 3 ? 0x18121c : 0x9a7048, width: 1, alpha: 0.4 });
-    wood
-      .moveTo(0, top - 2)
-      .lineTo(width, top - 2)
-      .stroke({ width: 3, color: 0x916b48 });
-    wood.eventMode = 'static';
-    wood.hitArea = new Rectangle(0, 0, width, top);
-    wood.on('pointerdown', (e) => e.stopPropagation());
+    const inventory = {
+      x: frame.x + 8,
+      y: top,
+      width: inventoryWidth,
+      height: 78,
+    };
+    layout = { width, height, controls: [], inventory };
+    shelfBounds = inventory;
+    const shelfScale = inventory.height / 116;
+    const shelf = panels.addChild(
+      new NineSliceSprite({
+        texture: textures.get(hudArt.shelf)!,
+        leftWidth: 70,
+        rightWidth: 90,
+        topHeight: 0,
+        bottomHeight: 0,
+        width: inventory.width / shelfScale,
+        height: 116,
+      }),
+    );
+    shelf.position.set(inventory.x, inventory.y);
+    shelf.scale.set(shelfScale);
+    shelf.eventMode = 'static';
+    shelf.hitArea = {
+      contains: (x: number, y: number) =>
+        shelfContains(
+          inventory.x + x * shelfScale,
+          inventory.y + y * shelfScale,
+        ),
+    };
     const blocked = Boolean(
       snapshot.state.dialogue || snapshot.menu || snapshot.journal,
     );
     const active = Object.values(snapshot.state.tasks).filter(
       (status) => status === 'active',
     ).length;
-    const small = width < 600;
-    const menuWidth = 58,
-      objectsWidth = 75,
-      bookWidth = 101;
-    const start = width - menuWidth - objectsWidth - bookWidth - 24;
-    const scene = snapshot.content.scenes.find(
-      (s) => s.id === snapshot.state.sceneId,
-    )!;
-    const heading = text(
-      panels,
-      width > 850 ? '↯ TUKABEL   /   ' + scene.title : scene.title,
-      12,
-      15,
-      small ? 12 : 15,
-      0xd5b98f,
-    );
-    const headingWidth = Math.max(1, start - 22);
-    if (heading.width > headingWidth)
-      heading.scale.set(headingWidth / heading.width);
-    button({
-      id: 'journal',
-      label: 'Denník ' + active,
-      bounds: { x: start, y: 5, width: bookWidth, height: 44 },
-      expanded: snapshot.journal,
-    });
-    button({
-      id: 'objects',
-      label: 'Objekty',
-      bounds: {
-        x: start + bookWidth + 5,
-        y: 5,
-        width: objectsWidth,
-        height: 44,
+    const right = frame.x + frame.width - 6;
+    const compact = frame.width < 600;
+    const toolsX = compact ? inventory.x + inventory.width - 94 : right - 160;
+    const toolsY = compact ? top + 60 : top + 4;
+    const notebook = { x: right - 60, y: top - 2, width: 60, height: 72 };
+    button(
+      {
+        id: 'journal',
+        label: 'Denník ' + active,
+        bounds: notebook,
+        expanded: snapshot.journal,
       },
-      expanded: snapshot.objectsOpen,
-      disabled: blocked,
-    });
-    button({
-      id: 'menu',
-      label: 'Menu',
-      bounds: { x: width - menuWidth - 7, y: 5, width: menuWidth, height: 44 },
-      expanded: snapshot.menu,
-    });
-    const slotHeight = top - 62;
-    const slots = Math.max(1, Math.floor((width - 112) / (small ? 112 : 155)));
+      '',
+      14,
+      'notebook',
+    );
+    if (active) {
+      const badge = panels.addChild(
+        new Graphics()
+          .circle(notebook.x + 49, notebook.y + 12, 10)
+          .fill(0x793f33)
+          .stroke({ width: 2, color: 0xe0c994 }),
+      );
+      badge.eventMode = 'none';
+      const count = text(panels, String(active), 0, notebook.y + 3, 12);
+      count.x = notebook.x + 49 - count.width / 2;
+    }
+    button(
+      {
+        id: 'objects',
+        label: 'Objekty',
+        bounds: { x: toolsX, y: toolsY, width: 44, height: 48 },
+        expanded: snapshot.objectsOpen,
+        disabled: blocked,
+      },
+      '◉',
+      22,
+    );
+    button(
+      {
+        id: 'menu',
+        label: 'Menu',
+        bounds: { x: toolsX + 50, y: toolsY, width: 44, height: 48 },
+        expanded: snapshot.menu,
+      },
+      '≡',
+      28,
+    );
+    const slots = Math.max(1, Math.floor((inventoryWidth - 40) / 65));
     inventoryPage = Math.max(
       0,
       Math.min(
@@ -373,31 +464,45 @@ export function createHud(
       ),
     );
     const paged = snapshot.state.inventory.length > slots;
-    const offset = paged ? 54 : 10;
-    if (!snapshot.state.inventory.length)
-      text(panels, 'Prázdne vrecká. Zatiaľ.', 18, 64, 14, 0xbca482);
+    const inset = paged ? 37 : 18;
+    if (!snapshot.state.inventory.length) {
+      const empty = text(
+        panels,
+        'Prázdne vrecká… zatiaľ.',
+        inventory.x + 24,
+        top + 22,
+        inventoryWidth < 220 ? 11 : 13,
+        0xebd4a0,
+      );
+      empty.style.stroke = { color: 0x312723, width: 3, join: 'round' };
+    }
     if (paged) {
       button(
         {
           id: 'inventory-prev',
           label: 'Predchádzajúce predmety',
-          bounds: { x: 4, y: 56, width: 44, height: slotHeight },
+          bounds: { x: inventory.x - 1, y: top + 7, width: 36, height: 48 },
           disabled: inventoryPage === 0 || blocked,
         },
         '‹',
-        28,
+        26,
       );
       button(
         {
           id: 'inventory-next',
           label: 'Ďalšie predmety',
-          bounds: { x: width - 48, y: 56, width: 44, height: slotHeight },
+          bounds: {
+            x: inventory.x + inventoryWidth - 35,
+            y: top + 7,
+            width: 36,
+            height: 48,
+          },
           disabled:
             (inventoryPage + 1) * slots >= snapshot.state.inventory.length ||
             blocked,
         },
         '›',
-        28,
+        26,
       );
     }
     const visibleItems = snapshot.state.inventory.slice(
@@ -405,16 +510,16 @@ export function createHud(
       (inventoryPage + 1) * slots,
     );
     const slotWidth = Math.min(
-      small ? 145 : 190,
-      (width - offset * 2) / Math.max(1, visibleItems.length),
+      78,
+      (inventoryWidth - inset * 2) / Math.max(1, visibleItems.length),
     );
     visibleItems.forEach((id, index) => {
       const item = snapshot.content.items.find((i) => i.id === id)!;
       const b = {
-        x: offset + index * slotWidth,
-        y: 56,
-        width: slotWidth - 6,
-        height: slotHeight,
+        x: inventory.x + inset + index * slotWidth,
+        y: top + 1,
+        width: slotWidth - 3,
+        height: 52,
       };
       const c = button(
         {
@@ -427,30 +532,15 @@ export function createHud(
           pressed: snapshot.selectedItem === id,
         },
         '',
+        14,
+        'bare',
       );
       image(c, item.image, item.icon, {
-        x: 4,
-        y: 3,
-        width: Math.min(42, slotHeight - 6),
-        height: slotHeight - 6,
+        x: 6,
+        y: 0,
+        width: b.width - 12,
+        height: 44,
       });
-      const label = text(
-        c,
-        item.label,
-        Math.min(50, slotHeight + 4),
-        3,
-        height < 420 ? 11 : 13,
-        0xf3ddb0,
-        Math.max(20, b.width - Math.min(54, slotHeight + 8)),
-      );
-      // Long authored names must not spill into the scene in compact landscape UI.
-      const labelMask = c.addChild(
-        new Graphics()
-          .rect(label.x, 3, Math.max(1, b.width - label.x - 4), slotHeight - 6)
-          .fill(0xffffff),
-      );
-      labelMask.eventMode = 'none';
-      label.mask = labelMask;
       if (snapshot.drag?.id === id) c.alpha = 0.4;
       if (
         snapshot.drag?.target?.type === 'item' &&
@@ -459,12 +549,13 @@ export function createHud(
       )
         c.addChild(
           new Graphics()
-            .roundRect(1, 1, b.width - 2, b.height - 2, 5)
+            .ellipse(b.width / 2, 25, b.width * 0.45, 24)
             .stroke({ width: 3, color: 0xc7e597 }),
         ).eventMode = 'none';
     });
     if (snapshot.journal) drawBook();
     drawFocus();
+    syncTooltip();
     callbacks.onLayout(layout);
     render();
   }
@@ -472,62 +563,48 @@ export function createHud(
     const dim = panels.addChild(
       new Graphics()
         .rect(0, 0, width, height)
-        .fill({ color: 0x100d15, alpha: 0.78 }),
+        .fill({ color: 0x100d15, alpha: 0.7 }),
     );
     dim.eventMode = 'static';
     dim.on('pointertap', () => callbacks.onAction('journal-close', true));
-    const bw = Math.min(590, width - 24),
-      bh = Math.min(570, height - 24);
+    const bw = Math.max(
+        1,
+        Math.min(590, width - 16, ((height - 16) * 620) / 650),
+      ),
+      bh = (bw * 650) / 620;
     const b = {
       x: (width - bw) / 2,
       y: (height - bh) / 2,
       width: bw,
       height: bh,
     };
+    const left = b.x + bw * 0.12,
+      right = b.x + bw * 0.91;
+    const contentTop = b.y + bh * 0.25,
+      contentBottom = b.y + bh * 0.83;
+    const fontSize = Math.max(13, Math.min(20, bw / 26));
     layout.book = b;
-    plate(
-      panels,
-      { x: b.x - 4, y: b.y + 5, width: bw + 3, height: bh },
-      0x38252b,
-      0x21191c,
-    ).eventMode = 'none';
-    const paper = plate(panels, b, 0xe4cda2, 0x593d2b);
+    const paper = art(panels, hudArt.journal, b);
     paper.eventMode = 'static';
     paper.on('pointertap', (e) => e.stopPropagation());
-    const wear = panels.addChild(new Graphics());
-    wear.eventMode = 'none';
-    for (let i = 0; i < 18; i++) {
-      const x = b.x + 8 + ((i * 79) % Math.max(1, Math.floor(bw - 16)));
-      const y = b.y + (i % 2 ? bh - 7 - (i % 4) * 6 : 7 + (i % 4) * 4);
-      wear
-        .ellipse(x, y, 8 + (i % 13), 3 + (i % 5))
-        .fill({ color: 0x855335, alpha: 0.07 });
-    }
-    wear
-      .circle(b.x + bw - 27, b.y + bh - 40, 18)
-      .stroke({ color: 0x8e6240, width: 3, alpha: 0.09 });
-    const binding = panels.addChild(new Graphics());
-    for (let y = b.y + 20; y < b.y + bh - 10; y += 32)
-      binding
-        .circle(b.x + 12, y, 3)
-        .fill(0x453025)
-        .moveTo(b.x + 5, y - 1)
-        .lineTo(b.x + 18, y + 2)
-        .stroke({ color: 0x997249, width: 2 });
-    binding
-      .moveTo(b.x + 26, b.y + 7)
-      .lineTo(b.x + 26, b.y + bh - 7)
-      .stroke({ color: 0x9a5447, alpha: 0.4, width: 1 });
-    binding.eventMode = 'none';
-    text(panels, 'ZÁPISKY PRE PRÍPAD AMNÉZIE', b.x + 37, b.y + 16, 9, 0x80513b);
     text(
       panels,
+      'ZÁPISKY PRE PRÍPAD AMNÉZIE',
+      left,
+      b.y + bh * 0.065,
+      Math.max(7, Math.min(10, bw / 48)),
+      0x80513b,
+    );
+    const title = text(
+      panels,
       'Môj pochybný plán',
-      b.x + 36,
-      b.y + 35,
-      width < 450 ? 22 : 28,
+      left,
+      b.y + bh * 0.11,
+      Math.min(28, bw / 17),
       0x392920,
     );
+    if (title.width > right - left - 44)
+      title.scale.set((right - left - 44) / title.width);
     const remaining = Object.values(snapshot.state.tasks).filter(
       (s) => s === 'active',
     ).length;
@@ -538,18 +615,17 @@ export function createHud(
         : Object.keys(snapshot.state.tasks).length
           ? 'Všetko odškrtnuté. Zatiaľ.'
           : 'Čakám na prvý dobrý nápad.',
-      b.x + 37,
-      b.y + 77,
-      12,
+      left,
+      b.y + bh * 0.19,
+      Math.min(12, bw / 28),
       0x78533d,
     );
-    // Only the modal's controls participate in keyboard navigation.
     layout.controls = [];
     button(
       {
         id: 'journal-close',
         label: 'Zavrieť denník',
-        bounds: { x: b.x + bw - 51, y: b.y + 12, width: 40, height: 44 },
+        bounds: { x: right - 40, y: b.y + bh * 0.08, width: 40, height: 44 },
       },
       '×',
       25,
@@ -557,12 +633,12 @@ export function createHud(
     const page = panels.addChild(new Container());
     const mask = panels.addChild(
       new Graphics()
-        .rect(b.x + 30, b.y + 107, bw - 45, Math.max(1, bh - 167))
+        .rect(left, contentTop, right - left, contentBottom - contentTop)
         .fill(0xffffff),
     );
     mask.eventMode = 'none';
     page.mask = mask;
-    let rowY = b.y + 110 - journalScroll;
+    let rowY = contentTop + 3 - journalScroll;
     const entries = (snapshot.content.tasks ?? []).filter((task) =>
       Object.hasOwn(snapshot.state.tasks, task.id),
     );
@@ -570,30 +646,30 @@ export function createHud(
       text(
         page,
         'Zatiaľ nemám nič zapísané.\nTo je samo osebe podozrivé.',
-        b.x + 38,
+        left + 4,
         rowY + 12,
-        18,
+        fontSize,
         0x82634d,
-        bw - 65,
+        right - left - 8,
       );
     for (const task of entries) {
       const done = snapshot.state.tasks[task.id] === 'completed';
       text(
         page,
         done ? '✓' : '○',
-        b.x + 37,
+        left + 2,
         rowY + 4,
-        20,
+        fontSize,
         done ? 0x526045 : 0x723c2f,
       );
       const label = text(
         page,
         task.text,
-        b.x + 64,
+        left + 26,
         rowY + 4,
-        width < 450 ? 17 : 20,
+        fontSize,
         done ? 0x71614d : 0x392920,
-        bw - 87,
+        right - left - 30,
       );
       const metrics = CanvasTextMetrics.measureText(task.text, label.style);
       const lines = page.addChild(new Graphics());
@@ -603,17 +679,17 @@ export function createHud(
           const y =
             rowY + 5 + metrics.lineHeight * i + metrics.lineHeight * 0.48;
           lines
-            .moveTo(b.x + 63, y)
-            .lineTo(b.x + 64 + lineWidth, y - 1)
+            .moveTo(left + 25, y)
+            .lineTo(left + 26 + lineWidth, y - 1)
             .stroke({ color: 0x8c4534, width: 2 });
         });
-      rowY += Math.max(46, label.height + 24);
+      rowY += Math.max(38, label.height + 20);
       lines
-        .moveTo(b.x + 37, rowY - 4)
-        .lineTo(b.x + bw - 16, rowY - 4)
+        .moveTo(left, rowY - 4)
+        .lineTo(right, rowY - 4)
         .stroke({ color: 0x805f3d, alpha: 0.25, width: 1 });
     }
-    journalMaxScroll = Math.max(0, rowY + journalScroll - (b.y + bh - 60));
+    journalMaxScroll = Math.max(0, rowY + journalScroll - contentBottom);
     if (journalScroll > journalMaxScroll) {
       page.y += journalScroll - journalMaxScroll;
       journalScroll = journalMaxScroll;
@@ -623,12 +699,7 @@ export function createHud(
         {
           id: 'journal-up',
           label: 'Posunúť denník nahor',
-          bounds: {
-            x: b.x + bw - 106,
-            y: b.y + bh - 51,
-            width: 44,
-            height: 42,
-          },
+          bounds: { x: right - 94, y: b.y + bh * 0.85, width: 44, height: 44 },
           disabled: journalScroll === 0,
         },
         '↑',
@@ -638,21 +709,22 @@ export function createHud(
         {
           id: 'journal-down',
           label: 'Posunúť denník nadol',
-          bounds: { x: b.x + bw - 56, y: b.y + bh - 51, width: 44, height: 42 },
+          bounds: { x: right - 44, y: b.y + bh * 0.85, width: 44, height: 44 },
           disabled: journalScroll >= journalMaxScroll,
         },
         '↓',
         20,
       );
     }
-    text(
-      panels,
-      'Nestratiť. Nezjesť. Nezabudnúť.',
-      b.x + 37,
-      b.y + bh - 30,
-      width < 450 ? 9 : 11,
-      0x956747,
-    );
+    if (bw > 370 || journalMaxScroll === 0)
+      text(
+        panels,
+        'Nestratiť. Nezjesť. Nezabudnúť.',
+        left,
+        b.y + bh * 0.9,
+        bw < 370 ? 8 : 10,
+        0x956747,
+      );
   }
   function syncGhost() {
     const drag = snapshot.drag;
@@ -681,7 +753,23 @@ export function createHud(
           : 0.7;
     }
   }
+  function canvasPoint(clientX: number, clientY: number) {
+    const b = canvas.getBoundingClientRect();
+    return {
+      x: ((clientX - b.x) * width) / b.width,
+      y: ((clientY - b.y) * height) / b.height,
+    };
+  }
   const controller: HudController = {
+    blocksPointer(clientX, clientY) {
+      const p = canvasPoint(clientX, clientY);
+      return (
+        snapshot.journal ||
+        snapshot.menu ||
+        layout.controls.some((c) => contains(c.bounds, p.x, p.y)) ||
+        shelfContains(p.x, p.y)
+      );
+    },
     itemAt(clientX, clientY) {
       const box = canvas.getBoundingClientRect();
       const x = ((clientX - box.x) * width) / box.width,
@@ -696,6 +784,7 @@ export function createHud(
     focus(id) {
       focused = id;
       drawFocus();
+      syncTooltip();
       render();
     },
     pickup(pickup) {

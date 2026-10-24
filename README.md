@@ -576,13 +576,17 @@ endpointy `/__tukabel/editor/jobs` neobsahuje.
 
 ## Game Mode
 
-Herní okno se vejde do viewportu: nahoře je dřevěný HUD s názvem lokace, inventářem,
-tlačítky Denník / Objekty / Menu; pod ním scéna s popisky, reakcemi a dialogy.
-HUD, inventář, deník, přetahovaný předmět a efekt sebrání vykresluje přímo PixiJS
-ve stejném canvasu jako scénu. Lišta má samostatnou vrstvu v pixelech canvasu,
-scéna pod ní vlastní viewport se zachováním poměru stran. Včetně hotspotů používá
-stejný přepočet pro klikání i drop; letterbox není interaktivní. Větší inventář
-stránkují šipky. Titulky a dialogové volby dál vykresluje současné React UI.
+Scéna využívá celý canvas se zachováním poměru stran. Přímo přes její horní část
+PixiJS vykresluje inventář jako kreslenou dřevěnou poličku, ikonku potrhaného
+zápisníku a malé cedulky **Objekty** (oko) / **Menu** (tři čárky). Pozadí pokračuje
+pod HUD; nevzniká žádná lišta ani vyhrazený okraj. Při tvorbě lokace nech horní
+část obrazu volnější. HUD zůstává uvnitř obrazu i na vysokém displeji s letterboxem;
+na úzkém obrazu visí pomocné cedulky pod poličkou. Polička se prodlužuje podle
+počtu předmětů, její konce se nedeformují. Další předměty zobrazí šipky.
+Názvy se ukážou při najetí nebo zaměření klávesnicí, výběr předmětu zobrazí popis.
+Viditelné dřevo a ovládací prvky blokují svět pod sebou; průhledná místa HUDu
+propouštějí hover, kliky i drop do scény. Geometrie scény nezávisí na HUDu.
+Titulky a dialogové volby dál vykresluje současné React UI.
 Stejné herní okno používá i **Otestovat odsud** v Dev Mode.
 
 - Klik/tap provede první splněné pravidlo `onClick`: komentář, sebrání, rozhovor,
@@ -613,7 +617,7 @@ Stejné herní okno používá i **Otestovat odsud** v Dev Mode.
   Portréty se ve hře ani editoru nenabízejí; starší `portrait` JSON zůstává čitelný.
   Herní menu používá stejné oprýskané cedule.
 - **Denník** otevře starý zápisník s úkoly. Splněné položky se automaticky přeškrtnou;
-  číslo u tlačítka ukazuje počet aktivních úkolů. Otevřený zápisník pozastaví řeč
+  číslo u ikonky ukazuje počet aktivních úkolů. Otevřený zápisník pozastaví řeč
   i lip-sync a blokuje herní akce; zavři jej křížkem, Escape nebo klikem mimo papír.
   Dlouhý seznam lze posouvat šipkami přímo na stránce, také na telefonu.
   Myš, tapnutí i klávesnice fungují také bezprostředně po přetažení předmětu.
@@ -654,6 +658,8 @@ animace, dabing a lip-sync lze přiřadit v editoru podle návodu níže.
 - `src/game/animation.ts` — vizuální hodiny, náhodné mrkání a priorita klipů.
 - `src/game/createHud.ts`, `hudLayout.ts` — Pixi HUD, inventář, deník a vizuální efekty;
   společný viewport scény a cílení předmětů bez změny autorských souřadnic.
+- `src/assets/hud/`, `src/game/hudArt.ts` — místní kreslené SVG poličky, obálky,
+  otevřeného zápisníku a cedulek; měnitelné bez externí služby.
 - `src/ui/` — herní stav/UI, životní cyklus canvasu, dialogové překryvy a pointer capture;
   `HudAccessibility.tsx` přidává pouze sémantiku a klávesnici k Pixi ovládání.
 - `src/editor/` — pouze vývojový editor, SVG autorování oblastí, formuláře a graf.
@@ -819,6 +825,8 @@ reset a save/load, úpravu textů a dialogových efektů, ochranu odkazů a poza
 dabingu otevřeným zápisníkem. Kontrolují také pixely HUDu a deníku po skrytí
 sémantické HTML vrstvy, stránkování plného inventáře a posun dlouhého deníku
 při změně velikosti a zoomu na myši i dotyku.
+`tests/hud-overlay.spec.ts` nezávisle kontroluje pixely lokace na celém canvasu,
+ukotvení HUDu uvnitř obrazu a průchod kliků/dropů průhlednými místy poličky.
 Interakční testy ověřují let do inventáře, vlastní animovaný kurzor a dialog bez portrétu po
 uložení/reloadu; kontextový průchod zahrnuje i tichou kulisu.
 Transformační testy navíc ověřují PNG/WebP/SVG, rotaci, zamknuté proporce, explicitní
