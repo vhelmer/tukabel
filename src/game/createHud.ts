@@ -434,15 +434,23 @@ export function createHud(
         width: Math.min(42, slotHeight - 6),
         height: slotHeight - 6,
       });
-      text(
+      const label = text(
         c,
         item.label,
         Math.min(50, slotHeight + 4),
-        6,
+        3,
         height < 420 ? 11 : 13,
         0xf3ddb0,
         Math.max(20, b.width - Math.min(54, slotHeight + 8)),
       );
+      // Long authored names must not spill into the scene in compact landscape UI.
+      const labelMask = c.addChild(
+        new Graphics()
+          .rect(label.x, 3, Math.max(1, b.width - label.x - 4), slotHeight - 6)
+          .fill(0xffffff),
+      );
+      labelMask.eventMode = 'none';
+      label.mask = labelMask;
       if (snapshot.drag?.id === id) c.alpha = 0.4;
       if (
         snapshot.drag?.target?.type === 'item' &&

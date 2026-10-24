@@ -1,3 +1,4 @@
+import sharp from 'sharp';
 import { expect } from '@playwright/test';
 import { test, openEditor } from './editorFixture';
 import { readFile, writeFile } from 'node:fs/promises';
@@ -175,10 +176,11 @@ test('forms create linked locations, items, uploaded assets, branching dialogue 
   await page
     .getByLabel('Název předmětu', { exact: true })
     .fill('Testovací žetón');
-  const png = Buffer.from(
-    'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScLbtAAAAABJRU5ErkJggg==',
-    'base64',
-  );
+  const png = await sharp({
+    create: { width: 16, height: 16, channels: 4, background: '#edc176' },
+  })
+    .png()
+    .toBuffer();
   await page
     .locator('input[type=file]')
     .setInputFiles({ name: 'token.png', mimeType: 'image/png', buffer: png });

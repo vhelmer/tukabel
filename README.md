@@ -816,7 +816,9 @@ ověřuje nepřítomnost editoru i zápisového API. Screenshoty/trace jsou v ig
 `test-results/`, náhledy editoru a grafu také při úspěšném průchodu.
 Deníkové testy ověřují horní inventář, myš/dotyk, celý průchod úkoly, přeškrtnutí,
 reset a save/load, úpravu textů a dialogových efektů, ochranu odkazů a pozastavení
-dabingu otevřeným zápisníkem.
+dabingu otevřeným zápisníkem. Kontrolují také pixely HUDu a deníku po skrytí
+sémantické HTML vrstvy, stránkování plného inventáře a posun dlouhého deníku
+při změně velikosti a zoomu na myši i dotyku.
 Interakční testy ověřují let do inventáře, vlastní animovaný kurzor a dialog bez portrétu po
 uložení/reloadu; kontextový průchod zahrnuje i tichou kulisu.
 Transformační testy navíc ověřují PNG/WebP/SVG, rotaci, zamknuté proporce, explicitní

@@ -13,6 +13,7 @@ import {
   ready,
 } from './helpers';
 import type { GameContent } from '../src/game/types';
+import sharp from 'sharp';
 
 async function openJournal(page: Page, touch: boolean) {
   const button = page.getByRole('button', { name: /^Denník/ });
@@ -262,4 +263,244 @@ test('projects without tasks keep a readable empty notebook', async ({
   const journal = await openJournal(page, isMobile);
   await expect(journal).toContainText('Zatiaľ nemám nič zapísané.');
   await expect(journal.locator('[data-task-id]')).toHaveCount(0);
+});
+
+test('HUD and notebook pixels belong to the canvas; semantic HTML never captures a pointer', async ({
+  page,
+  workspace,
+  isMobile,
+}, info) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto(workspace.url);
+  await ready(page);
+  await activate(page, 190, 630, isMobile);
+  await expect(
+    page.getByRole('button', { name: 'Poškodený kábel', exact: true }),
+  ).toBeVisible();
+  const canvas = page.locator('.canvas-host canvas');
+  const semantics = page.locator('.hud-accessibility');
+  await expect(semantics).toHaveCSS('opacity', '0');
+  await expect(semantics.locator('button').first()).toHaveCSS(
+    'pointer-events',
+    'none',
+  );
+  await page.mouse.move(0, 0);
+  const hudImage = await canvas.screenshot({ animations: 'disabled' });
+  const box = (await canvas.boundingBox())!;
+  const inventoryBox = (await page
+    .getByRole('group', { name: 'Inventár', exact: true })
+    .boundingBox())!;
+  async function hudPixels(bytes: Buffer) {
+    const meta = await sharp(bytes).metadata();
+    return sharp(bytes)
+      .extract({
+        // Exclude the outer CSS frame's rounded/composited antialiasing.
+        left: 16,
+        top: 3,
+        width: meta.width! - 32,
+        height:
+          Math.floor(
+            ((inventoryBox.y + inventoryBox.height - box.y) * meta.width!) /
+              box.width,
+          ) - 3,
+      })
+      .removeAlpha()
+      .raw()
+      .toBuffer();
+  }
+  const baseline = await hudPixels(hudImage);
+  await semantics.evaluate((element) => {
+    element.style.display = 'none';
+  });
+  const withoutSemantics = await canvas.screenshot({ animations: 'disabled' });
+  if (!(await hudPixels(withoutSemantics)).equals(baseline)) {
+    await info.attach('before-hide', {
+      body: hudImage,
+      contentType: 'image/png',
+    });
+    await info.attach('after-hide', {
+      body: withoutSemantics,
+      contentType: 'image/png',
+    });
+  }
+  expect((await hudPixels(withoutSemantics)).equals(baseline)).toBe(true);
+  await semantics.evaluate((element) => {
+    element.style.removeProperty('display');
+  });
+  const journal = await openJournal(page, isMobile);
+  await page.evaluate(() => {
+    if (document.activeElement instanceof HTMLElement)
+      document.activeElement.blur();
+  });
+  const bookImage = await canvas.screenshot({ animations: 'disabled' });
+  expect(bookImage.equals(hudImage)).toBe(false);
+  const book = (await journal.boundingBox())!,
+    area = (await canvas.boundingBox())!;
+  const { data, info: pixels } = await sharp(bookImage)
+    .removeAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  const scale = pixels.width / area.width;
+  const x = Math.floor((book.x + 30 - area.x) * scale),
+    y = Math.floor((book.y + 105 - area.y) * scale);
+  const offset = (y * pixels.width + x) * pixels.channels;
+  expect(data[offset]).toBeGreaterThan(180);
+  expect(data[offset + 1]).toBeGreaterThan(150);
+  await semantics.evaluate((element) => {
+    element.style.display = 'none';
+  });
+  const hiddenBook = await canvas.screenshot({ animations: 'disabled' });
+  async function bookPixels(bytes: Buffer) {
+    return sharp(bytes)
+      .extract({
+        left: Math.ceil((book.x + 5 - area.x) * scale),
+        top: Math.ceil((book.y + 5 - area.y) * scale),
+        width: Math.floor((book.width - 10) * scale),
+        height: Math.floor((book.height - 10) * scale),
+      })
+      .removeAlpha()
+      .raw()
+      .toBuffer();
+  }
+  expect(
+    (await bookPixels(hiddenBook)).equals(await bookPixels(bookImage)),
+  ).toBe(true);
+  await semantics.evaluate((element) => {
+    element.style.removeProperty('display');
+  });
+  await page.screenshot({
+    path: info.outputPath('pixi-notebook.png'),
+    animations: 'disabled',
+  });
+  await closeJournal(page, isMobile);
+  await page.getByRole('button', { name: 'Dev Mode', exact: true }).click();
+  await expect(page.locator('.game-window canvas')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Game Mode', exact: true }).click();
+  await ready(page);
+  await openJournal(page, isMobile);
+  await expect(
+    page.locator('.game-topbar, .game-dock, .task-journal'),
+  ).toHaveCount(0);
+});
+
+test('canvas inventory pages and notebook scrolling remain usable after resize and CSS zoom', async ({
+  page,
+  workspace,
+  isMobile,
+}, info) => {
+  const content = JSON.parse(
+    await readFile(workspace.source, 'utf8'),
+  ) as GameContent;
+  const items = Array.from({ length: 12 }, (_, i) => ({
+    id: 'pocket-' + i,
+    label: 'Skúšobný predmet ' + (i + 1),
+    description: 'Predmet do vrecka.',
+    icon: '◆',
+  }));
+  const room = content.scenes.find((s) => s.id === content.startScene)!;
+  const project: GameContent = {
+    ...content,
+    items: [...content.items, ...items],
+    tasks: Array.from({ length: 8 }, (_, i) => ({
+      id: 'note-' + i,
+      text:
+        'Poznámka ' +
+        (i + 1) +
+        ': ' +
+        'Skontrolovať podozrivý predmet a zapísať si, prečo sa na mňa stále tak škaredo pozerá. '.repeat(
+          2,
+        ),
+      startWhen: { all: [] },
+    })),
+    scenes: content.scenes.map((s) =>
+      s.id !== room.id
+        ? s
+        : {
+            ...s,
+            hotspots: [
+              ...s.hotspots,
+              {
+                id: 'pockets',
+                label: 'Naplniť vrecká',
+                bounds: { x: 100, y: 60, width: 250, height: 80 },
+                onClick: [
+                  {
+                    effects: items.map((item) => ({
+                      type: 'addItem' as const,
+                      id: item.id,
+                    })),
+                  },
+                ],
+              },
+            ],
+          },
+    ),
+  };
+  await writeFile(workspace.source, JSON.stringify(project));
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto(workspace.url);
+  await ready(page);
+  await (await object(page, 'Naplniť vrecká')).click();
+  const next = page.getByRole('button', {
+    name: 'Ďalšie predmety',
+    exact: true,
+  });
+  const previous = page.getByRole('button', {
+    name: 'Predchádzajúce predmety',
+    exact: true,
+  });
+  await expect(previous).toBeDisabled();
+  await hudClick(page, next, isMobile);
+  await expect(previous).toBeEnabled();
+  await hudClick(page, previous, isMobile);
+  const first = page.getByRole('button', {
+    name: items[0]!.label,
+    exact: true,
+  });
+  await first.focus();
+  await page.keyboard.press('Enter');
+  await expect(first).toHaveAttribute('aria-pressed', 'true');
+  await page.keyboard.press('Escape');
+  await page.setViewportSize({ width: 720, height: 400 });
+  await page.evaluate(() => {
+    document.documentElement.style.zoom = '0.85';
+  });
+  await ready(page);
+  await hudClick(page, next, isMobile);
+  await expect(previous).toBeEnabled();
+  await openJournal(page, isMobile);
+  const down = page.getByRole('button', {
+    name: 'Posunúť denník nadol',
+    exact: true,
+  });
+  const up = page.getByRole('button', {
+    name: 'Posunúť denník nahor',
+    exact: true,
+  });
+  await expect(up).toBeDisabled();
+  const before = await page
+    .locator('canvas')
+    .screenshot({ animations: 'disabled' });
+  await hudClick(page, down, isMobile);
+  await expect(up).toBeEnabled();
+  expect(
+    (
+      await page.locator('canvas').screenshot({ animations: 'disabled' })
+    ).equals(before),
+  ).toBe(false);
+  for (let i = 0; i < 25 && (await down.isEnabled()); i++)
+    await hudClick(page, down, isMobile);
+  await expect(down).toBeDisabled();
+  await hudClick(page, up, isMobile);
+  await expect(down).toBeEnabled();
+  await page.screenshot({
+    path: info.outputPath('pixi-overflow-zoom.png'),
+    animations: 'disabled',
+  });
+  await closeJournal(page, isMobile);
+  await page.evaluate(() => {
+    document.documentElement.style.removeProperty('zoom');
+  });
+  await ready(page);
+  await hudClick(page, previous, isMobile);
 });

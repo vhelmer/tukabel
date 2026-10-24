@@ -1,3 +1,4 @@
+import { gameViewport } from '../src/game/hudLayout';
 import { expect } from '@playwright/test';
 import type { Page, Locator } from '@playwright/test';
 import { readFile, writeFile } from 'node:fs/promises';
@@ -137,7 +138,16 @@ async function pixel(
   x: number,
   y: number,
 ) {
-  const box = (await canvas.boundingBox())!;
+  const dimensions = await canvas.evaluate((element) => ({
+    width: element.clientWidth,
+    height: element.clientHeight,
+    hud: Boolean(element.closest('.game-window')),
+  }));
+  const area = gameViewport(
+    dimensions.width,
+    dimensions.height,
+    dimensions.hud,
+  );
   const { data, info } = await sharp(
     await canvas.screenshot({
       style:
@@ -147,13 +157,14 @@ async function pixel(
     .ensureAlpha()
     .raw()
     .toBuffer({ resolveWithObject: true });
-  const scale = Math.min(box.width / sceneWidth, box.height / sceneHeight),
-    resolution = info.width / box.width;
+  const scale = Math.min(area.width / sceneWidth, area.height / sceneHeight),
+    resolution = info.width / dimensions.width;
   const px = Math.floor(
-      ((box.width - sceneWidth * scale) / 2 + x * scale) * resolution,
+      ((area.width - sceneWidth * scale) / 2 + x * scale) * resolution,
     ),
     py = Math.floor(
-      ((box.height - sceneHeight * scale) / 2 + y * scale) * resolution,
+      (area.y + (area.height - sceneHeight * scale) / 2 + y * scale) *
+        resolution,
     );
   return [
     ...data.subarray(
@@ -221,7 +232,7 @@ test('independent regional playback preserves alpha, ignores unrelated frame edi
     .click();
   const still = await canvas.screenshot();
   await page.waitForTimeout(150);
-  expect(await canvas.screenshot()).toEqual(still);
+  expect((await canvas.screenshot()).equals(still)).toBe(true);
   await page
     .getByRole('button', { name: 'Přehrát kombinaci', exact: true })
     .click();
@@ -352,8 +363,10 @@ test('existing Codex blink and mouth demo run simultaneously in a dialogue', asy
     { width: 1086, height: 1448 },
     actor.imageFit,
   );
-  const box = (await canvas.boundingBox())!,
-    scale = Math.min(box.width / 1280, box.height / 720);
+  const box = (await canvas.boundingBox())!;
+  const origin = await pointInScene(page, 0, 0),
+    edge = await pointInScene(page, 1280, 720);
+  const scale = (edge.x - origin.x) / 1280;
   async function patches(bytes: Buffer) {
     const meta = await sharp(bytes).metadata(),
       ratio = meta.width! / box.width;
@@ -362,12 +375,14 @@ test('existing Codex blink and mouth demo run simultaneously in a dialogue', asy
         sharp(bytes)
           .extract({
             left: Math.round(
-              ((box.width - 1280 * scale) / 2 +
+              (origin.x -
+                box.x +
                 (placed.x + (r.x / 1086) * placed.width) * scale) *
                 ratio,
             ),
             top: Math.round(
-              ((box.height - 720 * scale) / 2 +
+              (origin.y -
+                box.y +
                 (placed.y + (r.y / 1448) * placed.height) * scale) *
                 ratio,
             ),
