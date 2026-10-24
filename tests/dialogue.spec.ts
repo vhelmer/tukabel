@@ -121,6 +121,31 @@ test('subtitle clicks finish voiced replies while authored choices control branc
   await expect(panel.locator('.dialogue-close,.speech-toggle')).toHaveCount(0);
   await page.keyboard.press('Escape');
   await expect(panel).toHaveClass(/is-speaking/);
+  await page.getByRole('button', { name: /^Denník/ }).click();
+  const journal = page.getByRole('dialog', {
+    name: 'Denník úloh',
+    exact: true,
+  });
+  await expect(journal).toBeVisible();
+  await expect
+    .poll(() => audio.evaluate((el) => (el as HTMLAudioElement).paused))
+    .toBe(true);
+  await expect(panel).toHaveAttribute('inert', '');
+  const heldTime = await audio.evaluate(
+    (el) => (el as HTMLAudioElement).currentTime,
+  );
+  await journal.screenshot({
+    path: testInfo.outputPath('journal-pauses-speech.png'),
+    animations: 'disabled',
+  });
+  expect(
+    await audio.evaluate((el) => (el as HTMLAudioElement).currentTime),
+  ).toBeCloseTo(heldTime, 2);
+  await journal.getByRole('button', { name: 'Zavrieť denník' }).click();
+  await expect
+    .poll(() => audio.evaluate((el) => (el as HTMLAudioElement).paused))
+    .toBe(false);
+  await expect(panel).toHaveClass(/is-speaking/);
   await page.getByRole('button', { name: 'Menu', exact: true }).click();
   await expect
     .poll(() => audio.evaluate((el) => (el as HTMLAudioElement).paused))

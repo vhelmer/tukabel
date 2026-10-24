@@ -100,7 +100,7 @@ button[aria-pressed='true'] {
   min-height: 0;
   margin: 0 auto;
   display: grid;
-  grid-template-rows: 45px minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(0, 1fr) auto;
   background: #1e302a;
   border: 1px solid #ffffff26;
   border-radius: 12px;
@@ -109,11 +109,8 @@ button[aria-pressed='true'] {
   position: relative;
 }
 .game-topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 0 18px;
+  display: block;
+  padding: 0;
   border-bottom: 1px solid #ffffff14;
   background: #172822;
 }
@@ -472,7 +469,7 @@ button[aria-pressed='true'] {
     padding: 3px 10px;
   }
   .game-window {
-    grid-template-rows: 34px minmax(0, 1fr) auto;
+    grid-template-rows: auto minmax(0, 1fr) auto;
   }
   .game-dock {
     display: grid;
@@ -527,8 +524,13 @@ body {
     inset 0 0 0 2px #c3a17055;
 }
 .game-topbar {
-  background: linear-gradient(#35262a, #241d22);
-  border-bottom: 2px solid #7e593c;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 9px, #0d080b25 10px 11px),
+    linear-gradient(100deg, #513a2e, #2c2025 58%, #49312b);
+  border-bottom: 3px solid #936b47;
+  box-shadow:
+    inset 0 2px #e8c79325,
+    0 3px 9px #0005;
 }
 .game-brand {
   color: #efc888;
@@ -538,8 +540,8 @@ body {
   background: #17151b;
 }
 .game-dock {
-  background: linear-gradient(#493129, #2b2024);
-  border-top: 3px solid #936b47;
+  background: #0e0b101c;
+  border-top: 1px solid #d8b17b24;
 }
 .inventory-tools {
   display: flex;
@@ -874,18 +876,12 @@ body {
   }
 }
 @media (max-height: 520px) and (orientation: landscape) {
-  .inventory-tools {
-    position: absolute;
-    right: 8px;
-    bottom: 4px;
-    z-index: 3;
-  }
   .inventory-tools .eyebrow {
     display: none;
   }
   .inventory-items {
     min-height: 46px;
-    padding-right: 70px;
+    padding-right: 2px;
   }
   .inventory-item {
     height: 44px;
@@ -930,4 +926,344 @@ body {
 .dialogue-audio button {
   font-size: 12px;
   padding: 7px 10px;
+}
+
+/* Carved pockets at the top; the notebook belongs to the same game window. */
+.hud-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  padding: 6px 14px;
+}
+.hud-heading .game-brand {
+  flex-shrink: 0;
+}
+.hud-heading .scene-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #d9c5aa;
+}
+.hud-heading .game-tools {
+  flex-shrink: 0;
+}
+.hud-heading .game-tools button {
+  touch-action: manipulation;
+  min-height: 40px;
+  padding: 6px 12px;
+  border: 1px solid #cda87460;
+  background: linear-gradient(#70513580, #281c2399);
+  box-shadow:
+    inset 0 1px #f6d69b22,
+    1px 2px #140e12;
+  border-radius: 5px 9px 5px 8px;
+  font-weight: bold;
+  color: #f3d99c;
+}
+.hud-heading .game-tools button:hover:not(:disabled) {
+  background-color: #ae895333;
+}
+.journal-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.journal-toggle svg {
+  width: 24px;
+  height: 24px;
+  transform: rotate(-7deg);
+}
+.journal-badge {
+  min-width: 21px;
+  padding: 2px 4px;
+  border-radius: 50%;
+  background: #1b161a;
+  color: #edd19a;
+  font-size: 11px;
+}
+.game-hud .inventory-tools {
+  position: static;
+  padding: 4px 16px 0;
+  color: #c4a37b;
+}
+.game-hud .inventory-tools .eyebrow {
+  font-size: 8px;
+  letter-spacing: 2px;
+}
+.game-hud .inventory {
+  padding: 3px 12px 6px;
+  border: 0;
+}
+.game-hud .inventory-items {
+  min-height: 56px;
+  scrollbar-width: thin;
+  scrollbar-color: #b08c56 #241c21;
+}
+.game-hud .empty-inventory {
+  color: #d2bc9699;
+  padding-left: 4px;
+}
+.game-hud .inventory-item {
+  height: 54px;
+  min-width: 126px;
+  max-width: 210px;
+  border-color: #ad85584d;
+}
+.game-hud .inventory-item img {
+  width: 40px;
+  height: 40px;
+}
+.game-window > .game-help {
+  background: #2b2024;
+  border-top: 1px solid #89614466;
+}
+.journal-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  background: #100d15b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  animation: appear 160ms ease-out;
+}
+.task-journal {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(590px, 100%);
+  min-height: min(370px, 100%);
+  max-height: 100%;
+  overflow: hidden;
+  color: #392920;
+  background:
+    radial-gradient(ellipse at 95% 5%, #764b325c, transparent 30%),
+    radial-gradient(ellipse at 5% 95%, #805c3d66, transparent 38%),
+    linear-gradient(110deg, #c6a677, #eddbb6 12%, #e8d3a8 80%, #c6a575);
+  border: 4px solid #593d2b;
+  border-radius: 7px 15px 12px 5px;
+  box-shadow:
+    -5px 4px 0 #38282b,
+    8px 12px 30px #0008,
+    inset 0 0 24px #865c2d55;
+  transform: rotate(-0.6deg);
+}
+.task-journal::before {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  left: 7px;
+  top: 12px;
+  bottom: 12px;
+  width: 15px;
+  background: radial-gradient(circle, #35231d 2px, #957243 3px, transparent 5px)
+    0 0 / 15px 32px repeat-y;
+  border-right: 1px solid #8d4b3f50;
+}
+.journal-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 24px 20px 6px 35px;
+}
+.journal-kicker {
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1.8px;
+  color: #80513b;
+}
+.journal-heading h2 {
+  margin: 7px 0 0;
+  font:
+    bold clamp(23px, 4vw, 31px) Georgia,
+    serif;
+  letter-spacing: -1px;
+  text-shadow: 1px 1px #fff2;
+}
+.journal-heading button {
+  touch-action: manipulation;
+  min-width: 42px;
+  min-height: 42px;
+  color: #573225;
+  border: 1px solid #69472f55;
+  background: #72513115;
+  font:
+    bold 26px Georgia,
+    serif;
+  padding: 1px 8px;
+}
+.journal-heading button:hover {
+  background: #7c4c3c22;
+  border-color: #69472f;
+}
+.journal-heading button:focus-visible {
+  outline-color: #68412b;
+}
+.journal-count {
+  margin: 6px 24px 10px 36px;
+  font-size: 12px;
+  font-style: italic;
+  color: #78533d;
+}
+.journal-pages {
+  min-height: 0;
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 23px 14px 35px;
+  scrollbar-color: #906b47 #d7bd93;
+}
+.journal-pages ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.journal-pages li {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 13px 0;
+  border-bottom: 1px solid #805f3d3d;
+  overflow-wrap: anywhere;
+  font:
+    20px/1.5 'Segoe Print',
+    'Comic Sans MS',
+    'Bradley Hand',
+    cursive;
+  animation: appear 180ms ease-out;
+}
+.journal-pages li:nth-child(even) {
+  transform: rotate(0.3deg);
+}
+.task-mark {
+  flex: 0 0 22px;
+  color: #723c2f;
+  font-weight: bold;
+}
+.task-completed {
+  color: #71614d;
+}
+.task-completed s {
+  text-decoration-color: #8c4534;
+  text-decoration-thickness: 2px;
+}
+.task-completed .task-mark {
+  color: #526045;
+}
+.journal-empty {
+  margin-block: 34px;
+  color: #82634d;
+  font:
+    italic 19px/1.7 Georgia,
+    serif;
+}
+.journal-footnote {
+  padding: 12px 24px 16px 36px;
+  border-top: 2px solid #86604044;
+  color: #956747;
+  font-size: 10px;
+  font-style: italic;
+  letter-spacing: 1px;
+}
+@media (max-width: 700px) {
+  .game-hud {
+    padding: 0;
+  }
+  .hud-heading {
+    gap: 6px;
+    padding: 5px 8px;
+  }
+  .hud-heading .game-brand {
+    display: none;
+  }
+  .hud-heading .game-tools {
+    gap: 5px;
+  }
+  .hud-heading .game-tools button {
+    min-height: 44px;
+    padding-inline: 8px;
+  }
+  .journal-toggle svg {
+    width: 21px;
+    height: 21px;
+  }
+  .game-hud .inventory-tools {
+    padding: 3px 10px 0;
+  }
+  .game-hud .inventory {
+    padding: 3px 6px 5px;
+  }
+  .game-hud .inventory-items {
+    min-height: 50px;
+    gap: 6px;
+  }
+  .game-hud .inventory-item {
+    min-width: 110px;
+    height: 48px;
+  }
+  .game-hud .inventory-item img {
+    width: 34px;
+    height: 34px;
+  }
+  .journal-overlay {
+    padding: 12px;
+  }
+  .journal-heading {
+    padding: 16px 12px 4px 30px;
+  }
+  .journal-heading h2 {
+    font-size: 24px;
+  }
+  .journal-pages {
+    padding-inline: 30px 14px;
+  }
+  .journal-pages li {
+    font-size: 18px;
+    gap: 8px;
+  }
+}
+@media (max-height: 520px) and (orientation: landscape) {
+  .hud-heading {
+    padding-block: 3px;
+  }
+  .hud-heading .game-tools button {
+    min-height: 34px;
+    padding-block: 3px;
+  }
+  .game-hud .inventory-tools {
+    display: none;
+  }
+  .game-hud .inventory {
+    padding-block: 2px;
+  }
+  .game-hud .inventory-items {
+    min-height: 40px;
+  }
+  .game-hud .inventory-item {
+    height: 40px;
+  }
+  .game-hud .inventory-item img {
+    width: 30px;
+    height: 30px;
+  }
+  .task-journal {
+    min-height: 0;
+  }
+  .journal-heading {
+    padding-top: 10px;
+  }
+  .journal-heading h2 {
+    font-size: 24px;
+    margin-top: 3px;
+  }
+  .journal-count {
+    margin-block: 2px 5px;
+  }
+  .journal-footnote {
+    padding-block: 7px;
+  }
 }

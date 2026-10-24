@@ -576,8 +576,8 @@ endpointy `/__tukabel/editor/jobs` neobsahuje.
 
 ## Game Mode
 
-Herní okno se vejde do viewportu: nahoře je název lokace a menu, uprostřed scéna
-s popisky, reakcemi a dialogy, dole inventář. Všechny herní prvky jsou uvnitř
+Herní okno se vejde do viewportu: nahoře je dřevěný HUD s názvem lokace, inventářem,
+tlačítky Denník / Objekty / Menu; pod ním scéna s popisky, reakcemi a dialogy. Všechny herní prvky jsou uvnitř
 hlavního okna. Na úzkém displeji má inventář horizontální posun. Celá scéna se
 škáluje se zachováním poměru stran, včetně hotspotů; letterbox není interaktivní.
 
@@ -606,7 +606,11 @@ hlavního okna. Na úzkém displeji má inventář horizontální posun. Celá s
   stejné potvrzení titulkové plochy. Jednořádkové ukázky bez další větve začínají volbou **Porozprávať sa.**
   Portréty se ve hře ani editoru nenabízejí; starší `portrait` JSON zůstává čitelný.
   Herní menu používá stejné oprýskané cedule.
-- Escape ruší výběr/tah nebo zavírá menu. Rozhovor ukončuje jeho autorská volba
+- **Denník** otevře starý zápisník s úkoly. Splněné položky se automaticky přeškrtnou;
+  číslo u tlačítka ukazuje počet aktivních úkolů. Otevřený zápisník pozastaví řeč
+  i lip-sync a blokuje herní akce; zavři jej křížkem, Escape nebo klikem mimo papír.
+  Myš, tapnutí i klávesnice fungují také bezprostředně po přetažení předmětu.
+- Escape ruší výběr/tah nebo zavírá menu / deník. Rozhovor ukončuje jeho autorská volba
   bez `next`; Escape jej nezavírá. Dialog blokuje akce světa.
   Efekty a animace respektují reduced motion; drag/drop zůstává funkční.
 - **Menu** obsahuje ruční **Uložit hru**, **Načíst hru** a **Nová hra**. Postup
@@ -673,10 +677,10 @@ obrazového formátu a povolených přípon. Produkční hosting nic z toho nepo
 ### Datový kontrakt
 
 JSON obsahuje `id`, `startScene`, `initialMessage`, `flags`, `scenes`, `items`,
-`dialogues`, `combinations` a volitelné `animations`. Nový obsah lze vytvořit editorem nebo přímo úpravou
+`dialogues`, `combinations` a volitelné `animations` / `tasks`. Nový obsah lze vytvořit editorem nebo přímo úpravou
 JSON; žádné callbacky ani kód do obsahu nepatří. Texty pro hráče jsou slovensky,
 ID a kód anglicky. Definice se nemutují. Stav hráče obsahuje jen ID lokace, inventář,
-boolean příznaky, aktivní dialogový uzel a poslední zprávu. Výběry UI se neukládají.
+boolean příznaky, aktivní dialogový uzel, stavy úkolů a poslední zprávu. Výběry UI se neukládají.
 
 Podmínky: `{ "flag": "powered" }`, `{ "flag": "powered", "value": false }`,
 `{ "item": "tape" }`, `{ "not": condition }`, `{ "all": [condition, ...] }`.
@@ -743,6 +747,43 @@ pravidel výchozího slovesa do `onClick`. `uses` i podmínky a efekty se neměn
 Animační vazby dřívějšího `onInteract` převeď na `onClick` / `onUse`.
 Uložený hráčský postup zůstává kompatibilní, protože ID a herní příznaky se nemění.
 
+## Deník úkolů a tvorba obsahu
+
+V **Dev Mode → Úkoly** vytvoř položku, napiš slovenský text a nastav přidání:
+**Na začátku hry**, **Automaticky podle podmínky** nebo **Efektem akce či dialogu**.
+Dokončení nastav podmínkou nebo efektem. Používají se stejné příznaky, předměty,
+negace a společné podmínky jako u interakcí; žádné podúkoly nebo zvláštní quest engine.
+V odpovědi, akci objektu i kombinaci vyber efekt **Přidat úkol do deníku** nebo
+**Dokončit úkol** a konkrétní cíl. Mapa logiky ukazuje podmínky i tyto efekty.
+**Uložit do projektu** zapíše definice a odkazy do projektového JSON; náhled nové
+hry použije stejné podmínky jako Game Mode.
+
+Volitelná kolekce **tasks** má stabilní **id**, hráčský **text**, volitelné
+**startWhen** a **completeWhen**. Chybějící podmínka znamená ovládání pouze efektem;
+prázdné **all: []** je vždy splněná podmínka. Příklad:
+
+    {
+      "id": "power-router",
+      "text": "Oživiť router opraveným káblom.",
+      "startWhen": { "all": [] },
+      "completeWhen": { "flag": "powered" }
+    }
+
+Efekty **startTask** / **completeTask** používají **id** existujícího úkolu stejně
+jako ostatní efekty. Úkol se zapíše jen jednou a zůstane v deníku, i když se později
+spotřebuje předmět nebo zneplatní podmínka. Splnění se nevrací zpět. Dokončení
+dosud nezapsaného úkolu jej ukáže rovnou přeškrtnutý. Pořadí seznamu určuje pořadí
+definic v editoru. Ukázka postupně sleduje router, pásku a cestu za odemčené dveře.
+Jde o technickou ukázku navázanou na existující příznaky, bez nového příběhu.
+
+**GameState.tasks** ukládá pouze ID a hodnotu **active/completed**. Hráčský save
+je dál verze 1: starší pozice bez deníku lze načíst a aktuální příznaky/předměty
+obnoví prokazatelné zápisy. Dřívější ruční události bez uložených stavů se nedají
+zpětně odvodit. Neznámé ID či neplatný stav se odmítne; Nová hra zápisy resetuje.
+Otevření zápisníku ani jeho focus se do save neukládají. Validace hlídá ID,
+neprázdný text do 500 znaků, podmínky i odkazy efektů; smazání používaného úkolu
+zablokuje save do opravy odkazů nebo Undo.
+
 ## Prohlížečové testy
 
 ```sh
@@ -763,6 +804,9 @@ importují obrázek, vytvářejí dialogy, kontrolují JSON na disku, reload, ko
 a odmítnutí neplatného zápisu. Reálný projekt ani produkci nemění. Produkční test
 ověřuje nepřítomnost editoru i zápisového API. Screenshoty/trace jsou v ignorovaném
 `test-results/`, náhledy editoru a grafu také při úspěšném průchodu.
+Deníkové testy ověřují horní inventář, myš/dotyk, celý průchod úkoly, přeškrtnutí,
+reset a save/load, úpravu textů a dialogových efektů, ochranu odkazů a pozastavení
+dabingu otevřeným zápisníkem.
 Interakční testy ověřují let do inventáře, vlastní animovaný kurzor a dialog bez portrétu po
 uložení/reloadu; kontextový průchod zahrnuje i tichou kulisu.
 Transformační testy navíc ověřují PNG/WebP/SVG, rotaci, zamknuté proporce, explicitní

@@ -95,6 +95,21 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
   audio ovládání; hra pouze klikací titulky bez pauza/skip tlačítek a portrétů.
 - Inventární `item.image` je samostatná ikonka. Pickup efekt je pouze vizuální,
   spouští ho skutečné získání přes akci, nikoli load/reset nebo přepnutí režimu.
+- Horní HUD obsahuje inventář, Denník, Objekty a Menu; souřadnice scény dál
+  počítá její vlastní viewport. Deník je modal uvnitř herního okna, pozastaví
+  řeč/lip-sync, zablokuje svět a inventář, drží focus a Escape jej zavře.
+  Stav otevření deníku nepatří do save. useButtonActivation řeší dotykový tap
+  na pointerup a spotřebuje případný následný click; myš/klávesnice používají
+  nativní click. Zachovej práh pohybu a pointercancel, aby tah neaktivoval tlačítko.
+- Volitelný registr tasks obsahuje id/text/startWhen/completeWhen. Chybějící
+  podmínka znamená pouze ruční efekt startTask/completeTask; prázdné all spouští
+  okamžitě. Podmínky jsou společné s ostatní logikou. Stav tasks v GameState
+  drží jen active/completed; syncTasks po akci stav přidá/dokončí natrvalo.
+  Spotřebování předmětu nebo zneplatnění podmínky úkol nesmaže ani neobnoví.
+  Dokončení před přidáním zapíše rovnou completed. Verze save 1 přijímá starší
+  pozice bez tasks a dopočítá jen postup doložitelný aktuálními podmínkami;
+  neplatné stavy a cizí ID odmítá. TasksPanel a EffectsField upravují pouze
+  autorský JSON; validace i mapa logiky kontrolují odkazy na úkoly.
 
 ## Vrstvy a grafické operace
 

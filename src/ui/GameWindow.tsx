@@ -22,6 +22,8 @@ import { saveGame, loadGame } from '../game/storage';
 import { GameCanvas } from './GameCanvas';
 import { Inventory } from './Inventory';
 import { DialoguePanel } from './DialoguePanel';
+import { TaskJournal, NotebookIcon } from './TaskJournal';
+import { useButtonActivation } from './useButtonActivation';
 
 type Target = { type: 'item'; id: string } | { type: 'hotspot'; id: string };
 interface Drag {
@@ -51,6 +53,12 @@ export function GameWindow({
   const [hovered, setHovered] = useState<Hotspot | null>(null);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [menu, setMenu] = useState(false);
+  const [journal, setJournal] = useState(false);
+  const modalOpen = menu || journal;
+  const activeTaskCount = Object.values(state.tasks).filter(
+    (status) => status === 'active',
+  ).length;
+  const journalButton = useRef<HTMLButtonElement>(null);
   const [objectsOpen, setObjectsOpen] = useState(false);
   const [storageMessage, setStorageMessage] = useState(
     'Pozícia sa uloží až tlačidlom Uložiť hru.',
@@ -204,12 +212,12 @@ export function GameWindow({
     },
     [dispatchGame, content, state],
   );
-  const conversation = useConversation(content, state, dispatch, menu);
+  const conversation = useConversation(content, state, dispatch, modalOpen);
   const { reset: resetConversation } = conversation;
   const dialogueAudio = useDialogueAudio(
     dialogueNode,
     voiceActor?.animation,
-    menu,
+    modalOpen,
     conversation.phase === 'speech',
     true,
     conversation.utteranceKey,
@@ -244,6 +252,11 @@ export function GameWindow({
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
+        if (journal) {
+          setJournal(false);
+          journalButton.current?.focus();
+          return;
+        }
         if (menu) {
           setMenu(false);
           menuButton.current?.focus();
@@ -262,10 +275,11 @@ export function GameWindow({
       window.removeEventListener('keydown', onKey);
       window.removeEventListener('blur', onBlur);
     };
-  }, [finishDrag, menu]);
+  }, [finishDrag, menu, journal]);
   // Pointer capture keeps both mouse and touch drags alive across the canvas.
   useEffect(() => {
     const targetAt = (event: PointerEvent): Target | null => {
+      if (modalOpen) return null;
       const element = document.elementFromPoint(event.clientX, event.clientY);
       const inventory = element?.closest<HTMLElement>('[data-inventory-id]');
       if (inventory && !inventory.closest('fieldset:disabled'))
@@ -274,7 +288,7 @@ export function GameWindow({
         !element?.closest('.canvas-host') ||
         !viewport.current ||
         state.dialogue ||
-        menu
+        modalOpen
       )
         return null;
       const point = scenePoint(
@@ -339,9 +353,10 @@ export function GameWindow({
       window.removeEventListener('pointercancel', cancel);
       window.removeEventListener('lostpointercapture', cancel);
     };
-  }, [scene, hotspots, state.dialogue, dispatch, menu, finishDrag]);
+  }, [scene, hotspots, state.dialogue, dispatch, modalOpen, finishDrag]);
   function startDrag(event: ReactPointerEvent<HTMLButtonElement>, id: string) {
-    if (event.button !== 0 || state.dialogue || menu || dragRef.current) return;
+    if (event.button !== 0 || state.dialogue || modalOpen || dragRef.current)
+      return;
     suppressClick.current = false;
     event.currentTarget.setPointerCapture(event.pointerId);
     dragRef.current = {
@@ -364,8 +379,25 @@ export function GameWindow({
     setHovered(null);
     setObjectsOpen(false);
     setPickups([]);
+    setJournal(false);
   }
 
+  const journalControl = useButtonActivation(() => {
+    finishDrag();
+    setSelectedItem(null);
+    setObjectsOpen(false);
+    setHovered(null);
+    setMenu(false);
+    setJournal((value) => !value);
+  });
+  const objectsControl = useButtonActivation(() =>
+    setObjectsOpen((value) => !value),
+  );
+  const menuControl = useButtonActivation(() => {
+    finishDrag();
+    setJournal(false);
+    setMenu((value) => !value);
+  });
   const sceneScale = Math.min(
     areaSize.width / scene.width,
     areaSize.height / scene.height,
@@ -377,7 +409,7 @@ export function GameWindow({
   return (
     <section
       ref={gameRef}
-      className={`game-window ${pointer?.inScene && (currentHover || selected) && !menu && !state.dialogue ? 'has-scene-cursor' : ''} ${drag?.active ? 'is-dragging' : ''}`}
+      className={`game-window ${pointer?.inScene && (currentHover || selected) && !modalOpen && !state.dialogue ? 'has-scene-cursor' : ''} ${drag?.active ? 'is-dragging' : ''}`}
       aria-label="Herné okno"
       onPointerMove={(event) => {
         if (event.pointerType === 'touch') return;
@@ -395,22 +427,67 @@ export function GameWindow({
         setHovered(null);
       }}
     >
-      <header className="game-topbar">
-        <div className="game-brand">
-          <span aria-hidden="true">↯</span> TUKABEL
+      <header className="game-topbar game-hud">
+        <div className="hud-heading">
+          <div className="game-brand">
+            <span aria-hidden="true">↯</span> TUKABEL
+          </div>
+          <span className="scene-title">{scene.title}</span>
+          <div className="game-tools">
+            <button
+              ref={journalButton}
+              className="journal-toggle"
+              aria-expanded={journal}
+              {...journalControl}
+            >
+              <NotebookIcon />
+              <span>Denník</span>
+              <span
+                className="journal-badge"
+                aria-label={'Aktívne úlohy: ' + activeTaskCount}
+              >
+                {activeTaskCount}
+              </span>
+            </button>
+            <button
+              aria-expanded={objectsOpen}
+              disabled={Boolean(state.dialogue) || modalOpen}
+              {...objectsControl}
+            >
+              Objekty
+            </button>
+            <button ref={menuButton} aria-expanded={menu} {...menuControl}>
+              Menu
+            </button>
+          </div>
         </div>
-        <span className="scene-title">{scene.title}</span>
-        <div className="game-tools">
-          <button
-            ref={menuButton}
-            aria-expanded={menu}
-            onClick={() => {
-              finishDrag();
-              setMenu((value) => !value);
+        <div className="game-dock">
+          <div className="inventory-tools">
+            <span className="eyebrow">VRECKÁ PLNÉ MOŽNOSTÍ</span>
+          </div>
+          <Inventory
+            content={content}
+            state={state}
+            blocked={modalOpen}
+            selectedItem={selected}
+            draggingItem={drag?.id ?? null}
+            dropItem={drag?.target?.type === 'item' ? drag.target.id : null}
+            onPointerDown={startDrag}
+            onSelect={(id, pointer) => {
+              if (pointer && suppressClick.current) {
+                suppressClick.current = false;
+                return;
+              }
+              if (selected && selected !== id) {
+                dispatch({ type: 'combine', first: selected, second: id });
+                setSelectedItem(null);
+              } else {
+                setSelectedItem(selected === id ? null : id);
+                dispatch({ type: 'inspectItem', itemId: id });
+              }
             }}
-          >
-            Menu
-          </button>
+            onInspect={(id) => dispatch({ type: 'inspectItem', itemId: id })}
+          />
         </div>
       </header>
       <div className="play-area" ref={viewport}>
@@ -423,9 +500,9 @@ export function GameWindow({
           onPickerReady={registerPicker}
           onHover={setHovered}
           onInteract={act}
-          blocked={menu || Boolean(drag?.active)}
+          blocked={modalOpen || Boolean(drag?.active)}
         />
-        {currentHover && !state.dialogue && !menu && (
+        {currentHover && !state.dialogue && !modalOpen && (
           <div
             className="scene-label"
             style={{
@@ -475,7 +552,7 @@ export function GameWindow({
             onAdvance={() => conversation.advance(dialogueAudio.stop)}
           />
         )}
-        {objectsOpen && !state.dialogue && (
+        {objectsOpen && !state.dialogue && !modalOpen && (
           <div className="objects-popover" aria-label="Predmety v miestnosti">
             {hotspots.map((hotspot) => (
               <button
@@ -572,65 +649,37 @@ export function GameWindow({
           </div>
         )}
       </div>
-      <div className="game-dock">
-        <div className="inventory-tools">
-          <span className="eyebrow">VRECKÁ PLNÉ MOŽNOSTÍ</span>
-          <button
-            aria-expanded={objectsOpen}
-            disabled={Boolean(state.dialogue) || menu}
-            onClick={() => setObjectsOpen((value) => !value)}
-          >
-            Objekty
-          </button>
-        </div>
-        <Inventory
+      <div className="game-help">
+        {item ? (
+          <>
+            <span>
+              Použiť: <strong>{item.label}</strong>
+            </span>
+            <button onClick={() => setSelectedItem(null)}>Zrušiť výber</button>
+          </>
+        ) : (
+          <span>
+            Klik / dotyk · Potiahni predmety · Tab a Enter · Escape zruší výber
+          </span>
+        )}
+        <span>{scene.title}</span>
+      </div>
+      {journal && (
+        <TaskJournal
           content={content}
           state={state}
-          blocked={menu}
-          selectedItem={selected}
-          draggingItem={drag?.id ?? null}
-          dropItem={drag?.target?.type === 'item' ? drag.target.id : null}
-          onPointerDown={startDrag}
-          onSelect={(id, pointer) => {
-            if (pointer && suppressClick.current) {
-              suppressClick.current = false;
-              return;
-            }
-            if (selected && selected !== id) {
-              dispatch({ type: 'combine', first: selected, second: id });
-              setSelectedItem(null);
-            } else {
-              setSelectedItem(selected === id ? null : id);
-              dispatch({ type: 'inspectItem', itemId: id });
-            }
+          onClose={() => {
+            setJournal(false);
+            journalButton.current?.focus();
           }}
-          onInspect={(id) => dispatch({ type: 'inspectItem', itemId: id })}
         />
-        <div className="game-help">
-          {item ? (
-            <>
-              <span>
-                Použiť: <strong>{item.label}</strong>
-              </span>
-              <button onClick={() => setSelectedItem(null)}>
-                Zrušiť výber
-              </button>
-            </>
-          ) : (
-            <span>
-              Klik / dotyk · Potiahni predmety · Tab a Enter · Escape zruší
-              výber
-            </span>
-          )}
-          <span>{scene.title}</span>
-        </div>
-      </div>
+      )}
       {pointer?.inScene &&
         currentHover &&
         !drag?.active &&
         !selected &&
         !state.dialogue &&
-        !menu && (
+        !modalOpen && (
           <SceneCursor
             key={currentHover.id}
             hotspot={currentHover}
@@ -644,7 +693,7 @@ export function GameWindow({
         item &&
         !drag?.active &&
         !state.dialogue &&
-        !menu && (
+        !modalOpen && (
           <div
             className="drag-ghost held-item"
             aria-hidden="true"

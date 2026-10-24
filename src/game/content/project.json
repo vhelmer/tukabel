@@ -3,6 +3,26 @@
   "startScene": "workshop",
   "initialMessage": "Oživ router a otvor dvere do dvora. Správca ti poradí. Toto je krátka skúška herných systémov.",
   "flags": ["tapeGiven", "cableTaken", "powered", "completed"],
+  "tasks": [
+    {
+      "id": "power-router",
+      "text": "Oživiť router opraveným káblom.",
+      "startWhen": { "all": [] },
+      "completeWhen": { "flag": "powered" }
+    },
+    {
+      "id": "find-tape",
+      "text": "Získať izolačnú pásku od správcu.",
+      "startWhen": { "flag": "cableTaken" },
+      "completeWhen": { "flag": "tapeGiven" }
+    },
+    {
+      "id": "visit-courtyard",
+      "text": "Pozrieť sa za odomknuté dvere.",
+      "startWhen": { "flag": "powered" },
+      "completeWhen": { "flag": "completed" }
+    }
+  ],
   "scenes": [
     {
       "id": "workshop",
