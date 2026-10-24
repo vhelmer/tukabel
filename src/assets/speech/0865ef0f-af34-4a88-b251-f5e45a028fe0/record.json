@@ -1,0 +1,15 @@
+{
+  "text": "[serious] Diverzifikujem. Desať centov na rožok a päť na pohreb. [sighs] Pri dnešných cenách ma budú musieť zložiť ako záhradnú stoličku.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "Iu5SuHOmMFnQrH4OjSZ3",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 8.8,
+  "audioSha256": "dd065f6d84666d25a358b3a3bce1a2428f2c43f9eea139743b7f9b1246c67850"
+}

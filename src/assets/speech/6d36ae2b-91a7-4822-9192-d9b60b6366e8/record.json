@@ -1,0 +1,15 @@
+{
+  "text": "[sarcastic] Nie, pestujem tu korene. Autobus mešká tak dlho, že mi na občianskom nesedí fotografia. Už som odvtedy dvakrát zostarol a raz sa vzdal.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "Iu5SuHOmMFnQrH4OjSZ3",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 9.84,
+  "audioSha256": "81d5bc0cd8c6cc75009b16ad97bd1d1af01c346029bf161dc1c82f6a281702c9"
+}

@@ -1,0 +1,15 @@
+{
+  "text": "[whispers] Rožky, sviečky a urnu po mužovi. Nosím ho na výlety. [chuckles] Zaživa ma nikam nevzal, tak teraz nemá na výber.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "VnZ7lswb6C7FxwHfvIR6",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 10.24,
+  "audioSha256": "0f361ede8d7b4f80d1098240617c0dfe44c868da1f7385f74f3a5359fbfcbc06"
+}

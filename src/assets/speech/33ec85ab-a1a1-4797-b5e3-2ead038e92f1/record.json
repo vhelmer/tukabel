@@ -1,0 +1,15 @@
+{
+  "text": "[whispers] Tá tu nesedí. Tá drží rezerváciu na lavičke. Vravia, že vyberá nájom aj od holubov. Minule mi ponúkla posledné miesto… na cintoríne.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "Iu5SuHOmMFnQrH4OjSZ3",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 10.32,
+  "audioSha256": "7da0daab193d66b5af03b0a423d8774b1dcd185201127d23b9d8d63c6281552a"
+}

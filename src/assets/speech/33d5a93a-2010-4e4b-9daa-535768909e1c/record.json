@@ -1,0 +1,15 @@
+{
+  "text": "[chuckles] Pýtaj sa, šéfe. Len mi nestúpaj na batoh. Je tam nosná konštrukcia môjho dôchodku.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "Iu5SuHOmMFnQrH4OjSZ3",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 6.64,
+  "audioSha256": "ada6ac23094d68036429b5e5deefd955c5849bb6f61724d2e2357ebfed1dfbd7"
+}

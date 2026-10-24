@@ -1,0 +1,15 @@
+{
+  "text": "[whispers] Legálny zber. Každého kusu sa slušne spýtam, či chce odísť. Keď neodpovie, beriem to ako súhlas. [laughs] Obec tomu hovorí inventúrny rozdiel.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "Iu5SuHOmMFnQrH4OjSZ3",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 11.12,
+  "audioSha256": "92f70521ae69656a852608c98e9e4bc801e760adb016532a4e8dae9e86a22385"
+}

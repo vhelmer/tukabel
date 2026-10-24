@@ -1,0 +1,15 @@
+{
+  "text": "[angry] A prísť o miesto?! To by sa tu hneď roztiahol nejaký mladý s kolobežkou a depresiou. Ja som si túto lavičku odsedela poctivo.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "VnZ7lswb6C7FxwHfvIR6",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 9.04,
+  "audioSha256": "00ff668fcf386d84237e452ebc3e89ecf6522df6bcabd0451e8a7f546cbd45dc"
+}

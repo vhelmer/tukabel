@@ -6,7 +6,9 @@ import path from 'node:path';
 import { tmpdir } from 'node:os';
 import { test as base, openEditor } from './editorFixture';
 import { ready, object, finishLine } from './helpers';
-import type { GameContent } from '../src/game/types';
+import type { GameContent, LipSyncTrack } from '../src/game/types';
+import { mouthFrame } from '../src/game/speech';
+import { imagePlacement } from '../src/game/transforms';
 
 const test = base.extend<{
   speechMock: { bin: string; requests: { url: string; body: unknown }[] };
@@ -128,6 +130,195 @@ async function audioAt(audio: Locator, seconds: number) {
     .poll(() => audio.evaluate((el) => (el as HTMLAudioElement).currentTime))
     .toBeCloseTo(seconds, 1);
 }
+
+base(
+  'bus stop recorded voices drive mapped mouth poses while eyes blink independently; skip and natural completion stop audio',
+  async ({ page, workspace }, info) => {
+    base.setTimeout(60000);
+    const project = JSON.parse(
+      await readFile(workspace.source, 'utf8'),
+    ) as GameContent;
+    const scene = project.scenes.find((s) => s.id === 'scene1')!;
+    await writeFile(
+      workspace.source,
+      JSON.stringify({
+        ...project,
+        startScene: scene.id,
+        scenes: project.scenes.map((s) =>
+          s.id === scene.id
+            ? {
+                ...s,
+                hotspots: s.hotspots.map((h) =>
+                  ['layer1', 'layer2'].includes(h.id)
+                    ? {
+                        ...h,
+                        animation: {
+                          ...h.animation,
+                          motion: undefined,
+                          blinkIntervalMs: [120, 120],
+                        },
+                      }
+                    : h,
+                ),
+              }
+            : s,
+        ),
+      }),
+    );
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    const sharp = (await import('sharp')).default;
+    for (const [actorId, dialogueId, nodeId, topic] of [
+      ['layer2', 'stop-cigy', 'iron', 'Čo vláčiš v tom batohu?'],
+      ['layer1', 'stop-granny', 'bag', 'Čo máte v tej taške?'],
+    ]) {
+      const actor = scene.hotspots.find((h) => h.id === actorId)!;
+      const binding = actor.animation!;
+      const node = project.dialogues
+        .find((d) => d.id === dialogueId)!
+        .nodes.find((n) => n.id === nodeId)!;
+      expect(node.speech?.text).toBe(node.text);
+      const track = JSON.parse(
+        await readFile(
+          path.join(workspace.root, 'src/assets', node.speech!.lipSync!),
+          'utf8',
+        ),
+      ) as LipSyncTrack;
+      const closed = track.mouthCues.find(
+        (c) => c.value === 'A' || c.value === 'X',
+      )!;
+      const open = track.mouthCues.find(
+        (c) =>
+          mouthFrame(binding, c.value) !== mouthFrame(binding, closed.value),
+      )!;
+      expect(closed).toBeDefined();
+      expect(open).toBeDefined();
+      expect(binding.mouthShapes?.X).toBe(4);
+      expect(binding.mouthShapes?.A).toBe(4);
+      await page.goto(workspace.url);
+      await ready(page);
+      await (await object(page, actor.label)).click();
+      const timingLoaded = page.waitForResponse((response) =>
+        response.url().includes(node.speech!.lipSync!),
+      );
+      await page.getByRole('button', { name: topic, exact: true }).click();
+      await (await timingLoaded).body();
+      const panel = page.locator('.dialogue-panel'),
+        audio = panel.locator('audio');
+      await expect(audio).toHaveCount(1);
+      await expect(audio).toHaveAttribute('src', /\.wav/);
+      await expect(panel.locator('.dialogue-choices')).toHaveCount(0);
+      await audioAt(audio, (open.start + open.end) / 2);
+      await page.evaluate(
+        () =>
+          new Promise<void>((resolve) =>
+            requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+          ),
+      );
+      const canvas = page.locator('canvas');
+      const screenshot = () =>
+        canvas.screenshot({
+          style:
+            '.dialogue-panel,.reaction,.scene-label,.scene-cursor{visibility:hidden!important}',
+        });
+      const size = await sharp(
+        path.join(workspace.root, 'src/assets', actor.image!),
+      ).metadata();
+      const placed = imagePlacement(
+        actor.bounds,
+        { width: size.width!, height: size.height! },
+        actor.imageFit,
+      );
+      const box = (await canvas.boundingBox())!;
+      const origin = await pointInScene(page, 0, 0),
+        edge = await pointInScene(page, 1280, 720);
+      const scale = (edge.x - origin.x) / 1280;
+      async function patch(bytes: Buffer, clipId: string) {
+        const authored = project.animations!.find(
+          (c) => c.id === clipId,
+        )!.region!;
+        // Cigy's eye/mouth regions are one source pixel apart. At mobile
+        // scales, bilinear sampling mixes their boundary pixels; compare the
+        // mouth interior so blinking cannot contaminate the held-pose check.
+        const inset = clipId === binding.talk ? 3 : 0;
+        const region = {
+          x: authored.x + inset,
+          y: authored.y + inset,
+          width: authored.width - inset * 2,
+          height: authored.height - inset * 2,
+        };
+        const ratio = (await sharp(bytes).metadata()).width! / box.width;
+        return sharp(bytes)
+          .extract({
+            left: Math.round(
+              (origin.x -
+                box.x +
+                (placed.x + (region.x / size.width!) * placed.width) * scale) *
+                ratio,
+            ),
+            top: Math.round(
+              (origin.y -
+                box.y +
+                (placed.y + (region.y / size.height!) * placed.height) *
+                  scale) *
+                ratio,
+            ),
+            width: Math.max(
+              1,
+              Math.floor(
+                (region.width / size.width!) * placed.width * scale * ratio,
+              ),
+            ),
+            height: Math.max(
+              1,
+              Math.floor(
+                (region.height / size.height!) * placed.height * scale * ratio,
+              ),
+            ),
+          })
+          .raw()
+          .toBuffer();
+      }
+      const still = await screenshot(),
+        mouth = await patch(still, binding.talk!),
+        eyes = await patch(still, binding.blink!);
+      await sharp(still)
+        .png()
+        .toFile(info.outputPath(`${dialogueId}-paused-baseline.png`));
+      await expect
+        .poll(
+          async () =>
+            !(await patch(await screenshot(), binding.blink!)).equals(eyes),
+          { intervals: [50] },
+        )
+        .toBe(true);
+      expect(
+        (await patch(await screenshot(), binding.talk!)).equals(mouth),
+      ).toBe(true);
+      await page.screenshot({
+        path: info.outputPath(`${dialogueId}-recorded-lipsync.png`),
+      });
+      await audioAt(audio, (closed.start + closed.end) / 2);
+      await expect
+        .poll(
+          async () =>
+            !(await patch(await screenshot(), binding.talk!)).equals(mouth),
+        )
+        .toBe(true);
+      const handle = await audio.elementHandle();
+      if (actorId === 'layer2') await finishLine(page);
+      else {
+        await audioAt(audio, track.metadata.duration - 0.1);
+        await audio.evaluate((el) => (el as HTMLAudioElement).play());
+        await expect(panel).toHaveClass(/is-choosing/);
+      }
+      await expect(panel.locator('.dialogue-choices')).toBeVisible();
+      await expect(audio).toHaveCount(0);
+      expect(
+        await handle!.evaluate((el) => (el as HTMLAudioElement).paused),
+      ).toBe(true);
+    }
+  },
+);
 
 test('studio explicitly generates, analyzes, previews, saves and reloads speech without exposing provider credentials', async ({
   page,

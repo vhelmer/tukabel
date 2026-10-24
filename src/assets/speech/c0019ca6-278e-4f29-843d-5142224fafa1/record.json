@@ -1,0 +1,15 @@
+{
+  "text": "[excited] Pätnásť centov! Konečne tekuté aktíva, ktoré netečú. [laughs] Vďaka, šéfe. Práve si zachránil môj penzijný fond pred osobným bankrotom.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "Iu5SuHOmMFnQrH4OjSZ3",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 9.52,
+  "audioSha256": "6bb2998cbfa5fe9b19cf7d1b6b2a5b6239352608db08767b2e2077b14a8823e0"
+}

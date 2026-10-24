@@ -1,0 +1,15 @@
+{
+  "text": "[sighs] No? Ak predávate lacný plyn, najprv sa pozrite, či ešte dýcham. Tí predošlí mi už vyplnili zmluvu.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "VnZ7lswb6C7FxwHfvIR6",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 10.08,
+  "audioSha256": "3ed79601f4bb89773cc9c3a3880b55c03be76c0caa5c5b6d1f065c5612c598d0"
+}

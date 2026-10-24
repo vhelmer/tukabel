@@ -1,0 +1,15 @@
+{
+  "text": "[angry] To dopísali kvôli mne. Raz som si sťažovala, že sme s nebožtíkom zmeškali jeho vlastný pohreb. Šofér povedal, že jeden z nás sa už aj tak neponáhľa.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "VnZ7lswb6C7FxwHfvIR6",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 11.36,
+  "audioSha256": "f401e6d79d89b6df7b7822480b73e5cb97a3dc307f4b28cfc53d9f94acd59306"
+}

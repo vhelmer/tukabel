@@ -1,0 +1,15 @@
+{
+  "text": "[sighs] Ortopéd vravel, že mám chrbticu ako otáznik. Ja že výborne, aspoň sa jej môžem spýtať, kde sú prachy. Pozri, chudoba je jediná posilňovňa, čo ti platí za úraz.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "Iu5SuHOmMFnQrH4OjSZ3",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 12.32,
+  "audioSha256": "930a2e2354a889323dcffe0ef1b9fa0fe5afbe9b985b31ddb45ac20826e98552"
+}

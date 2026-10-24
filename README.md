@@ -669,7 +669,11 @@ a babkou, komentáře k předmětům a zálohovaná pivní láhev: seber ji a na
 Cigymu přetažením nebo dialogovou volbou. Přečtení jízdního řádu a Cigyho
 drb otevřou další témata u babky. V Dev Mode vyber tuto lokaci a **Otestovat odsud**.
 Dialogy `stop-cigy` / `stop-granny` obsahují ElevenLabs tagy; titulky je odstraňují.
-Jde o připravené texty bez vygenerovaného dabingu. Hlasy a audio doplň ve studiu.
+Všech 17 uzlů má místní dabing Eleven v4 a Rhubarb phonetic časování. U obou
+postav je pět póz úst namapovaných na Rhubarb A–H/X: A/X → 4 (zavřeno),
+B/G → 2, C/D/H → 1, E/F → 3 (kulaté). Čísla jsou nulové indexy; příbuzné tvary
+sdílejí dostupnou pózu. Mrkání zůstává nezávislé. Titulky používají zarovnání
+poskytovatele, pokud ho vrátil; ostatní repliky mají označený odhad.
 
 ## Obsah a architektura
 

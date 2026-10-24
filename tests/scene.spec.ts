@@ -76,7 +76,7 @@ editorTest(
     await dialogue
       .getByRole('button', { name: 'A odkiaľ to železo máš?' })
       .click();
-    await expect(dialogue).toContainText('inventúrny rozdiel');
+    await expect(dialogue).toContainText('Legálny zber');
     await finishLine(page, isMobile);
     await dialogue
       .getByRole('button', { name: 'Maj sa. Idem sa rozhliadnuť.' })
@@ -96,7 +96,7 @@ editorTest(
         name: 'Cigy vravel niečo o rezervácii na cintoríne.',
       })
       .click();
-    await expect(dialogue).toContainText('železný kríž');
+    await expect(dialogue).toContainText('Dvojhrob pri chodníku');
     await finishLine(page, isMobile);
     await dialogue
       .getByRole('button', { name: 'Maj sa. Idem sa rozhliadnuť.' })
@@ -139,7 +139,7 @@ editorTest(
     await dialogue
       .getByRole('button', { name: 'Čo podnikneš s tou zálohou?' })
       .click();
-    await expect(dialogue).toContainText('záhradnú stoličku');
+    await expect(dialogue).toContainText('Diverzifikujem');
   },
 );
 

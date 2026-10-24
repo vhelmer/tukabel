@@ -1,0 +1,15 @@
+{
+  "text": "[sarcastic] Keď som si sadala, mala som menštruáciu. Teraz mám zľavu pre seniorov. Tak si to, mladý pán, vypočítajte.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "VnZ7lswb6C7FxwHfvIR6",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 8.56,
+  "audioSha256": "bcad18f83eb434d5b2d26a7f4f65f1bad1be3d5c10e6d8dbef5a14a88dd3edd9"
+}

@@ -1,0 +1,15 @@
+{
+  "text": "[serious] Nikdy nečakajte na správny okamih. Môj muž čakal na lacnejšiu rakvu a nakoniec bol v akcii krematórium. [sighs] A pite vodu. Aspoň budete mať na čo nadávať, keď príde účet.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "VnZ7lswb6C7FxwHfvIR6",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 14.56,
+  "audioSha256": "edb349fc164bfed10bb0b721033170bc9702d18226471c18675a0fb3d5be2163"
+}

@@ -1,0 +1,15 @@
+{
+  "text": "[proud] Železo. Kus zábradlia, dve pánty a niečo, čo bývalo rotopedom. Konečne ten stroj niekomu zlepší kondičku. Mne, kým ho odnesiem.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "Iu5SuHOmMFnQrH4OjSZ3",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 9.68,
+  "audioSha256": "fade1162e8dc8e8747c398c761f6dce63c8862a9a8187e4b28c6fc73732795f5"
+}

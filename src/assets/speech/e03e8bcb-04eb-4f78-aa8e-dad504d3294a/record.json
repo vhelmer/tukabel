@@ -1,0 +1,15 @@
+{
+  "text": "[deadpan] Nesťažuje sa. Prvýkrát za štyridsať rokov. Len na výtlkoch trochu hrká, ale to robil aj predtým.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "VnZ7lswb6C7FxwHfvIR6",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 8.32,
+  "audioSha256": "55c121867f687c63cfd016bdafe3a957941e7a4ef2d4e3d542af149c1b86eeaa"
+}

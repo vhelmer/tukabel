@@ -1,0 +1,15 @@
+{
+  "text": "[laughs] Ale áno. Dvojhrob pri chodníku. Spodné lôžko už má muž, ja mám rezervované horné. A Cigymu som ponúkla brigádu. [whispers] Mal priniesť lopatu. On prišiel oceniť železný kríž.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "VnZ7lswb6C7FxwHfvIR6",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 17.2,
+  "audioSha256": "8616b212ba8fa5a475aa5039045546e2a209efc15b42a61dfce4e2fe807ce990"
+}

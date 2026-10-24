@@ -1,0 +1,15 @@
+{
+  "text": "[chuckles] Ten chlapec má srdce zo zlata. Dúfam. Lebo všetko ostatné už odniesol do zberu. Raz mi ponúkol, že ma odprevadí domov. Ja bývam oproti cintorínu. [whispers] Celú cestu pozeral na bránu.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "VnZ7lswb6C7FxwHfvIR6",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 16.8,
+  "audioSha256": "25b9d307c97cdb4680c6df6c7645f8e89bf92881917182995e78e4b1221d0b03"
+}
