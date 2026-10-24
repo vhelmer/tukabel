@@ -81,9 +81,15 @@ export function validateProject(
       if (!object(entry, key, ['type', 'id', 'value'])) return;
       string(entry.id, `${key}.id`);
       if (
-        !['flag', 'addItem', 'removeItem', 'scene', 'dialogue'].includes(
-          String(entry.type),
-        )
+        ![
+          'flag',
+          'addItem',
+          'removeItem',
+          'scene',
+          'dialogue',
+          'startTask',
+          'completeTask',
+        ].includes(String(entry.type))
       )
         errors.push(`${key}: unknown effect`);
       if (
@@ -124,12 +130,27 @@ export function validateProject(
       'dialogues',
       'combinations',
       'animations',
+      'tasks',
     ])
   )
     return errors;
   for (const key of ['id', 'startScene', 'initialMessage'])
     string(value[key], key);
   list(value.flags, 'flags', string);
+  if (value.tasks !== undefined)
+    list(value.tasks, 'tasks', (task, path) => {
+      if (!object(task, path, ['id', 'text', 'startWhen', 'completeWhen']))
+        return;
+      string(task.id, path + '.id');
+      string(task.text, path + '.text');
+      if (
+        typeof task.text === 'string' &&
+        (!task.text.trim() || task.text.length > 500)
+      )
+        errors.push(path + ': task text must contain 1–500 characters');
+      condition(task.startWhen, path + '.startWhen');
+      condition(task.completeWhen, path + '.completeWhen');
+    });
   list(value.scenes, 'scenes', (scene, path) => {
     if (
       !object(scene, path, [

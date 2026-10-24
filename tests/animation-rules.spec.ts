@@ -67,6 +67,7 @@ test('visual clocks prioritize speech, schedule finite blinks and hold once-only
   const state = {
     sceneId: 'room',
     inventory: [],
+    tasks: {},
     flags: {},
     message: '',
     dialogue: { id: 'conversation', nodeId: 'start' },

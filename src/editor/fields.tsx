@@ -290,7 +290,9 @@ export function EffectsField({
         ? (content.scenes[0]?.id ?? '')
         : type === 'dialogue'
           ? (content.dialogues[0]?.id ?? '')
-          : (content.items[0]?.id ?? '');
+          : type === 'startTask' || type === 'completeTask'
+            ? (content.tasks?.[0]?.id ?? '')
+            : (content.items[0]?.id ?? '');
   return (
     <fieldset className="effects-field">
       <legend>Efekty (v pořadí)</legend>
@@ -305,7 +307,12 @@ export function EffectsField({
                 }))
               : effect.type === 'dialogue'
                 ? content.dialogues
-                : content.items;
+                : effect.type === 'startTask' || effect.type === 'completeTask'
+                  ? (content.tasks ?? []).map((task) => ({
+                      id: task.id,
+                      label: task.text,
+                    }))
+                  : content.items;
         return (
           <div className="effect-row" key={index}>
             <div className="field-row">
@@ -330,6 +337,15 @@ export function EffectsField({
                   <option value="removeItem">Odebrat předmět</option>
                   <option value="scene">Změnit lokaci</option>
                   <option value="dialogue">Otevřít dialog</option>
+                  <option value="startTask" disabled={!content.tasks?.length}>
+                    Přidat úkol do deníku
+                  </option>
+                  <option
+                    value="completeTask"
+                    disabled={!content.tasks?.length}
+                  >
+                    Dokončit úkol
+                  </option>
                 </select>
               </Field>
               <SelectId

@@ -18,6 +18,7 @@ const state: GameState = {
   sceneId: 'character-preview',
   inventory: [],
   flags: {},
+  tasks: {},
   message: '',
   dialogue: null,
 };

@@ -23,6 +23,16 @@ export function validateContent(content: GameContent): string[] {
     'items',
   );
   const flags = collect(content.flags, 'flags');
+  const tasks = collect(
+    (content.tasks ?? []).map((task) => task.id),
+    'tasks',
+  );
+  for (const id of tasks)
+    if (
+      !/^[a-zA-Z][a-zA-Z0-9_-]*$/.test(id) ||
+      ['constructor', 'prototype'].includes(id)
+    )
+      errors.push('tasks: invalid stable id "' + id + '"');
   const dialogues = collect(
     content.dialogues.map((entry) => entry.id),
     'dialogues',
@@ -51,7 +61,9 @@ export function validateContent(content: GameContent): string[] {
             ? scenes
             : effect.type === 'dialogue'
               ? dialogues
-              : items,
+              : effect.type === 'startTask' || effect.type === 'completeTask'
+                ? tasks
+                : items,
         effect.id,
         path,
       );
@@ -67,6 +79,10 @@ export function validateContent(content: GameContent): string[] {
     });
   };
   reference(scenes, content.startScene, 'startScene');
+  for (const task of content.tasks ?? []) {
+    condition(task.startWhen, 'tasks/' + task.id + '/start');
+    condition(task.completeWhen, 'tasks/' + task.id + '/complete');
+  }
   for (const scene of content.scenes) {
     if (
       ![scene.width, scene.height].every(

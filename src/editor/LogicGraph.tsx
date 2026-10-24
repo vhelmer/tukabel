@@ -5,6 +5,7 @@ import { matches } from '../game/state';
 export type GraphTarget =
   | { type: 'scene'; sceneId: string; hotspotId: string }
   | { type: 'dialogue'; id: string; nodeId: string }
+  | { type: 'tasks'; id: string }
   | { type: 'puzzles' };
 interface Row {
   label: string;
@@ -26,10 +27,26 @@ function describe(condition?: Condition): string[] {
 function effectText(effect: Effect) {
   return effect.type === 'flag'
     ? `${effect.id} ← ${effect.value}`
-    : `${{ addItem: '+ předmět', removeItem: '− předmět', scene: '→ lokace', dialogue: '→ dialog' }[effect.type]}: ${effect.id}`;
+    : `${{ addItem: '+ předmět', removeItem: '− předmět', scene: '→ lokace', dialogue: '→ dialog', startTask: '+ úkol', completeTask: '✓ úkol' }[effect.type]}: ${effect.id}`;
 }
 function graphRows(content: GameContent): Row[] {
   const rows: Row[] = [];
+  for (const task of content.tasks ?? []) {
+    for (const [when, outcome] of [
+      [task.startWhen, '+ zapsat do deníku'],
+      [task.completeWhen, '✓ přeškrtnout v deníku'],
+    ] as const) {
+      if (!when) continue;
+      rows.push({
+        label: 'Úkol · ' + task.text,
+        when,
+        requires: describe(when),
+        outcomes: [outcome + ': ' + task.id],
+        message: '',
+        target: { type: 'tasks', id: task.id },
+      });
+    }
+  }
   for (const scene of content.scenes)
     for (const hotspot of scene.hotspots) {
       for (const [interaction, rules] of [

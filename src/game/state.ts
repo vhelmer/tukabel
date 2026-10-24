@@ -8,13 +8,14 @@ import type {
 } from './types';
 
 export function initialState(content: GameContent): GameState {
-  return {
+  return syncTasks(content, {
     sceneId: content.startScene,
     inventory: [],
     flags: {},
+    tasks: {},
     dialogue: null,
     message: content.initialMessage,
-  };
+  });
 }
 
 export function matches(state: GameState, condition?: Condition): boolean {
@@ -27,6 +28,28 @@ export function matches(state: GameState, condition?: Condition): boolean {
   return !matches(state, condition.not);
 }
 
+// Journal entries latch once discovered/completed, even if an item is consumed
+// or a condition later becomes false. Definitions never become player state.
+export function syncTasks(content: GameContent, state: GameState): GameState {
+  let tasks = state.tasks;
+  for (const task of content.tasks ?? []) {
+    const current = Object.hasOwn(tasks, task.id) ? tasks[task.id] : undefined;
+    if (current === 'completed') continue;
+    const next =
+      task.completeWhen && matches(state, task.completeWhen)
+        ? 'completed'
+        : (current ??
+          (task.startWhen && matches(state, task.startWhen)
+            ? 'active'
+            : undefined));
+    if (next && next !== current) {
+      if (tasks === state.tasks) tasks = { ...tasks };
+      tasks[task.id] = next;
+    }
+  }
+  return tasks === state.tasks ? state : { ...state, tasks };
+}
+
 function applyEffects(
   content: GameContent,
   state: GameState,
@@ -36,6 +59,7 @@ function applyEffects(
     ...state,
     inventory: [...state.inventory],
     flags: { ...state.flags },
+    tasks: { ...state.tasks },
   };
   for (const effect of effects) {
     switch (effect.type) {
@@ -59,6 +83,13 @@ function applyEffects(
         next.dialogue = { id: dialogue.id, nodeId: dialogue.start };
         break;
       }
+      case 'startTask':
+        if (!Object.hasOwn(next.tasks, effect.id))
+          next.tasks[effect.id] = 'active';
+        break;
+      case 'completeTask':
+        next.tasks[effect.id] = 'completed';
+        break;
     }
   }
   return next;
@@ -86,7 +117,7 @@ export function getDialogueNode(content: GameContent, state: GameState) {
   return dialogue?.nodes.find((node) => node.id === state.dialogue?.nodeId);
 }
 
-export function reduceGame(
+function reduceAction(
   content: GameContent,
   state: GameState,
   action: GameAction,
@@ -159,4 +190,13 @@ export function reduceGame(
     );
   }
   return runRules(content, state, hotspot.onClick, '');
+}
+
+export function reduceGame(
+  content: GameContent,
+  state: GameState,
+  action: GameAction,
+): GameState {
+  const next = reduceAction(content, state, action);
+  return next === state ? state : syncTasks(content, next);
 }

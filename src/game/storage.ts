@@ -1,4 +1,5 @@
 import type { GameContent, GameState } from './types';
+import { syncTasks } from './state';
 
 export const SAVE_KEY = 'tukabel.save.v1';
 const SAVE_VERSION = 1;
@@ -49,13 +50,26 @@ export function decodeSave(
       )
         throw new Error('Unknown dialogue');
     }
+    // Version 1 saves from before the journal remain readable. Reconstruct only
+    // what current flags/items prove; never invent prior manual events.
+    const tasks = state.tasks === undefined ? {} : state.tasks;
+    if (
+      !isRecord(tasks) ||
+      !Object.entries(tasks).every(
+        ([id, status]) =>
+          content.tasks?.some((task) => task.id === id) &&
+          (status === 'active' || status === 'completed'),
+      )
+    )
+      throw new Error('Invalid journal');
     // Copy only the known fields; never merge untrusted storage into definitions.
     return {
       ok: true,
-      value: {
+      value: syncTasks(content, {
         sceneId: state.sceneId as string,
         inventory: [...state.inventory] as string[],
         flags: { ...state.flags } as Record<string, boolean>,
+        tasks: { ...tasks } as GameState['tasks'],
         dialogue:
           state.dialogue === null
             ? null
@@ -64,7 +78,7 @@ export function decodeSave(
                 nodeId: state.dialogue.nodeId as string,
               },
         message: state.message,
-      },
+      }),
     };
   } catch {
     return {

@@ -7,6 +7,7 @@ import type { Hotspot } from '../src/game/types';
 import { initialState, matches, reduceGame } from '../src/game/state';
 import { decodeSave, loadGame, saveGame, SAVE_KEY } from '../src/game/storage';
 import { validateContent } from '../src/game/validateContent';
+import { validateProject } from '../src/game/validateProject';
 import type { GameContent } from '../src/game/types';
 import {
   imagePlacement,
@@ -749,4 +750,183 @@ test('cropped source pixels keep their world coordinates through contain, stretc
         expect(after.y).toBeCloseTo(before.y, 10);
       }
     }
+});
+
+test('journal latches item/flag conditions, completes on combinations and never reopens completed entries', () => {
+  const project: GameContent = {
+    ...content,
+    tasks: [
+      {
+        id: 'intro',
+        text: 'Otvoriť dvere.',
+        startWhen: { all: [] },
+        completeWhen: { flag: 'open' },
+      },
+      {
+        id: 'combine',
+        text: 'Skombinovať predmety.',
+        startWhen: { item: 'a' },
+        completeWhen: { item: 'c' },
+      },
+      { id: 'manual', text: 'Zistiť viac.' },
+    ],
+  };
+  const start = initialState(project);
+  expect(start.tasks).toEqual({ intro: 'active' });
+  let state = reduceGame(project, start, {
+    type: 'interact',
+    hotspotId: 'pickup',
+  });
+  expect(state.tasks).toEqual({ intro: 'active', combine: 'active' });
+  const withSecond = { ...state, inventory: [...state.inventory, 'b'] };
+  state = reduceGame(project, withSecond, {
+    type: 'combine',
+    first: 'a',
+    second: 'b',
+  });
+  expect(state.tasks.combine).toBe('completed');
+  expect(state.inventory).toEqual(['c']);
+  state = reduceGame(
+    project,
+    { ...state, inventory: [], flags: { open: true } },
+    { type: 'inspectItem', itemId: 'c' },
+  );
+  // Invalid actions are no-ops. A legitimate action evaluates the current conditions.
+  state = reduceGame(project, state, { type: 'interact', hotspotId: 'pickup' });
+  expect(state.tasks.intro).toBe('completed');
+  state = reduceGame(
+    project,
+    { ...state, flags: { open: false } },
+    { type: 'interact', hotspotId: 'pickup' },
+  );
+  expect(state.tasks.intro).toBe('completed');
+  expect(start.tasks).toEqual({ intro: 'active' });
+});
+
+test('dialogue effects add and complete flat journal entries once, including completion before discovery', () => {
+  const project: GameContent = {
+    ...content,
+    tasks: [
+      { id: 'manual', text: 'Porozprávať sa.' },
+      { id: 'done', text: 'Hotovo.' },
+    ],
+    dialogues: [
+      {
+        ...content.dialogues[0]!,
+        nodes: [
+          {
+            ...content.dialogues[0]!.nodes[0]!,
+            choices: [
+              {
+                id: 'note',
+                text: 'Zapísať.',
+                effects: [
+                  { type: 'startTask', id: 'manual' },
+                  { type: 'completeTask', id: 'done' },
+                  { type: 'startTask', id: 'done' },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  };
+  const start = initialState(project);
+  expect(start.tasks).toEqual({});
+  const speaking = reduceGame(project, start, {
+    type: 'interact',
+    hotspotId: 'person',
+  });
+  expect(
+    reduceGame(project, speaking, { type: 'interact', hotspotId: 'pickup' }),
+  ).toBe(speaking);
+  const finished = reduceGame(project, speaking, {
+    type: 'choose',
+    choiceId: 'note',
+    from: { id: 'talk', nodeId: 'start' },
+  });
+  expect(finished.tasks).toEqual({ manual: 'active', done: 'completed' });
+  expect(
+    reduceGame(project, finished, {
+      type: 'choose',
+      choiceId: 'note',
+      from: { id: 'talk', nodeId: 'start' },
+    }),
+  ).toBe(finished);
+  expect(start.tasks).toEqual({});
+});
+
+test('journal saves round trip; legacy saves reconstruct provable progress and corrupt task states are rejected', () => {
+  const project: GameContent = {
+    ...content,
+    tasks: [
+      {
+        id: 'intro',
+        text: 'Otvoriť.',
+        startWhen: { all: [] },
+        completeWhen: { flag: 'open' },
+      },
+      { id: 'manual', text: 'Poznámka.' },
+    ],
+  };
+  const state = {
+    ...initialState(project),
+    tasks: { intro: 'completed', manual: 'active' } as const,
+  };
+  const save = (value: unknown) =>
+    JSON.stringify({ version: 1, contentId: project.id, state: value });
+  expect(decodeSave(save(state), project)).toEqual({ ok: true, value: state });
+  const legacy = { ...state, flags: { open: true }, tasks: undefined };
+  const restored = decodeSave(save(legacy), project);
+  expect(restored.ok && restored.value.tasks).toEqual({ intro: 'completed' });
+  for (const tasks of [
+    null,
+    [],
+    { ghost: 'active' },
+    { intro: 'failed' },
+    { intro: true },
+    { manual: { status: 'active' } },
+  ])
+    expect(decodeSave(save({ ...state, tasks }), project).ok).toBe(false);
+});
+
+test('journal definitions and effect/condition references validate at the JSON boundary', () => {
+  const project = {
+    ...content,
+    scenes: content.scenes.map((s) => ({ ...s, background: 'demo-room.svg' })),
+    tasks: [
+      {
+        id: 'intro',
+        text: 'Zápis.',
+        startWhen: { all: [] },
+        completeWhen: { flag: 'open' },
+      },
+    ],
+  };
+  expect(validateProject(project)).toEqual([]);
+  for (const tasks of [
+    null,
+    [{ id: 'intro', text: '' }],
+    [{ id: 'bad id', text: 'x' }],
+    [{ id: 'constructor', text: 'x' }],
+    [{ id: 'intro', text: 'x', startWhen: { flag: 'missing' } }],
+    [{ id: 'intro', text: 'x', completeWhen: { item: 'missing' } }],
+    [{ id: 'intro', text: 'x', extra: true }],
+    [project.tasks[0], project.tasks[0]],
+  ])
+    expect(validateProject({ ...project, tasks }).length).toBeGreaterThan(0);
+  const missing = {
+    ...project,
+    combinations: [
+      {
+        items: ['a', 'b'],
+        rules: [{ effects: [{ type: 'startTask', id: 'missing' }] }],
+      },
+    ],
+  };
+  expect(validateProject(missing).join(' ')).toContain('unknown reference');
+  expect(validateProject({ ...missing, tasks: undefined }).join(' ')).toContain(
+    'unknown reference',
+  );
 });

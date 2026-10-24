@@ -118,7 +118,17 @@ export type Effect =
   | { type: 'flag'; id: string; value: boolean }
   | { type: 'addItem' | 'removeItem'; id: string }
   | { type: 'scene'; id: string }
-  | { type: 'dialogue'; id: string };
+  | { type: 'dialogue'; id: string }
+  | { type: 'startTask' | 'completeTask'; id: string };
+
+export interface TaskDefinition {
+  readonly id: string;
+  readonly text: string;
+  // Absent means event/dialogue effects only. { all: [] } starts immediately.
+  readonly startWhen?: Condition;
+  readonly completeWhen?: Condition;
+}
+export type TaskStatus = 'active' | 'completed';
 
 export interface Rule {
   readonly when?: Condition;
@@ -209,6 +219,7 @@ export interface GameContent {
   readonly items: readonly ItemDefinition[];
   readonly dialogues: readonly DialogueDefinition[];
   readonly animations?: readonly AnimationDefinition[];
+  readonly tasks?: readonly TaskDefinition[];
   readonly combinations: readonly {
     items: readonly [string, string];
     rules: readonly Rule[];
@@ -220,6 +231,7 @@ export interface GameState {
   sceneId: string;
   inventory: string[];
   flags: Record<string, boolean>;
+  tasks: Record<string, TaskStatus>;
   dialogue: { id: string; nodeId: string } | null;
   message: string;
 }

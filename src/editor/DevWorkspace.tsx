@@ -21,18 +21,26 @@ import { useEditorJobs } from './useEditorJobs';
 import { JobTray } from './JobTray';
 import { SceneArtPanel } from './SceneArtPanel';
 import { SceneLivePreview } from './SceneLivePreview';
+import { TasksPanel } from './TasksPanel';
 import type { Point } from '../game/transforms';
 import type { GraphTarget } from './LogicGraph';
 import './editor.css';
 
 type Tab =
-  'animations' | 'scenes' | 'items' | 'dialogues' | 'puzzles' | 'graph';
+  | 'animations'
+  | 'scenes'
+  | 'items'
+  | 'dialogues'
+  | 'tasks'
+  | 'puzzles'
+  | 'graph';
 const serialize = (value: GameContent) => JSON.stringify(value);
 const tabs: { id: Tab; label: string }[] = [
   { id: 'scenes', label: 'Lokace' },
   { id: 'animations', label: 'Animace' },
   { id: 'items', label: 'Předměty' },
   { id: 'dialogues', label: 'Dialogy' },
+  { id: 'tasks', label: 'Úkoly' },
   { id: 'puzzles', label: 'Hádanky' },
   { id: 'graph', label: 'Mapa logiky' },
 ];
@@ -57,6 +65,7 @@ export default function DevWorkspace({
   const jobQueue = useEditorJobs(active);
   const [selectedJob, setSelectedJob] = useState('');
   const [tab, setTab] = useState<Tab>('scenes');
+  const [taskId, setTaskId] = useState('');
   const [graphNodeId, setGraphNodeId] = useState('');
   const [hotspotId, setHotspotId] = useState('');
   const [artSelection, setArtSelection] = useState<{
@@ -226,6 +235,9 @@ export default function DevWorkspace({
       setDialogueId(target.id);
       setGraphNodeId(target.nodeId);
       setTab('dialogues');
+    } else if (target.type === 'tasks') {
+      setTaskId(target.id);
+      setTab('tasks');
     } else setTab('puzzles');
   }
   return (
@@ -641,6 +653,14 @@ export default function DevWorkspace({
         )}
         {tab === 'puzzles' && (
           <PuzzlesPanel content={document} onChange={change} />
+        )}
+        {tab === 'tasks' && (
+          <TasksPanel
+            content={document}
+            selectedId={taskId}
+            onSelect={setTaskId}
+            onChange={change}
+          />
         )}
         {tab === 'graph' && (
           <LogicGraph
