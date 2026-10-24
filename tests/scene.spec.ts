@@ -1,5 +1,8 @@
 import { hudClick } from './helpers';
 import { expect, test } from '@playwright/test';
+import { readFile, writeFile } from 'node:fs/promises';
+import type { GameContent } from '../src/game/types';
+import { test as editorTest } from './editorFixture';
 import {
   activate,
   finishLine,
@@ -13,6 +16,132 @@ import {
 
 const reaction = (page: import('@playwright/test').Page) =>
   page.getByRole('status', { name: 'Reakcia' });
+
+editorTest(
+  'bus stop conversations, conditional gossip and bottle exchange survive save/load on mouse and touch',
+  async ({ page, workspace, isMobile }, info) => {
+    editorTest.setTimeout(60000);
+    const project = JSON.parse(
+      await readFile(workspace.source, 'utf8'),
+    ) as GameContent;
+    await writeFile(
+      workspace.source,
+      JSON.stringify({ ...project, startScene: 'scene1' }),
+    );
+    await page.goto(workspace.url);
+    await ready(page);
+    for (const [x, y, comment] of [
+      [1000, 120, 'Najčastejšie'],
+      [480, 420, 'diagnózy'],
+      [950, 480, 'optimizmu'],
+      [100, 421, 'čuch'],
+      [1138, 407, 'dôvod'],
+    ] as const) {
+      await activate(page, x, y, isMobile);
+      await expect(reaction(page)).toContainText(comment);
+    }
+    await activate(page, 1010, 300, isMobile);
+    await expect(reaction(page)).toContainText('7:10');
+    await activate(page, 730, 400, isMobile);
+    const dialogue = page.getByRole('dialog', { name: 'Rozhovor' });
+    await expect(
+      dialogue.getByRole('button', { name: 'V poriadku píšu' }),
+    ).toBeVisible();
+    await expect(
+      dialogue.getByRole('button', { name: 'Cigy vravel' }),
+    ).toHaveCount(0);
+    await dialogue
+      .getByRole('button', { name: 'Čo máte v tej taške?' })
+      .click();
+    await expect(dialogue).toContainText('urnu po mužovi');
+    await expect(dialogue).not.toContainText('[whispers]');
+    await finishLine(page, isMobile);
+    await dialogue
+      .getByRole('button', { name: 'A páčia sa mu tie výlety?' })
+      .click();
+    await expect(dialogue).toContainText('štyridsať rokov');
+    await finishLine(page, isMobile);
+    await dialogue
+      .getByRole('button', { name: 'Maj sa. Idem sa rozhliadnuť.' })
+      .click();
+
+    await activate(page, 250, 360, isMobile);
+    await dialogue
+      .getByRole('button', { name: 'Čo vláčiš v tom batohu?' })
+      .click();
+    await expect(dialogue).toContainText('rotopedom');
+    await expect(dialogue).not.toContainText('[proud]');
+    await page.screenshot({ path: info.outputPath('bus-stop-dialogue.png') });
+    await finishLine(page, isMobile);
+    await dialogue
+      .getByRole('button', { name: 'A odkiaľ to železo máš?' })
+      .click();
+    await expect(dialogue).toContainText('inventúrny rozdiel');
+    await finishLine(page, isMobile);
+    await dialogue
+      .getByRole('button', { name: 'Maj sa. Idem sa rozhliadnuť.' })
+      .click();
+    await activate(page, 250, 360, isMobile);
+    await dialogue
+      .getByRole('button', { name: 'Tá babka tu čaká dlho?' })
+      .click();
+    await finishLine(page, isMobile);
+    await dialogue
+      .getByRole('button', { name: 'Spýtam sa jej na tú rezerváciu.' })
+      .click();
+    await expect(dialogue).toHaveCount(0);
+    await activate(page, 730, 400, isMobile);
+    await dialogue
+      .getByRole('button', {
+        name: 'Cigy vravel niečo o rezervácii na cintoríne.',
+      })
+      .click();
+    await expect(dialogue).toContainText('železný kríž');
+    await finishLine(page, isMobile);
+    await dialogue
+      .getByRole('button', { name: 'Maj sa. Idem sa rozhliadnuť.' })
+      .click();
+
+    await activate(page, 1053, 559, isMobile);
+    await expect(reaction(page)).toContainText('nástupište');
+    await activate(page, 525, 578, isMobile);
+    const bottle = page.getByRole('button', {
+      name: 'Prázdna pivová fľaša',
+      exact: true,
+    });
+    await expect(bottle).toBeVisible();
+    await activate(page, 525, 578, isMobile);
+    await expect(bottle).toHaveCount(1);
+    await dragItem(page, bottle, await pointInScene(page, 730, 430), isMobile);
+    await expect(reaction(page)).toContainText('Prázdna?');
+    await expect(bottle).toBeVisible();
+    await dragItem(page, bottle, await pointInScene(page, 250, 400), isMobile);
+    await expect(reaction(page)).toContainText('Pätnásť centov');
+    await expect(bottle).toHaveCount(0);
+    await activate(page, 250, 360, isMobile);
+    await expect(
+      dialogue.getByRole('button', { name: 'Čo podnikneš s tou zálohou?' }),
+    ).toBeVisible();
+    await expect(
+      dialogue.getByRole('button', { name: 'Nechceš túto prázdnu fľašu?' }),
+    ).toHaveCount(0);
+    await dialogue
+      .getByRole('button', { name: 'Maj sa. Idem sa rozhliadnuť.' })
+      .click();
+    await menuAction(page, 'Uložiť hru');
+    await page.reload();
+    await ready(page);
+    await menuAction(page, 'Načítať hru');
+    await ready(page);
+    await expect(bottle).toHaveCount(0);
+    await expect(await object(page, 'Pivová fľaša')).toHaveCount(0);
+    await (await object(page, 'Cigy')).click();
+    await dialogue
+      .getByRole('button', { name: 'Čo podnikneš s tou zálohou?' })
+      .click();
+    await expect(dialogue).toContainText('záhradnú stoličku');
+  },
+);
 
 test('complete adventure supports real inventory drags, scene drops, transitions and persistence', async ({
   page,

@@ -1,4 +1,6 @@
 import { expect, test } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+import { subtitleText } from '../src/game/subtitles';
 // URL assets cannot be imported by Node. The browser suite validates the actual
 // content bundle; these tests exercise the same reducer with a minimal fixture.
 import { hitTestHotspot, hitTestLocal } from '../src/game/hitTest';
@@ -15,6 +17,59 @@ import {
   rotatedBounds,
   isInsideScene,
 } from '../src/game/transforms';
+
+test('bus stop bottle trades through dialogue or use exactly once and tagged actors have valid independent animation bindings', () => {
+  const project = JSON.parse(
+    readFileSync('src/game/content/project.json', 'utf8'),
+  ) as GameContent;
+  const scene = project.scenes.find((s) => s.id === 'scene1')!;
+  for (const method of ['choice', 'use']) {
+    let state = { ...initialState(project), sceneId: scene.id };
+    const act = (action: Parameters<typeof reduceGame>[2]) => {
+      state = reduceGame(project, state, action);
+    };
+    act({ type: 'interact', hotspotId: 'layer3' });
+    act({ type: 'interact', hotspotId: 'layer3' });
+    expect(state.inventory).toEqual(['stop-bottle']);
+    if (method === 'choice') {
+      act({ type: 'interact', hotspotId: 'layer2' });
+      act({ type: 'choose', choiceId: 'bottle' });
+      expect(state.dialogue?.nodeId).toBe('deposit');
+      act({ type: 'choose', choiceId: 'leave' });
+    } else {
+      act({ type: 'interact', hotspotId: 'layer1', itemId: 'stop-bottle' });
+      expect(state.inventory).toContain('stop-bottle');
+      act({ type: 'interact', hotspotId: 'layer2', itemId: 'stop-bottle' });
+    }
+    expect(state.inventory).toEqual([]);
+    expect(state.flags['stop-bottle-returned']).toBe(true);
+    act({ type: 'interact', hotspotId: 'layer3' });
+    expect(state.inventory).toEqual([]);
+    expect(
+      matches(
+        state,
+        scene.hotspots.find((h) => h.id === 'layer3')!.visibleWhen,
+      ),
+    ).toBe(false);
+  }
+  for (const dialogue of project.dialogues.filter((d) =>
+    d.id.startsWith('stop-'),
+  )) {
+    for (const node of dialogue.nodes) {
+      expect(node.text).toMatch(/\[[a-z ]+\]/);
+      expect(subtitleText(node)).not.toContain('[');
+      const actor = scene.hotspots.find((h) => h.id === node.actor?.hotspotId)!;
+      expect(actor.decorative).toBe(false);
+      expect(actor.animation?.dialogueId).toBe(dialogue.id);
+      for (const kind of ['blink', 'talk'] as const)
+        expect(
+          project.animations!.find(
+            (clip) => clip.id === actor.animation?.[kind],
+          )?.source,
+        ).toBe(actor.image);
+    }
+  }
+});
 
 const content: GameContent = {
   id: 'test',

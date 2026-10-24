@@ -664,6 +664,13 @@ vyřešený stav zůstává. Jde o technickou hádanku
 se dvěma lokacemi, bez finálního příběhu a assetů. Chůze postavy zatím chybí;
 animace, dabing a lip-sync lze přiřadit v editoru podle návodu níže.
 
+Ve scéně **Zastavka (`scene1`)** jsou slovenské větvené rozhovory s Cigym
+a babkou, komentáře k předmětům a zálohovaná pivní láhev: seber ji a nabídni
+Cigymu přetažením nebo dialogovou volbou. Přečtení jízdního řádu a Cigyho
+drb otevřou další témata u babky. V Dev Mode vyber tuto lokaci a **Otestovat odsud**.
+Dialogy `stop-cigy` / `stop-granny` obsahují ElevenLabs tagy; titulky je odstraňují.
+Jde o připravené texty bez vygenerovaného dabingu. Hlasy a audio doplň ve studiu.
+
 ## Obsah a architektura
 
 - `src/game/content/project.json` — **jediný zdroj autorského obsahu**: lokace,
