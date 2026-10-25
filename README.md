@@ -1187,6 +1187,40 @@ Pixi/TexturePacker metadata. Pro budoucí import tvarů vyber sekvenci **mouthSh
 H=2. Sekvence **talk** slouží jako pohybový náhled. Není to úplná sada přesných
 fonémů. Experiment zatím nemění registr animací, herní JSON ani předchozí demo.
 
+### Izolovaný experiment: vrstvená ruka + OpenAI
+
+`experiments/man-scratch/preview.html` otevři v prohlížeči: porovnání originálu
+a animace, přehrávání a posun po snímcích, náhled oddělených vrstev. Výstupy
+v `output/` obsahují 32 transparentních PNG při 16 fps, `preview.gif`,
+`arm-contact.png`, Pixi atlas a `validation.json`. Herní JSON ani editor se nemění.
+
+Původní postava 386 × 613 má ruku již na hlavě. Plátno se pouze rozšířilo na
+512 × 768 s původním obrázkem na offsetu `[48,80]`, bez škálování. Při budoucím
+importu je nutné použít `source-padded.png` a respektovat tento offset; snímky
+nelze přiřadit ke starému menšímu zdroji bez úpravy jeho rámu. Paže zůstává
+ukotvená, předloktí a dlaň se otáčejí kolem kloubů s pevnými délkami. OpenAI
+jedním vědomým voláním dokreslilo podklad zakrytý rukou. Oprava se skládá pouze
+v `repair-mask.png`; mimo sjednocenou oblast pohybu zůstávají původní RGBA.
+První a poslední snímek jsou přesně zdroj na rozšířeném plátně. Jde o drobné
+promnutí/poškrábání hlavy, nikoli zvednutí ruky z klidu nebo samostatně kreslené
+pózy jednotlivých prstů. Kvalitu posuzuj v náhledu; geometrické kontroly ji nezaručují.
+
+```sh
+python3 experiments/man-scratch/generate.py prepare  # Pillow; bez API
+python3 experiments/man-scratch/generate.py render   # archivovaný AI podklad; bez API
+python3 experiments/man-scratch/generate.py verify   # pixely, atlas, klouby, negativní kontrola
+```
+
+`rig.json` drží původní souřadnice a masku ruky, PNG vrstev jsou samostatně
+editovatelné. `source.png`, prompt `clean-plate.txt` a surový AI výstup jsou
+archivované. Volitelná nová placená generace přes
+`node experiments/man-scratch/generate-support.mjs` používá `OPENAI_API_KEY`
+a případně `OPENAI_IMAGE_MODEL` z `.env.local`, kvalitu `high`, žádné retry a
+odmítá přepsat existující výstup. Potřebuje izolované prostředí
+`.local-tools/arm-study` s OpenAI SDK + Pillow a CLI ze skillu `imagegen`
+(cesty lze nastavit přes `ARM_STUDY_PYTHON` / `IMAGE_GEN_CLI`).
+Záznam modelu, promptu a SHA-256 vstupů/výstupu je v `generation.json`; žádné klíče.
+
 ### Izolovaný experiment: programové mrknutí `woman.png`
 
 `experiments/woman-blink/` obsahuje samostatný reprodukční skript. Nemění herní

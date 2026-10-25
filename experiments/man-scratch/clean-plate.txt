@@ -1,0 +1,7 @@
+Use case: precise-object-edit
+Asset type: hidden clean plate for a layered 2D game character animation.
+Image 1 is the edit target: the exact cartoon character on a transparent portrait canvas. The alpha mask marks the raised arm on the RIGHT side of the IMAGE, including the hand resting on his scalp.
+Remove that raised arm and hand COMPLETELY. Do not replace it with another arm, a dangling hand, or an object. This is an animation underlayer, not a finished new character pose.
+Reconstruct the small pieces of hair, scalp and forehead previously hidden by his fingers. Reconstruct the side of the shoulder and torso underneath the removed upper arm, finishing the skin/shirt boundary naturally. The detached original arm will later be drawn over this clean plate.
+Preserve the original crooked cartoon style: thick irregular dark ink, warm orange skin, fine hatching, stained off-white vest. Keep the exact head, eyes, mouth, moustache, necklace, cup, remaining arm, body, feet, colors, lighting and pixel positions. Do not beautify, redesign, rotate, resize, recenter or crop the character. Preserve the 1024x1536 canvas geometry and all transparent margins.
+Outside the existing head/torso silhouette and the reconstructed shoulder there must be actual alpha transparency, including where the raised arm used to be. No room background, checkerboard, text, shadow, watermark, or replacement limb. Maintain the original silhouette of the torso rather than stretching the chest into the removed arm area.

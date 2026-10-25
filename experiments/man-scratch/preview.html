@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="cs">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pokus: vrstvená ruka</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 24px;
+      background: #1b1e26;
+      color: #eee;
+      font: 16px system-ui;
+    }
+    main {
+      max-width: 1100px;
+      margin: auto;
+    }
+    button,
+    input {
+      font: inherit;
+    }
+    button {
+      padding: 9px 16px;
+      cursor: pointer;
+    }
+    .controls {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .views {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin: 20px 0;
+    }
+    figure {
+      margin: 0;
+      min-width: 0;
+    }
+    figure img {
+      width: 100%;
+      display: block;
+      background: repeating-conic-gradient(#556170 0 25%, #485361 0 50%) 0 /
+        24px 24px;
+    }
+    figcaption {
+      padding: 10px 0;
+    }
+    a {
+      color: #9ddfcf;
+    }
+    details img {
+      max-width: 100%;
+    }
+    @media (max-width: 600px) {
+      body {
+        padding: 12px;
+      }
+      .views {
+        gap: 8px;
+      }
+    }
+  </style>
+  <main>
+    <h1>Vrstvená ruka: škrábání na hlavě</h1>
+    <p>
+      Původní kresba a tři vrstvy ruky. Pohyb předloktí a zápěstí s pevnými
+      délkami kostí; horní paže zůstává na místě. OpenAI dokreslilo podklad za
+      rukou. Bez změny herního obsahu.
+    </p>
+    <div class="controls">
+      <button id="play" type="button">Pozastavit</button>
+      <label
+        >Snímek <input id="frame" type="range" min="1" max="32" value="1"
+      /></label>
+      <output id="number">1 / 32</output>
+    </div>
+    <div class="views">
+      <figure>
+        <img src="output/source-padded.png" alt="Původní póza" />
+        <figcaption>Původní póza na společném plátně</figcaption>
+      </figure>
+      <figure>
+        <img
+          id="animated"
+          src="output/frame-01.png"
+          alt="Animace vrstvené ruky"
+        />
+        <figcaption>Pohyb po kloubech · 16 snímků/s</figcaption>
+      </figure>
+    </div>
+    <p>
+      <a href="output/preview.gif">Animovaný GIF</a> ·
+      <a href="output/arm-contact.png">Detail póz</a> ·
+      <a href="output/spritesheet.json">Pixi atlas</a> ·
+      <a href="output/validation.json">Kontrola pixelů a kloubů</a>
+    </p>
+    <details>
+      <summary>Podklad a rozdělení ruky</summary>
+      <div class="views">
+        <figure>
+          <img src="output/body.png" alt="Podklad za rukou" />
+          <figcaption>Podklad: původní pixely + lokální AI oprava</figcaption>
+        </figure>
+        <figure>
+          <img src="output/rig-preview.png" alt="Rameno, loket, zápěstí" />
+          <figcaption>Klouby</figcaption>
+        </figure>
+        <figure>
+          <img src="output/upper-arm.png" alt="Paže" />
+          <figcaption>Paže</figcaption>
+        </figure>
+        <figure>
+          <img src="output/forearm.png" alt="Předloktí" />
+          <figcaption>Předloktí</figcaption>
+        </figure>
+        <figure>
+          <img src="output/hand.png" alt="Dlaň a prsty" />
+          <figcaption>Dlaň</figcaption>
+        </figure>
+      </div>
+    </details>
+  </main>
+  <script>
+    const slider = document.querySelector('#frame');
+    const image = document.querySelector('#animated');
+    const label = document.querySelector('#number');
+    const button = document.querySelector('#play');
+    let playing = true,
+      time = 0,
+      previous = 0;
+    const show = (index) => {
+      slider.value = String(index);
+      image.src = `output/frame-${String(index).padStart(2, '0')}.png`;
+      label.value = `${index} / 32`;
+    };
+    button.onclick = () => {
+      playing = !playing;
+      button.textContent = playing ? 'Pozastavit' : 'Přehrát';
+    };
+    slider.oninput = () => {
+      playing = false;
+      button.textContent = 'Přehrát';
+      show(Number(slider.value));
+    };
+    function tick(now) {
+      if (playing && !document.hidden) {
+        time += Math.min(now - previous, 100);
+        if (time >= 62.5) {
+          time %= 62.5;
+          show((Number(slider.value) % 32) + 1);
+        }
+      }
+      previous = now;
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  </script>
+</html>

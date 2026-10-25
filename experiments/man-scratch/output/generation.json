@@ -1,0 +1,13 @@
+{
+  "provider": "OpenAI Image API via imagegen skill CLI",
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "high",
+  "size": [1024, 1536],
+  "createdAt": "2026-10-25T22:59:03.660Z",
+  "retries": 0,
+  "prompt": "clean-plate.txt",
+  "promptSha256": "b7a25b2371ece3062e9a0a89c3edd59737e2db2d40993ca6d96a9bde4c237d34",
+  "inputSha256": "419b36ecb44849231ee005802dfefb70c4219cdb9c62db6a9030fefc4cb51a06",
+  "maskSha256": "b7e5889b78f355b2ab72f76c5b54016a7c7ab35a35480f97e170aaaecdee0681",
+  "outputSha256": "bcaed90316053c34c03a27731032fbf32075ed2fc2371303c44ea4da8bb1eab4"
+}
