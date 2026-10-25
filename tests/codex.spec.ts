@@ -156,6 +156,110 @@ test.describe('local Codex agent', () => {
     expect(calls).toBe(1);
   });
 
+  test('generic gesture imports, saves, reloads and plays independently in the studio and Game Mode', async ({
+    page,
+    workspace,
+  }, info) => {
+    calls = 0;
+    const errors: string[] = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    const original = JSON.parse(
+      await readFile(workspace.source, 'utf8'),
+    ) as GameContent;
+    const actor = original.scenes
+      .find((s) => s.id === 'animation-lab')!
+      .hotspots.find((h) => h.id === 'blink-character')!;
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await openEditor(page, workspace.url);
+    await page.getByRole('button', { name: 'Animace', exact: true }).click();
+    await page
+      .getByLabel('Animovaná postava', { exact: true })
+      .selectOption(JSON.stringify(['animation-lab', actor.id]));
+    const panel = page.getByRole('region', {
+      name: 'Codex animace postavy',
+      exact: true,
+    });
+    await panel.locator('summary').click();
+    await panel
+      .getByLabel('Úloha pro Codex', { exact: true })
+      .selectOption('gesture');
+    await expect(
+      panel.getByLabel('Zadání pro agenta', { exact: true }),
+    ).toHaveValue(/poškrábe/);
+    await panel
+      .getByRole('button', {
+        name: 'Spustit místního Codex agenta',
+        exact: true,
+      })
+      .click();
+    await expect.poll(() => calls).toBe(1);
+    release();
+    const apply = panel.getByRole('button', {
+      name: 'Přiřadit výsledek do návrhu',
+      exact: true,
+    });
+    await expect(apply).toBeEnabled();
+    await expect(panel.locator('canvas')).toBeVisible();
+    await panel.screenshot({ path: info.outputPath('gesture-result.png') });
+    await apply.click();
+    await page.getByLabel('Gesto min. (sekundy)', { exact: true }).fill('0.1');
+    await page.getByLabel('Gesto max. (sekundy)', { exact: true }).fill('0.2');
+    await save(page);
+    const saved = JSON.parse(
+      await readFile(workspace.source, 'utf8'),
+    ) as GameContent;
+    const updated = saved.scenes
+      .find((s) => s.id === 'animation-lab')!
+      .hotspots.find((h) => h.id === actor.id)!;
+    expect(updated.animation).toMatchObject({
+      ...actor.animation,
+      gestureIntervalMs: [100, 200],
+    });
+    const clip = saved.animations!.find(
+      (c) => c.id === updated.animation?.gesture,
+    )!;
+    expect(clip).toMatchObject({
+      kind: 'expression',
+      loop: false,
+      source: actor.image,
+    });
+    expect(clip.frames).toHaveLength(12);
+    expect(clip.region).toBeUndefined();
+    await page.reload();
+    await ready(page);
+    await page.getByRole('button', { name: 'Dev Mode', exact: true }).click();
+    await page.getByRole('button', { name: 'Animace', exact: true }).click();
+    await page
+      .getByLabel('Animovaná postava', { exact: true })
+      .selectOption(JSON.stringify(['animation-lab', actor.id]));
+    await expect(page.getByLabel('Náhodné gesto', { exact: true })).toHaveValue(
+      clip.id,
+    );
+    const preview = page.locator('.animation-workspace .combined-preview');
+    // Isolate only the gesture for a visible-render assertion (not other clocks).
+    for (const name of ['Testovat mrkání', 'Testovat mluvení', 'Testovat idle'])
+      await preview.getByLabel(name, { exact: true }).uncheck();
+    const canvas = preview.locator('canvas');
+    await expect(canvas).toBeVisible();
+    const still = await canvas.screenshot();
+    await expect
+      .poll(async () => (await canvas.screenshot()).equals(still), {
+        timeout: 5000,
+      })
+      .toBe(false);
+    await preview.screenshot({ path: info.outputPath('gesture-studio.png') });
+    await page
+      .getByRole('button', { name: 'Otestovat odsud ↗', exact: true })
+      .click();
+    await ready(page);
+    const game = page
+      .getByRole('region', { name: 'Herné okno', exact: true })
+      .locator('canvas');
+    await expect(game).toBeVisible();
+    await game.screenshot({ path: info.outputPath('gesture-game.png') });
+    expect(errors).toEqual([]);
+  });
+
   test('scene selection captures source coordinates, can stop a running agent and applies a separate animated layer without changing the background', async ({
     page,
     workspace,

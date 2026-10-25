@@ -293,6 +293,13 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
   (`active`, `timeMs`, volitelný `frameIndex`) připravuje řízení úst zvukovým
   adaptérem. Seek řeči nesmí restartovat oči. Vizuální požadavky ani hodiny
   nepatří do uloženého postupu hráče. Při skrytí Dev Mode odpoj jeho Pixi canvas.
+- `animation.gesture` s `gestureIntervalMs` přehraje klip jednou a čeká náhodně
+  od jeho konce (výchozí 2000–5000 ms). Sdílí pauzu a renderer s očima/ústy;
+  celopostavové řeči/reakci ustoupí a po ní znovu čeká. Codex úloha `gesture`
+  vytváří `expression` bez regionu, s přesným zdrojovým prvním/posledním snímkem.
+  Pohyb končetin smí změnit alfu, nikoli plátno nebo ukotvení hlavy. Přiřazené
+  regiony očí/úst posílá editor jako `protectedRegions`; runner odmítne jejich
+  změnu. Přiřazení gesta zachová hlas, mapu úst a všechny ostatní vazby.
 - Import a přehrávání animací nepoužívají AI API ani video pipeline. Textová réžie
   pouze navrhuje jejich konfiguraci. `OPENAI_API_KEY` používají volitelné grafické
   úpravy a textová réžie pouze na serveru / v `.env.local`.

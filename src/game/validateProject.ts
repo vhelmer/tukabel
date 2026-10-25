@@ -258,6 +258,8 @@ export function validateProject(
           'idleLoop',
           'blink',
           'blinkIntervalMs',
+          'gesture',
+          'gestureIntervalMs',
           'talk',
           'dialogueId',
           'motion',
@@ -301,6 +303,7 @@ export function validateProject(
           'blink',
           'talk',
           'dialogueId',
+          'gesture',
           'onClick',
           'onUse',
         ])
@@ -315,8 +318,9 @@ export function validateProject(
           !['breath', 'sway'].includes(String(binding.motion))
         )
           errors.push(`${key}: invalid motion`);
-        if (binding.blinkIntervalMs !== undefined) {
-          const interval = binding.blinkIntervalMs;
+        for (const field of ['blinkIntervalMs', 'gestureIntervalMs']) {
+          if (binding[field] === undefined) continue;
+          const interval = binding[field];
           if (
             !Array.isArray(interval) ||
             interval.length !== 2 ||
@@ -328,7 +332,7 @@ export function validateProject(
             interval[1] > 120000
           )
             errors.push(
-              `${key}: blink interval must be [min, max] in 100–120000 ms`,
+              `${key}: ${field} interval must be [min, max] in 100–120000 ms`,
             );
         }
       }

@@ -16,27 +16,57 @@ export async function writeCodexFixture(request: CodexRun) {
   const kinds =
     input.task === 'blink-talk'
       ? ['blink', 'talk']
-      : [input.task === 'ambient' ? 'idle' : input.task];
+      : [
+          input.task === 'ambient'
+            ? 'idle'
+            : input.task === 'gesture'
+              ? 'expression'
+              : input.task,
+        ];
   const clips = [];
   for (const kind of kinds) {
     const frames = [];
     for (let f = 0; f < input.count; f++) {
       const raw = Buffer.from(source.data);
-      const amount = kind === 'blink' ? [0, 1, 2, 1, 0][f % 5]! : f;
-      const x0 = Math.floor(width * 0.45);
-      const y0 = Math.floor(height * (kind === 'talk' ? 0.4 : 0.2));
+      const amount =
+        kind === 'blink'
+          ? [0, 1, 2, 1, 0][f % 5]!
+          : kind === 'expression' && (f === 0 || f === input.count - 1)
+            ? 0
+            : f;
+      const x0 = Math.floor(width * (kind === 'expression' ? 0.1 : 0.45));
+      const y0 = Math.floor(
+        height * (kind === 'expression' ? 0.6 : kind === 'talk' ? 0.4 : 0.2),
+      );
       for (
         let y = y0;
-        y < Math.min(height, y0 + Math.max(1, Math.floor(height * 0.01)));
+        y <
+        Math.min(
+          height,
+          y0 +
+            Math.max(
+              1,
+              Math.floor(height * (kind === 'expression' ? 0.1 : 0.01)),
+            ),
+        );
         y++
       )
         for (
           let x = x0;
-          x < Math.min(width, x0 + Math.max(1, Math.floor(width * 0.03)));
+          x <
+          Math.min(
+            width,
+            x0 +
+              Math.max(
+                1,
+                Math.floor(width * (kind === 'expression' ? 0.25 : 0.03)),
+              ),
+          );
           x++
         ) {
           const i = (y * width + x) * 4;
           raw[i] = (raw[i]! + amount * 40) % 256;
+          if (kind === 'expression' && amount) raw[i + 3] = 200;
         }
       const file = kind + '-' + f + '.png';
       await sharp(raw, { raw: { width, height, channels: 4 } })

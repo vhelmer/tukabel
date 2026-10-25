@@ -160,6 +160,7 @@ export function validateContent(content: GameContent): string[] {
           talk: hotspot.animation.talk,
           onClick: hotspot.animation.onClick,
           onUse: hotspot.animation.onUse,
+          gesture: hotspot.animation.gesture,
         };
         for (const [key, id] of Object.entries(bindings)) {
           if (!id) continue;

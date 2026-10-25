@@ -113,7 +113,23 @@ export function CodexPanel({
     if (busy) return;
     setBusy(true);
     try {
-      const captured = { ...context, selection: selection?.() };
+      const target = content.scenes
+        .find((s) => s.id === context.sceneId)
+        ?.hotspots.find((h) => h.id === context.targetId);
+      const captured = {
+        ...context,
+        selection: selection?.(),
+        protectedRegions:
+          context.mode === 'character' && task === 'gesture'
+            ? (content.animations ?? []).flatMap((clip) =>
+                [target?.animation?.blink, target?.animation?.talk].includes(
+                  clip.id,
+                ) && clip.region
+                  ? [clip.region]
+                  : [],
+              )
+            : undefined,
+      };
       const next = await submitEditorJob({
         kind: 'codex',
         label: 'Codex · ' + context.label,
@@ -183,7 +199,23 @@ export function CodexPanel({
           <Field label="Úloha pro Codex">
             <select
               value={task}
-              onChange={(e) => setTask(e.target.value as CodexTask)}
+              onChange={(e) => {
+                const next = e.target.value as CodexTask;
+                setTask(next);
+                setPrompt(
+                  next === 'gesture'
+                    ? 'Postava se přirozeně poškrábe rukou na hlavě a vrátí ruku do původní polohy. Zachovej ukotvení hlavy, očí, úst a těla, původní styl, oblečení a obrysy. První i poslední snímek musí být originál.'
+                    : next === 'blink'
+                      ? 'Připrav přirozené mrknutí. Měň pouze oči, zachovej původní alfu a první i poslední snímek jako originál.'
+                      : next === 'talk'
+                        ? 'Připrav odlišné tvary úst pro mluvení. Měň pouze oblast úst, zachovej oči, oblečení a původní alfu.'
+                        : next === 'blink-talk'
+                          ? 'Připrav přirozené mrknutí a odlišné tvary úst pro mluvení. Zachovej původní kresbu, obrysy a všechny pixely mimo oči a ústa.'
+                          : 'Rozpohybuj vybranou oblast jemnou plynulou smyčkou. Zachovej kreslený styl, umístění a pevné okraje.',
+                );
+                setCount(next === 'gesture' ? 12 : 5);
+                setFps(next === 'gesture' ? 10 : 12);
+              }}
             >
               {context.mode === 'character' ? (
                 <>
@@ -192,12 +224,22 @@ export function CodexPanel({
                   </option>
                   <option value="blink">Mrkání</option>
                   <option value="talk">Tvary úst pro mluvení</option>
+                  <option value="gesture">Běžné gesto postavy · náhodně</option>
                 </>
               ) : (
                 <option value="ambient">Plynulá animace vybrané oblasti</option>
               )}
             </select>
           </Field>
+          {task === 'gesture' && (
+            <p className="field-note">
+              Například škrábání na hlavě, pokrčení ramen nebo úprava oblečení.
+              Gesto se přehraje jednou a vrátí do klidu. Po přiřazení se spouští
+              náhodně každé 2–5 sekund; interval upravíš v Přehrávání postavy.
+              Hlavu drž na místě kvůli nezávislým očím a ústům. Pro pohyb ruky
+              musí být na zdrojovém plátně dost místa.
+            </p>
+          )}
           <Field label="Zadání pro agenta">
             <textarea
               rows={4}
@@ -271,7 +313,9 @@ export function CodexPanel({
                 }}
               >
                 {context.mode === 'character' && (
-                  <option value="combined">Souběžné oči, ústa a idle</option>
+                  <option value="combined">
+                    Souběžné oči, ústa, gesta a idle
+                  </option>
                 )}
                 {context.mode === 'scene' && (
                   <option value="combined">Smyčka oblasti</option>

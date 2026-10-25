@@ -1,13 +1,18 @@
-import type { AnimationDefinition, GameContent } from '../game/types';
+import type {
+  AnimationDefinition,
+  AnimationRegion,
+  GameContent,
+} from '../game/types';
 import type { Point } from '../game/transforms';
 import type { ArtContext } from './jobs';
 
-export type CodexTask = 'blink' | 'talk' | 'blink-talk' | 'ambient';
+export type CodexTask = 'blink' | 'talk' | 'blink-talk' | 'gesture' | 'ambient';
 export interface CodexContext extends ArtContext {
   instruction?: string;
   mode: 'character' | 'scene';
   source: string;
   selection?: readonly Point[];
+  protectedRegions?: readonly AnimationRegion[];
 }
 export interface CodexResult {
   source: string;
@@ -71,6 +76,9 @@ export function applyCodexResult(
             } else if (clip.kind === 'talk') {
               animation.talk = clip.id;
               animation.mouthShapes = undefined;
+            } else if (clip.kind === 'expression') {
+              animation.gesture = clip.id;
+              animation.gestureIntervalMs ??= [2000, 5000];
             }
           }
           return { ...hotspot, animation };

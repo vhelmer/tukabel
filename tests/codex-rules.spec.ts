@@ -16,6 +16,8 @@ import type { CodexRun } from '../dev/codexAgent';
 import type { CodexContext } from '../src/editor/codex';
 import { createEditorJobs } from '../dev/editorJobs';
 import { writeCodexFixture } from './codexFixture';
+import { applyCodexResult } from '../src/editor/codex';
+import type { GameContent } from '../src/game/types';
 
 const context: CodexContext = {
   mode: 'character',
@@ -43,6 +45,93 @@ async function workspace() {
     .toFile(path.join(root, 'actor.png'));
   return root;
 }
+test('gesture tasks allow moving silhouettes, preserve protected face pixels and assign a random one-shot without replacing speech', async () => {
+  const root = await workspace();
+  const request = {
+    ...input,
+    task: 'gesture',
+    context: {
+      ...context,
+      protectedRegions: [{ x: 0, y: 0, width: 2, height: 2 }],
+    },
+  };
+  const run = async (r: CodexRun) => {
+    const frames = [];
+    for (let f = 0; f < 5; f++) {
+      const data = await sharp(path.join(r.directory, 'source.png'))
+        .ensureAlpha()
+        .raw()
+        .toBuffer();
+      if (f > 0 && f < 4) data[(10 * 32 + 14) * 4 + 3] = f * 50;
+      const name = `gesture-${f}.png`;
+      await sharp(data, { raw: { width: 32, height: 24, channels: 4 } })
+        .png()
+        .toFile(path.join(r.directory, name));
+      frames.push(name);
+    }
+    await writeFile(path.join(r.directory, 'generate.py'), '# test fixture');
+    await writeFile(
+      path.join(r.directory, 'result.json'),
+      JSON.stringify({
+        notes: 'Gesto',
+        scripts: ['generate.py'],
+        clips: [{ kind: 'expression', label: 'Škrábání', fps: 12, frames }],
+      }),
+    );
+  };
+  try {
+    const result = await createCodexAnimation(root, request, { run });
+    expect(result.clips[0]).toMatchObject({ kind: 'expression', loop: false });
+    expect(result.clips[0]!.region).toBeUndefined();
+    const project = {
+      animations: [],
+      scenes: [
+        {
+          id: 'scene',
+          hotspots: [
+            {
+              id: 'actor',
+              animation: {
+                blink: 'eyes',
+                talk: 'mouth',
+                mouthShapes: { X: 4 },
+              },
+            },
+          ],
+        },
+      ],
+    } as unknown as GameContent;
+    const updated = applyCodexResult(project, context, result).scenes[0]!
+      .hotspots[0]!.animation;
+    expect(updated).toMatchObject({
+      gesture: result.clips[0]!.id,
+      gestureIntervalMs: [2000, 5000],
+      blink: 'eyes',
+      talk: 'mouth',
+      mouthShapes: { X: 4 },
+    });
+    for (const failure of ['face', 'endpoint']) {
+      await expect(
+        createCodexAnimation(root, request, {
+          run: async (r) => {
+            await run(r);
+            const file = path.join(
+              r.directory,
+              failure === 'face' ? 'gesture-1.png' : 'gesture-4.png',
+            );
+            const raw = await sharp(file).raw().toBuffer();
+            raw[failure === 'face' ? 0 : (10 * 32 + 14) * 4] = 255;
+            await sharp(raw, { raw: { width: 32, height: 24, channels: 4 } })
+              .png()
+              .toFile(file);
+          },
+        }),
+      ).rejects.toThrow();
+    }
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
 test('Codex results publish atomically, retain exact pixels, detect disjoint regions and archive recipes without editing the project', async () => {
   const root = await workspace();
   try {

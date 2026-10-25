@@ -159,6 +159,7 @@ export function AnimationPanel({
       binding?.talk,
       binding?.onClick,
       binding?.onUse,
+      binding?.gesture,
     ];
     if (
       content.scenes.some((scene) =>
@@ -176,7 +177,7 @@ export function AnimationPanel({
       return;
     }
     const binding = { ...hotspot.animation };
-    for (const key of ['idle', 'blink', 'talk'] as const)
+    for (const key of ['idle', 'blink', 'talk', 'gesture'] as const)
       if (binding[key] === candidate.id) delete binding[key];
     if (binding.onClick === candidate.id) delete binding.onClick;
     if (binding.onUse === candidate.id) delete binding.onUse;
@@ -242,7 +243,7 @@ export function AnimationPanel({
             idle.
           </p>
         )}
-        {(['blink', 'talk', 'idle'] as const).map((key) => (
+        {(['blink', 'talk', 'idle', 'gesture'] as const).map((key) => (
           <SelectId
             key={key}
             label={
@@ -250,11 +251,14 @@ export function AnimationPanel({
                 ? 'Automatické mrkání'
                 : key === 'talk'
                   ? 'Animace během dialogu'
-                  : 'Základní animace'
+                  : key === 'gesture'
+                    ? 'Náhodné gesto'
+                    : 'Základní animace'
             }
             value={hotspot.animation?.[key] ?? ''}
             values={compatible.filter(
-              (entry) => key === 'idle' || entry.kind === key,
+              (entry) =>
+                key === 'idle' || key === 'gesture' || entry.kind === key,
             )}
             empty="Vypnuté"
             onChange={(id) =>
@@ -265,6 +269,45 @@ export function AnimationPanel({
             }
           />
         ))}
+        <div className="field-row">
+          {([0, 1] as const).map((position) => (
+            <Field
+              key={position}
+              label={
+                position === 0 ? 'Gesto min. (sekundy)' : 'Gesto max. (sekundy)'
+              }
+            >
+              <input
+                type="number"
+                min={0.1}
+                max={120}
+                step={0.1}
+                value={
+                  (hotspot.animation?.gestureIntervalMs ?? [2000, 5000])[
+                    position
+                  ] / 1000
+                }
+                onChange={(event) => {
+                  const values: [number, number] = [
+                    ...(hotspot.animation?.gestureIntervalMs ?? [2000, 5000]),
+                  ];
+                  values[position] = Number(event.target.value) * 1000;
+                  onHotspot({
+                    ...hotspot,
+                    animation: {
+                      ...hotspot.animation,
+                      gestureIntervalMs: values,
+                    },
+                  });
+                }}
+              />
+            </Field>
+          ))}
+        </div>
+        <p className="field-note">
+          Interval gesta se počítá od konce předchozího přehrání. Gesto se
+          neopakuje ve smyčce; oči a ústa mají vlastní časování.
+        </p>
         <div className="field-row">
           {([0, 1] as const).map((position) => (
             <Field

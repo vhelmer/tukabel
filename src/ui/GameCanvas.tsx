@@ -161,6 +161,7 @@ function MountedCanvas({
                     hotspot.animation?.talk,
                     hotspot.animation?.onClick,
                     hotspot.animation?.onUse,
+                    hotspot.animation?.gesture,
                   ].includes(animation.id),
                 ),
               )
@@ -190,6 +191,7 @@ function MountedCanvas({
                     binding?.talk,
                     binding?.onClick,
                     binding?.onUse,
+                    binding?.gesture,
                   ].includes(clip.id),
                 )
                 .flatMap((clip) => clip.frames),

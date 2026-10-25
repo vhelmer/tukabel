@@ -35,6 +35,159 @@ const clip = (
   frames,
   fps: 10,
 });
+test('random gestures finish once, wait again and preserve independent speech and blink clocks', () => {
+  const gesture = clip('scratch', 'expression', ['rest', 'hand', 'rest']);
+  const eyes = {
+    ...clip('eyes', 'blink', ['eye0', 'eye1']),
+    region: { x: 0, y: 0, width: 2, height: 2 },
+  };
+  const mouth = {
+    ...clip('mouth', 'talk', ['m0', 'm1']),
+    region: { x: 0, y: 5, width: 2, height: 2 },
+  };
+  const player = createAnimationPlayer(
+    {
+      gesture: 'scratch',
+      gestureIntervalMs: [100, 100],
+      blink: 'eyes',
+      blinkIntervalMs: [100, 100],
+      talk: 'mouth',
+    },
+    [gesture, eyes, mouth],
+    () => 0,
+  );
+  expect(player.tick(99, false).frame).toBeUndefined();
+  expect(player.tick(1, false).frame).toBe('rest');
+  const both = player.tick(100, { active: true, timeMs: 100 });
+  expect(both.frame).toBe('hand');
+  expect(both.layers?.map((l) => l.frame)).toEqual(['eye1', 'm1']);
+  player.trigger('click'); // A click with no authored visual reaction keeps the gesture.
+  expect(player.tick(0, false).frame).toBe('hand');
+  expect(player.tick(200, false).frame).toBeUndefined();
+  expect(player.tick(99, false).frame).toBeUndefined();
+  expect(player.tick(1, false).frame).toBe('rest');
+  // A manual reaction takes priority; the gesture must not resume midway later.
+  const reaction = clip('reaction', 'expression', ['r0', 'r1']);
+  const other = createAnimationPlayer(
+    {
+      gesture: gesture.id,
+      gestureIntervalMs: [100, 100],
+      onClick: reaction.id,
+    },
+    [gesture, reaction],
+    () => 0,
+  );
+  other.tick(100, false);
+  other.trigger('click');
+  expect(other.tick(0, false).frame).toBe('r0');
+  expect(other.tick(200, false).frame).toBeUndefined();
+  expect(other.tick(100, false).frame).toBe('rest');
+});
+test('random gesture delay respects both ends of its configured range and restarts after full-frame speech', () => {
+  const gesture = clip('gesture', 'expression', ['base', 'pose', 'base']);
+  for (const [random, delay] of [
+    [0, 100],
+    [1, 300],
+  ]) {
+    const player = createAnimationPlayer(
+      { gesture: gesture.id, gestureIntervalMs: [100, 300] },
+      [gesture],
+      () => random!,
+    );
+    expect(player.tick(delay! - 1, false).frame).toBeUndefined();
+    expect(player.tick(1, false).frame).toBe('base');
+    expect(player.tick(100, false).frame).toBe('pose');
+    expect(player.tick(200, false).frame).toBeUndefined();
+    expect(player.tick(delay! - 1, false).frame).toBeUndefined();
+    expect(player.tick(1, false).frame).toBe('base');
+  }
+  const talk = clip('talk', 'talk', ['m0', 'm1']);
+  const player = createAnimationPlayer(
+    { gesture: gesture.id, gestureIntervalMs: [100, 100], talk: talk.id },
+    [gesture, talk],
+    () => 0,
+  );
+  player.tick(100, false);
+  expect(player.tick(0, true).frame).toBe('m0');
+  expect(player.tick(500, true).frame).toBe('m1');
+  expect(player.tick(0, false).frame).toBeUndefined();
+  expect(player.tick(99, false).frame).toBeUndefined();
+  expect(player.tick(1, false).frame).toBe('base');
+});
+
+test('gesture configurations validate references, source identity and bounded random intervals', async () => {
+  const project = JSON.parse(
+    await readFile('src/game/content/project.json', 'utf8'),
+  ) as GameContent;
+  const scene = project.scenes.find((s) => s.id === 'animation-lab')!;
+  const actor = scene.hotspots.find((h) => h.id === 'blink-character')!;
+  const gesture = {
+    ...clip('test-gesture', 'expression', [actor.image!]),
+    source: actor.image!,
+  };
+  const configured = {
+    ...project,
+    animations: [...(project.animations ?? []), gesture],
+    scenes: project.scenes.map((s) =>
+      s.id !== scene.id
+        ? s
+        : {
+            ...s,
+            hotspots: s.hotspots.map((h) =>
+              h.id !== actor.id
+                ? h
+                : {
+                    ...h,
+                    animation: {
+                      ...h.animation,
+                      gesture: gesture.id,
+                      gestureIntervalMs: [100, 500],
+                    },
+                  },
+            ),
+          },
+    ),
+  };
+  expect(validateProject(configured)).toEqual([]);
+  for (const interval of [
+    [99, 500],
+    [500, 100],
+    [100, 120001],
+    [100],
+    'soon',
+  ]) {
+    const invalid = {
+      ...configured,
+      scenes: configured.scenes.map((s) => ({
+        ...s,
+        hotspots: s.hotspots.map((h) =>
+          h.id !== actor.id
+            ? h
+            : {
+                ...h,
+                animation: { ...h.animation, gestureIntervalMs: interval },
+              },
+        ),
+      })),
+    };
+    expect(validateProject(invalid).join(' ')).toContain('gestureIntervalMs');
+  }
+  expect(
+    validateProject({ ...configured, animations: project.animations }).join(
+      ' ',
+    ),
+  ).toContain('test-gesture');
+  expect(
+    validateProject({
+      ...configured,
+      animations: [
+        ...(project.animations ?? []),
+        { ...gesture, source: 'other.png' },
+      ],
+    }).join(' '),
+  ).toContain('source must match');
+});
+
 test('visual clocks prioritize speech, schedule finite blinks and hold once-only expressions', () => {
   const blink = clip('blink', 'blink', [
     'base',

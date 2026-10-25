@@ -155,6 +155,7 @@ export function CombinedPreview({
   const [eyes, setEyes] = useState(true),
     [mouth, setMouth] = useState(true),
     [idle, setIdle] = useState(true),
+    [gestures, setGestures] = useState(true),
     [playing, setPlaying] = useState(true),
     [regions, setRegions] = useState(false),
     [blinkNonce, setBlinkNonce] = useState(0);
@@ -164,9 +165,10 @@ export function CombinedPreview({
       blink: eyes ? hotspot.animation?.blink : undefined,
       talk: mouth ? hotspot.animation?.talk : undefined,
       idle: idle ? hotspot.animation?.idle : undefined,
+      gesture: gestures ? hotspot.animation?.gesture : undefined,
       motion: idle ? hotspot.animation?.motion : undefined,
     }),
-    [hotspot.animation, eyes, mouth, idle],
+    [hotspot.animation, eyes, mouth, idle, gestures],
   );
   const preview = useMemo(
     () => ({ speech: mouth, blinkNonce, showRegions: regions }),
@@ -179,6 +181,7 @@ export function CombinedPreview({
           [eyes, setEyes, 'Testovat mrkání'],
           [mouth, setMouth, 'Testovat mluvení'],
           [idle, setIdle, 'Testovat idle'],
+          [gestures, setGestures, 'Testovat náhodná gesta'],
           [regions, setRegions, 'Zobrazit oblasti'],
         ].map(([checked, set, label]) => (
           <label key={String(label)}>

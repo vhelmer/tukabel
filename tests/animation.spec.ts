@@ -59,9 +59,13 @@ async function actorPanel(page: Page) {
   ).toBeVisible();
 }
 async function saveProject(page: Page) {
+  const response = page.waitForResponse(
+    (r) => r.url().endsWith('/project') && r.request().method() === 'PUT',
+  );
   await page
     .getByRole('button', { name: 'Uložit do projektu', exact: true })
     .click();
+  expect((await response).ok()).toBe(true);
   await expect(
     page.getByRole('status', { name: 'Stav editoru' }),
   ).toContainText('Uložené do');

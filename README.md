@@ -540,7 +540,8 @@ Integrace vychází z [neinteraktivního Codex CLI](https://learn.chatgpt.com/do
 
 1. V **Dev Mode → Animace** vyber postavu a rozbal
    **Codex CLI · připravit nové animační snímky**.
-2. Zvol **Mrkání**, **Tvary úst pro mluvení** nebo obojí. Zadej pokyny, počet
+2. Zvol **Mrkání**, **Tvary úst pro mluvení**, obojí nebo
+   **Běžné gesto postavy · náhodně**. Zadej pokyny, počet
    snímků každého klipu (5–24) a fps (1–30).
 3. Klikni **Spustit místního Codex agenta**. V **Úlohy na pozadí** uvidíš průběh
    a zprávy. Můžeš pokračovat v práci, uložit projekt nebo obnovit stránku.
@@ -550,6 +551,24 @@ Integrace vychází z [neinteraktivního Codex CLI](https://learn.chatgpt.com/do
    krok Undo; **Uložit do projektu** zapíše klipy a vazby do projektového JSON.
    Hlasy a reakce zůstávají; po výměně úst znovu přiřaď jejich mapu Rhubarb,
    protože indexy nových póz mohou mít jiný význam.
+
+**Škrábání na hlavě a další gesta:** v úloze **Běžné gesto postavy · náhodně**
+je připravený upravitelný prompt pro škrábání, 12 snímků při 10 fps. Po přiřazení
+se klip nastaví jako **Náhodné gesto**; při prvním přiřazení čeká 2–5 sekund
+od konce minulého přehrání. V **Přehrávání postavy → Gesto min./max. (sekundy)**
+uprav četnost, prázdný výběr gesto vypne. V kombinovaném náhledu lze gesta
+samostatně zapnout/vypnout. **Uložit do projektu** zapíše vazbu `gesture`
+a interval `gestureIntervalMs`; existující mrkání, ústa, mapy Rhubarb a hlas
+se při přiřazení gesta nemění. Stejným výběrem lze přiřadit i již importovaný klip.
+
+Gesto je konečná akce s návratem do původní pózy, nikoli nekonečná smyčka.
+Krajní snímky musí být přesně zdroj; pohyb ruky smí měnit siluetu/alfa kanál,
+ale plátno, pozice hlavy a přiřazené regiony očí/úst zůstávají pevné. Tyto regiony
+se předají agentovi jako chráněné a změněné pixely se při importu odmítnou.
+Na původním plátně musí být dost prostoru pro končetinu; editor sám plátno
+nerozšiřuje. Regionální oči a ústa se nad gestem přehrávají nezávisle.
+Starší celopostavové mrkání/mluvení a ruční reakce mají před gestem přednost;
+po jejich dokončení začne nová čekací doba. Během pauzy stojí i hodiny gesta.
 
 **Mraky, voda a další oblasti:** v **Lokace → Výběr a grafika** vyber zdroj,
 označ obdélník/polygon nad scénou a rozbal stejný panel Codexu. Zadej požadovanou
@@ -565,7 +584,7 @@ uložené přihlášení CLI zůstává dostupné. Vývojové API klíče se age
 nepředávají. Limit je 20 minut a žádné automatické opakování.
 Produkce nemá tento panel, endpointy ani závislost na CLI.
 
-Runner kontroluje skutečné PNG, stejné rozměry a alfu postavy, původní krajní
+Runner kontroluje skutečné PNG, stejné rozměry a u očí/úst alfu postavy, původní krajní
 snímky mrknutí, alespoň tři odlišné fáze mrknutí / pět tvarů úst a nepřekrývající
 se oblasti očí a úst. U výběru nepovolí změnu pixelů mimo polygon. Tyto kontroly
 ověřují technickou konzistenci; výtvarnou kvalitu posuď v náhledu.

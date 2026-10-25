@@ -52,6 +52,8 @@ export interface CharacterAnimation {
   readonly idleLoop?: boolean;
   readonly blink?: string;
   readonly blinkIntervalMs?: readonly [number, number];
+  readonly gesture?: string;
+  readonly gestureIntervalMs?: readonly [number, number];
   readonly talk?: string;
   readonly dialogueId?: string;
   readonly motion?: 'breath' | 'sway';

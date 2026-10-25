@@ -149,6 +149,7 @@ export function createScene(
           hotspot.animation.motion,
           hotspot.animation.onClick,
           hotspot.animation.onUse,
+          hotspot.animation.gesture,
         ].some(Boolean)
       )
         actors.push({

@@ -164,6 +164,13 @@ export function createAnimationPlayer(
   const blink = regional(binding.blink),
     talk = regional(binding.talk),
     idle = regional(binding.idle);
+  const gesture = find(binding.gesture);
+  const gestureInterval = binding.gestureIntervalMs ?? [2000, 5000];
+  const gestureDelay = () =>
+    gestureInterval[0] + random() * (gestureInterval[1] - gestureInterval[0]);
+  let untilGesture = gestureDelay();
+  let gestureTime: number | null = null;
+  let gestureBlocked = false;
   const interval = binding.blinkIntervalMs ?? [3000, 7000];
   const delay = () => interval[0] + random() * (interval[1] - interval[0]);
   let elapsed = 0,
@@ -178,6 +185,10 @@ export function createAnimationPlayer(
       else base.blink();
     },
     trigger(kind: 'click' | 'use') {
+      if (find(kind === 'click' ? binding.onClick : binding.onUse)) {
+        gestureTime = null;
+        untilGesture = gestureDelay();
+      }
       const clip = regional(kind === 'click' ? binding.onClick : binding.onUse);
       if (clip) reaction = { clip, time: 0 };
       else base.trigger(kind);
@@ -244,6 +255,33 @@ export function createAnimationPlayer(
         if (reaction.time >= clipDuration(reaction.clip)) reaction = null;
         else add(reaction.clip, reaction.time, false);
       }
+      // Full-frame speech/reactions own the base. Local eyes and mouth continue
+      // independently above a gesture, including changes to the body's alpha.
+      const blocked =
+        sample.priority === 'talk' ||
+        sample.priority === 'interaction' ||
+        sample.priority === 'blink' ||
+        !!reaction;
+      if (gesture) {
+        if (blocked || gestureBlocked) {
+          gestureTime = null;
+          untilGesture = gestureDelay();
+        } else if (gestureTime !== null) {
+          gestureTime += deltaMs;
+          if (gestureTime >= clipDuration(gesture)) {
+            gestureTime = null;
+            untilGesture = gestureDelay();
+          }
+        } else {
+          untilGesture -= deltaMs;
+          if (untilGesture <= 0) gestureTime = 0;
+        }
+        if (gestureTime !== null) {
+          if (gesture.region) add(gesture, gestureTime, false);
+          else sample.frame = frameAt(gesture, gestureTime, false);
+        }
+      }
+      gestureBlocked = blocked;
       return { ...sample, layers, elapsedMs: elapsed };
     },
   };

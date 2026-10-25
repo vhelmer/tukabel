@@ -16,6 +16,7 @@ export function characterClips(
       binding?.talk,
       binding?.onClick,
       binding?.onUse,
+      binding?.gesture,
     ].includes(clip.id),
   );
 }
