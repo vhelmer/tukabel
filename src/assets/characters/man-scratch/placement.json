@@ -1,0 +1,21 @@
+{
+  "experiment": "experiments/man-scratch",
+  "crop": { "left": 46, "top": 69, "width": 391, "height": 626 },
+  "sourceOffset": { "x": 2, "y": 11 },
+  "originalSize": { "width": 386, "height": 613 },
+  "originalBounds": {
+    "x": 285.55023923444975,
+    "y": 218.8310308182784,
+    "width": 295.5023923444976,
+    "height": 469.03294367693945
+  },
+  "bounds": {
+    "x": 284.01913875598086,
+    "y": 210.41445270988308,
+    "width": 299.33014354066984,
+    "height": 478.9798087141339
+  },
+  "clipId": "animation-67ffde01-cc5b-461d-8018-bb3371873413",
+  "source": "characters/man-scratch/source.png",
+  "animationDirectory": "animations/67ffde01-cc5b-461d-8018-bb3371873413"
+}

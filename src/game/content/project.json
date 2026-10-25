@@ -584,6 +584,52 @@
           "decorative": false
         }
       ]
+    },
+    {
+      "id": "scene2",
+      "title": "Uvodní scena",
+      "width": 1280,
+      "height": 720,
+      "background": "scene-art/9ac4f9f9-ab18-4a0a-8acc-c8dfc0519eff/provider-restored.png",
+      "hotspots": [
+        {
+          "id": "layer2",
+          "label": "Nový výřez",
+          "bounds": {
+            "x": 284.01913875598086,
+            "y": 210.41445270988308,
+            "width": 299.33014354066984,
+            "height": 478.9798087141339
+          },
+          "imageFit": "stretch",
+          "image": "characters/man-scratch/source.png",
+          "onClick": [],
+          "decorative": true,
+          "animation": {
+            "gesture": "animation-67ffde01-cc5b-461d-8018-bb3371873413",
+            "gestureIntervalMs": [2000, 5000]
+          }
+        },
+        {
+          "id": "layer1",
+          "label": "Ferova žena",
+          "bounds": {
+            "x": 81.91387559808612,
+            "y": 167.5664187035069,
+            "width": 100.28708133971291,
+            "height": 149.2029755579171
+          },
+          "imageFit": "stretch",
+          "image": "scene-art/f309ec15-1048-46e2-b2ba-c9d163cf07fb/cutout.png",
+          "onClick": [],
+          "decorative": true,
+          "animation": {
+            "blink": "codex-ddf0e886-2a73-4f45-91c0-f96f46f59806-blink",
+            "blinkIntervalMs": [3000, 7000],
+            "talk": "codex-ddf0e886-2a73-4f45-91c0-f96f46f59806-talk"
+          }
+        }
+      ]
     }
   ],
   "items": [
@@ -1617,6 +1663,80 @@
       ],
       "fps": 12,
       "loop": true
+    },
+    {
+      "id": "animation-67ffde01-cc5b-461d-8018-bb3371873413",
+      "label": "Poškrábání hlavy · vrstvená ruka",
+      "source": "characters/man-scratch/source.png",
+      "kind": "expression",
+      "fps": 16,
+      "frames": [
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-001.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-002.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-003.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-004.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-005.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-006.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-007.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-008.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-009.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-010.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-011.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-012.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-013.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-014.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-015.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-016.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-017.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-018.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-019.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-020.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-021.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-022.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-023.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-024.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-025.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-026.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-027.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-028.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-029.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-030.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-031.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-032.png"
+      ],
+      "loop": false
+    },
+    {
+      "id": "codex-ddf0e886-2a73-4f45-91c0-f96f46f59806-blink",
+      "source": "scene-art/f309ec15-1048-46e2-b2ba-c9d163cf07fb/cutout.png",
+      "kind": "blink",
+      "label": "Přirozené mrknutí",
+      "frames": [
+        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/blink-01.png",
+        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/blink-02.png",
+        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/blink-03.png",
+        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/blink-04.png",
+        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/blink-05.png"
+      ],
+      "fps": 12,
+      "loop": false,
+      "region": { "x": 51, "y": 44, "width": 52, "height": 24 }
+    },
+    {
+      "id": "codex-ddf0e886-2a73-4f45-91c0-f96f46f59806-talk",
+      "source": "scene-art/f309ec15-1048-46e2-b2ba-c9d163cf07fb/cutout.png",
+      "kind": "talk",
+      "label": "Mluvení – pět tvarů úst",
+      "frames": [
+        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/talk-01.png",
+        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/talk-02.png",
+        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/talk-03.png",
+        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/talk-04.png",
+        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/talk-05.png"
+      ],
+      "fps": 12,
+      "loop": true,
+      "region": { "x": 48, "y": 82, "width": 38, "height": 16 }
     }
   ]
 }

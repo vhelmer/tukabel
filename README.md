@@ -1221,6 +1221,12 @@ odmítá přepsat existující výstup. Potřebuje izolované prostředí
 (cesty lze nastavit přes `ARM_STUDY_PYTHON` / `IMAGE_GEN_CLI`).
 Záznam modelu, promptu a SHA-256 vstupů/výstupu je v `generation.json`; žádné klíče.
 
+Hotová animace je importovaná také ve scéně **Uvodní scena (`scene2`)**, u postavy
+`layer2`. Přehrává se jednou při 16 fps a poté čeká náhodně 2–5 sekund. Produkční
+snímky mají společný ořez 391 × 626 a zdrojový offset `[2,11]`; přepočtený rám
+zachovává původní velikost i umístění postavy. Podklady jsou v
+`src/assets/characters/man-scratch/`, vazba a interval se upravují běžně v Animacích.
+
 ### Izolovaný experiment: programové mrknutí `woman.png`
 
 `experiments/woman-blink/` obsahuje samostatný reprodukční skript. Nemění herní
