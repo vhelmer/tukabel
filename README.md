@@ -1227,6 +1227,82 @@ snímky mají společný ořez 391 × 626 a zdrojový offset `[2,11]`; přepočt
 zachovává původní velikost i umístění postavy. Podklady jsou v
 `src/assets/characters/man-scratch/`, vazba a interval se upravují běžně v Animacích.
 
+### Izolovaný experiment: Wan2.2 Animate v ComfyUI
+
+`experiments/wan-animate/` připravuje místní přenos pohybu z videa na postavu.
+Používá existující ComfyUI v `/home/vojta/Projects/comfyui`, nativní uzly Wan
+Animate v režimu Move, rozšíření ComfyUI-GGUF a DWPose z controlnet_aux.
+Model Animate 14B Q4_K_S a textový enkodér UMT5 Q5_K_M umožňují zkoušku na
+RTX 5060 Ti 16 GB. Váhy jsou jen v ComfyUI, jejich revize a SHA-256 jsou v
+`models.json`. Žádné placené API ani OpenAI klíče se nepoužívají.
+
+1. Spusť `/home/vojta/Projects/comfyui/start-wan.sh` a otevři
+   `http://127.0.0.1:8188` (pokud už server běží, druhý nespouštěj).
+2. Přetáhni `experiments/wan-animate/animate-workflow.json` do ComfyUI.
+3. Uzly **Obrázek postavy**, **Pohybové vodítko** a **Popis pohybu** určují vstupy.
+   Výchozí vodítko je kostra škrábání přizpůsobená naší postavě, nikoli původní
+   barevné video. Klikni **Run / Ctrl+Enter**.
+4. Výsledné MP4 a PNG snímky jsou v `ComfyUI/output/tukabel-wan/`.
+
+`quality-workflow.json` / **TUKABEL-Wan22-Quality** nabízí standardní variantu:
+20 kroků, CFG 3 a vypnutou akcelerační LoRA. Oba presety používají běžné VAE
+dekódování. Malé časové/prostorové dlaždice v prvním pokusu způsobovaly zřetelný
+zlom uprostřed klipu; porovnání stejných latentů je v `first-video/tiled-contact.png`
+a `first-video/contact.png`. `first-video/tiled-result.mp4` uchovává diagnostickou variantu.
+
+První video s živým hercem je archivované v `first-video/`: 33 snímků,
+rychlý běh po načtení vah 58 s, standardní 244 s a přibližně 13,6 GB VRAM.
+U něj model schovával prsty za hlavu. Aktuální `result.mp4` / `preview.gif`
+používají bližší kreslenou předlohu `istockphoto-2157540836-640_adpp_is.mp4`:
+0,7–3,7 s, 49 snímků, bez zrcadlení. `verification.json` zaznamenává skutečné
+běhy; `environment.json` zachycuje verze instalace.
+
+`preview.html` porovnává předlohu a hotové pokusy. Původní volné gesto z
+`idle-prompt_00001_.mp4` je zachované v `prompt-unanchored/`, včetně 33 původních
+PNG v `prompt-unanchored/frames/`. Novější `idle-result.mp4` / `idle-frames/`
+ukotvují začátek klipu obrázkem; video předloha se vůbec nepoužívá. Tento
+experiment spustí **TUKABEL-Wan22-Prompt** / `idle-workflow.json`: obrázek + text,
+33 snímků, 8 kroků, CFG 1 a LoRA. Výpočet trval přibližně minutu. Není to
+samostatný TI2V checkpoint: zkoušíme Animate bez pose větve. Model zatím může
+pohyb přehnat a měnit styl či proporce. Původní PNG jsou také v `frames/`
+(49 snímků s novou kreslenou video předlohou). Všechny tyto PNG mají RGB pozadí.
+
+Nastavení: 320 × 512, 49 snímků, 16 fps, Euler/simple. Rychlý preset má 6 kroků,
+CFG 1 a Lightx2v I2V LoRA; standardní 20 kroků a CFG 3 bez LoRA.
+Jde o krátký test kvality, nikoli záruku přesné kopie kresby.
+Wan generuje RGB video: průhlednost, dokonalá smyčka a pixelová shoda se zdrojem
+nejsou zaručené. Do hry se po výběru vhodného výsledku importují připravené PNG
+stávajícím animačním importem; průhledné pozadí je nutné nejprve připravit.
+
+Reprodukce ze stejného místního referenčního videa (jeho originál se nemění ani
+neukládá do Gitu):
+
+```sh
+COMFY_DIR=/home/vojta/Projects/comfyui
+python3 experiments/wan-animate/download_models.py "$COMFY_DIR/ComfyUI" --verify
+"$COMFY_DIR/.venv/bin/python" experiments/wan-animate/prepare.py \
+  /cesta/k/pohybovemu-videu.mp4 "$COMFY_DIR/ComfyUI"
+python3 experiments/wan-animate/workflow.py
+python3 experiments/wan-animate/run.py experiments/wan-animate/preprocess-api.json
+# Použij skutečně vzniklý driving-pose_XXXXX.json:
+"$COMFY_DIR/.venv/bin/python" experiments/wan-animate/retarget.py \
+  "$COMFY_DIR/ComfyUI/output/tukabel-wan/driving-pose_00001.json" "$COMFY_DIR/ComfyUI"
+python3 experiments/wan-animate/run.py experiments/wan-animate/animate-api.json
+# Standardní varianta:
+python3 experiments/wan-animate/run.py experiments/wan-animate/quality-api.json
+```
+
+`prepare.py` vybírá 0,7–3,7 s při 16 fps bez zrcadlení (`--start`, `--frames`,
+`--fps`, `--mirror` / `--no-mirror`). `retarget.py` obsahuje konkrétní klouby naší ukázkové
+postavy; nepředstírá univerzální retargeter. Zachová tělo a ruku s hrnkem, přenese
+relativní úhly škrábající paže a prsty. Rozsah lze omezit pomocí
+`--max-arm-degrees` / `--max-forearm-degrees`; skutečné hodnoty jsou v `retarget.json`.
+Snímky postavy nedeformuje: vytváří jen
+kostru, podle které následně kreslí Wan. `preprocess-workflow.json` umožňuje
+zkontrolovat původní DWPose výstup; `pose-reference.png` ukazuje zarovnání.
+Nové API grafy sestaví `python3 experiments/wan-animate/workflow.py`, jejich
+vizuální export obstará `node experiments/wan-animate/export-workflows.mjs`.
+
 ### Izolovaný experiment: programové mrknutí `woman.png`
 
 `experiments/woman-blink/` obsahuje samostatný reprodukční skript. Nemění herní

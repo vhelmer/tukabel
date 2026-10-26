@@ -1,0 +1,84 @@
+{
+  "1": {
+    "class_type": "LoadVideo",
+    "inputs": {
+      "file": "tukabel-scratch-driving.mp4"
+    }
+  },
+  "2": {
+    "class_type": "GetVideoComponents",
+    "inputs": {
+      "video": ["1", 0]
+    }
+  },
+  "3": {
+    "class_type": "DWPreprocessor",
+    "inputs": {
+      "image": ["2", 0],
+      "detect_hand": "enable",
+      "detect_body": "enable",
+      "detect_face": "disable",
+      "resolution": 512,
+      "bbox_detector": "yolox_l.onnx",
+      "pose_estimator": "dw-ll_ucoco_384.onnx",
+      "scale_stick_for_xinsr_cn": "disable"
+    }
+  },
+  "4": {
+    "class_type": "SavePoseKpsAsJsonFile",
+    "inputs": {
+      "pose_kps": ["3", 1],
+      "filename_prefix": "tukabel-wan/driving-pose"
+    }
+  },
+  "90": {
+    "class_type": "CreateVideo",
+    "inputs": {
+      "images": ["3", 0],
+      "fps": 16
+    }
+  },
+  "91": {
+    "class_type": "SaveVideo",
+    "inputs": {
+      "video": ["90", 0],
+      "filename_prefix": "tukabel-wan/driving-pose",
+      "format": "mp4",
+      "format.codec": "h264",
+      "format.codec.encoding": "auto"
+    }
+  },
+  "5": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "tukabel-wan-character.png"
+    }
+  },
+  "6": {
+    "class_type": "DWPreprocessor",
+    "inputs": {
+      "image": ["5", 0],
+      "detect_hand": "enable",
+      "detect_body": "enable",
+      "detect_face": "disable",
+      "resolution": 512,
+      "bbox_detector": "yolox_l.onnx",
+      "pose_estimator": "dw-ll_ucoco_384.onnx",
+      "scale_stick_for_xinsr_cn": "disable"
+    }
+  },
+  "7": {
+    "class_type": "SavePoseKpsAsJsonFile",
+    "inputs": {
+      "pose_kps": ["6", 1],
+      "filename_prefix": "tukabel-wan/reference-pose"
+    }
+  },
+  "8": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": ["6", 0],
+      "filename_prefix": "tukabel-wan/reference-pose"
+    }
+  }
+}

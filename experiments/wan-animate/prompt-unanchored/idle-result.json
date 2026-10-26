@@ -1,0 +1,12 @@
+{
+  "frames": 33,
+  "canvas": [320, 512],
+  "fps": 16.0,
+  "durationSeconds": 2.0625,
+  "distinctDecodedFrames": 33,
+  "videoSha256": "ad3514cbba416ff8a707cc95d836a90a84576ab3a03511a7b70683dbf0702a9b",
+  "comfyOutput": "/home/vojta/Projects/comfyui/ComfyUI/output/tukabel-wan/idle-prompt_00001_.mp4",
+  "transparency": false,
+  "method": "Wan2.2 Animate generates new RGB frames from the reference image and text only; no driving video or pose.",
+  "note": "This is a motion-transfer quality experiment, not a pixel-preserving sprite edit or finished transparent loop."
+}

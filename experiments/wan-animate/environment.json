@@ -1,0 +1,16 @@
+{
+  "python": "3.12.3",
+  "packages": {
+    "torch": "2.14.1+cu130",
+    "numpy": "2.5.4",
+    "transformers": "5.20.2",
+    "gguf": "0.19.0",
+    "onnxruntime-gpu": "1.31.0",
+    "comfyui-frontend-package": "1.55.18"
+  },
+  "git": {
+    "ComfyUI": "63be2f9b82ad0dac88a7ceaa28a9cf3154125a18",
+    "ComfyUI-GGUF": "6ea2651e7df66d7585f6ffee804b20e92fb38b8a",
+    "comfyui_controlnet_aux": "a587a4c1594524c1d2de5cd1a86cd868ff448e1c"
+  }
+}

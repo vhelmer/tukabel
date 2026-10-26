@@ -1,0 +1,6 @@
+{
+  "limitsDegrees": [25.0, 55.0],
+  "maxArmDeltaDegrees": [25.0, 21.58052212849391],
+  "frames": 49,
+  "handDetected": true
+}

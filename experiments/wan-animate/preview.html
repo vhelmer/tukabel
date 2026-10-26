@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="cs">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fero · pokusy s Wan2.2</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 24px;
+        color: #eee8dd;
+        background: #22252a;
+        font:
+          16px/1.5 system-ui,
+          sans-serif;
+      }
+      main {
+        max-width: 1120px;
+        margin: auto;
+      }
+      h1 {
+        font-size: 26px;
+        margin: 0 0 8px;
+      }
+      p {
+        color: #c8c3b9;
+      }
+      .examples {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+      }
+      figure {
+        margin: 0;
+      }
+      img,
+      video {
+        display: block;
+        width: 100%;
+        aspect-ratio: 5 / 8;
+        object-fit: contain;
+        background: #b2b0a5;
+        border-radius: 8px;
+      }
+      figcaption {
+        margin-top: 10px;
+      }
+      strong {
+        display: block;
+        color: #f2d697;
+      }
+      a {
+        color: #f2d697;
+      }
+      .note {
+        margin-top: 24px;
+        max-width: 85ch;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Fero · pokusy s Wan2.2</h1>
+      <p>
+        Skutečné lokální generování. Porovnej původní kresbu, přenos pohybu a
+        pohyb z textu.
+      </p>
+      <div class="examples">
+        <figure>
+          <img
+            src="reference.png"
+            alt="Původní obrázek Fera na neutrálním pozadí"
+          />
+          <figcaption>
+            <strong>Referenční obrázek</strong>Stejný vstup pro obě varianty.
+          </figcaption>
+        </figure>
+        <figure>
+          <video
+            src="result.mp4"
+            controls
+            loop
+            muted
+            playsinline
+            preload="metadata"
+          ></video>
+          <figcaption>
+            <strong>Podle kresleného videa</strong>Kostra pohybu z nové
+            předlohy, zarovnaná na Fera.
+          </figcaption>
+        </figure>
+        <figure>
+          <video
+            src="prompt-unanchored/idle-result.mp4"
+            controls
+            loop
+            muted
+            playsinline
+            preload="metadata"
+            aria-label="První volné gesto Fera z promptu"
+          ></video>
+          <figcaption>
+            <strong>První volné gesto z promptu</strong>Živější pohyb z
+            oblíbeného prvního pokusu. Vzhled se postupně mění.
+          </figcaption>
+        </figure>
+        <figure>
+          <video
+            src="idle-result.mp4"
+            controls
+            loop
+            muted
+            playsinline
+            preload="metadata"
+          ></video>
+          <figcaption>
+            <strong>Prompt + ukotvený začátek</strong>Původní obrázek tvoří také
+            začátek klipu. Pohyb je stále volnější než zadání.
+          </figcaption>
+        </figure>
+      </div>
+      <p class="note">
+        Jde o generativní RGB výstupy. Kresba se může měnit; pro herní sprite je
+        potřeba vybrat vhodný pohyb, připravit průhlednost a smyčku. Předchozí
+        pokus s živým hercem je <a href="first-video/preview.gif">zde</a>.
+      </p>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "sourceSha256": "a4dfb26e9af6c24ec084e63be88f18368d670cb911caa5fbb40255f45023d505",
+  "drivingVideoSha256": "eb62eff967b109f2daa07ee699980933097972ed547004f74f82027a3fda0a05",
+  "startSeconds": 3.6,
+  "frames": 33,
+  "fps": 16,
+  "mirror": true,
+  "canvas": [320, 512],
+  "sourceSize": [386, 613],
+  "referenceSize": [288, 457],
+  "referenceOffset": [16, 27],
+  "note": "Driving video stays local; only pose data conditions the animation."
+}

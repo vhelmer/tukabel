@@ -1,0 +1,12 @@
+{
+  "frames": 33,
+  "canvas": [320, 512],
+  "fps": 16.0,
+  "durationSeconds": 2.0625,
+  "distinctDecodedFrames": 33,
+  "videoSha256": "1fe327d381dd7035d59a46bc2489d34c4b1671d981b6d0260c4b237ed6c26545",
+  "comfyOutput": "/home/vojta/Projects/comfyui/ComfyUI/output/tukabel-wan/scratch-quality_00002_.mp4",
+  "transparency": false,
+  "method": "Wan2.2 Animate generates new RGB frames from the reference image and retargeted DWPose control.",
+  "note": "This is a motion-transfer quality experiment, not a pixel-preserving sprite edit or finished transparent loop."
+}

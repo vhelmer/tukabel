@@ -1,0 +1,70 @@
+{
+  "date": "2026-10-26",
+  "installation": "All seven pinned files verified by installer SHA-256 checks before use.",
+  "gpu": {
+    "name": "NVIDIA GeForce RTX 5060 Ti",
+    "observedMemoryMiB": 13853,
+    "totalMiB": 16311
+  },
+  "runs": {
+    "quality": {
+      "promptId": "322804fd-38f7-446e-a5f4-4ac42d0f262e",
+      "durationSeconds": 363.469,
+      "frames": 49,
+      "poseVideo": true,
+      "startImageAnchored": false,
+      "steps": 20,
+      "decoder": "VAEDecode",
+      "videos": ["tukabel-wan/scratch-quality_00003_.mp4"]
+    },
+    "idle": {
+      "promptId": "df160c1d-ce05-4a29-86c6-55f506815fb0",
+      "durationSeconds": 58.348,
+      "frames": 33,
+      "poseVideo": false,
+      "startImageAnchored": true,
+      "steps": 8,
+      "decoder": "VAEDecode",
+      "videos": ["tukabel-wan/idle-prompt_00002_.mp4"]
+    }
+  },
+  "firstVideo": "first-video/verification.json",
+  "promptUnanchored": {
+    "promptId": "2b946728-80ad-4ceb-b3eb-0ba4fe43dc16",
+    "durationSeconds": 69.13,
+    "frames": 33,
+    "video": "prompt-unanchored/idle-result.mp4"
+  },
+  "startFrameComparison": {
+    "unanchoredRgbMAE": 19.494537353515625,
+    "anchoredRgbMAE": 3.0236572265625,
+    "note": "Original PNGs compared with reference.png; this measures the first frame only, not temporal style consistency."
+  },
+  "visualReview": {
+    "cartoonVideoGestureImproved": true,
+    "tiledSeamRemovedWithFullDecode": true,
+    "remainingIssues": [
+      "Face and drawing details drift.",
+      "Prompt-only motion is larger than requested and can leave the canvas.",
+      "Outputs need matting and loop preparation before sprite import."
+    ],
+    "finishedGameSprites": false
+  },
+  "checks": {
+    "pythonCompilation": "passed",
+    "comfyUIWorkflowImport": "passed; no missing node classes",
+    "comfyCoreDiff": "empty",
+    "pipCheck": "passed",
+    "lint": "passed",
+    "contentValidation": "passed",
+    "productionBuild": "passed",
+    "ruleTests": "76 passed in sandbox; two mock-CLI stdout tests passed on host after failing in sandbox.",
+    "fullNpmCheck": "blocked by formatting of 15 pre-existing draft/generated files; left untouched.",
+    "comparisonPage": {
+      "desktopPlayback": true,
+      "mobileWidth": 400,
+      "horizontalOverflow": false,
+      "videos": 3
+    }
+  }
+}

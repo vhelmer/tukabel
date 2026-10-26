@@ -1,0 +1,116 @@
+{
+  "date": "2026-10-26",
+  "models": "All seven pinned files verified by installer SHA-256 checks before use.",
+  "gpu": {
+    "name": "NVIDIA GeForce RTX 5060 Ti",
+    "observedMemoryMiB": 13560,
+    "totalMiB": 16311,
+    "observedUtilizationPercent": 100
+  },
+  "runs": {
+    "standardTiled": {
+      "promptId": "ae41f0d6-b7f8-402b-b9ef-a3c4c4dd859b",
+      "durationSeconds": 243.813,
+      "steps": 20,
+      "cfg": 3.0,
+      "decoder": "VAEDecodeTiled",
+      "cachedNodes": ["1", "4", "7", "8", "9", "10", "11", "12"],
+      "pngCount": 33,
+      "videos": ["tukabel-wan/scratch-quality_00001_.mp4"]
+    },
+    "standardFullDecode": {
+      "promptId": "9811d6c4-a139-4bb2-9117-097afbc5f407",
+      "durationSeconds": 2.718,
+      "steps": 20,
+      "cfg": 3.0,
+      "decoder": "VAEDecode",
+      "cachedNodes": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "pngCount": 33,
+      "videos": ["tukabel-wan/scratch-full-decode_00001_.mp4"]
+    },
+    "standardFinal": {
+      "promptId": "c8d25c03-bc30-493f-af88-f24641f90673",
+      "durationSeconds": 0.501,
+      "steps": 20,
+      "cfg": 3.0,
+      "decoder": "VAEDecode",
+      "cachedNodes": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "90"
+      ],
+      "pngCount": 33,
+      "videos": ["tukabel-wan/scratch-quality_00002_.mp4"]
+    },
+    "fastFinal": {
+      "promptId": "907eba2e-ea05-4155-978a-3feab68eda91",
+      "durationSeconds": 57.914,
+      "steps": 6,
+      "cfg": 1.0,
+      "decoder": "VAEDecode",
+      "cachedNodes": ["1", "4", "7", "8", "9", "10", "11", "12"],
+      "pngCount": 33,
+      "videos": ["tukabel-wan/scratch_00002_.mp4"]
+    }
+  },
+  "visualReview": {
+    "sameLatentsCompared": true,
+    "tiledSeamRemovedWithFullDecode": true,
+    "remainingIssues": [
+      "Raised fingers are hidden or fused with the head.",
+      "Character details drift relative to the original.",
+      "RGB output requires matting and loop preparation before sprite import."
+    ],
+    "readyAsFinishedScratchSprite": false
+  },
+  "checks": {
+    "pythonCompilation": "passed",
+    "comfyUIWorkflowImport": "passed; no missing node classes",
+    "comfyCoreDiff": "empty",
+    "pipCheck": "passed",
+    "lint": "passed",
+    "contentValidation": "passed",
+    "productionBuild": "passed",
+    "ruleTests": "76 passed in sandbox; two mock-CLI stdout tests passed on host after failing in sandbox.",
+    "fullNpmCheck": "blocked by formatting of 15 pre-existing draft/generated files; left untouched.",
+    "browserPlayback": {
+      "width": 320,
+      "height": 512,
+      "durationSeconds": 2.0625,
+      "playheadAdvanced": true,
+      "missingNodeClasses": 0,
+      "modelAvailable": true
+    }
+  }
+}

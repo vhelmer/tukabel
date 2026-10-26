@@ -1,0 +1,14 @@
+{
+  "sourceSha256": "a4dfb26e9af6c24ec084e63be88f18368d670cb911caa5fbb40255f45023d505",
+  "drivingVideoSha256": "7d3054c8a671d916b8c0e51be28123a672ad660c8360fca7c9aecc95bde4bc0f",
+  "drivingVideoName": "istockphoto-2157540836-640_adpp_is.mp4",
+  "startSeconds": 0.7,
+  "frames": 49,
+  "fps": 16,
+  "mirror": false,
+  "canvas": [320, 512],
+  "sourceSize": [386, 613],
+  "referenceSize": [288, 457],
+  "referenceOffset": [16, 27],
+  "note": "Driving video stays local; only pose data conditions the animation."
+}
