@@ -1,0 +1,26 @@
+{
+  "context": {
+    "mode": "character",
+    "sceneId": "scene1",
+    "targetId": "layer2",
+    "source": "scene-art/e1aeba34-3a1e-4e00-afbd-8567204bee56/cutout.png",
+    "label": "Cigy u zastavky",
+    "fingerprint": "[1280,720,{\"id\":\"layer2\",\"label\":\"Cigy u zastavky\",\"bounds\":{\"x\":145.45454545454544,\"y\":145.53191489361706,\"width\":231.19617224880383,\"height\":469.531914893617},\"imageFit\":\"stretch\",\"image\":\"scene-art/e1aeba34-3a1e-4e00-afbd-8567204bee56/cutout.png\",\"onClick\":[],\"decorative\":true}]",
+    "placement": {
+      "bounds": {
+        "x": 145.45454545454544,
+        "y": 145.53191489361706,
+        "width": 231.19617224880383,
+        "height": 469.531914893617
+      },
+      "imageFit": "stretch"
+    },
+    "instruction": "Připrav přirozené mrknutí a odlišné tvary úst pro mluvení. Zachovej původní kresbu, obrysy a všechny pixely mimo oči a ústa."
+  },
+  "prompt": "Připrav přirozené mrknutí a odlišné tvary úst pro mluvení. Zachovej původní kresbu, obrysy a všechny pixely mimo oči a ústa.",
+  "task": "blink-talk",
+  "count": 5,
+  "fps": 12,
+  "width": 302,
+  "height": 613
+}

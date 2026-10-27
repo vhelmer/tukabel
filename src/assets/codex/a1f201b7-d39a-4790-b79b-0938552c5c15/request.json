@@ -1,0 +1,60 @@
+{
+  "context": {
+    "mode": "scene",
+    "sceneId": "scene1",
+    "targetId": "",
+    "source": "scene-art/f1044951-67b1-4e2a-96d2-8c43b363909d/provider-restored.png",
+    "label": "Nový výřez",
+    "fingerprint": "[1280,720,\"scene-art/f1044951-67b1-4e2a-96d2-8c43b363909d/provider-restored.png\"]",
+    "placement": {
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 720
+      },
+      "imageFit": "stretch"
+    },
+    "selection": [
+      {
+        "x": 345.05508124999994,
+        "y": 244.77861111111113
+      },
+      {
+        "x": 0,
+        "y": 128.4562222222222
+      },
+      {
+        "x": 2.4583624999999323,
+        "y": 0
+      },
+      {
+        "x": 495.86295,
+        "y": 0.6658333333333215
+      },
+      {
+        "x": 499.1416375,
+        "y": 17.049250000000033
+      },
+      {
+        "x": 322.10557499999993,
+        "y": 108.79586111111108
+      },
+      {
+        "x": 318.8268875,
+        "y": 149.75505555555557
+      },
+      {
+        "x": 345.05508124999994,
+        "y": 157.94611111111112
+      }
+    ],
+    "instruction": "Vytvoř jemné vlnění mraků."
+  },
+  "prompt": "Vytvoř jemné vlnění mraků.",
+  "task": "ambient",
+  "count": 10,
+  "fps": 6,
+  "width": 1672,
+  "height": 940
+}

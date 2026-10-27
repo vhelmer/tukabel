@@ -1,0 +1,22 @@
+{
+  "id": "animation-0bc82fd4-ab49-48d7-bd26-b5ba8ac8d1db",
+  "label": "Rozprávanie",
+  "source": "woman.png",
+  "kind": "talk",
+  "fps": 14,
+  "frames": [
+    "animations/0bc82fd4-ab49-48d7-bd26-b5ba8ac8d1db/frame-001.png",
+    "animations/0bc82fd4-ab49-48d7-bd26-b5ba8ac8d1db/frame-002.png",
+    "animations/0bc82fd4-ab49-48d7-bd26-b5ba8ac8d1db/frame-003.png",
+    "animations/0bc82fd4-ab49-48d7-bd26-b5ba8ac8d1db/frame-004.png",
+    "animations/0bc82fd4-ab49-48d7-bd26-b5ba8ac8d1db/frame-005.png",
+    "animations/0bc82fd4-ab49-48d7-bd26-b5ba8ac8d1db/frame-006.png"
+  ],
+  "durationsMs": [
+    71.42857142857143, 71.42857142857143, 71.42857142857143, 71.42857142857143,
+    71.42857142857143, 71.42857142857143
+  ],
+  "loop": true,
+  "region": { "x": 431, "y": 257, "width": 55, "height": 51 },
+  "sourceHash": "70ce25a5dbf8bf1be42fdaa65294e69add29762da9e8796b75c89649218eace4"
+}

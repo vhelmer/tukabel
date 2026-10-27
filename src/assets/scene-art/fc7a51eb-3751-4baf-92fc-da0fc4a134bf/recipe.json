@@ -1,0 +1,158 @@
+{
+  "version": 3,
+  "cutoutFrame": {
+    "x": 796,
+    "y": 344,
+    "width": 332,
+    "height": 400,
+    "sourceWidth": 1672,
+    "sourceHeight": 940
+  },
+  "cutoutFull": "cutout-full.png",
+  "backgrounds": {
+    "restored": "provider-restored.png",
+    "masked": "image.png"
+  },
+  "defaultBackground": "restored",
+  "source": "imported/Zlov-stn--zast-vka-na-venkov--29f954e9.png",
+  "sourceSha256": "81f11ac27fc4b04e2ffcb326771ba21cf216645fc4d5d52c7f023d495b7e4328",
+  "operation": "extract",
+  "selection": [
+    {
+      "x": 871.7207125000001,
+      "y": 754.3251944444443
+    },
+    {
+      "x": 769.4739937500001,
+      "y": 733.3631944444444
+    },
+    {
+      "x": 802.24519375,
+      "y": 621.9993055555556
+    },
+    {
+      "x": 755.0543,
+      "y": 598.41575
+    },
+    {
+      "x": 823.21965,
+      "y": 400.5823055555556
+    },
+    {
+      "x": 916.2899625,
+      "y": 323.28297222222227
+    },
+    {
+      "x": 1002.8068187499999,
+      "y": 312.8006666666667
+    },
+    {
+      "x": 1076.21545625,
+      "y": 449.05758333333335
+    },
+    {
+      "x": 1093.2554875,
+      "y": 531.5987222222222
+    },
+    {
+      "x": 1140.44638125,
+      "y": 615.4480277777777
+    },
+    {
+      "x": 1126.0266875,
+      "y": 690.127111111111
+    },
+    {
+      "x": 1153.5559062500001,
+      "y": 728.1226944444445
+    }
+  ],
+  "objectMask": {
+    "file": "object-mask.png",
+    "method": "sam3",
+    "refineEdges": true,
+    "detailPass": false,
+    "pixelOwnership": "alpha",
+    "matting": {
+      "method": "vitmatte",
+      "radius": 4,
+      "decontaminate": true
+    },
+    "ownershipMask": "ownership-mask.png"
+  },
+  "repairPadding": 12,
+  "repairFeather": 2,
+  "debug": {
+    "files": {
+      "original": "scene-art/fc7a51eb-3751-4baf-92fc-da0fc4a134bf/source.png",
+      "objectMask": "scene-art/fc7a51eb-3751-4baf-92fc-da0fc4a134bf/object-mask.png",
+      "expandedMask": "scene-art/fc7a51eb-3751-4baf-92fc-da0fc4a134bf/expanded-mask.png",
+      "blendMask": "scene-art/fc7a51eb-3751-4baf-92fc-da0fc4a134bf/repair-mask.png",
+      "input": "scene-art/fc7a51eb-3751-4baf-92fc-da0fc4a134bf/provider-input.png",
+      "apiMask": "scene-art/fc7a51eb-3751-4baf-92fc-da0fc4a134bf/provider-mask.png",
+      "roundTrip": "scene-art/fc7a51eb-3751-4baf-92fc-da0fc4a134bf/round-trip.png",
+      "returned": "scene-art/fc7a51eb-3751-4baf-92fc-da0fc4a134bf/provider-returned.png",
+      "restored": "scene-art/fc7a51eb-3751-4baf-92fc-da0fc4a134bf/provider-restored.png",
+      "final": "scene-art/fc7a51eb-3751-4baf-92fc-da0fc4a134bf/image.png",
+      "difference": "scene-art/fc7a51eb-3751-4baf-92fc-da0fc4a134bf/provider-difference.png"
+    },
+    "geometry": {
+      "context": {
+        "x": 0,
+        "y": 0,
+        "width": 1672,
+        "height": 940
+      },
+      "canvas": {
+        "width": 1536,
+        "height": 1024
+      },
+      "content": {
+        "width": 1536,
+        "height": 864,
+        "left": 0,
+        "top": 80
+      },
+      "returned": {
+        "width": 1536,
+        "height": 1024
+      }
+    },
+    "metrics": {
+      "objectPixels": 77250,
+      "expandedPixels": 126750,
+      "featherPixels": 2261,
+      "feather": 2,
+      "padding": 12,
+      "lostObjectPixels": 0,
+      "roundTripMae": 2.629,
+      "contextMae": 6.084,
+      "seamMae": 12.462,
+      "outsideChanges": 0,
+      "boundaryMaxWeight": 0
+    },
+    "warnings": [
+      "Samotné škálování mění detaily. Porovnej kontrolní návrat bez AI s originálem.",
+      "Model změnil i chráněný kontext. Rozdíl oproti kontrolnímu návratu může vysvětlit barevný šev; color matching se nepoužívá."
+    ]
+  },
+  "pipeline": {
+    "context": "full-source-letterbox",
+    "expansion": "square-radius-native-pixels",
+    "imageResampling": "lanczos3",
+    "maskDownsampling": "conservative-pixel-footprints",
+    "feather": "inward-smoothstep-chamfer",
+    "composition": "premultiplied-interpolation-to-straight-rgba"
+  },
+  "repairMask": "repair-mask.png",
+  "reconstruction": {
+    "changedPixels": 52728,
+    "selectedPixels": 77250,
+    "cleanupPixels": 47768,
+    "unexpectedPixels": 0,
+    "edgePixels": 4960
+  },
+  "prompt": "Odstraň označený objekt a přirozeně dokresli pozadí za ním ve stejném výtvarném stylu.",
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "high"
+}

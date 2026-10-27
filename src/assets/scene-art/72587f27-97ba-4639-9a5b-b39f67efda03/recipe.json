@@ -1,0 +1,52 @@
+{
+  "version": 3,
+  "assetPlacement": {
+    "target": {
+      "x": 1336,
+      "y": 695,
+      "width": 78,
+      "height": 61
+    },
+    "fit": "contain",
+    "anchor": "bottom-center",
+    "background": "unchanged",
+    "guide": "placement-guide.png",
+    "provider": "provider-returned.png"
+  },
+  "preview": "preview.png",
+  "cutoutFrame": {
+    "x": 1338,
+    "y": 695,
+    "width": 73,
+    "height": 61,
+    "sourceWidth": 1672,
+    "sourceHeight": 940
+  },
+  "cutoutFull": "cutout-full.png",
+  "source": "scene-art/e1aeba34-3a1e-4e00-afbd-8567204bee56/provider-restored.png",
+  "sourceSha256": "652f04666ac9dc84adf8d42abdb97802103b4d4376c9c5298826b7eab8215a20",
+  "operation": "asset",
+  "selection": [
+    {
+      "x": 1336.29375,
+      "y": 695.8611111111111
+    },
+    {
+      "x": 1413.3625,
+      "y": 695.8611111111111
+    },
+    {
+      "x": 1413.3625,
+      "y": 755.9166666666666
+    },
+    {
+      "x": 1336.29375,
+      "y": 755.9166666666666
+    }
+  ],
+  "repairPadding": 0,
+  "repairFeather": 0,
+  "prompt": "Přidej sem psí lejno, cartoon style",
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "high"
+}

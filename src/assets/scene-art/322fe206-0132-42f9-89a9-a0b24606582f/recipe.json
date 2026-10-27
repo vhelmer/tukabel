@@ -1,0 +1,84 @@
+{
+  "version": 2,
+  "source": "demo-room.svg",
+  "sourceSha256": "1d90a0186e40e21ce134d4d5a9dedb10608126916879fd4bf4ded65b3357d503",
+  "operation": "extract",
+  "selection": [
+    {
+      "x": 318.118,
+      "y": 516.275
+    },
+    {
+      "x": 308.078,
+      "y": 478.627
+    },
+    {
+      "x": 324.392,
+      "y": 425.922
+    },
+    {
+      "x": 305.569,
+      "y": 343.098
+    },
+    {
+      "x": 368.314,
+      "y": 330.549
+    },
+    {
+      "x": 387.137,
+      "y": 422.157
+    },
+    {
+      "x": 501.33299999999997,
+      "y": 419.64699999999993
+    },
+    {
+      "x": 530.196,
+      "y": 315.49
+    },
+    {
+      "x": 575.373,
+      "y": 325.529
+    },
+    {
+      "x": 557.804,
+      "y": 444.745
+    },
+    {
+      "x": 585.412,
+      "y": 478.627
+    },
+    {
+      "x": 574.118,
+      "y": 512.51
+    },
+    {
+      "x": 363.294,
+      "y": 525.059
+    }
+  ],
+  "objectMask": {
+    "file": "object-mask.png",
+    "method": "sam2",
+    "refineEdges": true,
+    "detailPass": false,
+    "pixelOwnership": "alpha",
+    "matting": {
+      "method": "vitmatte",
+      "radius": 4,
+      "decontaminate": true
+    },
+    "ownershipMask": "ownership-mask.png"
+  },
+  "repairPadding": 5,
+  "repairMask": "repair-mask.png",
+  "reconstruction": {
+    "changedPixels": 14019,
+    "selectedPixels": 24389,
+    "cleanupPixels": 12570,
+    "unexpectedPixels": 0,
+    "edgePixels": 1449
+  },
+  "prompt": "Odstráň označený objekt a prirodzene dokresli pozadie za ním v rovnakom výtvarnom štýle.",
+  "model": "gpt-image-1.5"
+}

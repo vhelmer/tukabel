@@ -1,0 +1,12 @@
+{
+  "source": "../man-scratch/source.png",
+  "sourceSha256": "a4dfb26e9af6c24ec084e63be88f18368d670cb911caa5fbb40255f45023d505",
+  "sourceSize": [386, 613],
+  "canvas": [480, 768],
+  "offset": [47, 77],
+  "scale": 1,
+  "frames": 73,
+  "fps": 24,
+  "drivingVideo": null,
+  "note": "Native character pixels composited on neutral gray; no rescaling or generated input art."
+}

@@ -1,0 +1,131 @@
+{
+  "version": 1,
+  "provider": "codex-cli",
+  "model": "gpt-6.1-sol",
+  "effort": "high",
+  "context": {
+    "mode": "scene",
+    "sceneId": "scene1",
+    "targetId": "",
+    "source": "scene-art/f1044951-67b1-4e2a-96d2-8c43b363909d/provider-restored.png",
+    "label": "Nový výřez",
+    "fingerprint": "[1280,720,\"scene-art/f1044951-67b1-4e2a-96d2-8c43b363909d/provider-restored.png\"]",
+    "placement": {
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 720
+      },
+      "imageFit": "stretch"
+    },
+    "selection": [
+      {
+        "x": 345.05508124999994,
+        "y": 244.77861111111113
+      },
+      {
+        "x": 0,
+        "y": 128.4562222222222
+      },
+      {
+        "x": 2.4583624999999323,
+        "y": 0
+      },
+      {
+        "x": 495.86295,
+        "y": 0.6658333333333215
+      },
+      {
+        "x": 499.1416375,
+        "y": 17.049250000000033
+      },
+      {
+        "x": 322.10557499999993,
+        "y": 108.79586111111108
+      },
+      {
+        "x": 318.8268875,
+        "y": 149.75505555555557
+      },
+      {
+        "x": 345.05508124999994,
+        "y": 157.94611111111112
+      }
+    ],
+    "instruction": "Vytvoř jemné vlnění mraků."
+  },
+  "prompt": "Vytvoř jemné vlnění mraků.",
+  "task": "ambient",
+  "count": 10,
+  "fps": 6,
+  "sourceSha256": "4c4f47c166baf3637768d53fcfc6dc77f44651c0d9d5215831a9db8f26b1531b",
+  "width": 1672,
+  "height": 940,
+  "result": {
+    "source": "scene-art/f1044951-67b1-4e2a-96d2-8c43b363909d/provider-restored.png",
+    "sourceSha256": "4c4f47c166baf3637768d53fcfc6dc77f44651c0d9d5215831a9db8f26b1531b",
+    "clips": [
+      {
+        "id": "codex-a1f201b7-d39a-4790-b79b-0938552c5c15-idle",
+        "source": "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/image.png",
+        "kind": "idle",
+        "label": "Jemné vlnění mraků",
+        "frames": [
+          "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-01.png",
+          "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-02.png",
+          "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-03.png",
+          "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-04.png",
+          "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-05.png",
+          "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-06.png",
+          "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-07.png",
+          "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-08.png",
+          "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-09.png",
+          "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-10.png"
+        ],
+        "fps": 6,
+        "loop": true
+      }
+    ],
+    "image": "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/image.png",
+    "manifest": "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/recipe.json",
+    "notes": "Jemné lokální vlnění mraků v označené oblasti. Deset různých snímků, 6 fps, délka smyčky 1,67 s. První snímek odpovídá zdroji; periodický pohyb plynule navazuje přes konec smyčky. Zachovány rozměry 1672 × 940, poloha scény, všechny zdrojové alfa hodnoty a každý RGBA pixel mimo výběr. Omezení: pohyb je záměrně drobný (jednotky pixelů), u hranice výběru a okolních objektů se tlumí; části mraků mimo výběr zůstávají nehybné.",
+    "assets": [
+      "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/image.png",
+      "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-01.png",
+      "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-02.png",
+      "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-03.png",
+      "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-04.png",
+      "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-05.png",
+      "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-06.png",
+      "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-07.png",
+      "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-08.png",
+      "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-09.png",
+      "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-10.png"
+    ]
+  },
+  "scripts": ["generate.py"],
+  "generatedManifest": {
+    "notes": "Jemné lokální vlnění mraků v označené oblasti. Deset různých snímků, 6 fps, délka smyčky 1,67 s. První snímek odpovídá zdroji; periodický pohyb plynule navazuje přes konec smyčky. Zachovány rozměry 1672 × 940, poloha scény, všechny zdrojové alfa hodnoty a každý RGBA pixel mimo výběr. Omezení: pohyb je záměrně drobný (jednotky pixelů), u hranice výběru a okolních objektů se tlumí; části mraků mimo výběr zůstávají nehybné.",
+    "scripts": ["generate.py"],
+    "clips": [
+      {
+        "kind": "idle",
+        "label": "Jemné vlnění mraků",
+        "fps": 6,
+        "frames": [
+          "frame-01.png",
+          "frame-02.png",
+          "frame-03.png",
+          "frame-04.png",
+          "frame-05.png",
+          "frame-06.png",
+          "frame-07.png",
+          "frame-08.png",
+          "frame-09.png",
+          "frame-10.png"
+        ]
+      }
+    ]
+  }
+}

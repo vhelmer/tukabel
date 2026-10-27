@@ -16,7 +16,7 @@ try {
   await page.waitForFunction(() => globalThis.comfyAPI?.app?.app?.isGraphReady);
   // The frontend may still be restoring its initial tab after graph creation.
   await page.waitForTimeout(3000);
-  for (const name of ['preprocess', 'animate', 'quality', 'idle']) {
+  for (const name of ['preprocess', 'animate', 'quality', 'idle', 'ti2v']) {
     const graph = JSON.parse(
       await readFile(new URL(`${name}-api.json`, root), 'utf8'),
     );
@@ -77,7 +77,7 @@ try {
                 5: '3 · Popis pohybu',
                 6: 'Nežádoucí změny',
                 13: '4 · Rozlišení a počet snímků',
-                14: `5 · Generování (${graph['14'].inputs.steps} kroků)`,
+                14: `5 · Generování (${graph['14'].inputs.steps ?? graph['9']?.inputs.steps} kroků)`,
                 91: 'Výsledné video',
                 92: 'Jednotlivé snímky PNG',
               };
@@ -85,6 +85,44 @@ try {
           titles[5] = '2 · Jak se má postava hýbat (bez videa)';
           titles[13] = '3 · Rozlišení a délka klipu';
           titles[14] = `4 · Generování (${graph['14'].inputs.steps} kroků)`;
+        }
+        if (name === 'ti2v') {
+          Object.assign(positions, {
+            1: [0, 0],
+            2: [0, 190],
+            3: [0, 380],
+            4: [400, 380],
+            5: [400, 710],
+            6: [0, 600],
+            7: [400, 0],
+            8: [820, 0],
+            9: [1230, 0],
+            10: [1640, 0],
+            11: [2020, 0],
+            12: [2420, 0],
+            13: [2020, 400],
+            14: [820, 600],
+            15: [1230, 600],
+            16: [1640, 600],
+          });
+          Object.assign(titles, {
+            1: 'Model · TI2V-5B FP16',
+            2: 'Nastavení modelu',
+            3: 'Textový enkodér',
+            4: '2 · Pohyb a výtvarný styl',
+            5: 'Čemu se má výsledek vyhnout',
+            6: 'VAE · Wan2.2',
+            7: '1 · Předloha postavy',
+            8: '3 · Velikost a délka klipu',
+            9: '4 · Generovat pohyb',
+            10: 'Převést snímky',
+            11: 'Video · 24 fps',
+            12: 'Výsledné video',
+            13: 'Jednotlivé PNG',
+            14: 'Kontrola · původní obraz do VAE',
+            15: 'Kontrola · rekonstrukce',
+            16: 'Kontrolní PNG bez generování',
+          });
         }
         for (const n of app.graph.nodes) {
           n.pos = positions[n.id] ?? [0, 0];
@@ -120,11 +158,15 @@ try {
       },
       { name, graph },
     );
+    // Preserve the workflow identity so re-exporting does not create Git noise.
+    const destination = new URL(`${name}-workflow.json`, root);
+    try {
+      result.ui.id = JSON.parse(await readFile(destination, 'utf8')).id;
+    } catch (error) {
+      if (error.code !== 'ENOENT') throw error;
+    }
     // Keep the UI's canonical flattened dynamic-combo syntax for the API too.
-    await writeFile(
-      new URL(`${name}-workflow.json`, root),
-      `${JSON.stringify(result.ui, null, 2)}\n`,
-    );
+    await writeFile(destination, `${JSON.stringify(result.ui, null, 2)}\n`);
     await writeFile(
       new URL(`${name}-frontend-api.json`, root),
       `${JSON.stringify(result.prompt, null, 2)}\n`,

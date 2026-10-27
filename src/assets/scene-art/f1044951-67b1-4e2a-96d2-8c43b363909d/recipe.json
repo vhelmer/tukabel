@@ -1,0 +1,124 @@
+{
+  "version": 3,
+  "cutoutFrame": {
+    "x": 1547,
+    "y": 504,
+    "width": 46,
+    "height": 54,
+    "sourceWidth": 1672,
+    "sourceHeight": 940
+  },
+  "cutoutFull": "cutout-full.png",
+  "backgrounds": {
+    "restored": "provider-restored.png",
+    "masked": "image.png"
+  },
+  "defaultBackground": "restored",
+  "source": "scene-art/e1aeba34-3a1e-4e00-afbd-8567204bee56/provider-restored.png",
+  "sourceSha256": "652f04666ac9dc84adf8d42abdb97802103b4d4376c9c5298826b7eab8215a20",
+  "operation": "extract",
+  "selection": [
+    {
+      "x": 1534.84375,
+      "y": 479.1388888888889
+    },
+    {
+      "x": 1611.9125,
+      "y": 479.1388888888889
+    },
+    {
+      "x": 1611.9125,
+      "y": 577.0555555555555
+    },
+    {
+      "x": 1534.84375,
+      "y": 577.0555555555555
+    }
+  ],
+  "objectMask": {
+    "file": "object-mask.png",
+    "method": "manual",
+    "pixelOwnership": "alpha",
+    "matting": {
+      "method": "vitmatte",
+      "radius": 4,
+      "decontaminate": true
+    },
+    "ownershipMask": "ownership-mask.png"
+  },
+  "repairPadding": 12,
+  "repairFeather": 2,
+  "debug": {
+    "files": {
+      "original": "scene-art/f1044951-67b1-4e2a-96d2-8c43b363909d/source.png",
+      "objectMask": "scene-art/f1044951-67b1-4e2a-96d2-8c43b363909d/object-mask.png",
+      "expandedMask": "scene-art/f1044951-67b1-4e2a-96d2-8c43b363909d/expanded-mask.png",
+      "blendMask": "scene-art/f1044951-67b1-4e2a-96d2-8c43b363909d/repair-mask.png",
+      "input": "scene-art/f1044951-67b1-4e2a-96d2-8c43b363909d/provider-input.png",
+      "apiMask": "scene-art/f1044951-67b1-4e2a-96d2-8c43b363909d/provider-mask.png",
+      "roundTrip": "scene-art/f1044951-67b1-4e2a-96d2-8c43b363909d/round-trip.png",
+      "returned": "scene-art/f1044951-67b1-4e2a-96d2-8c43b363909d/provider-returned.png",
+      "restored": "scene-art/f1044951-67b1-4e2a-96d2-8c43b363909d/provider-restored.png",
+      "final": "scene-art/f1044951-67b1-4e2a-96d2-8c43b363909d/image.png",
+      "difference": "scene-art/f1044951-67b1-4e2a-96d2-8c43b363909d/provider-difference.png"
+    },
+    "geometry": {
+      "context": {
+        "x": 0,
+        "y": 0,
+        "width": 1672,
+        "height": 940
+      },
+      "canvas": {
+        "width": 1536,
+        "height": 1024
+      },
+      "content": {
+        "width": 1536,
+        "height": 864,
+        "left": 0,
+        "top": 80
+      },
+      "returned": {
+        "width": 1536,
+        "height": 1024
+      }
+    },
+    "metrics": {
+      "objectPixels": 1295,
+      "expandedPixels": 8957,
+      "featherPixels": 425,
+      "feather": 2,
+      "padding": 12,
+      "lostObjectPixels": 0,
+      "roundTripMae": 2.295,
+      "contextMae": 5.727,
+      "seamMae": 7.916,
+      "outsideChanges": 0,
+      "boundaryMaxWeight": 0
+    },
+    "warnings": [
+      "Samotné škálování mění detaily. Porovnej kontrolní návrat bez AI s originálem.",
+      "Model změnil i chráněný kontext. Rozdíl oproti kontrolnímu návratu může vysvětlit barevný šev; color matching se nepoužívá."
+    ]
+  },
+  "pipeline": {
+    "context": "full-source-letterbox",
+    "expansion": "square-radius-native-pixels",
+    "imageResampling": "lanczos3",
+    "maskDownsampling": "conservative-pixel-footprints",
+    "feather": "inward-smoothstep-chamfer",
+    "composition": "premultiplied-interpolation-to-straight-rgba"
+  },
+  "repairMask": "repair-mask.png",
+  "reconstruction": {
+    "changedPixels": 7816,
+    "selectedPixels": 1295,
+    "cleanupPixels": 7296,
+    "unexpectedPixels": 0,
+    "edgePixels": 520
+  },
+  "prompt": "Odstraň označený objekt a přirozeně dokresli pozadí za ním ve stejném výtvarném stylu.",
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "high"
+}

@@ -107,8 +107,15 @@
         {
           "id": "caretaker",
           "label": "Správca",
-          "bounds": { "x": 830, "y": 270, "width": 180, "height": 290 },
-          "image": "caretaker.svg",
+          "bounds": {
+            "x": 655.709,
+            "y": 84.072,
+            "width": 473.567,
+            "height": 618.423
+          },
+          "image": "imported/Zlov-stn--rozcuchan---ena-v-potrhan-ch--atech-07b2ef8a.png",
+          "animation": { "motion": "sway" },
+          "tintWhen": { "all": [] },
           "onClick": [
             {
               "message": "Začal si rozhovor so správcom.",
@@ -133,6 +140,12 @@
             { "message": "Zamknuté. Správca možno vie, ako oživiť router." }
           ],
           "cursor": "exit"
+        },
+        {
+          "id": "object1",
+          "label": "Nový objekt",
+          "bounds": { "x": 820, "y": 34, "width": 170, "height": 167 },
+          "onClick": [{ "message": "Zatiaľ nenápadný objekt." }]
         },
         {
           "id": "wall-scratch",
@@ -178,20 +191,30 @@
       "title": "Animačný ateliér",
       "width": 1280,
       "height": 720,
-      "background": "demo-room.svg",
+      "background": "scene-art/322fe206-0132-42f9-89a9-a0b24606582f/image.png",
       "hotspots": [
+        {
+          "id": "layer1",
+          "label": "Nový výrez",
+          "bounds": { "x": 0, "y": 0, "width": 1280, "height": 720 },
+          "imageFit": "stretch",
+          "image": "scene-art/322fe206-0132-42f9-89a9-a0b24606582f/cutout.png",
+          "onClick": [],
+          "decorative": true,
+          "hidden": true
+        },
         {
           "id": "blink-character",
           "label": "Skúšobná postava",
-          "bounds": { "x": 485, "y": 155, "width": 330, "height": 550 },
+          "bounds": { "x": 791.196, "y": 170, "width": 330, "height": 550 },
           "image": "woman.png",
           "animation": {
             "blink": "woman-blink",
             "blinkIntervalMs": [3000, 6000],
+            "motion": "sway",
             "onClick": "woman-blink",
-            "talk": "woman-talk",
+            "talk": "animation-0bc82fd4-ab49-48d7-bd26-b5ba8ac8d1db",
             "dialogueId": "animation-demo",
-            "motion": "breath",
             "mouthShapes": {
               "X": 0,
               "A": 0,
@@ -202,6 +225,15 @@
               "F": 1,
               "G": 1,
               "H": 2
+            },
+            "voice": {
+              "voiceId": "9Nd358gE1qQp0pDh8FgP",
+              "modelId": "eleven_v4",
+              "stability": 0.5,
+              "similarityBoost": 0.75,
+              "style": 0,
+              "speed": 1,
+              "useSpeakerBoost": true
             }
           },
           "onClick": [
@@ -222,6 +254,51 @@
             }
           ],
           "cursor": "exit"
+        },
+        {
+          "id": "object1",
+          "label": "Nový objekt",
+          "bounds": { "x": 77, "y": 355, "width": 148.305, "height": 131.102 },
+          "onClick": [{ "message": "Zatiaľ nenápadný objekt." }]
+        },
+        {
+          "id": "object2",
+          "label": "Nový objekt",
+          "bounds": {
+            "x": 60.427,
+            "y": 40.788,
+            "width": 400.394,
+            "height": 154.056
+          },
+          "polygon": [
+            { "x": 66.733, "y": 194.844 },
+            { "x": 60.427, "y": 54.023 },
+            { "x": 355.731, "y": 40.788 },
+            { "x": 460.821, "y": 111.199 },
+            { "x": 356.782, "y": 184.762 }
+          ],
+          "onClick": [{ "message": "Zatiaľ nenápadný objekt." }]
+        },
+        {
+          "id": "object3",
+          "label": "pičus",
+          "bounds": {
+            "x": 835.993,
+            "y": 61.379,
+            "width": 140.8209999999999,
+            "height": 130.312
+          },
+          "polygon": [
+            { "x": 845.452, "y": 122.332 },
+            { "x": 869.622, "y": 63.481 },
+            { "x": 935.829, "y": 61.379 },
+            { "x": 976.814, "y": 98.161 },
+            { "x": 966.305, "y": 162.266 },
+            { "x": 923.218, "y": 191.691 },
+            { "x": 865.419, "y": 175.928 },
+            { "x": 835.993, "y": 142.299 }
+          ],
+          "onClick": [{ "message": "Zatiaľ nenápadný objekt." }]
         }
       ]
     },
@@ -729,16 +806,32 @@
           "id": "demo",
           "speaker": "Skúšobná postava",
           "portrait": "woman.png",
-          "text": "Ahoj. Mrkám a rozprávam. Oči a ústa fungujú nezávisle.",
+          "text": "Ja som vám to hovorila! [angry] Tu bol kábel! Tu! [laughs] A teraz mi niekto vysvetlite, kde do piče zmizol!",
           "choices": [{ "id": "end", "text": "Ukončiť skúšku animácií." }],
           "actor": {
             "sceneId": "animation-lab",
             "hotspotId": "blink-character"
           },
           "speech": {
-            "audio": "speech/animation-demo/audio.wav",
-            "lipSync": "speech/animation-demo/track.lipsync.json",
-            "text": "Ahoj. Mrkám a rozprávam. Oči a ústa fungujú nezávisle."
+            "audio": "speech/37222319-46e0-4eea-97e0-f3a90d36e9c7/audio.wav",
+            "text": "Ja som vám to hovorila! [angry] Tu bol kábel! Tu! [laughs] A teraz mi niekto vysvetlite, kde do piče zmizol!",
+            "subtitles": {
+              "text": "Ja som vám to hovorila! Tu bol kábel! Tu! A teraz mi niekto vysvetlite, kde do piče zmizol!",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 3.2888888888888888,
+                  "text": "Ja som vám to hovorila! Tu bol kábel!"
+                },
+                {
+                  "start": 3.2888888888888888,
+                  "end": 8,
+                  "text": "Tu! A teraz mi niekto vysvetlite, kde do piče zmizol!"
+                }
+              ]
+            },
+            "lipSync": "speech/9bf325fa-50cc-4e8b-87ed-96037d718acf/track.lipsync.json"
           }
         }
       ]
@@ -1546,6 +1639,27 @@
       "region": { "x": 429, "y": 271, "width": 58, "height": 31 }
     },
     {
+      "id": "animation-0bc82fd4-ab49-48d7-bd26-b5ba8ac8d1db",
+      "label": "Rozprávanie",
+      "source": "woman.png",
+      "kind": "talk",
+      "fps": 14,
+      "frames": [
+        "animations/0bc82fd4-ab49-48d7-bd26-b5ba8ac8d1db/frame-001.png",
+        "animations/0bc82fd4-ab49-48d7-bd26-b5ba8ac8d1db/frame-002.png",
+        "animations/0bc82fd4-ab49-48d7-bd26-b5ba8ac8d1db/frame-003.png",
+        "animations/0bc82fd4-ab49-48d7-bd26-b5ba8ac8d1db/frame-004.png",
+        "animations/0bc82fd4-ab49-48d7-bd26-b5ba8ac8d1db/frame-005.png",
+        "animations/0bc82fd4-ab49-48d7-bd26-b5ba8ac8d1db/frame-006.png"
+      ],
+      "durationsMs": [
+        71.42857142857143, 71.42857142857143, 71.42857142857143,
+        71.42857142857143, 71.42857142857143, 71.42857142857143
+      ],
+      "loop": true,
+      "region": { "x": 431, "y": 257, "width": 55, "height": 51 }
+    },
+    {
       "id": "codex-6995881c-c7e6-4c98-a78a-fa6f89035ebe-blink",
       "source": "scene-art/fc7a51eb-3751-4baf-92fc-da0fc4a134bf/cutout.png",
       "kind": "blink",
@@ -1665,6 +1779,58 @@
       "loop": true
     },
     {
+      "id": "codex-a1f201b7-d39a-4790-b79b-0938552c5c15-idle",
+      "source": "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/image.png",
+      "kind": "idle",
+      "label": "Jemné vlnění mraků",
+      "frames": [
+        "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-01.png",
+        "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-02.png",
+        "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-03.png",
+        "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-04.png",
+        "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-05.png",
+        "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-06.png",
+        "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-07.png",
+        "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-08.png",
+        "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-09.png",
+        "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-10.png"
+      ],
+      "fps": 6,
+      "loop": true
+    },
+    {
+      "id": "codex-ddf0e886-2a73-4f45-91c0-f96f46f59806-blink",
+      "source": "scene-art/f309ec15-1048-46e2-b2ba-c9d163cf07fb/cutout.png",
+      "kind": "blink",
+      "label": "Přirozené mrknutí",
+      "frames": [
+        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/blink-01.png",
+        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/blink-02.png",
+        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/blink-03.png",
+        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/blink-04.png",
+        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/blink-05.png"
+      ],
+      "fps": 12,
+      "loop": false,
+      "region": { "x": 51, "y": 44, "width": 52, "height": 24 }
+    },
+    {
+      "id": "codex-ddf0e886-2a73-4f45-91c0-f96f46f59806-talk",
+      "source": "scene-art/f309ec15-1048-46e2-b2ba-c9d163cf07fb/cutout.png",
+      "kind": "talk",
+      "label": "Mluvení – pět tvarů úst",
+      "frames": [
+        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/talk-01.png",
+        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/talk-02.png",
+        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/talk-03.png",
+        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/talk-04.png",
+        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/talk-05.png"
+      ],
+      "fps": 12,
+      "loop": true,
+      "region": { "x": 48, "y": 82, "width": 38, "height": 16 }
+    },
+    {
       "id": "animation-67ffde01-cc5b-461d-8018-bb3371873413",
       "label": "Poškrábání hlavy · vrstvená ruka",
       "source": "characters/man-scratch/source.png",
@@ -1705,38 +1871,6 @@
         "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-032.png"
       ],
       "loop": false
-    },
-    {
-      "id": "codex-ddf0e886-2a73-4f45-91c0-f96f46f59806-blink",
-      "source": "scene-art/f309ec15-1048-46e2-b2ba-c9d163cf07fb/cutout.png",
-      "kind": "blink",
-      "label": "Přirozené mrknutí",
-      "frames": [
-        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/blink-01.png",
-        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/blink-02.png",
-        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/blink-03.png",
-        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/blink-04.png",
-        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/blink-05.png"
-      ],
-      "fps": 12,
-      "loop": false,
-      "region": { "x": 51, "y": 44, "width": 52, "height": 24 }
-    },
-    {
-      "id": "codex-ddf0e886-2a73-4f45-91c0-f96f46f59806-talk",
-      "source": "scene-art/f309ec15-1048-46e2-b2ba-c9d163cf07fb/cutout.png",
-      "kind": "talk",
-      "label": "Mluvení – pět tvarů úst",
-      "frames": [
-        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/talk-01.png",
-        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/talk-02.png",
-        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/talk-03.png",
-        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/talk-04.png",
-        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/talk-05.png"
-      ],
-      "fps": 12,
-      "loop": true,
-      "region": { "x": 48, "y": 82, "width": 38, "height": 16 }
     }
   ]
 }

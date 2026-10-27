@@ -1,0 +1,182 @@
+{
+  "version": 3,
+  "cutoutFrame": {
+    "x": 190,
+    "y": 190,
+    "width": 302,
+    "height": 613,
+    "sourceWidth": 1672,
+    "sourceHeight": 940
+  },
+  "cutoutFull": "cutout-full.png",
+  "backgrounds": {
+    "restored": "provider-restored.png",
+    "masked": "image.png"
+  },
+  "defaultBackground": "restored",
+  "source": "imported/Zlov-stn--zast-vka-na-venkov--8afe9b97.png",
+  "sourceSha256": "81f11ac27fc4b04e2ffcb326771ba21cf216645fc4d5d52c7f023d495b7e4328",
+  "operation": "extract",
+  "selection": [
+    {
+      "x": 285.76700625,
+      "y": 825.0745555555554
+    },
+    {
+      "x": 211.0482,
+      "y": 777.90875
+    },
+    {
+      "x": 267.4155,
+      "y": 612.8277777777778
+    },
+    {
+      "x": 229.39970624999995,
+      "y": 606.2778055555555
+    },
+    {
+      "x": 216.2914875,
+      "y": 569.5930000000001
+    },
+    {
+      "x": 208.42655625000006,
+      "y": 527.6676944444445
+    },
+    {
+      "x": 163.85730625000002,
+      "y": 480.50188888888886
+    },
+    {
+      "x": 182.20881250000002,
+      "y": 340.3139444444445
+    },
+    {
+      "x": 326.4031375,
+      "y": 228.95136111111108
+    },
+    {
+      "x": 401.12325,
+      "y": 156.8912222222222
+    },
+    {
+      "x": 505.9916125000001,
+      "y": 175.23427777777778
+    },
+    {
+      "x": 503.36996875000006,
+      "y": 311.49119444444443
+    },
+    {
+      "x": 479.77386875,
+      "y": 386.1702777777778
+    },
+    {
+      "x": 491.57191875,
+      "y": 508.01516666666663
+    },
+    {
+      "x": 435.20461875,
+      "y": 595.7955000000001
+    },
+    {
+      "x": 420.78623124999996,
+      "y": 704.5391388888889
+    },
+    {
+      "x": 462.73253125,
+      "y": 763.4967222222223
+    },
+    {
+      "x": 443.06955,
+      "y": 804.1112499999999
+    }
+  ],
+  "objectMask": {
+    "file": "object-mask.png",
+    "method": "sam3",
+    "refineEdges": true,
+    "detailPass": false,
+    "pixelOwnership": "alpha",
+    "matting": {
+      "method": "vitmatte",
+      "radius": 4,
+      "decontaminate": true
+    },
+    "ownershipMask": "ownership-mask.png"
+  },
+  "repairPadding": 12,
+  "repairFeather": 2,
+  "debug": {
+    "files": {
+      "original": "scene-art/e1aeba34-3a1e-4e00-afbd-8567204bee56/source.png",
+      "objectMask": "scene-art/e1aeba34-3a1e-4e00-afbd-8567204bee56/object-mask.png",
+      "expandedMask": "scene-art/e1aeba34-3a1e-4e00-afbd-8567204bee56/expanded-mask.png",
+      "blendMask": "scene-art/e1aeba34-3a1e-4e00-afbd-8567204bee56/repair-mask.png",
+      "input": "scene-art/e1aeba34-3a1e-4e00-afbd-8567204bee56/provider-input.png",
+      "apiMask": "scene-art/e1aeba34-3a1e-4e00-afbd-8567204bee56/provider-mask.png",
+      "roundTrip": "scene-art/e1aeba34-3a1e-4e00-afbd-8567204bee56/round-trip.png",
+      "returned": "scene-art/e1aeba34-3a1e-4e00-afbd-8567204bee56/provider-returned.png",
+      "restored": "scene-art/e1aeba34-3a1e-4e00-afbd-8567204bee56/provider-restored.png",
+      "final": "scene-art/e1aeba34-3a1e-4e00-afbd-8567204bee56/image.png",
+      "difference": "scene-art/e1aeba34-3a1e-4e00-afbd-8567204bee56/provider-difference.png"
+    },
+    "geometry": {
+      "context": {
+        "x": 0,
+        "y": 0,
+        "width": 1672,
+        "height": 940
+      },
+      "canvas": {
+        "width": 1536,
+        "height": 1024
+      },
+      "content": {
+        "width": 1536,
+        "height": 864,
+        "left": 0,
+        "top": 80
+      },
+      "returned": {
+        "width": 1536,
+        "height": 1024
+      }
+    },
+    "metrics": {
+      "objectPixels": 102424,
+      "expandedPixels": 160686,
+      "featherPixels": 2515,
+      "feather": 2,
+      "padding": 12,
+      "lostObjectPixels": 0,
+      "roundTripMae": 2.629,
+      "contextMae": 7.399,
+      "seamMae": 10.744,
+      "outsideChanges": 0,
+      "boundaryMaxWeight": 0
+    },
+    "warnings": [
+      "Samotné škálování mění detaily. Porovnej kontrolní návrat bez AI s originálem.",
+      "Model změnil i chráněný kontext. Rozdíl oproti kontrolnímu návratu může vysvětlit barevný šev; color matching se nepoužívá."
+    ]
+  },
+  "pipeline": {
+    "context": "full-source-letterbox",
+    "expansion": "square-radius-native-pixels",
+    "imageResampling": "lanczos3",
+    "maskDownsampling": "conservative-pixel-footprints",
+    "feather": "inward-smoothstep-chamfer",
+    "composition": "premultiplied-interpolation-to-straight-rgba"
+  },
+  "repairMask": "repair-mask.png",
+  "reconstruction": {
+    "changedPixels": 62296,
+    "selectedPixels": 102424,
+    "cleanupPixels": 56293,
+    "unexpectedPixels": 0,
+    "edgePixels": 6003
+  },
+  "prompt": "Odstraň označený objekt a přirozeně dokresli pozadí za ním ve stejném výtvarném stylu.",
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "high"
+}

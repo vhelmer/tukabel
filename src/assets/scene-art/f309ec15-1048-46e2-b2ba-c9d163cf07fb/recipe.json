@@ -1,0 +1,134 @@
+{
+  "version": 3,
+  "cutoutFrame": {
+    "x": 107,
+    "y": 219,
+    "width": 131,
+    "height": 195,
+    "sourceWidth": 1672,
+    "sourceHeight": 941
+  },
+  "cutoutFull": "cutout-full.png",
+  "backgrounds": {
+    "restored": "provider-restored.png",
+    "masked": "image.png"
+  },
+  "defaultBackground": "restored",
+  "source": "imported/Zmaten--Fero-u-rozbit--elektroinstalace-bb383fe1.png",
+  "sourceSha256": "cd955011146152959f5a9ee730c4a467aabb79357350c48af06d218f6bb1c0f8",
+  "operation": "extract",
+  "selection": [
+    {
+      "x": 109.00786875000003,
+      "y": 384.4468569444444
+    },
+    {
+      "x": 107.36852500000005,
+      "y": 200.75712222222222
+    },
+    {
+      "x": 241.7842625,
+      "y": 212.23732222222222
+    },
+    {
+      "x": 248.3416375,
+      "y": 413.9681180555555
+    },
+    {
+      "x": 200.80328125000003,
+      "y": 423.8094097222222
+    },
+    {
+      "x": 140.1527875,
+      "y": 422.16919444444443
+    }
+  ],
+  "objectMask": {
+    "file": "object-mask.png",
+    "method": "sam3",
+    "refineEdges": true,
+    "detailPass": false,
+    "pixelOwnership": "alpha",
+    "matting": {
+      "method": "vitmatte",
+      "radius": 4,
+      "decontaminate": true
+    },
+    "ownershipMask": "ownership-mask.png"
+  },
+  "repairPadding": 12,
+  "repairFeather": 2,
+  "debug": {
+    "files": {
+      "original": "scene-art/f309ec15-1048-46e2-b2ba-c9d163cf07fb/source.png",
+      "objectMask": "scene-art/f309ec15-1048-46e2-b2ba-c9d163cf07fb/object-mask.png",
+      "expandedMask": "scene-art/f309ec15-1048-46e2-b2ba-c9d163cf07fb/expanded-mask.png",
+      "blendMask": "scene-art/f309ec15-1048-46e2-b2ba-c9d163cf07fb/repair-mask.png",
+      "input": "scene-art/f309ec15-1048-46e2-b2ba-c9d163cf07fb/provider-input.png",
+      "apiMask": "scene-art/f309ec15-1048-46e2-b2ba-c9d163cf07fb/provider-mask.png",
+      "roundTrip": "scene-art/f309ec15-1048-46e2-b2ba-c9d163cf07fb/round-trip.png",
+      "returned": "scene-art/f309ec15-1048-46e2-b2ba-c9d163cf07fb/provider-returned.png",
+      "restored": "scene-art/f309ec15-1048-46e2-b2ba-c9d163cf07fb/provider-restored.png",
+      "final": "scene-art/f309ec15-1048-46e2-b2ba-c9d163cf07fb/image.png",
+      "difference": "scene-art/f309ec15-1048-46e2-b2ba-c9d163cf07fb/provider-difference.png"
+    },
+    "geometry": {
+      "context": {
+        "x": 0,
+        "y": 0,
+        "width": 1672,
+        "height": 941
+      },
+      "canvas": {
+        "width": 1536,
+        "height": 1024
+      },
+      "content": {
+        "width": 1536,
+        "height": 864,
+        "left": 0,
+        "top": 80
+      },
+      "returned": {
+        "width": 1536,
+        "height": 1024
+      }
+    },
+    "metrics": {
+      "objectPixels": 20709,
+      "expandedPixels": 40141,
+      "featherPixels": 934,
+      "feather": 2,
+      "padding": 12,
+      "lostObjectPixels": 0,
+      "roundTripMae": 4.867,
+      "contextMae": 9.768,
+      "seamMae": 13.039,
+      "outsideChanges": 0,
+      "boundaryMaxWeight": 0
+    },
+    "warnings": [
+      "Samotné škálování mění detaily. Porovnej kontrolní návrat bez AI s originálem.",
+      "Model změnil i chráněný kontext. Rozdíl oproti kontrolnímu návratu může vysvětlit barevný šev; color matching se nepoužívá."
+    ]
+  },
+  "pipeline": {
+    "context": "full-source-letterbox",
+    "expansion": "square-radius-native-pixels",
+    "imageResampling": "lanczos3",
+    "maskDownsampling": "conservative-pixel-footprints",
+    "feather": "inward-smoothstep-chamfer",
+    "composition": "premultiplied-interpolation-to-straight-rgba"
+  },
+  "repairMask": "repair-mask.png",
+  "reconstruction": {
+    "changedPixels": 20583,
+    "selectedPixels": 20709,
+    "cleanupPixels": 18671,
+    "unexpectedPixels": 0,
+    "edgePixels": 1912
+  },
+  "prompt": "Odstraň označený objekt a přirozeně dokresli pozadí za ním ve stejném výtvarném stylu.",
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "high"
+}

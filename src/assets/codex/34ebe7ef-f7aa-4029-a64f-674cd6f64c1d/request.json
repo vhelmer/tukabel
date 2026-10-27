@@ -1,0 +1,44 @@
+{
+  "context": {
+    "mode": "scene",
+    "sceneId": "scene1",
+    "targetId": "",
+    "source": "scene-art/f1044951-67b1-4e2a-96d2-8c43b363909d/provider-restored.png",
+    "label": "Nový výřez",
+    "fingerprint": "[1280,720,\"scene-art/f1044951-67b1-4e2a-96d2-8c43b363909d/provider-restored.png\"]",
+    "placement": {
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 720
+      },
+      "imageFit": "stretch"
+    },
+    "selection": [
+      {
+        "x": 1426.425,
+        "y": 464.77777777777777
+      },
+      {
+        "x": 1536.15,
+        "y": 464.77777777777777
+      },
+      {
+        "x": 1536.15,
+        "y": 584.8888888888889
+      },
+      {
+        "x": 1426.425,
+        "y": 584.8888888888889
+      }
+    ],
+    "instruction": "Rozpohybuj slepici jemnou plynulou smyčkou. Zachovej kreslený styl, umístění a pevné okraje."
+  },
+  "prompt": "Rozpohybuj slepici jemnou plynulou smyčkou. Zachovej kreslený styl, umístění a pevné okraje.",
+  "task": "ambient",
+  "count": 10,
+  "fps": 12,
+  "width": 1672,
+  "height": 940
+}

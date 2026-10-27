@@ -1,0 +1,13 @@
+{
+  "frames": 73,
+  "canvas": [480, 768],
+  "fps": 24.0,
+  "durationSeconds": 3.0416666666666665,
+  "distinctDecodedFrames": 73,
+  "videoSha256": "7e306f6b4e4fd9e54f12744430de03e8d472b26b11cd1bc389dd689fe63cee1a",
+  "comfyOutput": "/home/vojta/Projects/comfyui/ComfyUI/output/tukabel-ti2v/fero-style_00001_.mp4",
+  "transparency": false,
+  "model": "Wan2.2 TI2V-5B",
+  "method": "Wan2.2 TI2V-5B generates new RGB frames from the reference image and text only; no driving video or pose.",
+  "note": "Generative motion experiment; original pixels, transparency and a finished loop are not guaranteed."
+}

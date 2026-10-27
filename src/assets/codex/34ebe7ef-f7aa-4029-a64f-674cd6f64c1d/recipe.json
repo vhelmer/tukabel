@@ -1,0 +1,115 @@
+{
+  "version": 1,
+  "provider": "codex-cli",
+  "model": "gpt-6.1-sol",
+  "effort": "high",
+  "context": {
+    "mode": "scene",
+    "sceneId": "scene1",
+    "targetId": "",
+    "source": "scene-art/f1044951-67b1-4e2a-96d2-8c43b363909d/provider-restored.png",
+    "label": "Nový výřez",
+    "fingerprint": "[1280,720,\"scene-art/f1044951-67b1-4e2a-96d2-8c43b363909d/provider-restored.png\"]",
+    "placement": {
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 720
+      },
+      "imageFit": "stretch"
+    },
+    "selection": [
+      {
+        "x": 1426.425,
+        "y": 464.77777777777777
+      },
+      {
+        "x": 1536.15,
+        "y": 464.77777777777777
+      },
+      {
+        "x": 1536.15,
+        "y": 584.8888888888889
+      },
+      {
+        "x": 1426.425,
+        "y": 584.8888888888889
+      }
+    ],
+    "instruction": "Rozpohybuj slepici jemnou plynulou smyčkou. Zachovej kreslený styl, umístění a pevné okraje."
+  },
+  "prompt": "Rozpohybuj slepici jemnou plynulou smyčkou. Zachovej kreslený styl, umístění a pevné okraje.",
+  "task": "ambient",
+  "count": 10,
+  "fps": 12,
+  "sourceSha256": "4c4f47c166baf3637768d53fcfc6dc77f44651c0d9d5215831a9db8f26b1531b",
+  "width": 1672,
+  "height": 940,
+  "result": {
+    "source": "scene-art/f1044951-67b1-4e2a-96d2-8c43b363909d/provider-restored.png",
+    "sourceSha256": "4c4f47c166baf3637768d53fcfc6dc77f44651c0d9d5215831a9db8f26b1531b",
+    "clips": [
+      {
+        "id": "codex-34ebe7ef-f7aa-4029-a64f-674cd6f64c1d-idle",
+        "source": "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/image.png",
+        "kind": "idle",
+        "label": "Slepice – klidné dýchání a kývnutí",
+        "frames": [
+          "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/idle-01.png",
+          "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/idle-02.png",
+          "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/idle-03.png",
+          "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/idle-04.png",
+          "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/idle-05.png",
+          "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/idle-06.png",
+          "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/idle-07.png",
+          "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/idle-08.png",
+          "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/idle-09.png",
+          "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/idle-10.png"
+        ],
+        "fps": 12,
+        "loop": true
+      }
+    ],
+    "image": "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/image.png",
+    "manifest": "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/recipe.json",
+    "notes": "Jemná plynulá smyčka slepice: kývnutí hlavy, dýchání a lehký pohyb ocasu. Nohy zůstávají ukotvené; plátno má 1672 × 940 px a původní alfa je zachována. Všechny pixely mimo upravenou oblast uvnitř výběru jsou přesně původní. Deset různých snímků tvoří periodu bez zdvojeného koncového snímku. Omezení: jde o jemnou 2D deformaci malé slepice z jediného obrázku, bez domýšlení zakrytých částí či nových detailů.",
+    "assets": [
+      "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/image.png",
+      "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/idle-01.png",
+      "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/idle-02.png",
+      "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/idle-03.png",
+      "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/idle-04.png",
+      "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/idle-05.png",
+      "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/idle-06.png",
+      "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/idle-07.png",
+      "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/idle-08.png",
+      "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/idle-09.png",
+      "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/idle-10.png"
+    ]
+  },
+  "scripts": ["generate.py"],
+  "generatedManifest": {
+    "notes": "Jemná plynulá smyčka slepice: kývnutí hlavy, dýchání a lehký pohyb ocasu. Nohy zůstávají ukotvené; plátno má 1672 × 940 px a původní alfa je zachována. Všechny pixely mimo upravenou oblast uvnitř výběru jsou přesně původní. Deset různých snímků tvoří periodu bez zdvojeného koncového snímku. Omezení: jde o jemnou 2D deformaci malé slepice z jediného obrázku, bez domýšlení zakrytých částí či nových detailů.",
+    "scripts": ["generate.py"],
+    "clips": [
+      {
+        "kind": "idle",
+        "label": "Slepice – klidné dýchání a kývnutí",
+        "fps": 12,
+        "frames": [
+          "frame-01.png",
+          "frame-02.png",
+          "frame-03.png",
+          "frame-04.png",
+          "frame-05.png",
+          "frame-06.png",
+          "frame-07.png",
+          "frame-08.png",
+          "frame-09.png",
+          "frame-10.png"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "canvas": [480, 768],
+  "rgbMAE": 1.0542317708333333,
+  "maximumRgbError": 125,
+  "note": "Source through VAE encode/decode only; no diffusion or animation."
+}

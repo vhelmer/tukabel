@@ -1,0 +1,26 @@
+{
+  "context": {
+    "mode": "character",
+    "sceneId": "scene1",
+    "targetId": "layer1",
+    "source": "scene-art/fc7a51eb-3751-4baf-92fc-da0fc4a134bf/cutout.png",
+    "label": "Stara babka na zastavce",
+    "fingerprint": "[1280,720,{\"id\":\"layer1\",\"label\":\"Stara babka na zastavce\",\"bounds\":{\"x\":609.377990430622,\"y\":263.48936170212767,\"width\":254.16267942583733,\"height\":306.3829787234043},\"imageFit\":\"stretch\",\"image\":\"scene-art/fc7a51eb-3751-4baf-92fc-da0fc4a134bf/cutout.png\",\"onClick\":[],\"decorative\":true,\"animation\":{},\"cursor\":\"talk\"}]",
+    "placement": {
+      "bounds": {
+        "x": 609.377990430622,
+        "y": 263.48936170212767,
+        "width": 254.16267942583733,
+        "height": 306.3829787234043
+      },
+      "imageFit": "stretch"
+    },
+    "instruction": "Připrav přirozené mrknutí a odlišné tvary úst pro mluvení. Zachovej původní kresbu, obrysy a všechny pixely mimo oči a ústa."
+  },
+  "prompt": "Připrav přirozené mrknutí a odlišné tvary úst pro mluvení. Zachovej původní kresbu, obrysy a všechny pixely mimo oči a ústa.",
+  "task": "blink-talk",
+  "count": 5,
+  "fps": 12,
+  "width": 332,
+  "height": 400
+}

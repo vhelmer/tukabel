@@ -1,0 +1,100 @@
+{
+  "version": 1,
+  "provider": "codex-cli",
+  "model": "gpt-6.1-sol",
+  "effort": "high",
+  "context": {
+    "mode": "scene",
+    "sceneId": "scene1",
+    "targetId": "",
+    "source": "scene-art/f1044951-67b1-4e2a-96d2-8c43b363909d/provider-restored.png",
+    "label": "Nový výřez",
+    "fingerprint": "[1280,720,\"scene-art/f1044951-67b1-4e2a-96d2-8c43b363909d/provider-restored.png\"]",
+    "placement": {
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 720
+      },
+      "imageFit": "stretch"
+    },
+    "selection": [
+      {
+        "x": 1495.65625,
+        "y": 22.194444444444443
+      },
+      {
+        "x": 1672,
+        "y": 22.194444444444443
+      },
+      {
+        "x": 1672,
+        "y": 329
+      },
+      {
+        "x": 1495.65625,
+        "y": 329
+      }
+    ],
+    "instruction": "Rozpohybuj vybranou oblast jemnou plynulou smyčkou. Zachovej kreslený styl, umístění a pevné okraje."
+  },
+  "prompt": "Rozpohybuj vybranou oblast jemnou plynulou smyčkou. Zachovej kreslený styl, umístění a pevné okraje.",
+  "task": "ambient",
+  "count": 5,
+  "fps": 12,
+  "sourceSha256": "4c4f47c166baf3637768d53fcfc6dc77f44651c0d9d5215831a9db8f26b1531b",
+  "width": 1672,
+  "height": 940,
+  "result": {
+    "source": "scene-art/f1044951-67b1-4e2a-96d2-8c43b363909d/provider-restored.png",
+    "sourceSha256": "4c4f47c166baf3637768d53fcfc6dc77f44651c0d9d5215831a9db8f26b1531b",
+    "clips": [
+      {
+        "id": "codex-cb7cf353-21a5-4277-8af9-2a28b30d8cfe-idle",
+        "source": "codex/cb7cf353-21a5-4277-8af9-2a28b30d8cfe/image.png",
+        "kind": "idle",
+        "label": "Jemné vlnění kouře",
+        "frames": [
+          "codex/cb7cf353-21a5-4277-8af9-2a28b30d8cfe/idle-01.png",
+          "codex/cb7cf353-21a5-4277-8af9-2a28b30d8cfe/idle-02.png",
+          "codex/cb7cf353-21a5-4277-8af9-2a28b30d8cfe/idle-03.png",
+          "codex/cb7cf353-21a5-4277-8af9-2a28b30d8cfe/idle-04.png",
+          "codex/cb7cf353-21a5-4277-8af9-2a28b30d8cfe/idle-05.png"
+        ],
+        "fps": 12,
+        "loop": true
+      }
+    ],
+    "image": "codex/cb7cf353-21a5-4277-8af9-2a28b30d8cfe/image.png",
+    "manifest": "codex/cb7cf353-21a5-4277-8af9-2a28b30d8cfe/recipe.json",
+    "notes": "Jemná plynulá smyčka vlnění kouře nad komínem v pěti odlišných fázích. Zachovány původní rozměry 1672 × 940, poloha scény, komín, elektrická vedení, pevné okraje výběru a veškerý alfa kanál. Všechny RGBA pixely mimo vybranou oblast zůstávají přesně původní. Omezení: jde o lokální deformaci existující kresby; kouř se nově nevytváří ani nerozptyluje. Pět snímků při 12 fps tvoří krátkou smyčku přibližně 0,42 s.",
+    "assets": [
+      "codex/cb7cf353-21a5-4277-8af9-2a28b30d8cfe/image.png",
+      "codex/cb7cf353-21a5-4277-8af9-2a28b30d8cfe/idle-01.png",
+      "codex/cb7cf353-21a5-4277-8af9-2a28b30d8cfe/idle-02.png",
+      "codex/cb7cf353-21a5-4277-8af9-2a28b30d8cfe/idle-03.png",
+      "codex/cb7cf353-21a5-4277-8af9-2a28b30d8cfe/idle-04.png",
+      "codex/cb7cf353-21a5-4277-8af9-2a28b30d8cfe/idle-05.png"
+    ]
+  },
+  "scripts": ["generate.py"],
+  "generatedManifest": {
+    "notes": "Jemná plynulá smyčka vlnění kouře nad komínem v pěti odlišných fázích. Zachovány původní rozměry 1672 × 940, poloha scény, komín, elektrická vedení, pevné okraje výběru a veškerý alfa kanál. Všechny RGBA pixely mimo vybranou oblast zůstávají přesně původní. Omezení: jde o lokální deformaci existující kresby; kouř se nově nevytváří ani nerozptyluje. Pět snímků při 12 fps tvoří krátkou smyčku přibližně 0,42 s.",
+    "scripts": ["generate.py"],
+    "clips": [
+      {
+        "kind": "idle",
+        "label": "Jemné vlnění kouře",
+        "fps": 12,
+        "frames": [
+          "frame-01.png",
+          "frame-02.png",
+          "frame-03.png",
+          "frame-04.png",
+          "frame-05.png"
+        ]
+      }
+    ]
+  }
+}

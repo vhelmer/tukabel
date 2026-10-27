@@ -1,0 +1,27 @@
+{
+  "context": {
+    "mode": "character",
+    "sceneId": "scene2",
+    "targetId": "layer2",
+    "source": "scene-art/9ac4f9f9-ab18-4a0a-8acc-c8dfc0519eff/cutout.png",
+    "label": "Nový výřez",
+    "fingerprint": "[1280,720,{\"id\":\"layer2\",\"label\":\"Nový výřez\",\"bounds\":{\"x\":285.55023923444975,\"y\":218.8310308182784,\"width\":295.5023923444976,\"height\":469.03294367693945},\"imageFit\":\"stretch\",\"image\":\"scene-art/9ac4f9f9-ab18-4a0a-8acc-c8dfc0519eff/cutout.png\",\"onClick\":[],\"decorative\":true}]",
+    "placement": {
+      "bounds": {
+        "x": 285.55023923444975,
+        "y": 218.8310308182784,
+        "width": 295.5023923444976,
+        "height": 469.03294367693945
+      },
+      "imageFit": "stretch"
+    },
+    "protectedRegions": [],
+    "instruction": "Postava se přirozeně poškrábe rukou na hlavě a vrátí ruku do původní polohy. Zachovej ukotvení hlavy, očí, úst a těla, původní styl, oblečení a obrysy. První i poslední snímek musí být originál."
+  },
+  "prompt": "Postava se přirozeně poškrábe rukou na hlavě a vrátí ruku do původní polohy. Zachovej ukotvení hlavy, očí, úst a těla, původní styl, oblečení a obrysy. První i poslední snímek musí být originál.",
+  "task": "gesture",
+  "count": 12,
+  "fps": 10,
+  "width": 386,
+  "height": 613
+}

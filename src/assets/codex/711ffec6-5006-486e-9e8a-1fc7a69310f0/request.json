@@ -1,0 +1,44 @@
+{
+  "context": {
+    "mode": "scene",
+    "sceneId": "scene1",
+    "targetId": "",
+    "source": "scene-art/f1044951-67b1-4e2a-96d2-8c43b363909d/provider-restored.png",
+    "label": "Nový výřez",
+    "fingerprint": "[1280,720,\"scene-art/f1044951-67b1-4e2a-96d2-8c43b363909d/provider-restored.png\"]",
+    "placement": {
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 720
+      },
+      "imageFit": "stretch"
+    },
+    "selection": [
+      {
+        "x": 36.88196875000001,
+        "y": 641.2575555555555
+      },
+      {
+        "x": 248.3416375,
+        "y": 634.7049722222222
+      },
+      {
+        "x": 253.25836250000003,
+        "y": 433.18855555555547
+      },
+      {
+        "x": 22.129181250000038,
+        "y": 446.2950277777778
+      }
+    ],
+    "instruction": "Rozpohybuj psa  plynulou smyčkou. Zachovej kreslený styl, umístění a pevné okraje."
+  },
+  "prompt": "Rozpohybuj psa  plynulou smyčkou. Zachovej kreslený styl, umístění a pevné okraje.",
+  "task": "ambient",
+  "count": 10,
+  "fps": 12,
+  "width": 1672,
+  "height": 940
+}

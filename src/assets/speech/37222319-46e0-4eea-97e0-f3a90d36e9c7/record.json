@@ -1,0 +1,15 @@
+{
+  "text": "Ja som vám to hovorila! [angry] Tu bol kábel! Tu! [laughs] A teraz mi niekto vysvetlite, kde do piče zmizol!",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "9Nd358gE1qQp0pDh8FgP",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 8,
+  "audioSha256": "166f82824ade4b1c517aeaf53a63503ad817b344fffe52d5615c3bcfe53efdcc"
+}

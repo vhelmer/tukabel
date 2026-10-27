@@ -1,0 +1,102 @@
+{
+  "version": 1,
+  "provider": "codex-cli",
+  "model": "gpt-6.1-sol",
+  "effort": "high",
+  "context": {
+    "mode": "character",
+    "sceneId": "scene2",
+    "targetId": "layer2",
+    "source": "scene-art/9ac4f9f9-ab18-4a0a-8acc-c8dfc0519eff/cutout.png",
+    "label": "Nový výřez",
+    "fingerprint": "[1280,720,{\"id\":\"layer2\",\"label\":\"Nový výřez\",\"bounds\":{\"x\":285.55023923444975,\"y\":218.8310308182784,\"width\":295.5023923444976,\"height\":469.03294367693945},\"imageFit\":\"stretch\",\"image\":\"scene-art/9ac4f9f9-ab18-4a0a-8acc-c8dfc0519eff/cutout.png\",\"onClick\":[],\"decorative\":true}]",
+    "placement": {
+      "bounds": {
+        "x": 285.55023923444975,
+        "y": 218.8310308182784,
+        "width": 295.5023923444976,
+        "height": 469.03294367693945
+      },
+      "imageFit": "stretch"
+    },
+    "protectedRegions": [],
+    "instruction": "Postava se přirozeně poškrábe rukou na hlavě a vrátí ruku do původní polohy. Zachovej ukotvení hlavy, očí, úst a těla, původní styl, oblečení a obrysy. První i poslední snímek musí být originál."
+  },
+  "prompt": "Postava se přirozeně poškrábe rukou na hlavě a vrátí ruku do původní polohy. Zachovej ukotvení hlavy, očí, úst a těla, původní styl, oblečení a obrysy. První i poslední snímek musí být originál.",
+  "task": "gesture",
+  "count": 12,
+  "fps": 10,
+  "sourceSha256": "a4dfb26e9af6c24ec084e63be88f18368d670cb911caa5fbb40255f45023d505",
+  "width": 386,
+  "height": 613,
+  "result": {
+    "source": "scene-art/9ac4f9f9-ab18-4a0a-8acc-c8dfc0519eff/cutout.png",
+    "sourceSha256": "a4dfb26e9af6c24ec084e63be88f18368d670cb911caa5fbb40255f45023d505",
+    "clips": [
+      {
+        "id": "codex-1f5c8915-841d-4f60-a153-dcc30131a5b0-expression",
+        "source": "scene-art/9ac4f9f9-ab18-4a0a-8acc-c8dfc0519eff/cutout.png",
+        "kind": "expression",
+        "label": "Poškrábání na hlavě",
+        "frames": [
+          "codex/1f5c8915-841d-4f60-a153-dcc30131a5b0/expression-01.png",
+          "codex/1f5c8915-841d-4f60-a153-dcc30131a5b0/expression-02.png",
+          "codex/1f5c8915-841d-4f60-a153-dcc30131a5b0/expression-03.png",
+          "codex/1f5c8915-841d-4f60-a153-dcc30131a5b0/expression-04.png",
+          "codex/1f5c8915-841d-4f60-a153-dcc30131a5b0/expression-05.png",
+          "codex/1f5c8915-841d-4f60-a153-dcc30131a5b0/expression-06.png",
+          "codex/1f5c8915-841d-4f60-a153-dcc30131a5b0/expression-07.png",
+          "codex/1f5c8915-841d-4f60-a153-dcc30131a5b0/expression-08.png",
+          "codex/1f5c8915-841d-4f60-a153-dcc30131a5b0/expression-09.png",
+          "codex/1f5c8915-841d-4f60-a153-dcc30131a5b0/expression-10.png",
+          "codex/1f5c8915-841d-4f60-a153-dcc30131a5b0/expression-11.png",
+          "codex/1f5c8915-841d-4f60-a153-dcc30131a5b0/expression-12.png"
+        ],
+        "fps": 10,
+        "loop": false
+      }
+    ],
+    "manifest": "codex/1f5c8915-841d-4f60-a153-dcc30131a5b0/recipe.json",
+    "notes": "Jednorázové poškrábání hlavy dvěma krátkými pohyby prstů a návrat do klidu. Ruka je již v originálu na hlavě; pohyb je proto jemný, omezený na prsty, zápěstí a zdviženou paži. Hlava, oči, ústa, trup a chodidla zůstávají pixelově shodné. Rozsah pohybu respektuje těsný horní a pravý okraj plátna. První i poslední PNG jsou přesné kopie source.png. Bez externích služeb.",
+    "assets": [
+      "codex/1f5c8915-841d-4f60-a153-dcc30131a5b0/expression-01.png",
+      "codex/1f5c8915-841d-4f60-a153-dcc30131a5b0/expression-02.png",
+      "codex/1f5c8915-841d-4f60-a153-dcc30131a5b0/expression-03.png",
+      "codex/1f5c8915-841d-4f60-a153-dcc30131a5b0/expression-04.png",
+      "codex/1f5c8915-841d-4f60-a153-dcc30131a5b0/expression-05.png",
+      "codex/1f5c8915-841d-4f60-a153-dcc30131a5b0/expression-06.png",
+      "codex/1f5c8915-841d-4f60-a153-dcc30131a5b0/expression-07.png",
+      "codex/1f5c8915-841d-4f60-a153-dcc30131a5b0/expression-08.png",
+      "codex/1f5c8915-841d-4f60-a153-dcc30131a5b0/expression-09.png",
+      "codex/1f5c8915-841d-4f60-a153-dcc30131a5b0/expression-10.png",
+      "codex/1f5c8915-841d-4f60-a153-dcc30131a5b0/expression-11.png",
+      "codex/1f5c8915-841d-4f60-a153-dcc30131a5b0/expression-12.png"
+    ]
+  },
+  "scripts": ["generate.py"],
+  "generatedManifest": {
+    "notes": "Jednorázové poškrábání hlavy dvěma krátkými pohyby prstů a návrat do klidu. Ruka je již v originálu na hlavě; pohyb je proto jemný, omezený na prsty, zápěstí a zdviženou paži. Hlava, oči, ústa, trup a chodidla zůstávají pixelově shodné. Rozsah pohybu respektuje těsný horní a pravý okraj plátna. První i poslední PNG jsou přesné kopie source.png. Bez externích služeb.",
+    "scripts": ["generate.py"],
+    "clips": [
+      {
+        "kind": "expression",
+        "label": "Poškrábání na hlavě",
+        "fps": 10,
+        "frames": [
+          "frame-01.png",
+          "frame-02.png",
+          "frame-03.png",
+          "frame-04.png",
+          "frame-05.png",
+          "frame-06.png",
+          "frame-07.png",
+          "frame-08.png",
+          "frame-09.png",
+          "frame-10.png",
+          "frame-11.png",
+          "frame-12.png"
+        ]
+      }
+    ]
+  }
+}
