@@ -1072,6 +1072,8 @@ test('OpenAI extraction keeps repair unchanged, uses SAM frame for placement and
           if (calls === 1) {
             expect(body.background).toBeUndefined();
             expect(body.mask).toBeDefined();
+            expect(body.prompt).toContain('Do not relight');
+            expect(body.prompt).toContain('Change only the missing background');
             return Response.json({
               data: [{ b64_json: body.images[0].image_url.split(',')[1] }],
             });
@@ -1080,6 +1082,9 @@ test('OpenAI extraction keeps repair unchanged, uses SAM frame for placement and
           expect(body.mask).toBeUndefined();
           expect(body.images).toHaveLength(2);
           expect(body.prompt).toContain('Extract');
+          expect(body.prompt).toContain('Preserve the original RGB colors');
+          expect(body.prompt).toContain('Do not brighten');
+          expect(body.prompt).toContain('dirt, stains');
           return Response.json({
             data: [{ b64_json: generated.toString('base64') }],
           });
@@ -1103,6 +1108,12 @@ test('OpenAI extraction keeps repair unchanged, uses SAM frame for placement and
     ).toBe(true);
     const recipe = JSON.parse(
       await readFile(path.join(root, result.manifest), 'utf8'),
+    );
+    expect(recipe.providerPrompts.extraction).toContain(
+      'Preserve the original RGB colors',
+    );
+    expect(recipe.providerPrompts.background).toContain(
+      'Change only the missing background',
     );
     expect(recipe.extraction).toMatchObject({
       method: 'openai',

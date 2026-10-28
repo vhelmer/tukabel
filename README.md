@@ -405,6 +405,17 @@ podporovaným rozlišením modelu; do hry jde připravený výřez. Recept uchov
 `assetScale`, `alphaCutoff` a `derivedFrom`. Použití a undo probíhá až stávající
 akcí Apply. Lokální příprava má pouze vývojový endpoint `/art/prepare`.
 
+Prompty výřezu výslovně zakazují zesvětlování, přisvětlování, bělení oblečení,
+čištění skvrn, změnu kontrastu/saturace i nové barevné ladění. Požadují původní
+RGB, stíny, textury a špínu; označené vodítko neslouží jako barevná reference.
+Oprava pozadí požaduje jen doplnění chybějícího okolí podle sousedních pixelů,
+bez změny jasu nebo barev scény. Skutečné texty odeslané API jsou v receptu
+pod `providerPrompts.background` / `providerPrompts.extraction` (bez klíčů).
+Jde o pokyny generativnímu modelu, ne záruku přesných barev. Neprobíhá žádné
+automatické dorovnávání barev. Pro přesné RGB objektu použij původní pixely
+se SAM/ruční maskou; pro zachování okolí mimo opravu zvol **Kompozice přes masku**.
+Dřívější PNG se změnou promptu nemění a generování se samo neopakuje.
+
 ### Zarovnání OpenAI výřezu podle původního obrázku
 
 Pouhé vměstnání do ručního/SAM rámu je přibližné: průhledné okraje i změněné

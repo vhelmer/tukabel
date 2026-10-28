@@ -473,6 +473,8 @@ export async function createArtwork(
     Awaited<ReturnType<typeof prepareExtractedAsset>> | undefined;
   let extractionReturned: Buffer | undefined;
   let extractionComposite: Buffer | undefined;
+  let backgroundPrompt: string | undefined;
+  let extractionPrompt: string | undefined;
   if (assetRequest) {
     options.onStage?.(
       'AI vytváří transparentní objekt podle pozadí a označeného místa',
@@ -503,15 +505,16 @@ export async function createArtwork(
     const work = geometry.canvas;
     const instruction =
       operation === 'remove' || operation === 'extract'
-        ? 'Remove the selected object completely, including thin protrusions, outline strokes, contact shadows and detached remnants within the repair mask. Reconstruct continuous scenery and line work behind it seamlessly. Do not leave a duplicate or a silhouette. '
+        ? 'Remove the selected object completely, including thin protrusions, outline strokes, contact shadows and detached remnants within the repair mask. Change only the missing background inside the repair mask and reconstruct continuous scenery and line work using adjacent untouched pixels as the color and lighting reference. Preserve the original palette, brightness, contrast, saturation, color temperature, shadows, texture, dirt and wear. Do not relight, brighten, darken, recolor, apply color grading or exposure/white-balance correction to the scene. Do not add highlights or haze. Preserve every existing detail outside the repair mask. Do not leave a duplicate or a silhouette. '
         : operation === 'generate'
           ? 'Create a new 2D adventure location using the reference ONLY for its drawing style, palette and line work. '
           : 'Edit only the selected area. ';
     options.onStage?.('AI upravuje obrázek · požadavek se neopakuje');
+    backgroundPrompt = `${instruction}Preserve the reference cartoon drawing style, perspective, lighting and composition outside the edit. Preserve the image framing. No UI, text labels or watermarks. User instructions: ${input.prompt as string}`;
     const generated = await editImage(
       workingImage,
       workingMask,
-      `${instruction}Preserve the reference cartoon drawing style, perspective, lighting and composition outside the edit. Preserve the image framing. No UI, text labels or watermarks. User instructions: ${input.prompt as string}`,
+      backgroundPrompt,
       `${work.width}x${work.height}`,
       { ...options, ...settings },
     );
@@ -546,10 +549,12 @@ export async function createArtwork(
       height,
     );
     options.onStage?.('OpenAI odděluje objekt · druhý požadavek bez opakování');
+    extractionPrompt =
+      'Extract ONLY the existing object highlighted in pink in image 2 from the unmodified image 1. This is background removal, not a redraw or enhancement. Remove all surrounding scenery and background. Return one complete isolated object on genuine transparent alpha, including holes and fine edges. Preserve the original RGB colors, brightness, luminance, contrast, saturation, exposure, white balance, color temperature, shadows and highlights of image 1. Preserve its exact identity, pose, proportions, outline, texture, dirt, stains and wear. Do not brighten or darken the subject, relight it, whiten clothing, clean stains, repaint, beautify, sharpen or normalize its colors. Do not replace shaded or dirty colors with cleaner or lighter versions. Keep subject interior colors unchanged; only change background alpha and decontaminate mixed edge pixels when necessary. Do not include the pink guide, floor, contact shadow, extra objects, text, UI, or a checkerboard. Center the complete object with at least 8% transparent margin on every side. Do not crop any part. Image 2 is a selection guide only: use image 1 as the sole color reference and never copy the pink tint.';
     extractionReturned = await editImage(
       extractionRequest.reference,
       undefined,
-      'Extract ONLY the existing object highlighted in pink in image 2 from the unmodified image 1. Remove all surrounding scenery and background. Return one complete isolated object on genuine transparent alpha, including holes and fine edges. Preserve its original cartoon design, identity, pose, proportions, perspective, outline and colors as closely as possible; only subtle cleanup is allowed. Do not include the pink guide, floor, contact shadow, extra objects, text, UI, or a checkerboard. Center the complete object with at least 8% transparent margin on every side. Do not crop any part. Image 2 is a selection guide only, never copy its pink color.',
+      extractionPrompt,
       extractionRequest.size,
       { ...options, ...settings },
       { transparent: true, guide: extractionRequest.guide },
@@ -1060,6 +1065,10 @@ export async function createArtwork(
         : undefined,
       reconstruction,
       prompt: ai ? input.prompt : undefined,
+      providerPrompts:
+        backgroundPrompt || extractionPrompt
+          ? { background: backgroundPrompt, extraction: extractionPrompt }
+          : undefined,
       model: settings?.model,
       quality: settings?.quality,
       motion:
