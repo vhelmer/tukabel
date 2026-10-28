@@ -372,9 +372,8 @@ s kompozicí nad maskovanou opravou. Tato varianta nehlásí nulovou chybu reass
 Prázdné, neprůhledné a na okraji useknuté výstupy se odmítnou bez dalšího volání.
 Odmítnutí kontrolou umístění se nyní také archivuje: náhled ukáže surové PNG,
 odkazy na vstup/vodítko, úplnou cestu v `src/assets/scene-art/<uuid>/` a počty
-průhledných/částečných/neprůhledných pixelů včetně alfy na okraji. Kontrola
-odmítá i jediný okrajový pixel s alfou 1/255; samotná hláška proto nerozlišuje
-useknutý objekt od slabého zbytku pozadí. `assetDiagnostic` a `blockedReason`
+průhledných/částečných/neprůhledných pixelů včetně alfy na okraji. Starší kontrola odmítala i jediný okrajový pixel s alfou 1/255; samotná hláška
+proto nerozlišovala useknutý objekt od slabého zbytku pozadí. `assetDiagnostic` a `blockedReason`
 jsou v receptu; Apply je zakázané. Odmítnuté OpenAI výřezy lze znovu otevřít
 z historie i po restartu Vite. Starší odmítnuté výstupy před touto opravou se
 zahazovaly před archivací a zpětně je nelze obnovit.
@@ -384,6 +383,13 @@ Archiv obsahuje navíc `extraction-input.png`, `extraction-guide.png`,
 zachycuje metodu, původní rám, zdroj vodítka a umístění. Výsledky lze znovu
 otevřít z historie bez generace. Oprava pozadí, její obě varianty, vědomé Apply,
 kontrola změněného cíle a jeden undo krok zůstávají stejné.
+
+Nové OpenAI výřezy automaticky odstraní zanedbatelnou alfu 0–1/255 už před
+kontrolou umístění. Starší odmítnutý výřez s pouze takto slabou alfou na okraji
+se při otevření automaticky lokálně připraví jednou, bez API a bez přepsání archivu.
+Poté je Apply dostupné bez mezikroku. Skutečný obsah na okraji zůstává blokovaný.
+U tlačítka Apply se vždy zobrazí konkrétní důvod blokace (příprava, zamčený cíl,
+změněný zdroj/umístění, diagnostika nebo nepoužitelný výstup).
 
 U uloženého OpenAI výřezu lze zvolit **Rozlišení připraveného výřezu → 1× / 2×**
 a kliknout **Připravit uložený výřez (bez API)**. Z již zaplaceného PNG vznikne nový

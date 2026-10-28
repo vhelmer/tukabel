@@ -105,7 +105,23 @@ test('archived extraction is locally recoverable at 1x/2x, preserves originals a
         }) as typeof fetch,
       },
     );
-    expect(blocked.blockedReason).toBeDefined();
+    expect(blocked.blockedReason).toBeUndefined();
+    expect(blocked.cutout).toBeDefined();
+    const { inspectAssetAlpha } = await import('../dev/generatedAsset');
+    const legacyRecipe = JSON.parse(
+      await readFile(path.join(root, blocked.manifest), 'utf8'),
+    );
+    await writeFile(
+      path.join(root, blocked.manifest),
+      JSON.stringify({
+        ...legacyRecipe,
+        blockedReason: 'Starší výřez odmítnutý kvůli alfě na okraji.',
+        assetDiagnostic: {
+          image: 'extraction-returned.png',
+          ...(await inspectAssetAlpha(generated)),
+        },
+      }),
+    );
     const oldRecipe = await readFile(path.join(root, blocked.manifest));
     const one = await prepareArchivedExtraction(root, {
       manifest: blocked.manifest,
@@ -129,9 +145,15 @@ test('archived extraction is locally recoverable at 1x/2x, preserves originals a
       (await readFile(path.join(root, blocked.manifest))).equals(oldRecipe),
     ).toBe(true);
     expect(
-      (await readFile(path.join(root, blocked.assetDiagnostic!.image))).equals(
-        generated,
-      ),
+      (
+        await readFile(
+          path.join(
+            root,
+            path.dirname(blocked.manifest),
+            'extraction-returned.png',
+          ),
+        )
+      ).equals(generated),
     ).toBe(true);
     expect(calls).toBe(2);
     const history = await artworkHistory(root, { source: 'source.png' });

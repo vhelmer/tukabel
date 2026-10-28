@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { GameContent, Hotspot, SceneDefinition } from '../game/types';
 import { assetUrl } from '../game/assets';
 import {
@@ -352,55 +352,92 @@ export function SceneArtPanel({
       if (mounted.current) setBusy(false);
     }
   }
-  async function prepareExisting() {
-    if (!job?.result || busy) return;
-    const captured = job;
-    setPreparationError(undefined);
-    setBusy(true);
-    setMessage('Připravuji uložený PNG bez API…');
-    try {
-      const response = await prepareArchivedArtwork(
-        captured.result!.manifest,
-        captured.result!.source,
-        assetScale,
-      );
-      if (!mounted.current) return;
-      onAssets(response.assets);
-      setArchive((current) =>
-        current?.source === response.result.source
-          ? { ...current, results: [response.result, ...current.results] }
-          : current,
-      );
-      setArchivedJob({
-        ...captured,
-        result: { ...response.result, assets: response.assets },
-        openedSelection: selectedJob,
-      });
-      setMessage(
-        'Výřez je připravený bez nového API volání. Zkontroluj náhled a použij jej ve scéně.',
-      );
-    } catch (error) {
-      if (mounted.current)
-        setPreparationError({
-          manifest: captured.result!.manifest,
-          text:
-            error instanceof Error ? error.message : 'Příprava výřezu selhala.',
+  const prepareExisting = useCallback(
+    async (scale: 1 | 2 = assetScale) => {
+      if (!job?.result || busy) return;
+      const captured = job;
+      setPreparationError(undefined);
+      setBusy(true);
+      setMessage('Připravuji uložený PNG bez API…');
+      try {
+        const response = await prepareArchivedArtwork(
+          captured.result!.manifest,
+          captured.result!.source,
+          scale,
+        );
+        if (!mounted.current) return;
+        onAssets(response.assets);
+        setArchive((current) =>
+          current?.source === response.result.source
+            ? { ...current, results: [response.result, ...current.results] }
+            : current,
+        );
+        setArchivedJob({
+          ...captured,
+          result: { ...response.result, assets: response.assets },
+          openedSelection: selectedJob,
         });
-    } finally {
-      if (mounted.current) setBusy(false);
-    }
-  }
-  function apply() {
+        setMessage(
+          'Výřez je připravený bez nového API volání. Zkontroluj náhled a použij jej ve scéně.',
+        );
+      } catch (error) {
+        if (mounted.current)
+          setPreparationError({
+            manifest: captured.result!.manifest,
+            text:
+              error instanceof Error
+                ? error.message
+                : 'Příprava výřezu selhala.',
+          });
+      } finally {
+        if (mounted.current) setBusy(false);
+      }
+    },
+    [job, busy, assetScale, onAssets, selectedJob],
+  );
+  const automaticPreparations = useRef(new Set<string>());
+  useEffect(() => {
+    const data = job?.result;
+    const diagnostic = data?.assetDiagnostic;
     if (
-      !result ||
+      busy ||
       !job ||
-      result.data.debugOnly ||
-      result.data.blockedReason ||
-      applied.current === job.id ||
+      !data?.blockedReason ||
+      data.extractionMethod !== 'openai' ||
+      !diagnostic ||
+      diagnostic.borderPixels < 1 ||
+      diagnostic.maxBorderAlpha > 1 ||
+      diagnostic.partialPixels + diagnostic.opaquePixels < 1 ||
+      data.source !== source ||
       object?.locked ||
-      result.data.source !== source ||
-      result.fingerprint !== artFingerprint(scene, result.targetId)
+      job.context.fingerprint !== artFingerprint(scene, job.context.targetId) ||
+      automaticPreparations.current.has(data.manifest)
     )
+      return;
+    // One local attempt per archived output; never generate or retry paid work.
+    const timer = window.setTimeout(() => {
+      automaticPreparations.current.add(data.manifest);
+      void prepareExisting(data.assetScale ?? 1);
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [busy, job, source, scene, object?.locked, prepareExisting]);
+  const applyBlockedReason = !result
+    ? 'Nejdříve otevři výsledek.'
+    : busy
+      ? 'Probíhá příprava výřezu. Počkej na dokončení.'
+      : result.data.source !== source
+        ? 'Výsledek patří jinému zdrojovému obrázku. Zvol původní zdroj grafické úpravy.'
+        : result.data.debugOnly
+          ? 'Diagnostika bez API není výsledek pro vložení do scény.'
+          : result.data.blockedReason
+            ? `Výřez ještě není připravený: ${result.data.blockedReason}`
+            : object?.locked
+              ? 'Cílová vrstva je zamčená. Odemkni ji v seznamu vrstev.'
+              : result.fingerprint !== artFingerprint(scene, result.targetId)
+                ? 'Zdroj nebo umístění cíle se od zadání změnily. Otevři výsledek z historie pro aktuální zdroj nebo vrať změnu cíle.'
+                : undefined;
+  function apply() {
+    if (!result || !job || applyBlockedReason || applied.current === job.id)
       return;
     applied.current = job.id;
     const { data, placement, targetId } = result;
@@ -1036,10 +1073,10 @@ export function SceneArtPanel({
                 nejvyšší alfa {result.data.assetDiagnostic.maxBorderAlpha}/255.
               </p>
               <p className="field-note">
-                Kontrola odmítá i jediný okrajový pixel s alfou 1/255. Slabá
-                alfa může být zbytek pozadí; samotná hláška nedokazuje useknutý
-                objekt. Pro slabou alfu použij přípravu uloženého výřezu bez
-                API; nic se znovu negeneruje.
+                Starší kontrola odmítala i jediný okrajový pixel s alfou 1/255.
+                Slabá alfa může být zbytek pozadí; samotná hláška nedokazuje
+                useknutý objekt. Pro slabou alfu použij přípravu uloženého
+                výřezu bez API; nic se znovu negeneruje.
               </p>
               <div className="art-comparison">
                 <figure className="checkerboard">
@@ -1204,16 +1241,22 @@ export function SceneArtPanel({
           <p className="field-note">
             Originál, maska a recept: {result.data.manifest}
           </p>
+          {applyBlockedReason && (
+            <p
+              id="art-apply-blocked"
+              role="status"
+              aria-label="Důvod blokace použití"
+            >
+              {applyBlockedReason}
+            </p>
+          )}
           <div className="row-actions">
             <button
               className="primary-button"
-              disabled={
-                busy ||
-                result.data.source !== source ||
-                result.data.debugOnly ||
-                Boolean(result.data.blockedReason) ||
-                object?.locked ||
-                result.fingerprint !== artFingerprint(scene, result.targetId)
+              disabled={Boolean(applyBlockedReason)}
+              title={applyBlockedReason}
+              aria-describedby={
+                applyBlockedReason ? 'art-apply-blocked' : undefined
               }
               onClick={apply}
             >

@@ -1301,14 +1301,39 @@ test.describe('OpenAI object extraction', () => {
         exact: true,
       })
       .click();
-    await expect(
-      panel.getByRole('region', { name: 'Diagnostika odmítnutého assetu' }),
-    ).toBeVisible();
     const apply = panel.getByRole('button', {
       name: 'Použít výsledek ve scéně',
       exact: true,
     });
-    await expect(apply).toBeDisabled();
+    await expect(apply).toBeEnabled();
+    // Simulate an archive created before automatic alpha cleanup existed.
+    const jobs = await (
+      await page.request.get(`${workspace.url}__tukabel/editor/jobs`)
+    ).json();
+    const generated = jobs.jobs.find(
+      (j: { kind: string; result?: unknown }) => j.kind === 'art' && j.result,
+    ).result;
+    const recipePath = path.join(
+      workspace.root,
+      'src/assets',
+      generated.manifest,
+    );
+    const legacyRecipe = JSON.parse(await readFile(recipePath, 'utf8'));
+    const { inspectAssetAlpha } = await import('../dev/generatedAsset');
+    const raw = await readFile(
+      path.join(path.dirname(recipePath), 'extraction-returned.png'),
+    );
+    await writeFile(
+      recipePath,
+      JSON.stringify({
+        ...legacyRecipe,
+        blockedReason: 'Starší odmítnutý výřez.',
+        assetDiagnostic: {
+          image: 'extraction-returned.png',
+          ...(await inspectAssetAlpha(raw)),
+        },
+      }),
+    );
     await page.reload();
     await ready(page);
     await page.getByRole('button', { name: 'Dev Mode', exact: true }).click();
@@ -1318,18 +1343,18 @@ test.describe('OpenAI object extraction', () => {
         exact: true,
       })
       .click();
+    const response = page.waitForResponse((r) =>
+      r.url().endsWith('/art/prepare'),
+    );
     await panel
       .getByLabel('Uložený výsledek', { exact: true })
       .selectOption({ index: 1 });
+    // Merely opening a legacy alpha-1 archive must enable Apply: no extra click.
+    const one = await (await response).json();
     const prepare = panel.getByRole('button', {
       name: 'Připravit uložený výřez (bez API)',
       exact: true,
     });
-    const response = page.waitForResponse((r) =>
-      r.url().endsWith('/art/prepare'),
-    );
-    await prepare.click();
-    const one = await (await response).json();
     await expect(
       panel.getByLabel('Uložený výsledek', { exact: true }),
     ).toHaveValue(one.result.manifest);
@@ -1367,5 +1392,7 @@ test.describe('OpenAI object extraction', () => {
       height: two.result.cutoutFrame.height,
     });
     expect(apiCalls).toBe(2);
+    await page.reload();
+    await ready(page);
   });
 });

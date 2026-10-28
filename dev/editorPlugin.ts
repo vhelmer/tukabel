@@ -232,6 +232,12 @@ export function editorPlugin(
               assetsRoot,
               await readJson(req),
             );
+            const modules =
+              server.environments.client.moduleGraph.getModulesByFile(
+                path.resolve(server.config.root, 'src/game/assets.ts'),
+              );
+            for (const module of modules ?? [])
+              server.environments.client.moduleGraph.invalidateModule(module);
             respond(200, {
               result: { ...result, assets: [] },
               assets: await listAssets(assetsRoot),

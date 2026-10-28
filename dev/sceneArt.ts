@@ -451,6 +451,7 @@ export async function createArtwork(
     try {
       return await placeGeneratedAsset(generated, target, width, height, {
         scale: assetScale as 1 | 2,
+        alphaCutoff: openaiExtraction ? 1 : 0,
       });
     } catch (error) {
       blockedReason =
@@ -983,6 +984,7 @@ export async function createArtwork(
     const manifest = {
       version: 3,
       assetScale,
+      alphaCutoff: openaiExtraction ? 1 : undefined,
       extraction: extractionRequest
         ? {
             method: 'openai',

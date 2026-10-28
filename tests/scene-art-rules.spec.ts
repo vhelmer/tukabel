@@ -1221,7 +1221,7 @@ test('rejected transparent assets retain raw provider PNG and alpha diagnostics 
           raw[(y * 32 + x) * 4] = 180;
           raw[(y * 32 + x) * 4 + 3] = 255;
         }
-      raw[3] = 1; // Only a barely visible border pixel is enough to reject placement.
+      raw[3] = operation === 'extract' ? 255 : 1; // Real clipping remains blocked; legacy asset mode stays strict.
       const generated = await sharp(raw, {
         raw: { width: 32, height: 32, channels: 4 },
       })
@@ -1263,9 +1263,9 @@ test('rejected transparent assets retain raw provider PNG and alpha diagnostics 
         width: 32,
         height: 32,
         borderPixels: 1,
-        maxBorderAlpha: 1,
-        opaquePixels: 256,
-        partialPixels: 1,
+        maxBorderAlpha: operation === 'extract' ? 255 : 1,
+        opaquePixels: operation === 'extract' ? 257 : 256,
+        partialPixels: operation === 'extract' ? 0 : 1,
         transparentPixels: 767,
       });
       const rawFile = result.assetDiagnostic!.image;
