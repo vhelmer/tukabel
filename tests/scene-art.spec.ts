@@ -1075,6 +1075,7 @@ test('archived extraction offers both backgrounds without API access and saves c
 test.describe('OpenAI object extraction', () => {
   let apiCalls = 0;
   let rejectOutput = false;
+  let noisyOutput = false;
   test.use({
     artTools: {
       apiKey: 'mock-extraction-key',
@@ -1082,6 +1083,23 @@ test.describe('OpenAI object extraction', () => {
         apiCalls++;
         const body = JSON.parse(init!.body as string);
         if (body.background === 'transparent') {
+          if (noisyOutput) {
+            const raw = Buffer.alloc(96 * 96 * 4);
+            for (let y = 16; y < 80; y++)
+              for (let x = 24; x < 72; x++) {
+                raw[(y * 96 + x) * 4] = 180;
+                raw[(y * 96 + x) * 4 + 3] = 254;
+              }
+            raw[3] = 1;
+            const png = await sharp(raw, {
+              raw: { width: 96, height: 96, channels: 4 },
+            })
+              .png()
+              .toBuffer();
+            return Response.json({
+              data: [{ b64_json: png.toString('base64') }],
+            });
+          }
           if (rejectOutput) {
             const png = await sharp({
               create: {
@@ -1124,6 +1142,7 @@ test.describe('OpenAI object extraction', () => {
   }) => {
     apiCalls = 0;
     rejectOutput = false;
+    noisyOutput = false;
     await seed(workspace.root, workspace.source);
     await openEditor(page, workspace.url);
     const original = await readFile(workspace.source, 'utf8');
@@ -1205,6 +1224,7 @@ test.describe('OpenAI object extraction', () => {
   }) => {
     apiCalls = 0;
     rejectOutput = true;
+    noisyOutput = false;
     await seed(workspace.root, workspace.source);
     await openEditor(page, workspace.url);
     const original = await readFile(workspace.source, 'utf8');
@@ -1255,6 +1275,97 @@ test.describe('OpenAI object extraction', () => {
     await expect(
       art(page).getByRole('region', { name: 'Diagnostika odmítnutého assetu' }),
     ).toBeVisible();
+    expect(apiCalls).toBe(2);
+  });
+  test('prepares an already paid noisy PNG locally at 1x or 2x and enables Apply without moving the layer', async ({
+    page,
+    workspace,
+    isMobile,
+  }) => {
+    apiCalls = 0;
+    rejectOutput = false;
+    noisyOutput = true;
+    await seed(workspace.root, workspace.source);
+    await openEditor(page, workspace.url);
+    await rectangle(page, isMobile);
+    const panel = art(page);
+    await panel
+      .getByLabel('Grafická operace', { exact: true })
+      .selectOption('extract');
+    await panel
+      .getByLabel('Způsob výřezu objektu', { exact: true })
+      .selectOption('openai');
+    await panel
+      .getByRole('button', {
+        name: 'Spustit AI úpravu (API kredit)',
+        exact: true,
+      })
+      .click();
+    await expect(
+      panel.getByRole('region', { name: 'Diagnostika odmítnutého assetu' }),
+    ).toBeVisible();
+    const apply = panel.getByRole('button', {
+      name: 'Použít výsledek ve scéně',
+      exact: true,
+    });
+    await expect(apply).toBeDisabled();
+    await page.reload();
+    await ready(page);
+    await page.getByRole('button', { name: 'Dev Mode', exact: true }).click();
+    await panel
+      .getByRole('button', {
+        name: 'Načíst dřívější výsledky (bez API)',
+        exact: true,
+      })
+      .click();
+    await panel
+      .getByLabel('Uložený výsledek', { exact: true })
+      .selectOption({ index: 1 });
+    const prepare = panel.getByRole('button', {
+      name: 'Připravit uložený výřez (bez API)',
+      exact: true,
+    });
+    const response = page.waitForResponse((r) =>
+      r.url().endsWith('/art/prepare'),
+    );
+    await prepare.click();
+    const one = await (await response).json();
+    await expect(
+      panel.getByLabel('Uložený výsledek', { exact: true }),
+    ).toHaveValue(one.result.manifest);
+    await expect(apply).toBeEnabled();
+    await expect(
+      panel.getByRole('region', { name: 'Diagnostika odmítnutého assetu' }),
+    ).toHaveCount(0);
+    await panel
+      .getByLabel('Rozlišení připraveného výřezu', { exact: true })
+      .selectOption('2');
+    const secondResponse = page.waitForResponse((r) =>
+      r.url().endsWith('/art/prepare'),
+    );
+    await prepare.click();
+    const two = await (await secondResponse).json();
+    expect(two.result.cutoutFrame).toEqual(one.result.cutoutFrame);
+    expect(apiCalls).toBe(2);
+    const png = path.join(workspace.root, 'src/assets', two.result.cutout);
+    expect((await sharp(png).metadata()).width).toBe(
+      two.result.cutoutFrame.width * 2,
+    );
+    await expect(apply).toBeEnabled();
+    await apply.click();
+    await save(page);
+    const disk = JSON.parse(
+      await readFile(workspace.source, 'utf8'),
+    ) as GameContent;
+    const layer = disk.scenes[0]!.hotspots.find(
+      (h) => h.image === two.result.cutout,
+    )!;
+    expect(layer.bounds).toEqual({
+      x: two.result.cutoutFrame.x,
+      y: two.result.cutoutFrame.y,
+      width: two.result.cutoutFrame.width,
+      height: two.result.cutoutFrame.height,
+    });
     expect(apiCalls).toBe(2);
   });
 });

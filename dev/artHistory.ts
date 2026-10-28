@@ -84,6 +84,7 @@ export async function artworkHistory(
           manifest: `${prefix}/recipe.json`,
           blockedReason: String(recipe.blockedReason),
           extractionMethod: 'openai',
+          assetScale: recipe.assetScale === 2 ? 2 : 1,
           assetDiagnostic: {
             ...(await inspectAssetAlpha(
               await readFile(path.join(root, image)),
@@ -121,8 +122,9 @@ export async function artworkHistory(
       if (cutoutFrame && cutout) {
         const meta = await sharp(path.join(root, cutout)).metadata();
         if (
-          meta.width !== cutoutFrame.width ||
-          meta.height !== cutoutFrame.height
+          meta.width !==
+            cutoutFrame.width * (recipe.assetScale === 2 ? 2 : 1) ||
+          meta.height !== cutoutFrame.height * (recipe.assetScale === 2 ? 2 : 1)
         )
           continue;
       }
@@ -134,6 +136,7 @@ export async function artworkHistory(
           .split(path.sep)
           .join('/'),
         image,
+        assetScale: recipe.assetScale === 2 ? 2 : 1,
         extractionMethod:
           recipe.extraction?.method === 'openai' ? 'openai' : undefined,
         reassembled:

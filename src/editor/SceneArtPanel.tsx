@@ -10,7 +10,12 @@ import {
 import type { Point } from '../game/transforms';
 import { polygonIssue } from '../game/polygon';
 import { useImageSize } from './useImageSize';
-import { submitEditorJob, getArtStatus, getArtworkHistory } from './api';
+import {
+  submitEditorJob,
+  getArtStatus,
+  getArtworkHistory,
+  prepareArchivedArtwork,
+} from './api';
 import type { ArtworkResult } from './api';
 import { MaskEditor } from './MaskEditor';
 import { ExtractionComparison } from './ExtractionComparison';
@@ -93,6 +98,11 @@ export function SceneArtPanel({
   const target =
     targetChoice.jobId === selectedJob ? targetChoice.value : jobTarget;
   const [prompt, setPrompt] = useState('');
+  const [assetScale, setAssetScale] = useState<1 | 2>(1);
+  const [preparationError, setPreparationError] = useState<{
+    manifest: string;
+    text: string;
+  }>();
   const [extractionMethod, setExtractionMethod] = useState<'mask' | 'openai'>(
     'mask',
   );
@@ -312,6 +322,11 @@ export function SceneArtPanel({
           model: ai ? model : undefined,
           quality: ai ? quality : undefined,
           confirmed: ai ? true : undefined,
+          assetScale:
+            operation === 'asset' ||
+            (operation === 'extract' && extractionMethod === 'openai')
+              ? assetScale
+              : undefined,
           extractionMethod:
             operation === 'extract' ? extractionMethod : undefined,
           repairPadding,
@@ -333,6 +348,44 @@ export function SceneArtPanel({
       setMessage(
         error instanceof Error ? error.message : 'Grafická operace selhala.',
       );
+    } finally {
+      if (mounted.current) setBusy(false);
+    }
+  }
+  async function prepareExisting() {
+    if (!job?.result || busy) return;
+    const captured = job;
+    setPreparationError(undefined);
+    setBusy(true);
+    setMessage('Připravuji uložený PNG bez API…');
+    try {
+      const response = await prepareArchivedArtwork(
+        captured.result!.manifest,
+        captured.result!.source,
+        assetScale,
+      );
+      if (!mounted.current) return;
+      onAssets(response.assets);
+      setArchive((current) =>
+        current?.source === response.result.source
+          ? { ...current, results: [response.result, ...current.results] }
+          : current,
+      );
+      setArchivedJob({
+        ...captured,
+        result: { ...response.result, assets: response.assets },
+        openedSelection: selectedJob,
+      });
+      setMessage(
+        'Výřez je připravený bez nového API volání. Zkontroluj náhled a použij jej ve scéně.',
+      );
+    } catch (error) {
+      if (mounted.current)
+        setPreparationError({
+          manifest: captured.result!.manifest,
+          text:
+            error instanceof Error ? error.message : 'Příprava výřezu selhala.',
+        });
     } finally {
       if (mounted.current) setBusy(false);
     }
@@ -495,6 +548,22 @@ export function SceneArtPanel({
           Zdroj: {source} {size && `· ${size.width} × ${size.height} px`} ·{' '}
           {selection ? `${selection.length} bodů výběru` : 'celý obrázek'}
         </p>
+        {(operation === 'asset' ||
+          (operation === 'extract' && extractionMethod === 'openai')) && (
+          <Field label="Rozlišení uloženého assetu">
+            <select
+              value={assetScale}
+              onChange={(e) => setAssetScale(Number(e.target.value) as 1 | 2)}
+            >
+              <option value={1}>1× · původní velikost</option>
+              <option value={2}>2× · dvojnásobné rozlišení</option>
+            </select>
+            <span className="field-note">
+              Mění počet pixelů PNG, nikoli velikost nebo polohu objektu ve
+              scéně. API může vrátit větší pracovní obrázek.
+            </span>
+          </Field>
+        )}
         {operation === 'asset' && (
           <p className="field-note">
             Označ místo pro nový objekt. Výběr určuje jeho umístění a maximální
@@ -870,7 +939,9 @@ export function SceneArtPanel({
               {archive.results.map((r) => (
                 <option key={r.manifest} value={r.manifest}>
                   {r.operation === 'extract' ? 'Oddělení' : 'Odstranění'} ·{' '}
-                  {r.manifest.split('/')[1]}
+                  {r.manifest.split('/')[1]} ·{' '}
+                  {r.blockedReason ? 'vyžaduje přípravu' : 'připravené'} ·{' '}
+                  {r.assetScale ?? 1}×
                 </option>
               ))}
             </select>
@@ -913,6 +984,41 @@ export function SceneArtPanel({
           {result.data.blockedReason && (
             <p role="alert">{result.data.blockedReason}</p>
           )}
+          {result.data.extractionMethod === 'openai' &&
+            !result.data.debugOnly && (
+              <div className="row-actions">
+                <Field label="Rozlišení připraveného výřezu">
+                  <select
+                    value={assetScale}
+                    disabled={busy}
+                    onChange={(e) =>
+                      setAssetScale(Number(e.target.value) as 1 | 2)
+                    }
+                  >
+                    <option value={1}>1× · původní velikost</option>
+                    <option value={2}>2× · dvojnásobné rozlišení</option>
+                  </select>
+                </Field>
+                <button
+                  disabled={
+                    busy ||
+                    result.fingerprint !==
+                      artFingerprint(scene, result.targetId)
+                  }
+                  onClick={() => void prepareExisting()}
+                >
+                  Připravit uložený výřez (bez API)
+                </button>
+                {preparationError?.manifest === result.data.manifest && (
+                  <p role="alert">{preparationError.text}</p>
+                )}
+                <p className="field-note">
+                  Odstraní pouze zanedbatelnou alfu 1/255 a vytvoří nový soubor
+                  z již zaplaceného PNG. Původní archiv zůstává zachovaný.
+                  Skutečně useknutý nebo neprůhledný výstup se nepovolí.
+                </p>
+              </div>
+            )}
           {result.data.assetDiagnostic && (
             <section aria-label="Diagnostika odmítnutého assetu">
               <h4>Surový výstup OpenAI · nepoužitý ve scéně</h4>
@@ -932,7 +1038,8 @@ export function SceneArtPanel({
               <p className="field-note">
                 Kontrola odmítá i jediný okrajový pixel s alfou 1/255. Slabá
                 alfa může být zbytek pozadí; samotná hláška nedokazuje useknutý
-                objekt. Výstup se automaticky neopravuje ani znovu negeneruje.
+                objekt. Pro slabou alfu použij přípravu uloženého výřezu bez
+                API; nic se znovu negeneruje.
               </p>
               <div className="art-comparison">
                 <figure className="checkerboard">
@@ -1083,7 +1190,8 @@ export function SceneArtPanel({
               Výřez: {result.data.cutoutFrame.width} ×{' '}
               {result.data.cutoutFrame.height} px · původní offset{' '}
               {result.data.cutoutFrame.x}, {result.data.cutoutFrame.y} px.
-              Umístění ve scéně se přepočítá automaticky.
+              Umístění ve scéně se přepočítá automaticky. Rozlišení PNG:{' '}
+              {result.data.assetScale ?? 1}×.
             </p>
           )}
           <ExtractionComparison result={result.data} />
@@ -1100,6 +1208,7 @@ export function SceneArtPanel({
             <button
               className="primary-button"
               disabled={
+                busy ||
                 result.data.source !== source ||
                 result.data.debugOnly ||
                 Boolean(result.data.blockedReason) ||

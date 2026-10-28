@@ -385,6 +385,20 @@ zachycuje metodu, původní rám, zdroj vodítka a umístění. Výsledky lze zn
 otevřít z historie bez generace. Oprava pozadí, její obě varianty, vědomé Apply,
 kontrola změněného cíle a jeden undo krok zůstávají stejné.
 
+U uloženého OpenAI výřezu lze zvolit **Rozlišení připraveného výřezu → 1× / 2×**
+a kliknout **Připravit uložený výřez (bez API)**. Z již zaplaceného PNG vznikne nový
+archiv; původní se nepřepisuje. Příprava odstraní pouze alfu 0–1/255 a ponechá
+zbytek jemné hrany. Skutečný obsah na okraji i zcela neprůhledný výstup nadále
+odmítá. Neopakují se ani výřez, ani oprava pozadí přes API. Používá původní cílový
+rám a kontroluje hash zdroje; změněný zdroj nebo neplatný archiv odmítne.
+
+Výchozí 1× uloží oříznutý PNG v původní velikosti objektu. 2× zdvojnásobí počet
+pixelů v obou osách, **nikoli herní rám ani polohu**. Stejná volba je i před
+novou generací assetu / OpenAI výřezu. Pracovní výstup API může být větší kvůli
+podporovaným rozlišením modelu; do hry jde připravený výřez. Recept uchovává
+`assetScale`, `alphaCutoff` a `derivedFrom`. Použití a undo probíhá až stávající
+akcí Apply. Lokální příprava má pouze vývojový endpoint `/art/prepare`.
+
 ### Segmentace a matting na vzdáleném počítači
 
 Dev Mode může spouštět SAM 2/3, GrabCut, ViTMatte, closed-form i odstranění

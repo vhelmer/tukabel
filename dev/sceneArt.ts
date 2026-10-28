@@ -54,6 +54,7 @@ export interface ArtResult {
   cutout?: string;
   preview?: string;
   extractionMethod?: 'openai';
+  assetScale?: 1 | 2;
   cutoutFull?: string;
   cutoutFrame?: import('../src/game/transforms.ts').CropFrame;
   backgrounds?: { restored: string; masked: string };
@@ -204,6 +205,17 @@ export async function createArtwork(
     throw Error('Neplatná grafická operace.');
   const operation = input.operation as ArtOperation;
   const debugOnly = input.debugOnly === true;
+  const assetScale = input.assetScale ?? 1;
+  if (
+    ![1, 2].includes(Number(assetScale)) ||
+    typeof assetScale !== 'number' ||
+    (input.assetScale !== undefined &&
+      !(
+        operation === 'asset' ||
+        (operation === 'extract' && input.extractionMethod === 'openai')
+      ))
+  )
+    throw Error('Neplatné rozlišení assetu.');
   if (
     input.extractionMethod !== undefined &&
     (operation !== 'extract' ||
@@ -437,7 +449,9 @@ export async function createArtwork(
     target: Parameters<typeof placeGeneratedAsset>[1],
   ) {
     try {
-      return await placeGeneratedAsset(generated, target, width, height);
+      return await placeGeneratedAsset(generated, target, width, height, {
+        scale: assetScale as 1 | 2,
+      });
     } catch (error) {
       blockedReason =
         error instanceof Error ? error.message : 'Výstup nelze umístit.';
@@ -968,6 +982,7 @@ export async function createArtwork(
     }
     const manifest = {
       version: 3,
+      assetScale,
       extraction: extractionRequest
         ? {
             method: 'openai',
@@ -1066,6 +1081,7 @@ export async function createArtwork(
     return {
       operation,
       extractionMethod: openaiExtraction ? 'openai' : undefined,
+      assetScale: assetScale as 1 | 2,
       source: input.source,
       ...settings,
       debugOnly: debugOnly || undefined,

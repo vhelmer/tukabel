@@ -130,6 +130,7 @@ export interface ArtworkResult {
   cutout?: string;
   preview?: string;
   extractionMethod?: 'openai';
+  assetScale?: 1 | 2;
   cutoutFull?: string;
   cutoutFrame?: import('../game/transforms').CropFrame;
   backgrounds?: { restored: string; masked: string };
@@ -227,3 +228,14 @@ export const getArtworkHistory = (source: string) =>
     'POST',
     { source },
   );
+
+export const prepareArchivedArtwork = (
+  manifest: string,
+  source: string,
+  scale: 1 | 2,
+) =>
+  request<{ result: ArtworkResult; assets: string[] }>('art/prepare', 'POST', {
+    manifest,
+    source,
+    scale,
+  });

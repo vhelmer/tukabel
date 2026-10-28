@@ -1,4 +1,5 @@
 import sharp from 'sharp';
+import { ART_MAX_PIXELS } from './artSource.ts';
 import { polygonBounds } from '../src/game/polygon.ts';
 import type { CropFrame, Point } from '../src/game/transforms.ts';
 
@@ -55,12 +56,25 @@ export async function placeGeneratedAsset(
   target: { x: number; y: number; width: number; height: number },
   sourceWidth: number,
   sourceHeight: number,
+  options: { alphaCutoff?: 0 | 1; scale?: 1 | 2 } = {},
 ) {
+  const scale = options.scale ?? 1;
+  const alphaCutoff = options.alphaCutoff ?? 0;
+  if (![1, 2].includes(scale) || ![0, 1].includes(alphaCutoff))
+    throw Error('Neplatné rozlišení nebo alfa výřezu.');
   const { data, info } = await sharp(generated)
     .toColourspace('srgb')
     .ensureAlpha()
     .raw()
     .toBuffer({ resolveWithObject: true });
+  if (alphaCutoff)
+    for (let p = 3; p < data.length; p += 4)
+      if (data[p]! <= alphaCutoff) data[p] = 0;
+  const cleaned = await sharp(data, {
+    raw: { width: info.width, height: info.height, channels: 4 },
+  })
+    .png()
+    .toBuffer();
   let left = info.width,
     top = info.height,
     right = -1,
@@ -78,11 +92,28 @@ export async function placeGeneratedAsset(
       bottom = Math.max(bottom, y);
     }
   if (right < left) throw Error('AI vrátila prázdný průhledný asset.');
-  const { data: image, info: fit } = await sharp(generated)
+  const { data: nativeImage, info: fit } = await sharp(cleaned)
     .extract({ left, top, width: right - left + 1, height: bottom - top + 1 })
     .resize(target.width, target.height, { fit: 'inside' })
     .png()
     .toBuffer({ resolveWithObject: true });
+  if (fit.width * fit.height * scale * scale > ART_MAX_PIXELS)
+    throw Error(
+      'Zvolené rozlišení assetu překračuje limit obrázků projektu. Použij 1×.',
+    );
+  const image =
+    scale === 1
+      ? nativeImage
+      : await sharp(cleaned)
+          .extract({
+            left,
+            top,
+            width: right - left + 1,
+            height: bottom - top + 1,
+          })
+          .resize(fit.width * scale, fit.height * scale, { fit: 'fill' })
+          .png()
+          .toBuffer();
   const frame: CropFrame = {
     x: target.x + Math.floor((target.width - fit.width) / 2),
     y: target.y + target.height - fit.height,
@@ -99,7 +130,7 @@ export async function placeGeneratedAsset(
       background: '#00000000',
     },
   })
-    .composite([{ input: image, left: frame.x, top: frame.y }])
+    .composite([{ input: nativeImage, left: frame.x, top: frame.y }])
     .png()
     .toBuffer();
   return { image, full, frame };

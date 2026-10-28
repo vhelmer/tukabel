@@ -1,3 +1,4 @@
+import { prepareArchivedExtraction } from './prepareArtwork.ts';
 import { createHash, randomUUID } from 'node:crypto';
 import {
   lstat,
@@ -222,6 +223,17 @@ export function editorPlugin(
               results: (
                 await artworkHistory(assetsRoot, await readJson(req))
               ).map((result) => ({ ...result, assets: [] })),
+              assets: await listAssets(assetsRoot),
+            });
+            return;
+          }
+          if (endpoint === `${API}/art/prepare` && req.method === 'POST') {
+            const result = await prepareArchivedExtraction(
+              assetsRoot,
+              await readJson(req),
+            );
+            respond(200, {
+              result: { ...result, assets: [] },
               assets: await listAssets(assetsRoot),
             });
             return;
