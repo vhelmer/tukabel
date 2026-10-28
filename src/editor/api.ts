@@ -146,6 +146,7 @@ export interface ArtworkResult {
   quality?: import('./artSettings').ImageQuality;
   debugOnly?: boolean;
   blockedReason?: string;
+  assetDiagnostic?: import('./artSettings').AssetDiagnostic;
   debug?: import('./inpaintDebug').InpaintDebug;
   reconstruction?: {
     changedPixels: number;

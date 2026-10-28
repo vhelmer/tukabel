@@ -13,3 +13,15 @@ export function imageQualities(model: string): readonly ImageQuality[] {
 export function imageModels(configured: string): string[] {
   return [...new Set([defaultImageModel, previousImageModel, configured])];
 }
+
+export interface AssetDiagnostic {
+  image: string;
+  width: number;
+  height: number;
+  hasAlpha: boolean;
+  transparentPixels: number;
+  partialPixels: number;
+  opaquePixels: number;
+  borderPixels: number;
+  maxBorderAlpha: number;
+}

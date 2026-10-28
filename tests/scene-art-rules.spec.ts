@@ -209,7 +209,7 @@ test('generated assets keep their aspect and bottom anchor rather than clipping 
   expect((await sharp(placed.image).metadata()).hasAlpha).toBe(true);
 });
 
-test('asset generation rejects missing selections, opaque, empty or clipped provider images without publishing or retrying', async () => {
+test('asset generation rejects missing selections and archives invalid provider images without placement or retrying', async () => {
   await fixture(async (root, original) => {
     const input = {
       source: 'source.png',
@@ -239,23 +239,28 @@ test('asset generation rejects missing selections, opaque, empty or clipped prov
       })
         .png()
         .toBuffer();
-      await expect(
-        createArtwork(root, input, {
-          apiKey: 'test-asset-secret',
-          fetch: (async () => {
-            calls++;
-            return Response.json({
-              data: [{ b64_json: bytes.toString('base64') }],
-            });
-          }) as typeof fetch,
-        }),
-      ).rejects.toThrow(/průhledným okrajem|prázdný/);
+      const result = await createArtwork(root, input, {
+        apiKey: 'test-asset-secret',
+        fetch: (async () => {
+          calls++;
+          return Response.json({
+            data: [{ b64_json: bytes.toString('base64') }],
+          });
+        }) as typeof fetch,
+      });
+      expect(result.blockedReason).toMatch(/průhledným okrajem|prázdný/);
+      expect(
+        (await readFile(path.join(root, result.assetDiagnostic!.image))).equals(
+          bytes,
+        ),
+      ).toBe(true);
+      expect(result.cutoutFrame).toBeUndefined();
     }
     expect(calls).toBe(3);
     expect(
       (await readFile(path.join(root, 'source.png'))).equals(original),
     ).toBe(true);
-    expect(await readdir(root)).toEqual(['source.png']);
+    expect(await readdir(path.join(root, 'scene-art'))).toHaveLength(3);
   });
 });
 
@@ -1122,7 +1127,7 @@ test('OpenAI extraction keeps repair unchanged, uses SAM frame for placement and
   });
 });
 
-test('OpenAI extraction is opt-in, validates its method and rejects opaque results without publishing or retrying', async () => {
+test('OpenAI extraction is opt-in, validates its method and archives blocked opaque results without retrying', async () => {
   await fixture(async (root) => {
     let calls = 0;
     const fetchMock = (async (_url: unknown, init: RequestInit) => {
@@ -1151,22 +1156,22 @@ test('OpenAI extraction is opt-in, validates its method and rejects opaque resul
       ).rejects.toThrow('výřezu');
     }
     expect(calls).toBe(0);
-    await expect(
-      createArtwork(
-        root,
-        {
-          source: 'source.png',
-          operation: 'extract',
-          extractionMethod: 'openai',
-          selection: rectangle,
-          prompt: 'Oprav.',
-          confirmed: true,
-        },
-        { apiKey: 'secret', fetch: fetchMock },
-      ),
-    ).rejects.toThrow('průhledným');
+    const blocked = await createArtwork(
+      root,
+      {
+        source: 'source.png',
+        operation: 'extract',
+        extractionMethod: 'openai',
+        selection: rectangle,
+        prompt: 'Oprav.',
+        confirmed: true,
+      },
+      { apiKey: 'secret', fetch: fetchMock },
+    );
+    expect(blocked.blockedReason).toContain('průhledným');
+    expect(blocked.assetDiagnostic).toBeDefined();
     expect(calls).toBe(2);
-    expect(await readdir(root)).toEqual(['source.png']);
+    expect(await readdir(path.join(root, 'scene-art'))).toHaveLength(1);
   });
 });
 
@@ -1205,4 +1210,80 @@ test('OpenAI extraction skips the extra call for debug or a mis-sized background
     expect(blocked.cutout).toBeUndefined();
     expect(calls).toBe(1);
   });
+});
+
+test('rejected transparent assets retain raw provider PNG and alpha diagnostics without Apply or retry', async () => {
+  for (const operation of ['asset', 'extract'])
+    await fixture(async (root, original) => {
+      const raw = Buffer.alloc(32 * 32 * 4);
+      for (let y = 8; y < 24; y++)
+        for (let x = 8; x < 24; x++) {
+          raw[(y * 32 + x) * 4] = 180;
+          raw[(y * 32 + x) * 4 + 3] = 255;
+        }
+      raw[3] = 1; // Only a barely visible border pixel is enough to reject placement.
+      const generated = await sharp(raw, {
+        raw: { width: 32, height: 32, channels: 4 },
+      })
+        .png()
+        .toBuffer();
+      let calls = 0;
+      const result = await createArtwork(
+        root,
+        {
+          source: 'source.png',
+          operation,
+          extractionMethod: operation === 'extract' ? 'openai' : undefined,
+          selection: rectangle,
+          prompt: 'Oprav.',
+          confirmed: true,
+        },
+        {
+          apiKey: 'diagnostic-secret',
+          fetch: (async (_url, init) => {
+            calls++;
+            const body = JSON.parse(init!.body as string);
+            return Response.json({
+              data: [
+                {
+                  b64_json:
+                    body.background === 'transparent'
+                      ? generated.toString('base64')
+                      : body.images[0].image_url.split(',')[1],
+                },
+              ],
+            });
+          }) as typeof fetch,
+        },
+      );
+      expect(result.blockedReason).toContain('průhledným');
+      expect(result.cutout).toBeUndefined();
+      expect(result.cutoutFrame).toBeUndefined();
+      expect(result.assetDiagnostic).toMatchObject({
+        width: 32,
+        height: 32,
+        borderPixels: 1,
+        maxBorderAlpha: 1,
+        opaquePixels: 256,
+        partialPixels: 1,
+        transparentPixels: 767,
+      });
+      const rawFile = result.assetDiagnostic!.image;
+      expect((await readFile(path.join(root, rawFile))).equals(generated)).toBe(
+        true,
+      );
+      expect(
+        (await readFile(path.join(root, 'source.png'))).equals(original),
+      ).toBe(true);
+      const recipe = await readFile(path.join(root, result.manifest), 'utf8');
+      expect(recipe).not.toContain('diagnostic-secret');
+      expect(JSON.parse(recipe).blockedReason).toBe(result.blockedReason);
+      expect(calls).toBe(operation === 'asset' ? 1 : 2);
+      if (operation === 'extract') {
+        const { artworkHistory } = await import('../dev/artHistory');
+        const [archived] = await artworkHistory(root, { source: 'source.png' });
+        expect(archived?.assetDiagnostic).toEqual(result.assetDiagnostic);
+        expect(archived?.blockedReason).toBe(result.blockedReason);
+      }
+    });
 });

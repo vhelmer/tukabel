@@ -2,6 +2,7 @@ import { lstat, readFile, readdir, realpath } from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
 import { readArtSource } from './artSource.ts';
+import { inspectAssetAlpha } from './generatedAsset.ts';
 import type { ArtResult } from './sceneArt.ts';
 
 // Reopen published removals after a Vite restart without spending API credits.
@@ -56,7 +57,7 @@ export async function artworkHistory(
         reference.height !== original.height ||
         !['extract', 'remove'].includes(recipe.operation) ||
         recipe.debugOnly ||
-        recipe.blockedReason
+        (recipe.blockedReason && !recipe.assetDiagnostic)
       )
         continue;
       async function png(name: string, fullSize = true) {
@@ -70,6 +71,27 @@ export async function artworkHistory(
         )
           throw Error('Neplatné rozměry archivu.');
         return `${prefix}/${name}`;
+      }
+      if (recipe.blockedReason && recipe.assetDiagnostic) {
+        if (appliedVariant) continue;
+        const image = await png('extraction-returned.png', false);
+        results.push({
+          operation: recipe.operation,
+          source: String(input.source),
+          image: await png('image.png'),
+          width: original.width,
+          height: original.height,
+          manifest: `${prefix}/recipe.json`,
+          blockedReason: String(recipe.blockedReason),
+          extractionMethod: 'openai',
+          assetDiagnostic: {
+            ...(await inspectAssetAlpha(
+              await readFile(path.join(root, image)),
+            )),
+            image,
+          },
+        });
+        continue;
       }
       const image = await png('image.png'),
         restored = await png('provider-restored.png');

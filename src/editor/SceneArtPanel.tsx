@@ -913,6 +913,80 @@ export function SceneArtPanel({
           {result.data.blockedReason && (
             <p role="alert">{result.data.blockedReason}</p>
           )}
+          {result.data.assetDiagnostic && (
+            <section aria-label="Diagnostika odmítnutého assetu">
+              <h4>Surový výstup OpenAI · nepoužitý ve scéně</h4>
+              <p>
+                {result.data.assetDiagnostic.width} ×{' '}
+                {result.data.assetDiagnostic.height} px ·{' '}
+                {result.data.assetDiagnostic.hasAlpha
+                  ? 'PNG obsahuje alfa kanál'
+                  : 'PNG nemá alfa kanál'}
+                . Průhledné pixely:{' '}
+                {result.data.assetDiagnostic.transparentPixels}; částečné:{' '}
+                {result.data.assetDiagnostic.partialPixels}; neprůhledné:{' '}
+                {result.data.assetDiagnostic.opaquePixels}. Neprůhlednost na
+                okraji: {result.data.assetDiagnostic.borderPixels} pixelů,{' '}
+                nejvyšší alfa {result.data.assetDiagnostic.maxBorderAlpha}/255.
+              </p>
+              <p className="field-note">
+                Kontrola odmítá i jediný okrajový pixel s alfou 1/255. Slabá
+                alfa může být zbytek pozadí; samotná hláška nedokazuje useknutý
+                objekt. Výstup se automaticky neopravuje ani znovu negeneruje.
+              </p>
+              <div className="art-comparison">
+                <figure className="checkerboard">
+                  <img
+                    src={assetUrl(result.data.assetDiagnostic.image)}
+                    alt="Odmítnutý surový výstup OpenAI"
+                  />
+                </figure>
+              </div>
+              <p>
+                <a
+                  href={assetUrl(result.data.assetDiagnostic.image)}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Otevřít původní PNG z API
+                </a>
+              </p>
+              <p>
+                <code>src/assets/{result.data.assetDiagnostic.image}</code>
+              </p>
+              <p>
+                <a
+                  href={assetUrl(
+                    result.data.assetDiagnostic.image.replace(
+                      /[^/]+$/,
+                      result.data.extractionMethod === 'openai'
+                        ? 'extraction-input.png'
+                        : 'provider-input.png',
+                    ),
+                  )}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Vstup pro OpenAI
+                </a>
+                {' · '}
+                <a
+                  href={assetUrl(
+                    result.data.assetDiagnostic.image.replace(
+                      /[^/]+$/,
+                      result.data.extractionMethod === 'openai'
+                        ? 'extraction-guide.png'
+                        : 'placement-guide.png',
+                    ),
+                  )}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Označené vodítko
+                </a>
+              </p>
+            </section>
+          )}
           {result.data.model && (
             <p className="field-note">
               OpenAI · {result.data.model} ·{' '}

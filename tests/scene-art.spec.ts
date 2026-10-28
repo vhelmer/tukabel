@@ -1074,6 +1074,7 @@ test('archived extraction offers both backgrounds without API access and saves c
 
 test.describe('OpenAI object extraction', () => {
   let apiCalls = 0;
+  let rejectOutput = false;
   test.use({
     artTools: {
       apiKey: 'mock-extraction-key',
@@ -1081,6 +1082,21 @@ test.describe('OpenAI object extraction', () => {
         apiCalls++;
         const body = JSON.parse(init!.body as string);
         if (body.background === 'transparent') {
+          if (rejectOutput) {
+            const png = await sharp({
+              create: {
+                width: 96,
+                height: 96,
+                channels: 4,
+                background: '#448855',
+              },
+            })
+              .png()
+              .toBuffer();
+            return Response.json({
+              data: [{ b64_json: png.toString('base64') }],
+            });
+          }
           expect(body.mask).toBeUndefined();
           expect(body.images).toHaveLength(2);
           const png = await sharp(
@@ -1107,6 +1123,7 @@ test.describe('OpenAI object extraction', () => {
     isMobile,
   }) => {
     apiCalls = 0;
+    rejectOutput = false;
     await seed(workspace.root, workspace.source);
     await openEditor(page, workspace.url);
     const original = await readFile(workspace.source, 'utf8');
@@ -1180,5 +1197,64 @@ test.describe('OpenAI object extraction', () => {
     await expect(page.getByLabel('Název objektu', { exact: true })).toHaveValue(
       'OpenAI výrez',
     );
+  });
+  test('rejected output remains inspectable and downloadable after reload while Apply stays disabled', async ({
+    page,
+    workspace,
+    isMobile,
+  }) => {
+    apiCalls = 0;
+    rejectOutput = true;
+    await seed(workspace.root, workspace.source);
+    await openEditor(page, workspace.url);
+    const original = await readFile(workspace.source, 'utf8');
+    await rectangle(page, isMobile);
+    const panel = art(page);
+    await panel
+      .getByLabel('Grafická operace', { exact: true })
+      .selectOption('extract');
+    await panel
+      .getByLabel('Způsob výřezu objektu', { exact: true })
+      .selectOption('openai');
+    await panel
+      .getByRole('button', {
+        name: 'Spustit AI úpravu (API kredit)',
+        exact: true,
+      })
+      .click();
+    const diagnostic = panel.getByRole('region', {
+      name: 'Diagnostika odmítnutého assetu',
+    });
+    await expect(diagnostic).toBeVisible();
+    await expect(
+      diagnostic.getByAltText('Odmítnutý surový výstup OpenAI'),
+    ).toBeVisible();
+    await expect(diagnostic).toContainText('nejvyšší alfa 255/255');
+    await expect(
+      panel.getByRole('button', {
+        name: 'Použít výsledek ve scéně',
+        exact: true,
+      }),
+    ).toBeDisabled();
+    const link = diagnostic.getByRole('link', {
+      name: 'Otevřít původní PNG z API',
+    });
+    const response = await page.request.get(
+      new URL((await link.getAttribute('href'))!, workspace.url).href,
+    );
+    expect(response.ok()).toBe(true);
+    expect((await sharp(await response.body()).metadata()).width).toBe(96);
+    expect(await readFile(workspace.source, 'utf8')).toBe(original);
+    expect(apiCalls).toBe(2);
+    await page.reload();
+    await ready(page);
+    await page.getByRole('button', { name: 'Dev Mode', exact: true }).click();
+    await page
+      .getByRole('button', { name: 'Otevřít výsledek', exact: true })
+      .click();
+    await expect(
+      art(page).getByRole('region', { name: 'Diagnostika odmítnutého assetu' }),
+    ).toBeVisible();
+    expect(apiCalls).toBe(2);
   });
 });

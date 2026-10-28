@@ -104,3 +104,38 @@ export async function placeGeneratedAsset(
     .toBuffer();
   return { image, full, frame };
 }
+
+export async function inspectAssetAlpha(generated: Buffer) {
+  const meta = await sharp(generated).metadata();
+  const { data, info } = await sharp(generated)
+    .toColourspace('srgb')
+    .ensureAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  let transparentPixels = 0,
+    partialPixels = 0,
+    opaquePixels = 0,
+    borderPixels = 0,
+    maxBorderAlpha = 0;
+  for (let y = 0; y < info.height; y++)
+    for (let x = 0; x < info.width; x++) {
+      const a = data[(y * info.width + x) * 4 + 3]!;
+      if (a === 0) transparentPixels++;
+      else if (a === 255) opaquePixels++;
+      else partialPixels++;
+      if (!x || !y || x === info.width - 1 || y === info.height - 1) {
+        if (a) borderPixels++;
+        maxBorderAlpha = Math.max(maxBorderAlpha, a);
+      }
+    }
+  return {
+    width: info.width,
+    height: info.height,
+    hasAlpha: meta.hasAlpha === true,
+    transparentPixels,
+    partialPixels,
+    opaquePixels,
+    borderPixels,
+    maxBorderAlpha,
+  };
+}

@@ -17,6 +17,7 @@ import { matteForeground, type SegmentationOptions } from './segmentation.ts';
 import {
   prepareGeneratedAsset,
   placeGeneratedAsset,
+  inspectAssetAlpha,
 } from './generatedAsset.ts';
 import { polygonBounds, polygonIssue } from '../src/game/polygon.ts';
 import type { AnimationDefinition } from '../src/game/types.ts';
@@ -67,6 +68,7 @@ export interface ArtResult {
   repairMask?: string;
   debugOnly?: boolean;
   blockedReason?: string;
+  assetDiagnostic?: import('../src/editor/artSettings.ts').AssetDiagnostic;
   debug?: InpaintDebug;
   model?: string;
   quality?: ImageQuality;
@@ -429,6 +431,26 @@ export async function createArtwork(
       throw Error('Maska je prázdná v původním rozlišení. Zvětši výběr.');
     pipeline = await prepareInpaint(source, providerMask, width, height);
   }
+  let assetDiagnostic: ArtResult['assetDiagnostic'];
+  async function checkedPlacement(
+    generated: Buffer,
+    target: Parameters<typeof placeGeneratedAsset>[1],
+  ) {
+    try {
+      return await placeGeneratedAsset(generated, target, width, height);
+    } catch (error) {
+      blockedReason =
+        error instanceof Error ? error.message : 'Výstup nelze umístit.';
+      assetDiagnostic = {
+        image:
+          operation === 'extract'
+            ? 'extraction-returned.png'
+            : 'provider-returned.png',
+        ...(await inspectAssetAlpha(generated)),
+      };
+      return undefined;
+    }
+  }
   let assetPreview: Buffer | undefined;
   let extractionRequest:
     Awaited<ReturnType<typeof prepareExtractedAsset>> | undefined;
@@ -446,21 +468,18 @@ export async function createArtwork(
       { ...options, ...settings },
       { transparent: true, guide: assetRequest.guide },
     );
-    const placed = await placeGeneratedAsset(
-      generated,
-      assetRequest.target,
-      width,
-      height,
-    );
     returned = generated;
-    image = placed.image;
-    croppedCutout = placed.image;
-    cutout = placed.full;
-    cutoutFrame = placed.frame;
-    assetPreview = await sharp(source)
-      .composite([{ input: placed.full }])
-      .png()
-      .toBuffer();
+    const placed = await checkedPlacement(generated, assetRequest.target);
+    if (placed) {
+      image = placed.image;
+      croppedCutout = placed.image;
+      cutout = placed.full;
+      cutoutFrame = placed.frame;
+      assetPreview = await sharp(source)
+        .composite([{ input: placed.full }])
+        .png()
+        .toBuffer();
+    } else image = source;
   } else if (ai) {
     const { input: workingImage, apiMask, geometry, restore } = pipeline!;
     const workingMask = points || suppliedMask ? apiMask : undefined;
@@ -518,23 +537,23 @@ export async function createArtwork(
       { ...options, ...settings },
       { transparent: true, guide: extractionRequest.guide },
     );
-    const placed = await placeGeneratedAsset(
+    const placed = await checkedPlacement(
       extractionReturned,
       extractionRequest.target,
-      width,
-      height,
     );
-    cutout = placed.full;
-    croppedCutout = placed.image;
-    cutoutFrame = placed.frame;
-    assetPreview = await sharp(source)
-      .composite([{ input: placed.full }])
-      .png()
-      .toBuffer();
-    extractionComposite = await sharp(image)
-      .composite([{ input: placed.full }])
-      .png()
-      .toBuffer();
+    if (placed) {
+      cutout = placed.full;
+      croppedCutout = placed.image;
+      cutoutFrame = placed.frame;
+      assetPreview = await sharp(source)
+        .composite([{ input: placed.full }])
+        .png()
+        .toBuffer();
+      extractionComposite = await sharp(image)
+        .composite([{ input: placed.full }])
+        .png()
+        .toBuffer();
+    }
   }
   const folder = path.join(root, 'scene-art');
   await mkdir(folder, { recursive: true });
@@ -554,30 +573,32 @@ export async function createArtwork(
         await maskPng(repairCoverage, width, height),
         { flag: 'wx' },
       );
-    if (assetRequest && returned && assetPreview) {
+    if (assetRequest && returned) {
       for (const [name, bytes] of [
         ['provider-input.png', assetRequest.reference],
         ['placement-guide.png', assetRequest.guide],
         ['provider-returned.png', returned],
-        ['preview.png', assetPreview],
       ] as const)
         await writeFile(path.join(staging, name), bytes, { flag: 'wx' });
     }
-    if (
-      extractionRequest &&
-      extractionReturned &&
-      assetPreview &&
-      extractionComposite
-    ) {
+    if (extractionRequest && extractionReturned) {
       for (const [name, bytes] of [
         ['extraction-input.png', extractionRequest.reference],
         ['extraction-guide.png', extractionRequest.guide],
         ['extraction-returned.png', extractionReturned],
-        ['preview.png', assetPreview],
-        ['reassembled.png', extractionComposite],
       ] as const)
         await writeFile(path.join(staging, name), bytes, { flag: 'wx' });
     }
+    if (assetPreview)
+      await writeFile(path.join(staging, 'preview.png'), assetPreview, {
+        flag: 'wx',
+      });
+    if (extractionComposite)
+      await writeFile(
+        path.join(staging, 'reassembled.png'),
+        extractionComposite,
+        { flag: 'wx' },
+      );
     let reconstruction: ArtResult['reconstruction'];
     if (exact)
       await writeFile(
@@ -1003,6 +1024,7 @@ export async function createArtwork(
       repairFeather: feather,
       debugOnly: debugOnly || undefined,
       blockedReason,
+      assetDiagnostic,
       debug,
       pipeline: debug
         ? {
@@ -1048,6 +1070,9 @@ export async function createArtwork(
       ...settings,
       debugOnly: debugOnly || undefined,
       blockedReason,
+      assetDiagnostic: assetDiagnostic
+        ? { ...assetDiagnostic, image: `${prefix}/${assetDiagnostic.image}` }
+        : undefined,
       debug,
       image: `${prefix}/image.png`,
       preview: assetPreview ? `${prefix}/preview.png` : undefined,

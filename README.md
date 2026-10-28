@@ -370,6 +370,14 @@ OpenAI může objekt jemně překreslit: původní obrys ani pixelovou shodu nez
 Před použitím zkontroluj původní pozadí s vloženým objektem a posuvné porovnání
 s kompozicí nad maskovanou opravou. Tato varianta nehlásí nulovou chybu reassembly.
 Prázdné, neprůhledné a na okraji useknuté výstupy se odmítnou bez dalšího volání.
+Odmítnutí kontrolou umístění se nyní také archivuje: náhled ukáže surové PNG,
+odkazy na vstup/vodítko, úplnou cestu v `src/assets/scene-art/<uuid>/` a počty
+průhledných/částečných/neprůhledných pixelů včetně alfy na okraji. Kontrola
+odmítá i jediný okrajový pixel s alfou 1/255; samotná hláška proto nerozlišuje
+useknutý objekt od slabého zbytku pozadí. `assetDiagnostic` a `blockedReason`
+jsou v receptu; Apply je zakázané. Odmítnuté OpenAI výřezy lze znovu otevřít
+z historie i po restartu Vite. Starší odmítnuté výstupy před touto opravou se
+zahazovaly před archivací a zpětně je nelze obnovit.
 
 Archiv obsahuje navíc `extraction-input.png`, `extraction-guide.png`,
 `extraction-returned.png`, `preview.png` a `reassembled.png`; `recipe.json`
