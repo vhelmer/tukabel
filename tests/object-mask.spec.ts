@@ -507,3 +507,164 @@ test('mask launch errors remain visible beside the button and source switching p
     page.getByLabel('Plátno segmentační masky', { exact: true }),
   ).toBeVisible();
 });
+
+test.describe('mask-only cutout', () => {
+  test.use({
+    artTools: {
+      apiKey: '',
+      fetch: (async () => {
+        throw Error('Mask-only cutout must not call an image provider');
+      }) as typeof fetch,
+    },
+  });
+  test('creates a native transparent layer from a prepared mask without editing the source or needing OpenAI', async ({
+    page,
+    workspace,
+  }) => {
+    const original = JSON.parse(
+      await readFile(workspace.source, 'utf8'),
+    ) as GameContent;
+    const source = await sharp({
+      create: {
+        width: 128,
+        height: 72,
+        channels: 4,
+        background: { r: 17, g: 34, b: 51, alpha: 1 },
+      },
+    })
+      .png()
+      .toBuffer();
+    const sourceId = 'mask-only-source.png';
+    await writeFile(path.join(workspace.root, 'src/assets', sourceId), source);
+    const project = {
+      ...original,
+      startScene: 'workshop',
+      scenes: original.scenes.map((s) =>
+        s.id === 'workshop' ? { ...s, background: sourceId, hotspots: [] } : s,
+      ),
+    };
+    await writeFile(workspace.source, JSON.stringify(project));
+    await openEditor(page, workspace.url);
+    const art = page.getByRole('region', { name: 'Grafické nástroje scény' });
+    await expect(art.locator('option[value="mask-cutout"]')).toHaveCount(1);
+    await art
+      .getByLabel('Grafická operace', { exact: true })
+      .selectOption('mask-cutout');
+    const create = art.getByRole('button', {
+      name: 'Vyříznout maskou do nové vrstvy',
+      exact: true,
+    });
+    await expect(create).toBeDisabled();
+    await expect(
+      art.getByRole('button', {
+        name: 'Spustit AI úpravu (API kredit)',
+        exact: true,
+      }),
+    ).toHaveCount(0);
+    await art
+      .getByLabel('Název výsledné vrstvy nebo lokace', { exact: true })
+      .fill('Maskový výřez');
+    await art
+      .getByRole('button', {
+        name: 'Zpřesnit / upravit masku objektu',
+        exact: true,
+      })
+      .click();
+    const editor = page.getByRole('dialog', { name: 'Maska objektu' });
+    const mask = Buffer.alloc(128 * 72);
+    for (let y = 20; y < 36; y++)
+      for (let x = 30; x < 50; x++) mask[y * 128 + x] = 255;
+    for (let y = 26; y < 30; y++)
+      for (let x = 36; x < 40; x++) mask[y * 128 + x] = 0;
+    await editor.getByLabel('Načíst PNG masku').setInputFiles({
+      name: 'mask.png',
+      mimeType: 'image/png',
+      buffer: await sharp(mask, {
+        raw: { width: 128, height: 72, channels: 1 },
+      })
+        .png()
+        .toBuffer(),
+    });
+    await expect(editor.getByRole('status')).toContainText('Maska načtená');
+    await editor
+      .getByRole('button', { name: 'Použít masku', exact: true })
+      .click();
+    await art
+      .getByLabel('Grafická operace', { exact: true })
+      .selectOption('extract');
+    await art
+      .getByLabel('Grafická operace', { exact: true })
+      .selectOption('mask-cutout');
+    await expect(art).toContainText('Maska připravená');
+    await expect(create).toBeEnabled();
+    await create.click();
+    await expect(
+      art.getByRole('status', { name: 'Stav grafické operace' }),
+    ).toContainText('Assety jsou uložené');
+    const jobs = (
+      await (
+        await page.request.get(`${workspace.url}__tukabel/editor/jobs`)
+      ).json()
+    ).jobs as EditorJob[];
+    const result = jobs.find(
+      (j): j is Extract<EditorJob, { kind: 'art' }> =>
+        j.kind === 'art' && j.result?.operation === 'cutout',
+    )!.result!;
+    expect(result.backgrounds).toBeUndefined();
+    expect(result.cutoutFrame).toEqual({
+      x: 30,
+      y: 20,
+      width: 20,
+      height: 16,
+      sourceWidth: 128,
+      sourceHeight: 72,
+    });
+    const cutout = await sharp(
+      path.join(workspace.root, 'src/assets', result.image),
+    )
+      .ensureAlpha()
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+    expect([cutout.info.width, cutout.info.height]).toEqual([20, 16]);
+    expect([...cutout.data.subarray(0, 4)]).toEqual([17, 34, 51, 255]);
+    expect(cutout.data[(6 * 20 + 6) * 4 + 3]).toBe(0);
+    expect(
+      (
+        await readFile(path.join(workspace.root, 'src/assets', sourceId))
+      ).equals(source),
+    ).toBe(true);
+    expect(JSON.parse(await readFile(workspace.source, 'utf8'))).toEqual(
+      project,
+    );
+    await art
+      .getByRole('button', { name: 'Použít výsledek ve scéně', exact: true })
+      .click();
+    await page.getByRole('button', { name: 'Zpět', exact: true }).click();
+    await expect(
+      page.locator('.layer-name').filter({ hasText: 'Maskový výřez' }),
+    ).toHaveCount(0);
+    await page.getByRole('button', { name: 'Znovu', exact: true }).click();
+    await page
+      .getByRole('button', { name: 'Uložit do projektu', exact: true })
+      .click();
+    await expect(page.locator('.saved-badge')).toBeVisible();
+    const saved = JSON.parse(
+      await readFile(workspace.source, 'utf8'),
+    ) as GameContent;
+    const scene = saved.scenes.find((s) => s.id === 'workshop')!;
+    expect(scene.background).toBe(sourceId);
+    expect(scene.hotspots).toHaveLength(1);
+    expect(scene.hotspots[0]!.image).toBe(result.image);
+    expect(scene.hotspots[0]!.bounds).toEqual({
+      x: 300,
+      y: 200,
+      width: 200,
+      height: 160,
+    });
+    await page.reload();
+    await openEditor(page, workspace.url);
+    await expect(
+      page.locator('.layer-name').filter({ hasText: 'Maskový výřez' }),
+    ).toBeVisible();
+  });
+});

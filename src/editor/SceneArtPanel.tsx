@@ -80,6 +80,7 @@ export function SceneArtPanel({
 }) {
   const [operation, setOperation] =
     useState<ArtworkResult['operation']>('cutout');
+  const [maskCutout, setMaskCutout] = useState(false);
   const openedJob = jobs.find(
     (job) =>
       (job.kind === 'art' ||
@@ -281,6 +282,12 @@ export function SceneArtPanel({
   }
   async function run(debugOnly = false) {
     if (!size || busy) return;
+    if (maskCutout && !preparedMask) {
+      setMessage(
+        'Nejprve připrav masku objektu a potvrď ji tlačítkem Použít masku.',
+      );
+      return;
+    }
     let geometry: ReturnType<typeof sourceSelection>;
     try {
       geometry = sourceSelection();
@@ -574,9 +581,13 @@ export function SceneArtPanel({
           </Field>
           <Field label="Grafická operace">
             <select
-              value={operation}
+              value={maskCutout ? 'mask-cutout' : operation}
               onChange={(e) => {
-                const op = e.target.value as ArtworkResult['operation'];
+                const maskOnly = e.target.value === 'mask-cutout';
+                const op = maskOnly
+                  ? 'cutout'
+                  : (e.target.value as ArtworkResult['operation']);
+                setMaskCutout(maskOnly);
                 setOperation(op);
                 if (op === 'asset') {
                   setTargetChoice({ jobId: selectedJob, value: 'background' });
@@ -585,6 +596,9 @@ export function SceneArtPanel({
                 setPrompt(presets[op] ?? '');
               }}
             >
+              <option value="mask-cutout">
+                Vyříznout objekt maskou → nová vrstva (SAM / ruční)
+              </option>
               <option value="cutout">
                 Kopie výběru → transparentní vrstva
               </option>
@@ -606,6 +620,16 @@ export function SceneArtPanel({
           Zdroj: {source} {size && `· ${size.width} × ${size.height} px`} ·{' '}
           {selection ? `${selection.length} bodů výběru` : 'celý obrázek'}
         </p>
+        {maskCutout && (
+          <p className="field-note">
+            Připrav masku přes Zpřesnit / upravit masku objektu: použij SAM3,
+            SAM2, ruční štětec nebo jemné hrany a potvrď Použít masku. Výřez se
+            vytvoří lokálně z původních pixelů jako transparentní PNG a po
+            kontrole jej vložíš do nové vrstvy přesně na původní místo. Původní
+            obrázek se nemění. Pozadí se nedokresluje a OpenAI API ani jeho klíč
+            nejsou potřeba.
+          </p>
+        )}
         {(operation === 'asset' ||
           (operation === 'extract' && extractionMethod === 'openai')) && (
           <Field label="Rozlišení uloženého assetu">
@@ -700,8 +724,10 @@ export function SceneArtPanel({
             <p className="field-note">
               Nejprve přibližně označ objekt. Polygon uzavři kliknutím na první
               bod nebo tlačítkem Dokončit polygon. Potom zpřesni hranice a oprav
-              je štětcem. Maska vybírá původní pixely včetně černých obrysů; AI
-              generuje pouze pozadí.
+              je štětcem. Maska vybírá původní pixely včetně černých obrysů.
+              {ai
+                ? ' AI generuje pouze pozadí.'
+                : ' Lokální výřez zachová původní obrázek; vznikne samostatná transparentní vrstva.'}
             </p>
           </div>
         )}
@@ -875,6 +901,7 @@ export function SceneArtPanel({
             className="primary-button"
             disabled={
               !size ||
+              (maskCutout && !preparedMask) ||
               (needsSelection &&
                 !selection &&
                 (operation === 'asset' || !preparedMask)) ||
@@ -882,7 +909,11 @@ export function SceneArtPanel({
             }
             onClick={() => void run()}
           >
-            {ai ? 'Spustit AI úpravu (API kredit)' : 'Vytvořit lokální asset'}
+            {maskCutout
+              ? 'Vyříznout maskou do nové vrstvy'
+              : ai
+                ? 'Spustit AI úpravu (API kredit)'
+                : 'Vytvořit lokální asset'}
           </button>
           <button disabled={!selection} onClick={() => onSelection(undefined)}>
             Zrušit výběr oblasti

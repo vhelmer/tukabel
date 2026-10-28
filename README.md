@@ -117,6 +117,15 @@ herní hover, kliknutí i drop na objekty pod nimi. Zamknutí nemění chování
    Oblast není nový herní hotspot. Výběr se převádí přes zoom, natočení a contain-fit
    do původních pixelů konkrétního obrázku; část mimo něj se odmítne.
 3. V **Výběr a grafika** zvol operaci a název výsledku:
+   - **Vyříznout objekt maskou → nová vrstva (SAM / ruční)** používá stejný
+     editor masek jako AI oddělení: výslovně spusť SAM3/SAM2 nebo uprav štětcem,
+     případně dopočítej jemné hrany, a potvrď **Použít masku**. **Vyříznout maskou
+     do nové vrstvy** připraví samostatné transparentní PNG pouze z původního
+     obrázku. Bez připravené masky se nespustí. OpenAI klíč ani generování pozadí
+     nejsou potřeba; původní obrázek se nemění. **Použít výsledek ve scéně**
+     přidá novou vrstvu oříznutou podle alfy a přesně umístěnou přes `cutoutFrame`;
+     celou operaci vrátí jeden krok Zpět. Připravenou masku lze převzít i z právě
+     nastaveného AI oddělení, pokud zdroj a výběr zůstaly stejné.
    - **Kopie výběru** zkopíruje původní pixely do transparentního PNG. Pro přesný
      tvar objektu obkresli polygon; obdélník zachová i pozadí uvnitř obdélníku.
      Zdroj se při této místní operaci nemaže ani neopravuje.
