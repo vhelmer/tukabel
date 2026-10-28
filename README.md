@@ -985,8 +985,12 @@ hrany přidají vrchol a šipky poskytují klávesnicovou alternativu. Posun/res
 je jeden undo krok; Escape/pointercancel jej vrátí. Změna obrázku/rozměrů
 proporcionálně přepočítá celé polygony. Save používá společný projektový JSON,
 revize a atomický zápis. Klikací plocha ve hře odpovídá skutečnému konkávnímu
-polygonu, nikoli jeho obdélníkovému rámu. Otevřená mapa obsahuje pouze své oblasti
-a tlačítko zavření.
+polygonu, nikoli jeho obdélníkovému rámu. Polygony a jejich názvy se ve hře trvale
+nekreslí; při najetí nebo klávesnicovém focusu na dostupnou lokaci se nad oblastí
+ukáže dřevěná cedulka se jménem (sdílený asset `hud/wood-tag.svg`). Na dotyku se
+cedulka ukáže při stisku; tapnutí dál cestuje přímo. Cedulka neblokuje klikání do
+mapy. Zamčené lokace a místa pouze pro běžný přechod cedulku nezobrazují.
+Otevřená mapa obsahuje jen obrázek, případnou cedulku a tlačítko zavření.
 
 Volitelné `worldMap` v `src/game/content/project.json` obsahuje `image`, `width`,
 `height` a `points`. Oblast má stabilní `id`, slovenský `label`, `sceneId`,

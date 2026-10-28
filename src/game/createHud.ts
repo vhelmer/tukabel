@@ -186,10 +186,16 @@ export function createHud(
     tooltip
       .removeChildren()
       .forEach((child) => child.destroy({ children: true }));
-    if (snapshot.journal || snapshot.map || snapshot.menu || snapshot.drag)
-      return;
+    if (snapshot.journal || snapshot.menu || snapshot.drag) return;
     const control = layout.controls.find((c) => c.id === (hoverId ?? focused));
     if (!control || control.disabled) return;
+    if (snapshot.map) {
+      const point = snapshot.content.worldMap?.points.find(
+        (point) => control.id === 'map-point:' + point.id,
+      );
+      if (point) drawMapSign(control.bounds, point.label);
+      return;
+    }
     const title = text(
       tooltip,
       control.label,
@@ -209,6 +215,53 @@ export function createHud(
         ),
       ),
       control.bounds.y + control.bounds.height + 9,
+    );
+  }
+  function drawMapSign(bounds: Bounds, label: string) {
+    const map = layout.map!;
+    const title = text(
+      tooltip,
+      label,
+      0,
+      0,
+      16,
+      0xffedbd,
+      Math.max(1, Math.min(190, map.width - 64)),
+    );
+    const w = Math.min(map.width - 16, Math.max(132, title.width + 48));
+    const h = Math.min(map.height - 16, Math.max(72, title.height + 32));
+    const x = Math.max(
+      map.x + 8,
+      Math.min(map.x + map.width - w - 8, bounds.x + bounds.width / 2 - w / 2),
+    );
+    const y = Math.max(
+      map.y + 42,
+      Math.min(map.y + map.height - h - 8, bounds.y - h - 8),
+    );
+    const scale = h / 92;
+    const board = new NineSliceSprite({
+      texture: textures.get(hudArt.tag)!,
+      leftWidth: 30,
+      rightWidth: 30,
+      topHeight: 0,
+      bottomHeight: 0,
+      width: w / scale,
+      height: 92,
+    });
+    board.position.set(x, y);
+    board.scale.set(scale);
+    board.eventMode = 'none';
+    tooltip.addChildAt(board, 0);
+    const titleScale = Math.min(
+      1,
+      (w - 32) / title.width,
+      (h * 0.5) / title.height,
+    );
+    title.scale.set(titleScale);
+    title.style.stroke = { color: 0x36271e, width: 2, join: 'round' };
+    title.position.set(
+      x + (w - title.width) / 2,
+      y + h * 0.55 - title.height / 2,
     );
   }
   function activate(id: string, pointer = false) {
@@ -246,21 +299,10 @@ export function createHud(
         }
       : new Rectangle(0, 0, b.width, b.height);
     c.eventMode = 'static';
-    c.cursor = 'pointer';
+    c.cursor = control.disabled ? 'default' : 'pointer';
     const bg =
       skin === 'region'
-        ? c.addChild(
-            new Graphics()
-              .poly(control.polygon!.flatMap((p) => [p.x - b.x, p.y - b.y]))
-              .fill({
-                color: control.pressed ? 0xf4d18a : 0xc7ddac,
-                alpha: control.pressed ? 0.35 : 0.12,
-              })
-              .stroke({
-                color: control.pressed ? 0xf4d18a : 0xe5d8b5,
-                width: 2,
-              }),
-          )
+        ? null
         : skin === 'bare'
           ? c.addChild(
               new Graphics()
@@ -282,24 +324,26 @@ export function createHud(
           .ellipse(b.width / 2, b.height / 2, b.width * 0.4, b.height * 0.4)
           .stroke({ color: 0xf4d18a, width: 2 }),
       );
-    const caption = text(c, label, 0, 0, size);
-    if (caption.width > b.width - 10)
-      caption.scale.set((b.width - 10) / caption.width);
-    caption.position.set(
-      (b.width - caption.width) / 2,
-      (b.height - caption.height) / 2,
-    );
+    if (label) {
+      const caption = text(c, label, 0, 0, size);
+      if (caption.width > Math.max(1, b.width - 10))
+        caption.scale.set(Math.max(1, b.width - 10) / caption.width);
+      caption.position.set(
+        (b.width - caption.width) / 2,
+        (b.height - caption.height) / 2,
+      );
+    }
     if (control.disabled) c.alpha = 0.45;
     c.on('pointerover', (event: FederatedPointerEvent) => {
       if (event.pointerType === 'touch') return;
       hoverId = control.id;
-      bg.tint = 0xffe2b3;
+      if (bg) bg.tint = 0xffe2b3;
       syncTooltip();
       render();
     });
     c.on('pointerout', () => {
       hoverId = null;
-      bg.tint = 0xffffff;
+      if (bg) bg.tint = 0xffffff;
       syncTooltip();
       render();
     });
@@ -309,6 +353,11 @@ export function createHud(
       // A compatibility mousedown after touch would blur the modal's initial focus.
       if (e.pointerType === 'touch') e.preventDefault();
       if (control.disabled) return;
+      if (skin === 'region') {
+        hoverId = control.id;
+        syncTooltip();
+        render();
+      }
       origin = { x: e.clientX, y: e.clientY, id: e.pointerId };
       if (control.itemId)
         callbacks.onItemDown(control.itemId, {
@@ -374,12 +423,7 @@ export function createHud(
     const control = layout.controls.find((c) => c.id === focused);
     if (control && !control.disabled) {
       const b = control.bounds;
-      if (control.polygon) {
-        focusRing
-          .poly(control.polygon.flatMap((p) => [p.x, p.y]))
-          .stroke({ width: 3, color: 0xffe2a1 });
-        return;
-      }
+      if (control.polygon) return;
       focusRing
         .roundRect(b.x + 2, b.y + 2, b.width - 4, b.height - 4, 5)
         .stroke({ width: 3, color: 0xffe2a1 });
@@ -701,7 +745,7 @@ export function createHud(
           disabled: !canTravel(snapshot.content, snapshot.state, point.sceneId),
           pressed: current,
         },
-        (current ? '● ' : unlocked ? '' : '× ') + point.label,
+        '',
         13,
         'region',
       );

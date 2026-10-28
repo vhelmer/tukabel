@@ -1,5 +1,7 @@
 import { expect } from '@playwright/test';
 import { readFile, writeFile } from 'node:fs/promises';
+import path from 'node:path';
+import sharp from 'sharp';
 import { test } from './editorFixture';
 import { ready, hudClick, object, pointInScene, menuAction } from './helpers';
 import type { GameContent } from '../src/game/types';
@@ -13,11 +15,15 @@ test('polygon entrances and map regions preserve unlocks without shortcut or gam
     await readFile(workspace.source, 'utf8'),
   ) as GameContent;
   await writeFile(
+    path.join(workspace.root, 'src/assets/map-hover-test.svg'),
+    '<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720"><path fill="#39586a" d="M0 0h1280v720H0z"/></svg>',
+  );
+  await writeFile(
     workspace.source,
     JSON.stringify({
       ...doc,
       worldMap: {
-        image: 'demo-room.svg',
+        image: 'map-hover-test.svg',
         width: 1280,
         height: 720,
         points: [
@@ -148,6 +154,67 @@ test('polygon entrances and map regions preserve unlocks without shortcut or gam
   await expect(
     map.getByRole('button', { name: 'Iba prechodom: Ateliér', exact: true }),
   ).toBeDisabled();
+  const lockedYard = map.getByRole('button', {
+    name: 'Zamknuté: Dvor',
+    exact: true,
+  });
+  const lockedBox = (await lockedYard.boundingBox())!;
+  const canvas = page.locator('.canvas-host canvas');
+  const canvasBox = (await canvas.boundingBox())!;
+  const pixels = async () =>
+    sharp(await canvas.screenshot())
+      .removeAlpha()
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+  const expectMapPixel = (
+    frame: Awaited<ReturnType<typeof pixels>>,
+    x: number,
+    y: number,
+  ) => {
+    const scale = frame.info.width / canvasBox.width;
+    const offset =
+      (Math.floor((y - canvasBox.y) * scale) * frame.info.width +
+        Math.floor((x - canvasBox.x) * scale)) *
+      3;
+    expect([...frame.data.subarray(offset, offset + 3)]).toEqual([57, 88, 106]);
+  };
+  // Both the fill and the border of an unavailable polygon stay invisible.
+  const closedLabelFrame = await pixels();
+  expectMapPixel(
+    closedLabelFrame,
+    lockedBox.x + lockedBox.width * 0.2,
+    lockedBox.y + lockedBox.height * 0.8,
+  );
+  expectMapPixel(
+    closedLabelFrame,
+    lockedBox.x + lockedBox.width * 0.005,
+    lockedBox.y + lockedBox.height * 0.5,
+  );
+  await page.mouse.move(
+    lockedBox.x + lockedBox.width * 0.2,
+    lockedBox.y + lockedBox.height * 0.2,
+  );
+  const mapScale = lockedBox.width / 350;
+  const mapPixels = async (frame: Awaited<ReturnType<typeof pixels>>) => {
+    const ratio = frame.info.width / canvasBox.width;
+    return sharp(frame.data, {
+      raw: { width: frame.info.width, height: frame.info.height, channels: 3 },
+    })
+      .extract({
+        left: Math.ceil(
+          (lockedBox.x - 650 * mapScale - canvasBox.x + 2) * ratio,
+        ),
+        top: Math.ceil(
+          (lockedBox.y - 150 * mapScale - canvasBox.y + 2) * ratio,
+        ),
+        width: Math.floor((1280 * mapScale - 4) * ratio),
+        height: Math.floor((720 * mapScale - 4) * ratio),
+      })
+      .toBuffer();
+  };
+  expect(
+    (await mapPixels(await pixels())).equals(await mapPixels(closedLabelFrame)),
+  ).toBe(true);
   await page.keyboard.press('Escape');
   await expect(map).toHaveCount(0);
   await (await object(page, 'Sprístupniť dvor')).click();
@@ -160,6 +227,36 @@ test('polygon entrances and map regions preserve unlocks without shortcut or gam
     if (isMobile) await page.touchscreen.tap(p.x, p.y);
     else await page.mouse.click(p.x, p.y);
   };
+  await close.evaluate((node) => (node as HTMLElement).blur());
+  const beforeHover = await pixels();
+  expectMapPixel(
+    beforeHover,
+    box!.x + box!.width * 0.2,
+    box!.y + box!.height * 0.8,
+  );
+  // Keyboard focus reveals the same wooden sign, without drawing the polygon.
+  await yard.focus();
+  const focusedFrame = await pixels();
+  expect(focusedFrame.data.equals(beforeHover.data)).toBe(false);
+  if (!isMobile)
+    expectMapPixel(
+      focusedFrame,
+      box!.x + box!.width * 0.005,
+      box!.y + box!.height * 0.8,
+    );
+  await close.focus();
+  await page.mouse.move(0, 0);
+  const beforeMouseHover = await pixels();
+  await page.mouse.move(box!.x + box!.width * 0.2, box!.y + box!.height * 0.2);
+  const hoveredFrame = await pixels();
+  expect(hoveredFrame.data.equals(beforeMouseHover.data)).toBe(false);
+  if (!isMobile)
+    expectMapPixel(
+      hoveredFrame,
+      box!.x + box!.width * 0.005,
+      box!.y + box!.height * 0.8,
+    );
+  await page.mouse.move(0, 0);
   // Centre is inside the bounding rectangle but outside this L-shaped region.
   await tapRegion(0.5, 0.5);
   await expect(map).toBeVisible();
