@@ -252,6 +252,20 @@ export function createHud(
     board.scale.set(scale);
     board.eventMode = 'none';
     tooltip.addChildAt(board, 0);
+    const glow = new Graphics();
+    for (let spread = 20; spread >= 0; spread -= 4)
+      glow
+        .roundRect(
+          x - spread,
+          y + h * 0.18 - spread,
+          w + spread * 2,
+          h * 0.72 + spread * 2,
+          12 + spread,
+        )
+        .fill({ color: 0xffcf73, alpha: 0.045 });
+    glow.blendMode = 'add';
+    glow.eventMode = 'none';
+    tooltip.addChildAt(glow, 0);
     const titleScale = Math.min(
       1,
       (w - 32) / title.width,
