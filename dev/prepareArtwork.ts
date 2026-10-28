@@ -11,7 +11,10 @@ import {
 } from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
+import { format } from 'prettier';
 import { readArtSource, artHash } from './artSource.ts';
+import { registerAsset } from './registerAsset.ts';
+import type { SegmentationOptions } from './segmentation.ts';
 import { placeGeneratedAsset } from './generatedAsset.ts';
 import type { ArtResult } from './sceneArt.ts';
 
@@ -20,6 +23,7 @@ import type { ArtResult } from './sceneArt.ts';
 export async function prepareArchivedExtraction(
   root: string,
   input: unknown,
+  options: SegmentationOptions = {},
 ): Promise<ArtResult> {
   if (!input || typeof input !== 'object') throw Error('Vyber uložený výřez.');
   const request = input as Record<string, unknown>;
@@ -28,7 +32,10 @@ export async function prepareArchivedExtraction(
     !/^scene-art\/[a-f0-9-]{36}\/recipe\.json$/.test(request.manifest) ||
     typeof request.source !== 'string' ||
     ![1, 2].includes(Number(request.scale)) ||
-    typeof request.scale !== 'number'
+    typeof request.scale !== 'number' ||
+    (request.alignment !== undefined &&
+      (typeof request.alignment !== 'string' ||
+        !['frame', 'features'].includes(request.alignment)))
   )
     throw Error('Neplatný uložený výřez nebo rozlišení.');
   const directory = path.dirname(path.join(root, request.manifest));
@@ -97,13 +104,27 @@ export async function prepareArchivedExtraction(
     )
   )
     throw Error('Neplatné rozměry opraveného pozadí.');
-  const placed = await placeGeneratedAsset(
-    returned.bytes,
-    target,
-    original.width,
-    original.height,
-    { alphaCutoff: 1, scale: request.scale as 1 | 2 },
-  );
+  const registered =
+    request.alignment === 'features'
+      ? await registerAsset(
+          original.source,
+          returned.bytes,
+          await readFile(await file('object-mask.png')),
+          original.width,
+          original.height,
+          request.scale as 1 | 2,
+          options,
+        )
+      : undefined;
+  const placed =
+    registered ??
+    (await placeGeneratedAsset(
+      returned.bytes,
+      target,
+      original.width,
+      original.height,
+      { alphaCutoff: 1, scale: request.scale as 1 | 2 },
+    ));
   const parent = path.join(root, 'scene-art');
   if ((await realpath(parent)) !== path.resolve(parent))
     throw Error('Archiv nesmí být symbolický odkaz.');
@@ -158,24 +179,37 @@ export async function prepareArchivedExtraction(
       ],
     ] as const)
       await writeFile(path.join(staging, name), bytes, { flag: 'wx' });
+    if (registered?.matches)
+      await writeFile(
+        path.join(staging, 'alignment-matches.png'),
+        registered.matches,
+        { flag: 'wx' },
+      );
     await writeFile(
       path.join(staging, 'recipe.json'),
-      JSON.stringify(
-        {
-          ...recipe,
-          derivedFrom: request.manifest,
-          derivedProviderSha256: returned.sourceSha256,
-          assetScale: request.scale,
-          alphaCutoff: 1,
-          blockedReason: undefined,
-          assetDiagnostic: undefined,
-          cutoutFrame: placed.frame,
-          cutoutFull: 'cutout-full.png',
-          preview: 'preview.png',
-        },
-        null,
-        2,
-      ) + '\n',
+      await format(
+        JSON.stringify(
+          {
+            ...recipe,
+            derivedFrom: request.manifest,
+            derivedProviderSha256: returned.sourceSha256,
+            assetScale: request.scale,
+            alphaCutoff: 1,
+            alignment: registered?.alignment,
+            alignmentMatches: registered?.matches
+              ? 'alignment-matches.png'
+              : undefined,
+            blockedReason: undefined,
+            assetDiagnostic: undefined,
+            cutoutFrame: placed.frame,
+            cutoutFull: 'cutout-full.png',
+            preview: 'preview.png',
+          },
+          null,
+          2,
+        ),
+        { parser: 'json' },
+      ),
       { flag: 'wx' },
     );
     if (artHash(await readFile(original.filename)) !== original.sourceSha256)
@@ -191,6 +225,10 @@ export async function prepareArchivedExtraction(
       },
       extractionMethod: 'openai',
       assetScale: request.scale as 1 | 2,
+      alignment: registered?.alignment,
+      alignmentMatches: registered?.matches
+        ? `${prefix}/alignment-matches.png`
+        : undefined,
       cutout: `${prefix}/cutout.png`,
       cutoutFull: `${prefix}/cutout-full.png`,
       cutoutFrame: placed.frame,

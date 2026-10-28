@@ -12,7 +12,7 @@ export interface RemoteSegmentationOptions {
   device?: 'auto' | 'cpu' | 'cuda';
 }
 interface Request {
-  operation: 'status' | 'segment' | 'matte';
+  operation: 'status' | 'segment' | 'matte' | 'align';
   args?: string[];
   files?: Record<string, string>;
 }
@@ -41,6 +41,7 @@ export async function remoteSegmentation(
         'sam3_adapter.py',
         'setup_sam3.py',
         'device.py',
+        'align.py',
       ].map(async (name) => [
         name,
         (await readFile(new URL(name, folder))).toString('base64'),

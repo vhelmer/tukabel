@@ -99,6 +99,9 @@ export function SceneArtPanel({
     targetChoice.jobId === selectedJob ? targetChoice.value : jobTarget;
   const [prompt, setPrompt] = useState('');
   const [assetScale, setAssetScale] = useState<1 | 2>(1);
+  const [alignmentChoice, setAlignmentChoice] = useState<
+    'frame' | 'features'
+  >();
   const [preparationError, setPreparationError] = useState<{
     manifest: string;
     text: string;
@@ -127,6 +130,8 @@ export function SceneArtPanel({
       closedForm?: boolean;
     };
   }>();
+  const alignmentMode =
+    alignmentChoice ?? (status?.segmentation?.grabcut ? 'features' : 'frame');
   const model = modelChoice ?? status?.model ?? defaultImageModel;
   const quality = qualityChoice ?? status?.quality ?? defaultImageQuality;
   const mounted = useRef(false),
@@ -187,8 +192,10 @@ export function SceneArtPanel({
       ? archivedJob
       : queuedJob;
   const dismissResult = () => {
-    if (job === archivedJob) setArchivedJob(undefined);
-    else if (job) onDismiss(job.id);
+    if (job === archivedJob) {
+      setArchivedJob(undefined);
+      if (job && jobs.some((item) => item.id === job.id)) onDismiss(job.id);
+    } else if (job) onDismiss(job.id);
   };
   const result = job?.result ? { data: job.result, ...job.context } : undefined;
   const [backgroundChoice, setBackgroundChoice] = useState<{
@@ -364,6 +371,7 @@ export function SceneArtPanel({
           captured.result!.manifest,
           captured.result!.source,
           scale,
+          alignmentMode,
         );
         if (!mounted.current) return;
         onAssets(response.assets);
@@ -393,7 +401,7 @@ export function SceneArtPanel({
         if (mounted.current) setBusy(false);
       }
     },
-    [job, busy, assetScale, onAssets, selectedJob],
+    [job, busy, assetScale, onAssets, selectedJob, alignmentMode],
   );
   const automaticPreparations = useRef(new Set<string>());
   useEffect(() => {
@@ -402,12 +410,17 @@ export function SceneArtPanel({
     if (
       busy ||
       !job ||
-      !data?.blockedReason ||
+      !data ||
       data.extractionMethod !== 'openai' ||
-      !diagnostic ||
-      diagnostic.borderPixels < 1 ||
-      diagnostic.maxBorderAlpha > 1 ||
-      diagnostic.partialPixels + diagnostic.opaquePixels < 1 ||
+      data.operation !== 'extract' ||
+      !(
+        (data.blockedReason &&
+          diagnostic &&
+          diagnostic.borderPixels > 0 &&
+          diagnostic.maxBorderAlpha <= 1 &&
+          diagnostic.partialPixels + diagnostic.opaquePixels > 0) ||
+        (!data.blockedReason && alignmentMode === 'features' && !data.alignment)
+      ) ||
       data.source !== source ||
       object?.locked ||
       job.context.fingerprint !== artFingerprint(scene, job.context.targetId) ||
@@ -420,7 +433,15 @@ export function SceneArtPanel({
       void prepareExisting(data.assetScale ?? 1);
     }, 0);
     return () => window.clearTimeout(timer);
-  }, [busy, job, source, scene, object?.locked, prepareExisting]);
+  }, [
+    busy,
+    job,
+    source,
+    scene,
+    object?.locked,
+    prepareExisting,
+    alignmentMode,
+  ]);
   const applyBlockedReason = !result
     ? 'Nejdříve otevři výsledek.'
     : busy
@@ -1022,8 +1043,23 @@ export function SceneArtPanel({
             <p role="alert">{result.data.blockedReason}</p>
           )}
           {result.data.extractionMethod === 'openai' &&
+            result.data.operation === 'extract' &&
             !result.data.debugOnly && (
               <div className="row-actions">
+                <Field label="Zarovnání připraveného výřezu">
+                  <select
+                    value={alignmentMode}
+                    disabled={busy}
+                    onChange={(e) =>
+                      setAlignmentChoice(e.target.value as 'frame' | 'features')
+                    }
+                  >
+                    <option value="features">
+                      Podle detailů původního objektu
+                    </option>
+                    <option value="frame">Podle rámu výběru · přibližně</option>
+                  </select>
+                </Field>
                 <Field label="Rozlišení připraveného výřezu">
                   <select
                     value={assetScale}
@@ -1044,7 +1080,9 @@ export function SceneArtPanel({
                   }
                   onClick={() => void prepareExisting()}
                 >
-                  Připravit uložený výřez (bez API)
+                  {alignmentMode === 'features'
+                    ? 'Zarovnat podle původního obrázku (bez API)'
+                    : 'Připravit uložený výřez (bez API)'}
                 </button>
                 {preparationError?.manifest === result.data.manifest && (
                   <p role="alert">{preparationError.text}</p>
@@ -1053,6 +1091,9 @@ export function SceneArtPanel({
                   Odstraní pouze zanedbatelnou alfu 1/255 a vytvoří nový soubor
                   z již zaplaceného PNG. Původní archiv zůstává zachovaný.
                   Skutečně useknutý nebo neprůhledný výstup se nepovolí.
+                  Zarovnání podle detailů počítá posun, měřítko a malé natočení
+                  pomocí OpenCV, lokálně nebo přes SSH; nepotřebuje nové OpenAI
+                  volání. Při nedostatku shod ponechá dosavadní výsledek.
                 </p>
               </div>
             )}
@@ -1221,6 +1262,25 @@ export function SceneArtPanel({
                 </figure>
               )}
             </div>
+          )}
+          {result.data.extractionMethod === 'openai' && (
+            <p className="field-note">
+              {result.data.alignment
+                ? `Zarovnáno podle detailů: ${result.data.alignment.inliers} ověřených shod, medián odchylky ${result.data.alignment.medianError.toFixed(2)} px v původním obrázku. Metrika shod nezaručuje stejný obrys nebo proporce překreslené postavy.`
+                : 'Dosavadní umístění podle rámu je přibližné. Pro přesnější měřítko a polohu zvol zarovnání podle detailů.'}
+              {result.data.alignmentMatches && (
+                <>
+                  {' '}
+                  <a
+                    href={assetUrl(result.data.alignmentMatches)}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Zobrazit spárované detaily
+                  </a>
+                </>
+              )}
+            </p>
           )}
           {result.data.cutoutFrame && (
             <p className="field-note">

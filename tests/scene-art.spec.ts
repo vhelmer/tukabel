@@ -1395,4 +1395,73 @@ test.describe('OpenAI object extraction', () => {
     await page.reload();
     await ready(page);
   });
+  test('available registration tools automatically align a new cutout before Apply without more generation', async ({
+    page,
+    workspace,
+    isMobile,
+  }) => {
+    apiCalls = 0;
+    rejectOutput = false;
+    noisyOutput = false;
+    await page.route('**/__tukabel/editor/art/status', async (route) => {
+      const response = await route.fetch();
+      const data = await response.json();
+      data.segmentation.grabcut = true;
+      await route.fulfill({ response, json: data });
+    });
+    let alignments = 0;
+    await page.route('**/__tukabel/editor/art/prepare', async (route) => {
+      const input = route.request().postDataJSON();
+      expect(input.alignment).toBe('features');
+      alignments++;
+      const response = await route.fetch({
+        postData: { ...input, alignment: 'frame' },
+      });
+      const data = await response.json();
+      data.result.alignment = {
+        method: 'features',
+        matches: 40,
+        inliers: 30,
+        inlierRatio: 0.75,
+        medianError: 1,
+        p90Error: 2,
+        coverageX: 0.5,
+        coverageY: 0.6,
+        matrix: [1, 0, 0, 0, 1, 0],
+        frame: data.result.cutoutFrame,
+      };
+      await route.fulfill({ response, json: data });
+    });
+    await seed(workspace.root, workspace.source);
+    await openEditor(page, workspace.url);
+    await rectangle(page, isMobile);
+    const panel = art(page);
+    await panel
+      .getByLabel('Grafická operace', { exact: true })
+      .selectOption('extract');
+    await panel
+      .getByLabel('Způsob výřezu objektu', { exact: true })
+      .selectOption('openai');
+    await panel
+      .getByRole('button', {
+        name: 'Spustit AI úpravu (API kredit)',
+        exact: true,
+      })
+      .click();
+    await expect(panel).toContainText(
+      'Zarovnáno podle detailů: 30 ověřených shod',
+    );
+    await expect(
+      panel.getByRole('button', {
+        name: 'Použít výsledek ve scéně',
+        exact: true,
+      }),
+    ).toBeEnabled();
+    expect(alignments).toBe(1);
+    expect(apiCalls).toBe(2);
+    await panel
+      .getByRole('button', { name: 'Použít výsledek ve scéně', exact: true })
+      .click();
+    await save(page);
+  });
 });

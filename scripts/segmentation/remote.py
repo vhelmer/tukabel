@@ -30,7 +30,7 @@ def run(request):
                TUKABEL_VITMATTE_MODEL=setting("VITMATTE_MODEL", ".local-tools/models/vitmatte-small"))
     with tempfile.TemporaryDirectory(prefix="tukabel-ssh-") as temp:
         folder = Path(temp)
-        for name in ("segment.py", "matting.py", "sam3_adapter.py", "setup_sam3.py", "device.py"):
+        for name in ("segment.py", "matting.py", "sam3_adapter.py", "setup_sam3.py", "device.py", "align.py"):
             (folder / name).write_bytes(base64.b64decode(request["helpers"][name], validate=True))
         def execute(runtime, helper, args):
             result = subprocess.run([runtime, str(folder / helper), *args], env=env, cwd=root,
@@ -48,9 +48,18 @@ def run(request):
                 except (OSError, subprocess.SubprocessError, ValueError):
                     pass
             return result
-        for name in ("source.png", "prior.png", "seeds.png"):
+        for name in ("source.png", "prior.png", "seeds.png", "generated.png"):
             if name in request["files"]:
                 (folder / name).write_bytes(base64.b64decode(request["files"][name], validate=True))
+        if request["operation"] == "align":
+            scale = request["args"][0]
+            if scale not in ("1", "2"):
+                raise ValueError("invalid registration scale")
+            execute(python, "align.py", [temp, scale])
+            result = {"alignment": json.loads((folder / "alignment.json").read_text())}
+            for name in ("result.png", "full.png", "alignment-matches.png"):
+                result[name] = base64.b64encode((folder/name).read_bytes()).decode()
+            return result
         method = request["args"][0]
         if request["operation"] == "segment" and method in ("sam2", "sam3", "grabcut"):
             execute(sam3 if method == "sam3" else python, "segment.py", [temp, *request["args"]])

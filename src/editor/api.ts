@@ -131,6 +131,8 @@ export interface ArtworkResult {
   preview?: string;
   extractionMethod?: 'openai';
   assetScale?: 1 | 2;
+  alignment?: import('./artSettings').AssetAlignment;
+  alignmentMatches?: string;
   cutoutFull?: string;
   cutoutFrame?: import('../game/transforms').CropFrame;
   backgrounds?: { restored: string; masked: string };
@@ -233,9 +235,11 @@ export const prepareArchivedArtwork = (
   manifest: string,
   source: string,
   scale: 1 | 2,
+  alignment: 'frame' | 'features' = 'frame',
 ) =>
   request<{ result: ArtworkResult; assets: string[] }>('art/prepare', 'POST', {
     manifest,
     source,
     scale,
+    alignment,
   });

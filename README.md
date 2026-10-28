@@ -405,6 +405,31 @@ podporovaným rozlišením modelu; do hry jde připravený výřez. Recept uchov
 `assetScale`, `alphaCutoff` a `derivedFrom`. Použití a undo probíhá až stávající
 akcí Apply. Lokální příprava má pouze vývojový endpoint `/art/prepare`.
 
+### Zarovnání OpenAI výřezu podle původního obrázku
+
+Pouhé vměstnání do ručního/SAM rámu je přibližné: průhledné okraje i změněné
+proporce výstupu mohou posunout postavu. Je-li dostupný segmentační OpenCV runtime,
+editor proto nové i otevřené starší OpenAI výřezy jednou automaticky zarovná
+podle skutečných detailů. Volba **Zarovnání připraveného výřezu → Podle detailů
+původního objektu** a tlačítko **Zarovnat podle původního obrázku (bez API)**
+umožňují totéž ručně. **Podle rámu výběru** zachovává původní přibližnou metodu.
+
+SIFT páruje detaily původního objektu uvnitř výběru s krytým jádrem nového PNG;
+RANSAC odhadne posun, jednotné měřítko a malé natočení. Nepoužívá smyk ani změnu
+poměru stran. Výsledek musí mít alespoň 12 ověřených shod, prostorové pokrytí obou
+os a omezenou chybu. Při nedostatečné shodě nebo nedostupném runtime se nic
+nepřepíše, výsledek zůstává v dosavadní poloze a UI ukáže chybu. Nejde o nový AI
+požadavek, nestahují se modely a zpracování může běžet přes již nastavené SSH.
+
+Transformace se zapeče do PNG v původních souřadnicích zdroje. Výřezy stále
+používají `cutoutFrame` / `croppedPlacement`, včetně contain, rotace původní vrstvy
+a rozlišení 1×/2×. Interpolace probíhá v premultiplied RGBA, PNG se ukládá straight.
+Starý archiv zůstane zachovaný. Nový recept obsahuje `alignment` s transformací,
+počtem shod a chybou; `alignment-matches.png` ukazuje spárované detaily a lze jej
+otevřít z náhledu. Historie zachovává zarovnání bez dalšího výpočtu.
+Medián chyby popisuje spárované body, nikoli přesnou shodu celé překreslené postavy.
+Pokud OpenAI změnilo proporce nebo pózu, jediná transformace všechny obrysy nesrovná.
+
 ### Segmentace a matting na vzdáleném počítači
 
 Dev Mode může spouštět SAM 2/3, GrabCut, ViTMatte, closed-form i odstranění

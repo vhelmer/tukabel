@@ -55,6 +55,8 @@ export interface ArtResult {
   preview?: string;
   extractionMethod?: 'openai';
   assetScale?: 1 | 2;
+  alignment?: import('../src/editor/artSettings.ts').AssetAlignment;
+  alignmentMatches?: string;
   cutoutFull?: string;
   cutoutFrame?: import('../src/game/transforms.ts').CropFrame;
   backgrounds?: { restored: string; masked: string };

@@ -25,3 +25,16 @@ export interface AssetDiagnostic {
   borderPixels: number;
   maxBorderAlpha: number;
 }
+
+export interface AssetAlignment {
+  method: 'features';
+  matches: number;
+  inliers: number;
+  inlierRatio: number;
+  medianError: number;
+  p90Error: number;
+  coverageX: number;
+  coverageY: number;
+  matrix: number[];
+  frame: import('../game/transforms').CropFrame;
+}

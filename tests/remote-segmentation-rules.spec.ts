@@ -39,6 +39,7 @@ test('remote runner isolates inputs, returns only output files and removes tempo
         'sam3_adapter.py',
         'setup_sam3.py',
         'device.py',
+        'align.py',
       ].map((name) => [name, Buffer.from(helper).toString('base64')]),
     );
     const run = (operation: string) =>

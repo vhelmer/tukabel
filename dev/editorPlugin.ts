@@ -231,6 +231,7 @@ export function editorPlugin(
             const result = await prepareArchivedExtraction(
               assetsRoot,
               await readJson(req),
+              segmentationOptions,
             );
             const modules =
               server.environments.client.moduleGraph.getModulesByFile(

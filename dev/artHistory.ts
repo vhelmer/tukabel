@@ -2,6 +2,7 @@ import { lstat, readFile, readdir, realpath } from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
 import { readArtSource } from './artSource.ts';
+import { validateAlignmentRecord } from './registerAsset.ts';
 import { inspectAssetAlpha } from './generatedAsset.ts';
 import type { ArtResult } from './sceneArt.ts';
 
@@ -128,6 +129,23 @@ export async function artworkHistory(
         )
           continue;
       }
+      const alignment = recipe.alignment
+        ? validateAlignmentRecord(
+            recipe.alignment,
+            original.width,
+            original.height,
+          )
+        : undefined;
+      if (
+        alignment &&
+        cutoutFrame &&
+        ['x', 'y', 'width', 'height'].some(
+          (k) =>
+            alignment.frame[k as keyof typeof alignment.frame] !==
+            cutoutFrame[k as keyof typeof cutoutFrame],
+        )
+      )
+        continue;
       results.push({
         // Switching an already applied background must not duplicate its object.
         operation: appliedVariant ? 'remove' : recipe.operation,
@@ -137,6 +155,11 @@ export async function artworkHistory(
           .join('/'),
         image,
         assetScale: recipe.assetScale === 2 ? 2 : 1,
+        alignment,
+        alignmentMatches:
+          recipe.alignment?.method === 'features'
+            ? await png('alignment-matches.png', false)
+            : undefined,
         extractionMethod:
           recipe.extraction?.method === 'openai' ? 'openai' : undefined,
         reassembled:
