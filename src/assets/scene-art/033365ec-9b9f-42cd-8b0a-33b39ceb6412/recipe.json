@@ -1,0 +1,168 @@
+{
+  "version": 3,
+  "assetScale": 1,
+  "backgrounds": {
+    "restored": "provider-restored.png",
+    "masked": "image.png"
+  },
+  "defaultBackground": "restored",
+  "source": "imported/Kreslen--cintor-n-bez-br-ny-s-hrob-rom-a261010f.png",
+  "sourceSha256": "f5a3fb8642483c193e0cb328e2111936438e885ead94fc744785a3f61699abd9",
+  "operation": "remove",
+  "selection": [
+    {
+      "x": 545.072,
+      "y": 789.184
+    },
+    {
+      "x": 551.76,
+      "y": 670.472
+    },
+    {
+      "x": 550.088,
+      "y": 585.1999999999999
+    },
+    {
+      "x": 563.4639999999999,
+      "y": 516.648
+    },
+    {
+      "x": 605.264,
+      "y": 456.45599999999996
+    },
+    {
+      "x": 672.144,
+      "y": 407.96799999999996
+    },
+    {
+      "x": 722.304,
+      "y": 409.64
+    },
+    {
+      "x": 779.1519999999999,
+      "y": 434.71999999999997
+    },
+    {
+      "x": 800.8879999999999,
+      "y": 478.192
+    },
+    {
+      "x": 759.088,
+      "y": 533.3679999999999
+    },
+    {
+      "x": 720.632,
+      "y": 611.952
+    },
+    {
+      "x": 734.0079999999999,
+      "y": 655.424
+    },
+    {
+      "x": 802.56,
+      "y": 717.288
+    },
+    {
+      "x": 827.64,
+      "y": 774.136
+    },
+    {
+      "x": 754.072,
+      "y": 800.8879999999999
+    },
+    {
+      "x": 700.568,
+      "y": 769.12
+    },
+    {
+      "x": 655.424,
+      "y": 782.496
+    },
+    {
+      "x": 623.656,
+      "y": 769.12
+    },
+    {
+      "x": 590.216,
+      "y": 795.872
+    }
+  ],
+  "objectMask": {
+    "file": "object-mask.png",
+    "method": "sam3",
+    "refineEdges": true,
+    "detailPass": true,
+    "pixelOwnership": "binary"
+  },
+  "repairPadding": 8,
+  "repairFeather": 2,
+  "debug": {
+    "files": {
+      "original": "scene-art/033365ec-9b9f-42cd-8b0a-33b39ceb6412/source.png",
+      "objectMask": "scene-art/033365ec-9b9f-42cd-8b0a-33b39ceb6412/object-mask.png",
+      "expandedMask": "scene-art/033365ec-9b9f-42cd-8b0a-33b39ceb6412/expanded-mask.png",
+      "blendMask": "scene-art/033365ec-9b9f-42cd-8b0a-33b39ceb6412/repair-mask.png",
+      "input": "scene-art/033365ec-9b9f-42cd-8b0a-33b39ceb6412/provider-input.png",
+      "apiMask": "scene-art/033365ec-9b9f-42cd-8b0a-33b39ceb6412/provider-mask.png",
+      "roundTrip": "scene-art/033365ec-9b9f-42cd-8b0a-33b39ceb6412/round-trip.png",
+      "returned": "scene-art/033365ec-9b9f-42cd-8b0a-33b39ceb6412/provider-returned.png",
+      "restored": "scene-art/033365ec-9b9f-42cd-8b0a-33b39ceb6412/provider-restored.png",
+      "final": "scene-art/033365ec-9b9f-42cd-8b0a-33b39ceb6412/image.png",
+      "difference": "scene-art/033365ec-9b9f-42cd-8b0a-33b39ceb6412/provider-difference.png"
+    },
+    "geometry": {
+      "context": {
+        "x": 0,
+        "y": 0,
+        "width": 1672,
+        "height": 941
+      },
+      "canvas": {
+        "width": 1536,
+        "height": 1024
+      },
+      "content": {
+        "width": 1536,
+        "height": 864,
+        "left": 0,
+        "top": 80
+      },
+      "returned": {
+        "width": 1536,
+        "height": 1024
+      }
+    },
+    "metrics": {
+      "objectPixels": 59584,
+      "expandedPixels": 93938,
+      "featherPixels": 2012,
+      "feather": 2,
+      "padding": 8,
+      "lostObjectPixels": 0,
+      "roundTripMae": 5.61,
+      "contextMae": 8.221,
+      "seamMae": 15.372,
+      "outsideChanges": 0,
+      "boundaryMaxWeight": 0
+    },
+    "warnings": [
+      "Samotné škálování mění detaily. Porovnej kontrolní návrat bez AI s originálem.",
+      "Model změnil i chráněný kontext. Rozdíl oproti kontrolnímu návratu může vysvětlit barevný šev; color matching se nepoužívá."
+    ]
+  },
+  "pipeline": {
+    "context": "full-source-letterbox",
+    "expansion": "square-radius-native-pixels",
+    "imageResampling": "lanczos3",
+    "maskDownsampling": "conservative-pixel-footprints",
+    "feather": "inward-smoothstep-chamfer",
+    "composition": "premultiplied-interpolation-to-straight-rgba"
+  },
+  "repairMask": "repair-mask.png",
+  "prompt": "Remove the entire selected gravedigger, his two boots, held shovel and all remnants of the selected figure. Reconstruct natural empty graveyard ground and tombstones. Preserve the other upright shovel at the right of the grave, wheelbarrow and bucket. Match the original dark warm colors and textures without any relighting.",
+  "providerPrompts": {
+    "background": "Remove the selected object completely, including thin protrusions, outline strokes, contact shadows and detached remnants within the repair mask. Change only the missing background inside the repair mask and reconstruct continuous scenery and line work using adjacent untouched pixels as the color and lighting reference. Preserve the original palette, brightness, contrast, saturation, color temperature, shadows, texture, dirt and wear. Do not relight, brighten, darken, recolor, apply color grading or exposure/white-balance correction to the scene. Do not add highlights or haze. Preserve every existing detail outside the repair mask. Do not leave a duplicate or a silhouette. Preserve the reference cartoon drawing style, perspective, lighting and composition outside the edit. Preserve the image framing. No UI, text labels or watermarks. User instructions: Remove the entire selected gravedigger, his two boots, held shovel and all remnants of the selected figure. Reconstruct natural empty graveyard ground and tombstones. Preserve the other upright shovel at the right of the grave, wheelbarrow and bucket. Match the original dark warm colors and textures without any relighting."
+  },
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "high"
+}

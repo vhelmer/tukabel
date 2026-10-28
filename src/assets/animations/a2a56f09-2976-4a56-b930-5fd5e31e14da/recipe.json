@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "operation": "local-face-animation",
+  "source": "scene-art/94d45f53-dbcb-45b7-a562-c273e5fab174/image.png",
+  "sourceSha256": "0a5b8d4aced04cd0ea0e8c9a2458183c0be6bda55c5bc911f25f0748d057479c",
+  "archivedSource": "source.png",
+  "script": "generate.py",
+  "rig": "rig.json",
+  "audit": "audit.json",
+  "kind": "talk",
+  "generatedFrames": [
+    "talk-01.png",
+    "talk-02.png",
+    "talk-03.png",
+    "talk-04.png",
+    "talk-05.png"
+  ],
+  "importedFrames": [
+    "frame-001.png",
+    "frame-002.png",
+    "frame-003.png",
+    "frame-004.png",
+    "frame-005.png"
+  ],
+  "region": {
+    "x": 48,
+    "y": 135,
+    "width": 51,
+    "height": 15
+  },
+  "alphaChangedPixels": 0,
+  "changedPixelsOutsideFaceRegion": 0,
+  "notes": "Local deterministic original-pixel lip warps and eyelids sampled from the same native face. No provider/API generation, canvas or alpha changes. Source includes any occluding playground bars, preserved outside face rectangles."
+}

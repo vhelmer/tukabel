@@ -15,6 +15,8 @@ export default defineConfig({
     'remote-segmentation-rules.spec.ts',
     'codex-rules.spec.ts',
   ],
+  // Isolated integration workflows include PNG processing and several reloads.
+  timeout: 60000,
   fullyParallel: true,
   workers: 4,
   reporter: 'list',

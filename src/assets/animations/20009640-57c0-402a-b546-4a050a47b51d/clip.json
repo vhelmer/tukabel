@@ -1,0 +1,22 @@
+{
+  "id": "animation-20009640-57c0-402a-b546-4a050a47b51d",
+  "label": "Hrobár · Rozprávanie",
+  "source": "scene-art/469a3e1d-b98e-42df-97de-7388ef2f2659/image.png",
+  "kind": "talk",
+  "fps": 12,
+  "frames": [
+    "animations/20009640-57c0-402a-b546-4a050a47b51d/frame-001.png",
+    "animations/20009640-57c0-402a-b546-4a050a47b51d/frame-002.png",
+    "animations/20009640-57c0-402a-b546-4a050a47b51d/frame-003.png",
+    "animations/20009640-57c0-402a-b546-4a050a47b51d/frame-004.png",
+    "animations/20009640-57c0-402a-b546-4a050a47b51d/frame-005.png"
+  ],
+  "loop": true,
+  "region": {
+    "x": 173,
+    "y": 62,
+    "width": 43,
+    "height": 26
+  },
+  "sourceHash": "6e5eb93e7826da44a162930d475271a9eb1728ada21d5a20dd960cf6d6c7279f"
+}

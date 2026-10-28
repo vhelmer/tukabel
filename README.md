@@ -820,17 +820,34 @@ Stejné herní okno používá i **Otestovat odsud** v Dev Mode.
   Načítá se až na požádání a obnovuje nabídku aktuálního dialogového uzlu. Nová hra slot nemaže.
   Poškozené, nekompatibilní či nedostupné úložiště nepřepíše aktuální postup.
 
-Ukázkový průchod: správce → dotaz na opravu → vyžádat pásku → ukončit rozhovor →
-sebrat kabel u židle → přetáhnout pásku na kabel → opravený kabel na router → dveře
-do dvora → tabule. Textové repliky mezi volbami potvrď kliknutím na titulky. Lze se vrátit;
-vyřešený stav zůstává. Jde o technickou hádanku
-se dvěma lokacemi, bez finálního příběhu a assetů. Chůze postavy zatím chybí;
-animace, dabing a lip-sync lze přiřadit v editoru podle návodu níže.
+Aktuální hra začíná na zastávce (`scene1`) a obsahuje sedm lokací: zastávku,
+Ferův dvůr (`scene4`), kostel (`scene3`), hřbitov (`scene5`), hospodu (`scene6`),
+hřiště (`scene7`) a hernu (`scene8`). Zkušební lokace `workshop`, `courtyard`,
+`animation-lab` a původní úvodní `scene2` jsou z autorského projektu odstraněné.
+Příběh a propojení zbývajících lokací jsou rozpracované; chůze postavy zatím chybí.
+Animace, dabing a lip-sync lze přiřadit v editoru podle návodu níže.
+
+Deset postav je v samostatných vrstvách: Cigy a babka na zastávce, Fero a jeho
+žena na dvoře, farář, hrobár, hostinský a tři děti na hřišti. Všechny mají
+nezávislé mrkání a mluvení; nové postavy zatím nemají dialog ani dabing.
+Původní postavy zachovávají své hlasy, mapy úst i Ferovo škrábání hlavy.
+Nové výřezy používají původní RGB a nativní masku SAM3, aby AI neměnila proporce
+ani barvy. Opravená pozadí používají maskovanou kompozici. OpenAI transparentní
+alternativy a opravy jsou dohledatelné přes `preparation.json` u výřezu; každá
+generace archivuje zdroj, polygon, masku, výstup a recept. Lokální PNG animace
+jsou importované existujícím studiem a obsahují reprodukovatelný `generate.py`,
+zdroj, audit a přehled snímků v příslušném adresáři `src/assets/animations/`.
+
+Technická hádanka s kabelem zůstává pouze v testovacím
+`tests/fixtures/demo-project.json`: správce → dotaz na opravu → vyžádat pásku →
+ukončit rozhovor → sebrat kabel u židle → páska na kabel → opravený kabel na router →
+dveře do dvora → tabule. Testy ji spouštějí v dočasné kopii projektu.
 
 Ve scéně **Zastavka (`scene1`)** jsou slovenské větvené rozhovory s Cigym
 a babkou, komentáře k předmětům a zálohovaná pivní láhev: seber ji a nabídni
 Cigymu přetažením nebo dialogovou volbou. Přečtení jízdního řádu a Cigyho
-drb otevřou další témata u babky. V Dev Mode vyber tuto lokaci a **Otestovat odsud**.
+drb otevřou další témata u babky. Jde o výchozí lokaci nové hry; v Dev Mode ji lze
+spustit také přes **Otestovat odsud**.
 Dialogy `stop-cigy` / `stop-granny` obsahují ElevenLabs tagy; titulky je odstraňují.
 Všech 17 uzlů má místní dabing Eleven v4 a Rhubarb phonetic časování. U obou
 postav je pět póz úst namapovaných na Rhubarb A–H/X: A/X → 4 (zavřeno),
@@ -1023,8 +1040,8 @@ tím nejsou omezené. Mapa logiky ukazuje podmínky odemčení i efekty.
 pole zůstávají čitelné: dopočítá se startovní/aktuální scéna a jen odemčení
 doložitelné současnými podmínkami. Neznámá a duplicitní ID se odmítají.
 Otevření mapy ani focus nepatří do save. Reducer kontroluje odemčení i zákaz
-mapové cesty nezávisle na UI. Demo mapa nabízí Skúšobňu a Dvor; Dvor se
-zpřístupní až po původním průchodu dveřmi.
+mapové cesty nezávisle na UI. Aktuální mapa obsahuje zastávku (`scene1`);
+mapové odemykání dalších lokací pokrývají samostatné testovací projekty.
 
 ## Deník úkolů a tvorba obsahu
 
@@ -1052,8 +1069,9 @@ Efekty **startTask** / **completeTask** používají **id** existujícího úkol
 jako ostatní efekty. Úkol se zapíše jen jednou a zůstane v deníku, i když se později
 spotřebuje předmět nebo zneplatní podmínka. Splnění se nevrací zpět. Dokončení
 dosud nezapsaného úkolu jej ukáže rovnou přeškrtnutý. Pořadí seznamu určuje pořadí
-definic v editoru. Ukázka postupně sleduje router, pásku a cestu za odemčené dveře.
-Jde o technickou ukázku navázanou na existující příznaky, bez nového příběhu.
+definic v editoru. Testovací demo postupně sleduje router, pásku a cestu za
+odemčené dveře; jeho tři úkoly jsou pouze v `tests/fixtures/demo-project.json`.
+Aktuální příběhový projekt zatím vlastní úkoly nedefinuje.
 
 **GameState.tasks** ukládá pouze ID a hodnotu **active/completed**. Hráčský save
 je dál verze 1: starší pozice bez deníku lze načíst a aktuální příznaky/předměty
@@ -1076,9 +1094,14 @@ Na minimálním Linuxu případně `npx playwright install --with-deps chromium`
 PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/google-chrome npm run test:e2e
 ```
 
-Testy samy spustí servery. Desktop i dotykový profil ověřují kompletní průchod,
-skutečný drag/drop, použití ve scéně, klávesnici, změnu rozměrů, save/load a chyby
-assetů. Editorové testy používají **dočasné kopie zdrojů**: kreslí, přesouvají,
+Testy samy spustí servery. Desktop i dotykový profil ověřují průchod testovací
+hádankou, skutečný drag/drop, použití ve scéně, klávesnici, změnu rozměrů, save/load
+a chyby assetů. Engine a editorové regrese používají archivované demo ze
+`tests/fixtures/demo-project.json` pouze v **dočasných kopiích zdrojů**.
+Fixture obsahuje tři bývalé zkušební lokace; není součástí herního buildu.
+Kontroly skutečného obsahu používají `authoredTest` z `tests/editorFixture.ts`:
+zastávku s rozhovory a předáním láhve a Ferovu idle smyčku. Pravidlová kontrola
+hlídá sedm příběhových lokací a výchozí `scene1`. Editorové testy kreslí, přesouvají,
 importují obrázek, vytvářejí dialogy, kontrolují JSON na disku, reload, konflikt
 a odmítnutí neplatného zápisu. Reálný projekt ani produkci nemění. Produkční test
 ověřuje nepřítomnost editoru i zápisového API. Screenshoty/trace jsou v ignorovaném
@@ -1159,10 +1182,11 @@ Instrukce pro agenty jsou v [AGENTS.md](AGENTS.md).
    i nové assety. Neuložené změny klipu zůstanou jen v panelu. Při odstranění
    definice se soubory automaticky nemažou; jiné postavy je mohou stále používat.
 
-První příklad: v editoru zvol lokaci **Animačný ateliér**, pak
-**Otestovat odsud**. Postava z `woman.png` náhodně mrká po 3–6 s a mrkne také
-při kliknutí. V dialogu zvol **Porozprávať sa.** pro repliku s nezávislou animací úst;
-mrkání i idle pohyb pokračují. Dva nové lokální snímky úst reprodukuje
+Archivovaný testovací ateliér (`tests/fixtures/demo-project.json`) používá
+postavu z `woman.png`: náhodně mrká po 3–6 s a mrkne také při kliknutí.
+Volba **Porozprávať sa.** spustí repliku s nezávislou animací úst;
+mrkání i idle pohyb pokračují. Tuto ukázku ověřují izolované animační testy.
+Dva lokální snímky úst reprodukuje
 `python3 experiments/woman-blink/generate_talk.py` (Pillow); zachovávají alfa kanál
 celého zdroje a pixely mimo ústa. Pět póz vychází z `experiments/woman-blink/output/`; shodné
 otevřené a přivřené pózy sdílejí PNG. Otevřené pózy mají krátké prodlevy,
@@ -1294,7 +1318,7 @@ přeskočení zůstane poslední úsek, při chybě zvuku je dostupný celý oč
 Audio a archivní údaje generování vznikají atomicky v `src/assets/speech/<uuid>/`.
 Analýza ukládá nový `track.lipsync.json`; původní asset se nepřepisuje. Commitni nové
 adresáře i `project.json`. Vrácení úpravy/odpojení dabingu soubory nemaže.
-Konfigurace repliky vypadá například takto:
+Konfigurace repliky v archivované testovací fixture vypadá například takto:
 
 ```json
 {
@@ -1341,7 +1365,8 @@ i lip-sync ještě před přechodem do nabídky. Rozhovor se ukončuje autorskou
 bez `next`; nemá křížek ani tlačítka pauzy/přeskočení. Když po replice nejsou
 žádné dostupné volby, rozhovor skončí. Menu i skrytá záložka pozastaví dabing.
 
-**Lokální ukázka:** Animačný ateliér obsahuje slovenskou nahrávku vytvořenou
+**Archivovaná testovací ukázka:** ateliér v `tests/fixtures/demo-project.json`
+obsahuje slovenskou nahrávku vytvořenou
 lokálně přes eSpeak NG, skutečnou analýzu Rhubarb 1.14.0 (34 cue / 4.67 s) a mapování
 na existující tři pózy úst. Nejde o ukázku kvality ElevenLabs ani o kompletní sadu
 kreslených fonémů. WAV reprodukuje `python3 experiments/woman-blink/generate_voice.py`
@@ -1415,11 +1440,10 @@ odmítá přepsat existující výstup. Potřebuje izolované prostředí
 (cesty lze nastavit přes `ARM_STUDY_PYTHON` / `IMAGE_GEN_CLI`).
 Záznam modelu, promptu a SHA-256 vstupů/výstupu je v `generation.json`; žádné klíče.
 
-Hotová animace je importovaná také ve scéně **Uvodní scena (`scene2`)**, u postavy
-`layer2`. Přehrává se jednou při 16 fps a poté čeká náhodně 2–5 sekund. Produkční
-snímky mají společný ořez 391 × 626 a zdrojový offset `[2,11]`; přepočtený rám
-zachovává původní velikost i umístění postavy. Podklady jsou v
-`src/assets/characters/man-scratch/`, vazba a interval se upravují běžně v Animacích.
+Import této animace pocházel z odstraněné úvodní scény `scene2`; aktuální hra
+jej nepřehrává. Archivované snímky mají společný ořez 391 × 626 a zdrojový offset
+`[2,11]`. Podklady zůstávají v `src/assets/characters/man-scratch/` pro další použití;
+při opětovném přiřazení se vazba a interval upravují běžně v Animacích.
 
 ### Izolovaný experiment: Wan2.2 Animate v ComfyUI
 

@@ -1,0 +1,23 @@
+{
+  "id": "animation-eafc2b2c-28c2-44ae-86f4-3dcf57949b4c",
+  "label": "Chlapec na preliezačke · mrkanie",
+  "source": "scene-art/3d2c9975-f964-46ce-bfe3-25dc0710bbf1/image.png",
+  "kind": "blink",
+  "fps": 12,
+  "frames": [
+    "animations/eafc2b2c-28c2-44ae-86f4-3dcf57949b4c/frame-001.png",
+    "animations/eafc2b2c-28c2-44ae-86f4-3dcf57949b4c/frame-002.png",
+    "animations/eafc2b2c-28c2-44ae-86f4-3dcf57949b4c/frame-003.png",
+    "animations/eafc2b2c-28c2-44ae-86f4-3dcf57949b4c/frame-004.png",
+    "animations/eafc2b2c-28c2-44ae-86f4-3dcf57949b4c/frame-005.png"
+  ],
+  "loop": false,
+  "region": {
+    "x": 56,
+    "y": 40,
+    "width": 83,
+    "height": 37
+  },
+  "sourceHash": "c72a6777bd0d88857ddcf913971c87d9efe54e99d59cc2ad0fca3e5ec5fcd019",
+  "durationsMs": [35, 45, 65, 45, 35]
+}

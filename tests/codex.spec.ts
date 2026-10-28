@@ -194,6 +194,10 @@ test.describe('local Codex agent', () => {
       .click();
     await expect.poll(() => calls).toBe(1);
     release();
+    await expect(page.locator('.editor-job-tray')).toContainText(
+      'Připravené na kontrolu',
+      { timeout: 15000 },
+    );
     const apply = panel.getByRole('button', {
       name: 'Přiřadit výsledek do návrhu',
       exact: true,

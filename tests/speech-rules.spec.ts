@@ -244,7 +244,7 @@ test('uploaded WAV runs the phonetic CLI without shell interpolation and publish
 
 test('speech content validates actor, local media references and regional mouth frame indices', async () => {
   const original = JSON.parse(
-    await readFile('src/game/content/project.json', 'utf8'),
+    await readFile('tests/fixtures/demo-project.json', 'utf8'),
   ) as GameContent;
   expect(validateProject(original)).toEqual([]);
   const bad = JSON.parse(JSON.stringify(original)); // Deliberately invalid JSON boundary.

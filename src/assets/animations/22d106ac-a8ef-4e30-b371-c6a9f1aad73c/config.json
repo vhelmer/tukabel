@@ -1,0 +1,53 @@
+{
+  "scene": "scene6",
+  "eyes": [
+    {
+      "top": [
+        [143, 44],
+        [147, 43],
+        [152, 45],
+        [158, 47]
+      ],
+      "bottom": [
+        [143, 46],
+        [148, 51],
+        [153, 52],
+        [158, 49]
+      ],
+      "skinY": 56
+    },
+    {
+      "top": [
+        [172, 50],
+        [176, 49],
+        [180, 50],
+        [184, 52]
+      ],
+      "bottom": [
+        [172, 52],
+        [176, 55],
+        [180, 56],
+        [184, 54]
+      ],
+      "skinY": 59
+    }
+  ],
+  "mouth": {
+    "center": [159.5, 83.5],
+    "radius": [10.5, 6],
+    "slope": 0.16,
+    "apertureAbove": 1.5,
+    "apertureBelow": 1.5
+  },
+  "reviewBox": [136, 33, 190, 93],
+  "sourceAsset": "scene-art/4bcdf3eb-0f64-4c48-9fde-9c1ce4ad62a3/image.png",
+  "sourceHash": "86132f0074e321ae2a3201cd7b4fb9de4b707eee62d2f177f1ee474ca3ab40e9",
+  "cutoutFrame": {
+    "x": 202,
+    "y": 300,
+    "width": 249,
+    "height": 235,
+    "sourceWidth": 1672,
+    "sourceHeight": 941
+  }
+}

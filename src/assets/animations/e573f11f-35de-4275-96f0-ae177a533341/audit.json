@@ -1,0 +1,30 @@
+{
+  "sourceHash": "28bcd0fce02662c3a6d9a73cb4fd9587b79eee8173d5be6bf96cbd319b8f4834",
+  "sourceAsset": "scene-art/35f639f8-ee52-486e-8199-0eb6a4946366/image.png",
+  "canvas": [124, 342],
+  "sourceAlphaExact": true,
+  "blinkEndpointsExact": true,
+  "outsideFacialRegionsExact": true,
+  "method": "Original RGB bilinear local warp; eyelid fill sampled from original adjacent skin. No provider/API.",
+  "blink": {
+    "region": {
+      "x": 41,
+      "y": 49,
+      "width": 66,
+      "height": 18
+    },
+    "uniqueFrames": 4,
+    "changedPixelsUnion": 525
+  },
+  "talk": {
+    "region": {
+      "x": 48,
+      "y": 70,
+      "width": 51,
+      "height": 21
+    },
+    "uniqueFrames": 5,
+    "changedPixelsUnion": 812
+  },
+  "regionsDisjoint": true
+}

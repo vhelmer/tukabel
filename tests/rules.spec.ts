@@ -18,6 +18,32 @@ import {
   isInsideScene,
 } from '../src/game/transforms';
 
+test('authored story preserves seven locations, starts at the bus stop and excludes retired scenes', () => {
+  const project = JSON.parse(
+    readFileSync('src/game/content/project.json', 'utf8'),
+  ) as GameContent;
+  expect(project.startScene).toBe('scene1');
+  expect(project.scenes.map((scene) => scene.id).sort()).toEqual([
+    'scene1',
+    'scene3',
+    'scene4',
+    'scene5',
+    'scene6',
+    'scene7',
+    'scene8',
+  ]);
+  const fero = project.scenes
+    .find((scene) => scene.id === 'scene4')!
+    .hotspots.find((hotspot) => hotspot.id === 'layer1')!;
+  expect(fero.animation).toMatchObject({
+    idle: 'fero-head-scratch-loop',
+    idleLoop: true,
+  });
+  // Semantic validation also rejects stale scene effects, dialogue actors and
+  // world-map destinations without depending on newly generated asset files.
+  expect(validateContent(project)).toEqual([]);
+});
+
 test('bus stop bottle trades through dialogue or use exactly once and tagged actors have valid independent animation bindings', () => {
   const project = JSON.parse(
     readFileSync('src/game/content/project.json', 'utf8'),
@@ -344,7 +370,7 @@ test('JSON boundary rejects malformed shapes, unknown fields, remote assets and 
   const { validateProject } = await import('../src/game/validateProject');
   const { readFile, readdir } = await import('node:fs/promises');
   const project = JSON.parse(
-    await readFile('src/game/content/project.json', 'utf8'),
+    await readFile('tests/fixtures/demo-project.json', 'utf8'),
   ) as GameContent;
   expect(
     validateProject(project, await readdir('src/assets', { recursive: true })),
@@ -507,7 +533,7 @@ test('JSON validates transform modes, numeric angles and rotated scene limits', 
   const project = JSON.parse(
     await (
       await import('node:fs/promises')
-    ).readFile('src/game/content/project.json', 'utf8'),
+    ).readFile('tests/fixtures/demo-project.json', 'utf8'),
   ) as GameContent;
   const withTransform = (patch: Record<string, unknown>) => ({
     ...project,
@@ -577,7 +603,7 @@ test('cursor and portrait validation rejects missing links, mismatched sources a
   const { validateProject } = await import('../src/game/validateProject');
   const { readFile } = await import('node:fs/promises');
   const project = JSON.parse(
-    await readFile('src/game/content/project.json', 'utf8'),
+    await readFile('tests/fixtures/demo-project.json', 'utf8'),
   ) as GameContent;
   const withCursor = (patch: Record<string, unknown>) => ({
     ...project,

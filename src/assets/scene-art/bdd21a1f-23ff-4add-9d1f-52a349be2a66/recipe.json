@@ -1,0 +1,106 @@
+{
+  "version": 3,
+  "assetScale": 1,
+  "backgrounds": {
+    "restored": "provider-restored.png",
+    "masked": "image.png"
+  },
+  "defaultBackground": "restored",
+  "source": "imported/image-5dd2c9a7.png",
+  "sourceSha256": "4da3d7214e7c19d98d2d279308766277617b9110e5019e15a90273a87f77af01",
+  "operation": "remove",
+  "selection": [
+    {
+      "x": 111,
+      "y": 229
+    },
+    {
+      "x": 244,
+      "y": 229
+    },
+    {
+      "x": 244,
+      "y": 430
+    },
+    {
+      "x": 111,
+      "y": 430
+    }
+  ],
+  "objectMask": {
+    "file": "object-mask.png",
+    "method": "manual",
+    "pixelOwnership": "binary"
+  },
+  "repairPadding": 2,
+  "repairFeather": 1,
+  "debug": {
+    "files": {
+      "original": "scene-art/bdd21a1f-23ff-4add-9d1f-52a349be2a66/source.png",
+      "objectMask": "scene-art/bdd21a1f-23ff-4add-9d1f-52a349be2a66/object-mask.png",
+      "expandedMask": "scene-art/bdd21a1f-23ff-4add-9d1f-52a349be2a66/expanded-mask.png",
+      "blendMask": "scene-art/bdd21a1f-23ff-4add-9d1f-52a349be2a66/repair-mask.png",
+      "input": "scene-art/bdd21a1f-23ff-4add-9d1f-52a349be2a66/provider-input.png",
+      "apiMask": "scene-art/bdd21a1f-23ff-4add-9d1f-52a349be2a66/provider-mask.png",
+      "roundTrip": "scene-art/bdd21a1f-23ff-4add-9d1f-52a349be2a66/round-trip.png",
+      "returned": "scene-art/bdd21a1f-23ff-4add-9d1f-52a349be2a66/provider-returned.png",
+      "restored": "scene-art/bdd21a1f-23ff-4add-9d1f-52a349be2a66/provider-restored.png",
+      "final": "scene-art/bdd21a1f-23ff-4add-9d1f-52a349be2a66/image.png",
+      "difference": "scene-art/bdd21a1f-23ff-4add-9d1f-52a349be2a66/provider-difference.png"
+    },
+    "geometry": {
+      "context": {
+        "x": 0,
+        "y": 0,
+        "width": 1448,
+        "height": 1086
+      },
+      "canvas": {
+        "width": 1536,
+        "height": 1024
+      },
+      "content": {
+        "width": 1365,
+        "height": 1024,
+        "left": 85,
+        "top": 0
+      },
+      "returned": {
+        "width": 1536,
+        "height": 1024
+      }
+    },
+    "metrics": {
+      "objectPixels": 21358,
+      "expandedPixels": 24965,
+      "featherPixels": 124,
+      "feather": 1,
+      "padding": 2,
+      "lostObjectPixels": 0,
+      "roundTripMae": 8.643,
+      "contextMae": 7.89,
+      "seamMae": 15.236,
+      "outsideChanges": 0,
+      "boundaryMaxWeight": 0
+    },
+    "warnings": [
+      "Samotné škálování mění detaily. Porovnej kontrolní návrat bez AI s originálem.",
+      "Model změnil i chráněný kontext. Rozdíl oproti kontrolnímu návratu může vysvětlit barevný šev; color matching se nepoužívá."
+    ]
+  },
+  "pipeline": {
+    "context": "full-source-letterbox",
+    "expansion": "square-radius-native-pixels",
+    "imageResampling": "lanczos3",
+    "maskDownsampling": "conservative-pixel-footprints",
+    "feather": "inward-smoothstep-chamfer",
+    "composition": "premultiplied-interpolation-to-straight-rgba"
+  },
+  "repairMask": "repair-mask.png",
+  "prompt": "Preserve the original exact cartoon colors, dirty texture, lighting, perspective and geometry. Remove only the selected human figure and restore the previously occluded background. Preserve surrounding architecture, benches, the counter, playground bars and props. Do not alter people outside this selection. Do not add people or shadows. For figures behind objects retain all foreground occluding objects and reconstruct their continuation naturally.",
+  "providerPrompts": {
+    "background": "Remove the selected object completely, including thin protrusions, outline strokes, contact shadows and detached remnants within the repair mask. Change only the missing background inside the repair mask and reconstruct continuous scenery and line work using adjacent untouched pixels as the color and lighting reference. Preserve the original palette, brightness, contrast, saturation, color temperature, shadows, texture, dirt and wear. Do not relight, brighten, darken, recolor, apply color grading or exposure/white-balance correction to the scene. Do not add highlights or haze. Preserve every existing detail outside the repair mask. Do not leave a duplicate or a silhouette. Preserve the reference cartoon drawing style, perspective, lighting and composition outside the edit. Preserve the image framing. No UI, text labels or watermarks. User instructions: Preserve the original exact cartoon colors, dirty texture, lighting, perspective and geometry. Remove only the selected human figure and restore the previously occluded background. Preserve surrounding architecture, benches, the counter, playground bars and props. Do not alter people outside this selection. Do not add people or shadows. For figures behind objects retain all foreground occluding objects and reconstruct their continuation naturally."
+  },
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "high"
+}

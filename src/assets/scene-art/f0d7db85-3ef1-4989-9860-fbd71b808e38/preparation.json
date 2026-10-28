@@ -1,0 +1,20 @@
+{
+  "character": "swing-boy",
+  "scene": "scene7",
+  "appearance": "Original source RGB and native SAM3 alpha; no subject redraw or rescaling.",
+  "openaiExtraction": "scene-art/60669618-7d3d-4f4f-b7fc-f13490f03b47/recipe.json",
+  "backgroundRepair": "scene-art/60669618-7d3d-4f4f-b7fc-f13490f03b47/recipe.json",
+  "source": "imported/O-unt-n--h-i-t--mezi-chatr-emi-001004ef.png",
+  "frame": {
+    "x": 402,
+    "y": 343,
+    "width": 133,
+    "height": 353,
+    "sourceWidth": 1672,
+    "sourceHeight": 941
+  },
+  "clips": [
+    "animations/e0ad4935-dfa1-4868-8c9b-489e34236036/clip.json",
+    "animations/bdfdd278-4a13-4e56-a7bc-02a206eb8046/clip.json"
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "version": 3,
+  "assetScale": 1,
+  "cutoutFrame": {
+    "x": 448,
+    "y": 476,
+    "width": 157,
+    "height": 322,
+    "sourceWidth": 1672,
+    "sourceHeight": 941
+  },
+  "cutoutFull": "cutout-full.png",
+  "source": "imported/Rustik-ln--vesnick--kostel-a-h-bitovn--br-na-c37f5f43.png",
+  "sourceSha256": "4108da21c5fa559c7b997de5d8f89c5deb155fa31be935a877dbe6ed88fedca3",
+  "operation": "cutout",
+  "selection": [
+    {
+      "x": 446.424,
+      "y": 794.1999999999999
+    },
+    {
+      "x": 439.736,
+      "y": 593.56
+    },
+    {
+      "x": 456.45599999999996,
+      "y": 536.712
+    },
+    {
+      "x": 484.88,
+      "y": 494.912
+    },
+    {
+      "x": 496.584,
+      "y": 471.50399999999996
+    },
+    {
+      "x": 540.0559999999999,
+      "y": 471.50399999999996
+    },
+    {
+      "x": 571.824,
+      "y": 506.616
+    },
+    {
+      "x": 603.592,
+      "y": 581.856
+    },
+    {
+      "x": 600.2479999999999,
+      "y": 685.52
+    },
+    {
+      "x": 593.56,
+      "y": 797.544
+    }
+  ],
+  "objectMask": {
+    "file": "object-mask.png",
+    "method": "sam3",
+    "refineEdges": true,
+    "detailPass": true,
+    "pixelOwnership": "binary"
+  },
+  "repairPadding": 0,
+  "repairFeather": 0
+}

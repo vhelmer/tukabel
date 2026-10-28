@@ -1,0 +1,20 @@
+{
+  "character": "sand-girl",
+  "scene": "scene7",
+  "appearance": "Original source RGB and native SAM3 alpha; no subject redraw or rescaling.",
+  "openaiExtraction": "scene-art/6a199470-844a-4316-8ea0-c26fc9f38173/recipe.json",
+  "backgroundRepair": "scene-art/6a199470-844a-4316-8ea0-c26fc9f38173/recipe.json",
+  "source": "scene-art/60669618-7d3d-4f4f-b7fc-f13490f03b47/image.png",
+  "frame": {
+    "x": 762,
+    "y": 526,
+    "width": 177,
+    "height": 235,
+    "sourceWidth": 1672,
+    "sourceHeight": 941
+  },
+  "clips": [
+    "animations/15103a62-39d3-4941-9883-7c23de2f3199/clip.json",
+    "animations/bf829f21-eba2-4670-b61d-2be8f43745e4/clip.json"
+  ]
+}

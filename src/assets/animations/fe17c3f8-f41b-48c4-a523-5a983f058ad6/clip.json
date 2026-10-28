@@ -1,0 +1,23 @@
+{
+  "id": "animation-fe17c3f8-f41b-48c4-a523-5a983f058ad6",
+  "label": "Farár · Mrknutie",
+  "source": "scene-art/7e531d0a-465d-4cdb-843a-0e7ac148ae03/image.png",
+  "kind": "blink",
+  "fps": 12,
+  "frames": [
+    "animations/fe17c3f8-f41b-48c4-a523-5a983f058ad6/frame-001.png",
+    "animations/fe17c3f8-f41b-48c4-a523-5a983f058ad6/frame-002.png",
+    "animations/fe17c3f8-f41b-48c4-a523-5a983f058ad6/frame-003.png",
+    "animations/fe17c3f8-f41b-48c4-a523-5a983f058ad6/frame-004.png",
+    "animations/fe17c3f8-f41b-48c4-a523-5a983f058ad6/frame-005.png"
+  ],
+  "loop": false,
+  "region": {
+    "x": 80,
+    "y": 23,
+    "width": 30,
+    "height": 13
+  },
+  "sourceHash": "a586530c18b39e510cc3000b2f9c499d913d27fecb60886faaecd9b5ab3f1d57",
+  "durationsMs": [35, 45, 65, 45, 35]
+}

@@ -1,0 +1,36 @@
+{
+  "sourceSha256": "e4b576d156d78589155007eb688e0e1c17a4a4f15e57fd41ef563c6892aa9c35",
+  "size": [204, 316],
+  "method": "Original eye/lip RGB warps with locally sampled eyelid skin; alpha is copied exactly",
+  "clips": {
+    "blink": {
+      "changedBounds": [56, 40, 139, 77],
+      "uniqueFrames": 4,
+      "allowedRegion": [56, 40, 139, 77],
+      "alphaChangedPixels": 0,
+      "changedPixelsOutsideFaceRegion": 0,
+      "frameSha256": [
+        "e4b576d156d78589155007eb688e0e1c17a4a4f15e57fd41ef563c6892aa9c35",
+        "73141819cb622105be8ad4d68a19b88c9cbf9f066e735dc69bdb28b443d5f74d",
+        "b2cd17928a55592aadd384c0c60648cd678b6ef48ffd0a42710c15ba1d3b9843",
+        "9e935dc5a931ed6063efbf6b600b675c16f849df92d8906291803d578a3abc85",
+        "e4b576d156d78589155007eb688e0e1c17a4a4f15e57fd41ef563c6892aa9c35"
+      ]
+    },
+    "talk": {
+      "changedBounds": [64, 78, 147, 107],
+      "uniqueFrames": 5,
+      "allowedRegion": [61, 77, 147, 107],
+      "alphaChangedPixels": 0,
+      "changedPixelsOutsideFaceRegion": 0,
+      "frameSha256": [
+        "e4b576d156d78589155007eb688e0e1c17a4a4f15e57fd41ef563c6892aa9c35",
+        "e6e4ca28def7f7f6435ecae8818907bf13eb00c2e8243ed9326796da2acc9ca6",
+        "2466816ce8585a34434d1d39f898289f50e4e56ba775ea3b65dbfda77499f4a4",
+        "b02d63cda50856c0514842aa8694d21c793f72dfc7237750acf892ee6b403394",
+        "1969d64d77b8d9a91c999ec2f0abb03835428d829645cd48336015f4e6ecab47"
+      ]
+    }
+  },
+  "closedEyeWhitePixels": 0
+}

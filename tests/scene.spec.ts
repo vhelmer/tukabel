@@ -1,8 +1,13 @@
 import { hudClick } from './helpers';
-import { expect, test } from '@playwright/test';
+import { expect } from '@playwright/test';
 import { readFile, writeFile } from 'node:fs/promises';
 import type { GameContent } from '../src/game/types';
-import { test as editorTest } from './editorFixture';
+import { test as base, authoredTest as editorTest } from './editorFixture';
+
+// Relative navigations use the isolated engine fixture, never the real project.
+const test = base.extend({
+  baseURL: async ({ workspace }, use) => use(workspace.url),
+});
 import {
   activate,
   finishLine,
@@ -391,7 +396,10 @@ test('missing background is recoverable and late loads cannot recreate an abando
   );
   await expect(page.locator('canvas')).toHaveCount(0);
   await page.unroute('**/demo-room.svg');
-  await page.getByRole('button', { name: 'Obnoviť stránku' }).click();
+  await Promise.all([
+    page.waitForEvent('load'),
+    page.getByRole('button', { name: 'Obnoviť stránku' }).click(),
+  ]);
   await ready(page);
   let release!: () => void;
   const gate = new Promise<void>((resolve) => {

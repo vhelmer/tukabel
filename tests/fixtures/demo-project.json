@@ -1,0 +1,850 @@
+{
+  "id": "tukabel-engine-test",
+  "startScene": "workshop",
+  "initialMessage": "Oživ router a otvor dvere do dvora. Správca ti poradí. Toto je krátka skúška herných systémov.",
+  "worldMap": {
+    "image": "courtyard.svg",
+    "width": 1280,
+    "height": 720,
+    "points": [
+      {
+        "id": "home",
+        "label": "Skúšobňa",
+        "sceneId": "workshop",
+        "x": 400,
+        "y": 400,
+        "unlockWhen": {
+          "all": []
+        }
+      }
+    ]
+  },
+  "flags": ["tapeGiven", "cableTaken", "powered", "completed"],
+  "tasks": [
+    {
+      "id": "power-router",
+      "text": "Oživiť router opraveným káblom.",
+      "startWhen": {
+        "all": []
+      },
+      "completeWhen": {
+        "flag": "powered"
+      }
+    },
+    {
+      "id": "find-tape",
+      "text": "Získať izolačnú pásku od správcu.",
+      "startWhen": {
+        "flag": "cableTaken"
+      },
+      "completeWhen": {
+        "flag": "tapeGiven"
+      }
+    },
+    {
+      "id": "visit-courtyard",
+      "text": "Pozrieť sa za odomknuté dvere.",
+      "startWhen": {
+        "flag": "powered"
+      },
+      "completeWhen": {
+        "flag": "completed"
+      }
+    }
+  ],
+  "scenes": [
+    {
+      "id": "workshop",
+      "title": "Skúšobňa",
+      "width": 1280,
+      "height": 720,
+      "background": "demo-room.svg",
+      "hotspots": [
+        {
+          "id": "router",
+          "label": "Router",
+          "bounds": {
+            "x": 300,
+            "y": 340,
+            "width": 285,
+            "height": 180
+          },
+          "tintWhen": {
+            "flag": "powered"
+          },
+          "uses": {
+            "cable": [
+              {
+                "message": "Poškodený kábel nezapojím. Najprv ho opravím páskou."
+              }
+            ],
+            "fixedCable": [
+              {
+                "when": {
+                  "not": {
+                    "flag": "powered"
+                  }
+                },
+                "message": "Zapojené! Router ožil a dvere do dvora cvakli.",
+                "effects": [
+                  {
+                    "type": "removeItem",
+                    "id": "fixedCable"
+                  },
+                  {
+                    "type": "flag",
+                    "id": "powered",
+                    "value": true
+                  }
+                ]
+              }
+            ]
+          },
+          "onClick": [
+            {
+              "when": {
+                "flag": "powered"
+              },
+              "message": "Router svieti. Dvere do dvora sú odomknuté."
+            },
+            {
+              "message": "Dve antény. Tri kontrolky. Chýba mu opravený kábel."
+            }
+          ]
+        },
+        {
+          "id": "mug",
+          "label": "Hrnček",
+          "bounds": {
+            "x": 665,
+            "y": 415,
+            "width": 160,
+            "height": 135
+          },
+          "onClick": [
+            {
+              "message": "Káva už vychladla. Technický problém ostáva horúci."
+            }
+          ]
+        },
+        {
+          "id": "socket",
+          "label": "Zásuvka",
+          "bounds": {
+            "x": 1030,
+            "y": 300,
+            "width": 125,
+            "height": 160
+          },
+          "onClick": [
+            {
+              "message": "Zásuvka je len kulisa. Skúšobný router má vlastný bezpečný zdroj."
+            }
+          ]
+        },
+        {
+          "id": "cable",
+          "label": "Kábel pri stoličke",
+          "bounds": {
+            "x": 70,
+            "y": 580,
+            "width": 180,
+            "height": 95
+          },
+          "image": "cable.svg",
+          "visibleWhen": {
+            "not": {
+              "flag": "cableTaken"
+            }
+          },
+          "onClick": [
+            {
+              "message": "Zdvihol si poškodený kábel.",
+              "effects": [
+                {
+                  "type": "addItem",
+                  "id": "cable"
+                },
+                {
+                  "type": "flag",
+                  "id": "cableTaken",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "caretaker",
+          "label": "Správca",
+          "bounds": {
+            "x": 655.709,
+            "y": 84.072,
+            "width": 473.567,
+            "height": 618.423
+          },
+          "image": "imported/Zlov-stn--rozcuchan---ena-v-potrhan-ch--atech-07b2ef8a.png",
+          "animation": {
+            "motion": "sway"
+          },
+          "tintWhen": {
+            "all": []
+          },
+          "onClick": [
+            {
+              "message": "Začal si rozhovor so správcom.",
+              "effects": [
+                {
+                  "type": "dialogue",
+                  "id": "caretaker"
+                }
+              ]
+            }
+          ],
+          "cursor": "talk"
+        },
+        {
+          "id": "exit",
+          "label": "Dvere do dvora",
+          "bounds": {
+            "x": 1170,
+            "y": 340,
+            "width": 105,
+            "height": 210
+          },
+          "onClick": [
+            {
+              "when": {
+                "flag": "powered"
+              },
+              "message": "Vyšiel si do skúšobného dvora.",
+              "effects": [
+                {
+                  "type": "scene",
+                  "id": "courtyard"
+                },
+                {
+                  "type": "flag",
+                  "id": "completed",
+                  "value": true
+                }
+              ]
+            },
+            {
+              "message": "Zamknuté. Správca možno vie, ako oživiť router."
+            }
+          ],
+          "cursor": "exit"
+        },
+        {
+          "id": "object1",
+          "label": "Nový objekt",
+          "bounds": {
+            "x": 820,
+            "y": 34,
+            "width": 170,
+            "height": 167
+          },
+          "onClick": [
+            {
+              "message": "Zatiaľ nenápadný objekt."
+            }
+          ]
+        },
+        {
+          "id": "wall-scratch",
+          "label": "Škrabanec",
+          "bounds": {
+            "x": 270,
+            "y": 180,
+            "width": 65,
+            "height": 130
+          },
+          "onClick": []
+        },
+        {
+          "id": "workshop-map-entry",
+          "label": "Mapa okolia",
+          "openMap": true,
+          "cursor": "exit",
+          "bounds": {
+            "x": 540,
+            "y": 630,
+            "width": 200,
+            "height": 90
+          },
+          "polygon": [
+            {
+              "x": 560,
+              "y": 630
+            },
+            {
+              "x": 720,
+              "y": 630
+            },
+            {
+              "x": 740,
+              "y": 720
+            },
+            {
+              "x": 540,
+              "y": 720
+            }
+          ],
+          "onClick": []
+        }
+      ]
+    },
+    {
+      "id": "courtyard",
+      "title": "Skúšobný dvor",
+      "width": 1280,
+      "height": 720,
+      "background": "courtyard.svg",
+      "hotspots": [
+        {
+          "id": "return",
+          "label": "Späť do skúšobne",
+          "bounds": {
+            "x": 60,
+            "y": 160,
+            "width": 245,
+            "height": 410
+          },
+          "onClick": [
+            {
+              "message": "Späť v skúšobni. Router stále funguje.",
+              "effects": [
+                {
+                  "type": "scene",
+                  "id": "workshop"
+                }
+              ]
+            }
+          ],
+          "cursor": "exit"
+        },
+        {
+          "id": "sign",
+          "label": "Skúšobná tabuľa",
+          "bounds": {
+            "x": 580,
+            "y": 220,
+            "width": 500,
+            "height": 240
+          },
+          "onClick": [
+            {
+              "message": "Ukážka dokončená! Rozhovor, inventár, kombinovanie, hádanka aj prechod fungujú. Skutočný príbeh príde neskôr."
+            }
+          ]
+        },
+        {
+          "id": "courtyard-map-entry",
+          "label": "Mapa okolia",
+          "openMap": true,
+          "cursor": "exit",
+          "bounds": {
+            "x": 540,
+            "y": 630,
+            "width": 200,
+            "height": 90
+          },
+          "polygon": [
+            {
+              "x": 560,
+              "y": 630
+            },
+            {
+              "x": 720,
+              "y": 630
+            },
+            {
+              "x": 740,
+              "y": 720
+            },
+            {
+              "x": 540,
+              "y": 720
+            }
+          ],
+          "onClick": []
+        }
+      ]
+    },
+    {
+      "id": "animation-lab",
+      "title": "Animačný ateliér",
+      "width": 1280,
+      "height": 720,
+      "background": "scene-art/322fe206-0132-42f9-89a9-a0b24606582f/image.png",
+      "hotspots": [
+        {
+          "id": "layer1",
+          "label": "Nový výrez",
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 1280,
+            "height": 720
+          },
+          "imageFit": "stretch",
+          "image": "scene-art/322fe206-0132-42f9-89a9-a0b24606582f/cutout.png",
+          "onClick": [],
+          "decorative": true,
+          "hidden": true
+        },
+        {
+          "id": "blink-character",
+          "label": "Skúšobná postava",
+          "bounds": {
+            "x": 791.196,
+            "y": 170,
+            "width": 330,
+            "height": 550
+          },
+          "image": "woman.png",
+          "animation": {
+            "blink": "woman-blink",
+            "blinkIntervalMs": [3000, 6000],
+            "motion": "sway",
+            "onClick": "woman-blink",
+            "talk": "animation-0bc82fd4-ab49-48d7-bd26-b5ba8ac8d1db",
+            "dialogueId": "animation-demo",
+            "mouthShapes": {
+              "X": 0,
+              "A": 0,
+              "B": 1,
+              "C": 2,
+              "D": 2,
+              "E": 1,
+              "F": 1,
+              "G": 1,
+              "H": 2
+            },
+            "voice": {
+              "voiceId": "9Nd358gE1qQp0pDh8FgP",
+              "modelId": "eleven_v4",
+              "stability": 0.5,
+              "similarityBoost": 0.75,
+              "style": 0,
+              "speed": 1,
+              "useSpeakerBoost": true
+            }
+          },
+          "onClick": [
+            {
+              "message": "Na okamih privrela oči.",
+              "effects": [
+                {
+                  "type": "dialogue",
+                  "id": "animation-demo"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "lab-exit",
+          "label": "Späť do dielne",
+          "bounds": {
+            "x": 1120,
+            "y": 350,
+            "width": 140,
+            "height": 300
+          },
+          "onClick": [
+            {
+              "message": "Späť v dielni.",
+              "effects": [
+                {
+                  "type": "scene",
+                  "id": "workshop"
+                }
+              ]
+            }
+          ],
+          "cursor": "exit"
+        },
+        {
+          "id": "object1",
+          "label": "Nový objekt",
+          "bounds": {
+            "x": 77,
+            "y": 355,
+            "width": 148.305,
+            "height": 131.102
+          },
+          "onClick": [
+            {
+              "message": "Zatiaľ nenápadný objekt."
+            }
+          ]
+        },
+        {
+          "id": "object2",
+          "label": "Nový objekt",
+          "bounds": {
+            "x": 60.427,
+            "y": 40.788,
+            "width": 400.394,
+            "height": 154.056
+          },
+          "polygon": [
+            {
+              "x": 66.733,
+              "y": 194.844
+            },
+            {
+              "x": 60.427,
+              "y": 54.023
+            },
+            {
+              "x": 355.731,
+              "y": 40.788
+            },
+            {
+              "x": 460.821,
+              "y": 111.199
+            },
+            {
+              "x": 356.782,
+              "y": 184.762
+            }
+          ],
+          "onClick": [
+            {
+              "message": "Zatiaľ nenápadný objekt."
+            }
+          ]
+        },
+        {
+          "id": "object3",
+          "label": "pičus",
+          "bounds": {
+            "x": 835.993,
+            "y": 61.379,
+            "width": 140.8209999999999,
+            "height": 130.312
+          },
+          "polygon": [
+            {
+              "x": 845.452,
+              "y": 122.332
+            },
+            {
+              "x": 869.622,
+              "y": 63.481
+            },
+            {
+              "x": 935.829,
+              "y": 61.379
+            },
+            {
+              "x": 976.814,
+              "y": 98.161
+            },
+            {
+              "x": 966.305,
+              "y": 162.266
+            },
+            {
+              "x": 923.218,
+              "y": 191.691
+            },
+            {
+              "x": 865.419,
+              "y": 175.928
+            },
+            {
+              "x": 835.993,
+              "y": 142.299
+            }
+          ],
+          "onClick": [
+            {
+              "message": "Zatiaľ nenápadný objekt."
+            }
+          ]
+        },
+        {
+          "id": "animation-lab-map-entry",
+          "label": "Mapa okolia",
+          "openMap": true,
+          "cursor": "exit",
+          "bounds": {
+            "x": 540,
+            "y": 630,
+            "width": 200,
+            "height": 90
+          },
+          "polygon": [
+            {
+              "x": 560,
+              "y": 630
+            },
+            {
+              "x": 720,
+              "y": 630
+            },
+            {
+              "x": 740,
+              "y": 720
+            },
+            {
+              "x": 540,
+              "y": 720
+            }
+          ],
+          "onClick": []
+        }
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "cable",
+      "label": "Poškodený kábel",
+      "description": "Prerušená izolácia. Pred zapojením ho treba opraviť páskou.",
+      "icon": "〰",
+      "image": "cursors/cable-icon.svg"
+    },
+    {
+      "id": "tape",
+      "label": "Izolačná páska",
+      "description": "Univerzálna odpoveď údržby. Skús ju spojiť s káblom.",
+      "icon": "◉",
+      "image": "cursors/tape-icon.svg"
+    },
+    {
+      "id": "fixedCable",
+      "label": "Opravený kábel",
+      "description": "Izolácia drží. Kábel môže ísť do skúšobného routera.",
+      "icon": "⌁",
+      "image": "cursors/cable-icon.svg"
+    }
+  ],
+  "dialogues": [
+    {
+      "id": "caretaker",
+      "start": "greeting",
+      "nodes": [
+        {
+          "id": "greeting",
+          "speaker": "Skúšobný správca",
+          "text": "Vitaj v testovacej prevádzke. Dvere fungujú, keď funguje router. Tak sme to objednali.",
+          "choices": [
+            {
+              "id": "askRepair",
+              "text": "Ako opravím router?",
+              "next": "repair"
+            },
+            {
+              "id": "report",
+              "text": "Router už svieti.",
+              "when": {
+                "flag": "powered"
+              },
+              "next": "done"
+            },
+            {
+              "id": "bye",
+              "text": "Zatiaľ sa rozhliadnem."
+            }
+          ],
+          "portrait": "caretaker-portrait.svg"
+        },
+        {
+          "id": "repair",
+          "speaker": "Skúšobný správca",
+          "text": "Kábel leží pri stoličke. Oprav ho izolačnou páskou a použi na router. Zásuvku nechaj na pokoji, toto je len bezpečná maketa.",
+          "choices": [
+            {
+              "id": "getTape",
+              "text": "Môžem si vziať pásku?",
+              "when": {
+                "not": {
+                  "flag": "tapeGiven"
+                }
+              },
+              "effects": [
+                {
+                  "type": "flag",
+                  "id": "tapeGiven",
+                  "value": true
+                },
+                {
+                  "type": "addItem",
+                  "id": "tape"
+                }
+              ],
+              "message": "Správca ti podal izolačnú pásku.",
+              "next": "greeting"
+            },
+            {
+              "id": "back",
+              "text": "Rozumiem. Ešte niečo…",
+              "next": "greeting"
+            },
+            {
+              "id": "leave",
+              "text": "Idem na to."
+            }
+          ],
+          "portrait": "caretaker-portrait.svg"
+        },
+        {
+          "id": "done",
+          "speaker": "Skúšobný správca",
+          "text": "Výborne. Dvere do dvora sú odomknuté. Tam už na teba čaká len koniec ukážky.",
+          "choices": [
+            {
+              "id": "finish",
+              "text": "Vďaka, idem sa pozrieť."
+            }
+          ],
+          "portrait": "caretaker-portrait.svg"
+        }
+      ]
+    },
+    {
+      "id": "animation-demo",
+      "start": "demo",
+      "nodes": [
+        {
+          "id": "demo",
+          "speaker": "Skúšobná postava",
+          "portrait": "woman.png",
+          "text": "Ja som vám to hovorila! [angry] Tu bol kábel! Tu! [laughs] A teraz mi niekto vysvetlite, kde do piče zmizol!",
+          "choices": [
+            {
+              "id": "end",
+              "text": "Ukončiť skúšku animácií."
+            }
+          ],
+          "actor": {
+            "sceneId": "animation-lab",
+            "hotspotId": "blink-character"
+          },
+          "speech": {
+            "audio": "speech/37222319-46e0-4eea-97e0-f3a90d36e9c7/audio.wav",
+            "text": "Ja som vám to hovorila! [angry] Tu bol kábel! Tu! [laughs] A teraz mi niekto vysvetlite, kde do piče zmizol!",
+            "subtitles": {
+              "text": "Ja som vám to hovorila! Tu bol kábel! Tu! A teraz mi niekto vysvetlite, kde do piče zmizol!",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 3.2888888888888888,
+                  "text": "Ja som vám to hovorila! Tu bol kábel!"
+                },
+                {
+                  "start": 3.2888888888888888,
+                  "end": 8,
+                  "text": "Tu! A teraz mi niekto vysvetlite, kde do piče zmizol!"
+                }
+              ]
+            },
+            "lipSync": "speech/9bf325fa-50cc-4e8b-87ed-96037d718acf/track.lipsync.json"
+          }
+        }
+      ]
+    }
+  ],
+  "combinations": [
+    {
+      "items": ["cable", "tape"],
+      "rules": [
+        {
+          "message": "Páska drží. Máš opravený kábel.",
+          "effects": [
+            {
+              "type": "removeItem",
+              "id": "cable"
+            },
+            {
+              "type": "removeItem",
+              "id": "tape"
+            },
+            {
+              "type": "addItem",
+              "id": "fixedCable"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "animations": [
+    {
+      "id": "woman-blink",
+      "label": "Mrknutie · Codex",
+      "source": "woman.png",
+      "kind": "blink",
+      "frames": [
+        "woman.png",
+        "animations/woman-blink/frame-02.png",
+        "animations/woman-blink/frame-03.png",
+        "animations/woman-blink/frame-02.png",
+        "woman.png"
+      ],
+      "fps": 14,
+      "durationsMs": [40, 60, 90, 80, 40],
+      "loop": false,
+      "region": {
+        "x": 394,
+        "y": 173,
+        "width": 100,
+        "height": 36
+      }
+    },
+    {
+      "id": "woman-talk",
+      "label": "Ústa · technická ukážka",
+      "source": "woman.png",
+      "kind": "talk",
+      "frames": [
+        "woman.png",
+        "animations/woman-talk/frame-02.png",
+        "animations/woman-talk/frame-03.png",
+        "animations/woman-talk/frame-02.png",
+        "woman.png"
+      ],
+      "fps": 12,
+      "durationsMs": [100, 80, 100, 70, 90],
+      "loop": true,
+      "region": {
+        "x": 429,
+        "y": 271,
+        "width": 58,
+        "height": 31
+      }
+    },
+    {
+      "id": "animation-0bc82fd4-ab49-48d7-bd26-b5ba8ac8d1db",
+      "label": "Rozprávanie",
+      "source": "woman.png",
+      "kind": "talk",
+      "fps": 14,
+      "frames": [
+        "animations/0bc82fd4-ab49-48d7-bd26-b5ba8ac8d1db/frame-001.png",
+        "animations/0bc82fd4-ab49-48d7-bd26-b5ba8ac8d1db/frame-002.png",
+        "animations/0bc82fd4-ab49-48d7-bd26-b5ba8ac8d1db/frame-003.png",
+        "animations/0bc82fd4-ab49-48d7-bd26-b5ba8ac8d1db/frame-004.png",
+        "animations/0bc82fd4-ab49-48d7-bd26-b5ba8ac8d1db/frame-005.png",
+        "animations/0bc82fd4-ab49-48d7-bd26-b5ba8ac8d1db/frame-006.png"
+      ],
+      "durationsMs": [
+        71.42857142857143, 71.42857142857143, 71.42857142857143,
+        71.42857142857143, 71.42857142857143, 71.42857142857143
+      ],
+      "loop": true,
+      "region": {
+        "x": 431,
+        "y": 257,
+        "width": 55,
+        "height": 51
+      }
+    }
+  ]
+}

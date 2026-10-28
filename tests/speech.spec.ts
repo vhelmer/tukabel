@@ -4,7 +4,7 @@ import { expect, type Locator, type Page } from '@playwright/test';
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { tmpdir } from 'node:os';
-import { test as base, openEditor } from './editorFixture';
+import { test as base, authoredTest, openEditor } from './editorFixture';
 import { ready, object, finishLine } from './helpers';
 import type { GameContent, LipSyncTrack } from '../src/game/types';
 import { mouthFrame } from '../src/game/speech';
@@ -131,7 +131,7 @@ async function audioAt(audio: Locator, seconds: number) {
     .toBeCloseTo(seconds, 1);
 }
 
-base(
+authoredTest(
   'bus stop recorded voices drive mapped mouth poses while eyes blink independently; skip and natural completion stop audio',
   async ({ page, workspace }, info) => {
     base.setTimeout(60000);

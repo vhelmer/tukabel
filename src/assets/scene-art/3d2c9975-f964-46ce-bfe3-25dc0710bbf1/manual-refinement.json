@@ -1,0 +1,36 @@
+{
+  "originalSegmentation": "scene-art/9c7afecc-48f2-4731-b988-8f785fc404b6/recipe.json",
+  "polygons": [
+    [
+      {
+        "x": 1452.9679999999998,
+        "y": 416.328
+      },
+      {
+        "x": 1481.3919999999998,
+        "y": 411.31199999999995
+      },
+      {
+        "x": 1489.752,
+        "y": 436.392
+      },
+      {
+        "x": 1491.424,
+        "y": 464.816
+      },
+      {
+        "x": 1481.3919999999998,
+        "y": 476.52
+      },
+      {
+        "x": 1463,
+        "y": 473.176
+      },
+      {
+        "x": 1468.0159999999998,
+        "y": 453.11199999999997
+      }
+    ]
+  ],
+  "reason": "Restore small shoes, fingers and held props missed by segmentation; original RGB only."
+}

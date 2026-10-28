@@ -1,0 +1,25 @@
+{
+  "originalSource": "scene-art/94d45f53-dbcb-45b7-a562-c273e5fab174/image.png",
+  "source": "scene-art/005f7aa7-4599-4f92-adbd-93f3762765be/image.png",
+  "originalFrame": {
+    "x": 762,
+    "y": 526,
+    "width": 177,
+    "height": 235,
+    "sourceWidth": 1672,
+    "sourceHeight": 941
+  },
+  "frame": {
+    "x": 762,
+    "y": 526,
+    "width": 177,
+    "height": 243,
+    "sourceWidth": 1672,
+    "sourceHeight": 941
+  },
+  "offset": {
+    "dx": 0,
+    "dy": 0
+  },
+  "note": "Existing facial pixels transferred without scaling; updated native source restores manually selected missed body parts."
+}

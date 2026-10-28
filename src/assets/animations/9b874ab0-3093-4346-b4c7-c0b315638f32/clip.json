@@ -1,0 +1,23 @@
+{
+  "id": "animation-9b874ab0-3093-4346-b4c7-c0b315638f32",
+  "label": "Hrobár · Mrknutie",
+  "source": "scene-art/469a3e1d-b98e-42df-97de-7388ef2f2659/image.png",
+  "kind": "blink",
+  "fps": 12,
+  "frames": [
+    "animations/9b874ab0-3093-4346-b4c7-c0b315638f32/frame-001.png",
+    "animations/9b874ab0-3093-4346-b4c7-c0b315638f32/frame-002.png",
+    "animations/9b874ab0-3093-4346-b4c7-c0b315638f32/frame-003.png",
+    "animations/9b874ab0-3093-4346-b4c7-c0b315638f32/frame-004.png",
+    "animations/9b874ab0-3093-4346-b4c7-c0b315638f32/frame-005.png"
+  ],
+  "loop": false,
+  "region": {
+    "x": 193,
+    "y": 26,
+    "width": 38,
+    "height": 32
+  },
+  "sourceHash": "6e5eb93e7826da44a162930d475271a9eb1728ada21d5a20dd960cf6d6c7279f",
+  "durationsMs": [35, 45, 65, 45, 35]
+}

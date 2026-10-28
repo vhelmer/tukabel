@@ -1,0 +1,227 @@
+{
+  "version": 3,
+  "assetScale": 1,
+  "alphaCutoff": 1,
+  "extraction": {
+    "method": "openai",
+    "target": {
+      "x": 534,
+      "y": 415,
+      "width": 265,
+      "height": 367
+    },
+    "inputCrop": {
+      "left": 489,
+      "top": 370,
+      "width": 355,
+      "height": 457
+    },
+    "guideMethod": "sam3",
+    "fit": "contain",
+    "anchor": "bottom-center",
+    "provider": "extraction-returned.png",
+    "input": "extraction-input.png",
+    "guide": "extraction-guide.png",
+    "pixelExact": false
+  },
+  "preview": "preview.png",
+  "cutoutFrame": {
+    "x": 525,
+    "y": 394,
+    "width": 295,
+    "height": 434,
+    "sourceWidth": 1672,
+    "sourceHeight": 941
+  },
+  "cutoutFull": "cutout-full.png",
+  "backgrounds": {
+    "restored": "provider-restored.png",
+    "masked": "image.png"
+  },
+  "defaultBackground": "restored",
+  "source": "imported/Kreslen--cintor-n-bez-br-ny-s-hrob-rom-a261010f.png",
+  "sourceSha256": "f5a3fb8642483c193e0cb328e2111936438e885ead94fc744785a3f61699abd9",
+  "operation": "extract",
+  "selection": [
+    {
+      "x": 545.072,
+      "y": 789.184
+    },
+    {
+      "x": 551.76,
+      "y": 670.472
+    },
+    {
+      "x": 550.088,
+      "y": 585.1999999999999
+    },
+    {
+      "x": 563.4639999999999,
+      "y": 516.648
+    },
+    {
+      "x": 605.264,
+      "y": 456.45599999999996
+    },
+    {
+      "x": 672.144,
+      "y": 407.96799999999996
+    },
+    {
+      "x": 722.304,
+      "y": 409.64
+    },
+    {
+      "x": 779.1519999999999,
+      "y": 434.71999999999997
+    },
+    {
+      "x": 800.8879999999999,
+      "y": 478.192
+    },
+    {
+      "x": 759.088,
+      "y": 533.3679999999999
+    },
+    {
+      "x": 720.632,
+      "y": 611.952
+    },
+    {
+      "x": 734.0079999999999,
+      "y": 655.424
+    },
+    {
+      "x": 802.56,
+      "y": 717.288
+    },
+    {
+      "x": 827.64,
+      "y": 774.136
+    },
+    {
+      "x": 754.072,
+      "y": 800.8879999999999
+    },
+    {
+      "x": 700.568,
+      "y": 769.12
+    },
+    {
+      "x": 655.424,
+      "y": 782.496
+    },
+    {
+      "x": 623.656,
+      "y": 769.12
+    },
+    {
+      "x": 590.216,
+      "y": 795.872
+    }
+  ],
+  "objectMask": {
+    "file": "object-mask.png",
+    "method": "sam3",
+    "refineEdges": true,
+    "detailPass": true,
+    "pixelOwnership": "binary"
+  },
+  "repairPadding": 8,
+  "repairFeather": 2,
+  "debug": {
+    "files": {
+      "original": "scene-art/7f5fcde6-8102-462a-8140-95b500d4f374/source.png",
+      "objectMask": "scene-art/7f5fcde6-8102-462a-8140-95b500d4f374/object-mask.png",
+      "expandedMask": "scene-art/7f5fcde6-8102-462a-8140-95b500d4f374/expanded-mask.png",
+      "blendMask": "scene-art/7f5fcde6-8102-462a-8140-95b500d4f374/repair-mask.png",
+      "input": "scene-art/7f5fcde6-8102-462a-8140-95b500d4f374/provider-input.png",
+      "apiMask": "scene-art/7f5fcde6-8102-462a-8140-95b500d4f374/provider-mask.png",
+      "roundTrip": "scene-art/7f5fcde6-8102-462a-8140-95b500d4f374/round-trip.png",
+      "returned": "scene-art/7f5fcde6-8102-462a-8140-95b500d4f374/provider-returned.png",
+      "restored": "scene-art/7f5fcde6-8102-462a-8140-95b500d4f374/provider-restored.png",
+      "final": "scene-art/7f5fcde6-8102-462a-8140-95b500d4f374/image.png",
+      "difference": "scene-art/7f5fcde6-8102-462a-8140-95b500d4f374/provider-difference.png"
+    },
+    "geometry": {
+      "context": {
+        "x": 0,
+        "y": 0,
+        "width": 1672,
+        "height": 941
+      },
+      "canvas": {
+        "width": 1536,
+        "height": 1024
+      },
+      "content": {
+        "width": 1536,
+        "height": 864,
+        "left": 0,
+        "top": 80
+      },
+      "returned": {
+        "width": 1536,
+        "height": 1024
+      }
+    },
+    "metrics": {
+      "objectPixels": 51172,
+      "expandedPixels": 78828,
+      "featherPixels": 1763,
+      "feather": 2,
+      "padding": 8,
+      "lostObjectPixels": 0,
+      "roundTripMae": 5.61,
+      "contextMae": 8.404,
+      "seamMae": 19.924,
+      "outsideChanges": 0,
+      "boundaryMaxWeight": 0
+    },
+    "warnings": [
+      "Samotné škálování mění detaily. Porovnej kontrolní návrat bez AI s originálem.",
+      "Model změnil i chráněný kontext. Rozdíl oproti kontrolnímu návratu může vysvětlit barevný šev; color matching se nepoužívá."
+    ]
+  },
+  "pipeline": {
+    "context": "full-source-letterbox",
+    "expansion": "square-radius-native-pixels",
+    "imageResampling": "lanczos3",
+    "maskDownsampling": "conservative-pixel-footprints",
+    "feather": "inward-smoothstep-chamfer",
+    "composition": "premultiplied-interpolation-to-straight-rgba"
+  },
+  "repairMask": "repair-mask.png",
+  "prompt": "Preserve the original exact cartoon colors, dirty texture, lighting, perspective and geometry. Remove only the selected human figure and restore the previously occluded background. Preserve surrounding architecture, benches, the counter, playground bars and props. Do not alter people outside this selection. Do not add people or shadows. For figures behind objects retain all foreground occluding objects and reconstruct their continuation naturally.",
+  "providerPrompts": {
+    "background": "Remove the selected object completely, including thin protrusions, outline strokes, contact shadows and detached remnants within the repair mask. Change only the missing background inside the repair mask and reconstruct continuous scenery and line work using adjacent untouched pixels as the color and lighting reference. Preserve the original palette, brightness, contrast, saturation, color temperature, shadows, texture, dirt and wear. Do not relight, brighten, darken, recolor, apply color grading or exposure/white-balance correction to the scene. Do not add highlights or haze. Preserve every existing detail outside the repair mask. Do not leave a duplicate or a silhouette. Preserve the reference cartoon drawing style, perspective, lighting and composition outside the edit. Preserve the image framing. No UI, text labels or watermarks. User instructions: Preserve the original exact cartoon colors, dirty texture, lighting, perspective and geometry. Remove only the selected human figure and restore the previously occluded background. Preserve surrounding architecture, benches, the counter, playground bars and props. Do not alter people outside this selection. Do not add people or shadows. For figures behind objects retain all foreground occluding objects and reconstruct their continuation naturally.",
+    "extraction": "Extract ONLY the existing object highlighted in pink in image 2 from the unmodified image 1. This is background removal, not a redraw or enhancement. Remove all surrounding scenery and background. Return one complete isolated object on genuine transparent alpha, including holes and fine edges. Preserve the original RGB colors, brightness, luminance, contrast, saturation, exposure, white balance, color temperature, shadows and highlights of image 1. Preserve its exact identity, pose, proportions, outline, texture, dirt, stains and wear. Do not brighten or darken the subject, relight it, whiten clothing, clean stains, repaint, beautify, sharpen or normalize its colors. Do not replace shaded or dirty colors with cleaner or lighter versions. Keep subject interior colors unchanged; only change background alpha and decontaminate mixed edge pixels when necessary. Do not include the pink guide, floor, contact shadow, extra objects, text, UI, or a checkerboard. Center the complete object with at least 8% transparent margin on every side. Do not crop any part. Image 2 is a selection guide only: use image 1 as the sole color reference and never copy the pink tint."
+  },
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "high",
+  "derivedFrom": "scene-art/7f5fcde6-8102-462a-8140-95b500d4f374/recipe.json",
+  "derivedProviderSha256": "d22e50963ec515c0071a1100957290005590bf253dbe231ea559c83a0204c938",
+  "alignment": {
+    "method": "features",
+    "matches": 47,
+    "inliers": 38,
+    "inlierRatio": 0.8085106382978723,
+    "medianError": 0.7676581276347141,
+    "p90Error": 1.421552288356888,
+    "coverageX": 0.569521123712713,
+    "coverageY": 0.6281247165033726,
+    "matrix": [
+      0.3155774417189407, -0.01062829819147535, 524.004777892438,
+      0.01062829819147535, 0.3155774417189407, 349.3095575793832
+    ],
+    "frame": {
+      "x": 525,
+      "y": 394,
+      "width": 295,
+      "height": 434,
+      "sourceWidth": 1672,
+      "sourceHeight": 941
+    }
+  },
+  "alignmentMatches": "alignment-matches.png"
+}

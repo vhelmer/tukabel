@@ -1,0 +1,20 @@
+{
+  "character": "gravedigger",
+  "scene": "scene5",
+  "appearance": "Original source RGB and native SAM3 alpha; no subject redraw or rescaling.",
+  "openaiExtraction": "scene-art/237df6ea-56d4-4ce0-b552-a96fcc0bc66f/recipe.json",
+  "backgroundRepair": "scene-art/033365ec-9b9f-42cd-8b0a-33b39ceb6412/recipe.json",
+  "source": "imported/Kreslen--cintor-n-bez-br-ny-s-hrob-rom-a261010f.png",
+  "frame": {
+    "x": 534,
+    "y": 415,
+    "width": 285,
+    "height": 382,
+    "sourceWidth": 1672,
+    "sourceHeight": 941
+  },
+  "clips": [
+    "animations/9b874ab0-3093-4346-b4c7-c0b315638f32/clip.json",
+    "animations/20009640-57c0-402a-b546-4a050a47b51d/clip.json"
+  ]
+}

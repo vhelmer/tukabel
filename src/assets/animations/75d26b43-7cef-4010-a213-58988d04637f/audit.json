@@ -1,0 +1,28 @@
+{
+  "source": "scene-art/7e531d0a-465d-4cdb-843a-0e7ac148ae03/image.png",
+  "sourceSha256": "a586530c18b39e510cc3000b2f9c499d913d27fecb60886faaecd9b5ab3f1d57",
+  "alphaExact": true,
+  "outsideRegionsExact": true,
+  "audit": {
+    "blink": {
+      "uniqueFrames": 4,
+      "changedPixels": 188,
+      "region": {
+        "x": 80,
+        "y": 23,
+        "width": 30,
+        "height": 13
+      }
+    },
+    "talk": {
+      "uniqueFrames": 5,
+      "changedPixels": 154,
+      "region": {
+        "x": 87,
+        "y": 45,
+        "width": 19,
+        "height": 10
+      }
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "id": "animation-6354fdf1-fe96-4fb6-bf9d-e1816123af53",
+  "label": "Chlapec na preliezačke · rozprávanie",
+  "source": "scene-art/9c7afecc-48f2-4731-b988-8f785fc404b6/image.png",
+  "kind": "talk",
+  "fps": 12,
+  "frames": [
+    "animations/6354fdf1-fe96-4fb6-bf9d-e1816123af53/frame-001.png",
+    "animations/6354fdf1-fe96-4fb6-bf9d-e1816123af53/frame-002.png",
+    "animations/6354fdf1-fe96-4fb6-bf9d-e1816123af53/frame-003.png",
+    "animations/6354fdf1-fe96-4fb6-bf9d-e1816123af53/frame-004.png",
+    "animations/6354fdf1-fe96-4fb6-bf9d-e1816123af53/frame-005.png"
+  ],
+  "loop": true,
+  "region": {
+    "x": 64,
+    "y": 78,
+    "width": 83,
+    "height": 29
+  },
+  "sourceHash": "e4b576d156d78589155007eb688e0e1c17a4a4f15e57fd41ef563c6892aa9c35"
+}

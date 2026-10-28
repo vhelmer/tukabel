@@ -1,0 +1,22 @@
+{
+  "id": "animation-22d106ac-a8ef-4e30-b371-c6a9f1aad73c",
+  "label": "Jemné mluvení · původní kresba",
+  "source": "scene-art/4bcdf3eb-0f64-4c48-9fde-9c1ce4ad62a3/image.png",
+  "kind": "talk",
+  "fps": 12,
+  "frames": [
+    "animations/22d106ac-a8ef-4e30-b371-c6a9f1aad73c/frame-001.png",
+    "animations/22d106ac-a8ef-4e30-b371-c6a9f1aad73c/frame-002.png",
+    "animations/22d106ac-a8ef-4e30-b371-c6a9f1aad73c/frame-003.png",
+    "animations/22d106ac-a8ef-4e30-b371-c6a9f1aad73c/frame-004.png",
+    "animations/22d106ac-a8ef-4e30-b371-c6a9f1aad73c/frame-005.png"
+  ],
+  "loop": true,
+  "region": {
+    "x": 150,
+    "y": 78,
+    "width": 20,
+    "height": 12
+  },
+  "sourceHash": "86132f0074e321ae2a3201cd7b4fb9de4b707eee62d2f177f1ee474ca3ab40e9"
+}

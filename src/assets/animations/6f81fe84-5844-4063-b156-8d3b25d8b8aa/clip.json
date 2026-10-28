@@ -1,0 +1,23 @@
+{
+  "id": "animation-6f81fe84-5844-4063-b156-8d3b25d8b8aa",
+  "label": "Přirozené mrknutí",
+  "source": "scene-art/35f639f8-ee52-486e-8199-0eb6a4946366/image.png",
+  "kind": "blink",
+  "fps": 12,
+  "frames": [
+    "animations/6f81fe84-5844-4063-b156-8d3b25d8b8aa/frame-001.png",
+    "animations/6f81fe84-5844-4063-b156-8d3b25d8b8aa/frame-002.png",
+    "animations/6f81fe84-5844-4063-b156-8d3b25d8b8aa/frame-003.png",
+    "animations/6f81fe84-5844-4063-b156-8d3b25d8b8aa/frame-004.png",
+    "animations/6f81fe84-5844-4063-b156-8d3b25d8b8aa/frame-005.png"
+  ],
+  "loop": false,
+  "region": {
+    "x": 41,
+    "y": 49,
+    "width": 66,
+    "height": 18
+  },
+  "sourceHash": "28bcd0fce02662c3a6d9a73cb4fd9587b79eee8173d5be6bf96cbd319b8f4834",
+  "durationsMs": [35, 45, 65, 45, 35]
+}

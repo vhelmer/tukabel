@@ -117,7 +117,7 @@ test('random gesture delay respects both ends of its configured range and restar
 
 test('gesture configurations validate references, source identity and bounded random intervals', async () => {
   const project = JSON.parse(
-    await readFile('src/game/content/project.json', 'utf8'),
+    await readFile('tests/fixtures/demo-project.json', 'utf8'),
   ) as GameContent;
   const scene = project.scenes.find((s) => s.id === 'animation-lab')!;
   const actor = scene.hotspots.find((h) => h.id === 'blink-character')!;
@@ -277,7 +277,7 @@ test('per-frame timing, speed, one-shots and priority share one visual clock', (
 
 test('content validation rejects invalid frame timing and missing interaction clips', async () => {
   const project = JSON.parse(
-    await readFile('src/game/content/project.json', 'utf8'),
+    await readFile('tests/fixtures/demo-project.json', 'utf8'),
   ) as GameContent;
   const source = 'woman.png';
   const animation = {
@@ -545,7 +545,7 @@ test('regional eyes and mouth keep independent clocks above a full-frame idle an
 
 test('local animation metadata rejects overlap, invalid regions, source overflow and unsafe detection paths', async () => {
   const project = JSON.parse(
-    await readFile('src/game/content/project.json', 'utf8'),
+    await readFile('tests/fixtures/demo-project.json', 'utf8'),
   ) as GameContent;
   const eyes = {
     ...clip('test-eyes', 'blink', ['woman.png']),
@@ -626,4 +626,115 @@ test('local animation metadata rejects overlap, invalid regions, source overflow
       ],
     }),
   ).rejects.toThrow('mimo');
+});
+
+test('prepared story characters keep native pixels, placement and independent facial regions', async () => {
+  const project: GameContent = JSON.parse(
+    await readFile('src/game/content/project.json', 'utf8'),
+  );
+  const assets = path.resolve('src/assets');
+  const actors = [
+    ['scene3', 'priest'],
+    ['scene5', 'gravedigger'],
+    ['scene6', 'innkeeper'],
+    ['scene7', 'swing-boy'],
+    ['scene7', 'sand-girl'],
+    ['scene7', 'climbing-boy'],
+  ];
+  for (const [sceneId, actorId] of actors) {
+    const scene = project.scenes.find((entry) => entry.id === sceneId)!;
+    const actor = scene.hotspots.find((entry) => entry.id === actorId)!;
+    expect(actor, `${sceneId}/${actorId}`).toBeDefined();
+    const recipe = JSON.parse(
+      await readFile(
+        path.join(assets, path.dirname(actor.image!), 'recipe.json'),
+        'utf8',
+      ),
+    );
+    expect(recipe.operation).toBe('cutout');
+    expect(recipe.objectMask.method).toBe('sam3');
+    const frame = recipe.cutoutFrame;
+    expect(actor.bounds).toEqual({
+      x: (frame.x * scene.width) / frame.sourceWidth,
+      y: (frame.y * scene.height) / frame.sourceHeight,
+      width: (frame.width * scene.width) / frame.sourceWidth,
+      height: (frame.height * scene.height) / frame.sourceHeight,
+    });
+    const original = await sharp(path.join(assets, recipe.source))
+      .toColourspace('srgb')
+      .ensureAlpha()
+      .extract({
+        left: frame.x,
+        top: frame.y,
+        width: frame.width,
+        height: frame.height,
+      })
+      .raw()
+      .toBuffer();
+    const source = await sharp(path.join(assets, actor.image!))
+      .toColourspace('srgb')
+      .ensureAlpha()
+      .raw()
+      .toBuffer();
+    let recoloredPixels = 0;
+    for (let i = 0; i < source.length; i += 4) {
+      if (
+        source[i + 3] &&
+        !source.subarray(i, i + 3).equals(original.subarray(i, i + 3))
+      )
+        recoloredPixels++;
+    }
+    expect(recoloredPixels).toBe(0);
+    const facial = ['blink', 'talk'].map((kind) => {
+      const binding = actor.animation?.[kind as 'blink' | 'talk'];
+      return project.animations!.find((clip) => clip.id === binding)!;
+    });
+    expect(
+      facial.every((clip) => clip?.source === actor.image && clip.region),
+    ).toBe(true);
+    const [eyes, mouth] = facial.map((clip) => clip.region!);
+    expect(eyes!.y + eyes!.height).toBeLessThanOrEqual(mouth!.y);
+    for (const clip of facial) {
+      const region = clip.region!;
+      const images = await Promise.all(
+        clip.frames.map((file) =>
+          sharp(path.join(assets, file))
+            .toColourspace('srgb')
+            .ensureAlpha()
+            .raw()
+            .toBuffer(),
+        ),
+      );
+      expect(
+        new Set(images.map((image) => image.toString('base64'))).size,
+      ).toBe(clip.kind === 'blink' ? 4 : 5);
+      if (clip.kind === 'blink') {
+        expect(images[0]!.equals(source)).toBe(true);
+        expect(images.at(-1)!.equals(source)).toBe(true);
+      }
+      for (const image of images) {
+        let escaped = 0,
+          alphaChanges = 0;
+        for (let i = 0; i < source.length; i += 4) {
+          if (source[i + 3] !== image[i + 3]) alphaChanges++;
+          if (!source[i + 3] && !image[i + 3]) continue;
+          const x = (i / 4) % frame.width,
+            y = Math.floor(i / 4 / frame.width);
+          if (
+            x >= region.x &&
+            x < region.x + region.width &&
+            y >= region.y &&
+            y < region.y + region.height
+          )
+            continue;
+          if (!image.subarray(i, i + 4).equals(source.subarray(i, i + 4)))
+            escaped++;
+        }
+        expect({ escaped, alphaChanges }).toEqual({
+          escaped: 0,
+          alphaChanges: 0,
+        });
+      }
+    }
+  }
 });

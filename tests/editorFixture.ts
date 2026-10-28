@@ -15,18 +15,27 @@ import { ready } from './helpers';
 // Every test gets an isolated source checkout. Browser saves never touch the real
 // project, developer notes, or another test's JSON/assets.
 export const test = base.extend<{
+  demoContent: boolean;
   speechTools: SpeechOptions;
   artTools: ArtOptions;
   directionTools: DirectionOptions;
   codexTools: CodexOptions;
   workspace: { url: string; source: string; root: string };
 }>({
+  demoContent: [true, { option: true }],
   speechTools: [{}, { option: true }],
   artTools: [{ apiKey: '' }, { option: true }],
   directionTools: [{ apiKey: '' }, { option: true }],
   codexTools: [{ bin: '/nonexistent/tukabel-test-codex' }, { option: true }],
   workspace: async (
-    { browserName, speechTools, artTools, directionTools, codexTools },
+    {
+      browserName,
+      demoContent,
+      speechTools,
+      artTools,
+      directionTools,
+      codexTools,
+    },
     use,
   ) => {
     const root = await mkdtemp(
@@ -48,7 +57,20 @@ export const test = base.extend<{
       ])
         await cp(path.resolve(file), path.join(root, file), {
           recursive: true,
+          // Atomic asset jobs may publish while tests copy the checkout.
+          filter: (source) => {
+            const name = path.basename(source);
+            return (
+              !name.startsWith('.tmp-') &&
+              !(name.startsWith('.') && name.endsWith('.tmp'))
+            );
+          },
         });
+      if (demoContent)
+        await cp(
+          path.resolve('tests/fixtures/demo-project.json'),
+          path.join(root, 'src/game/content/project.json'),
+        );
       await symlink(
         path.resolve('node_modules'),
         path.join(root, 'node_modules'),
@@ -105,6 +127,10 @@ export const test = base.extend<{
     }
   },
 });
+// Engine regressions use the archived demo only inside temporary workspaces.
+// Authored-content checks opt out so they always exercise the current game.
+export const authoredTest = test.extend({ demoContent: false });
+
 export async function openEditor(
   page: import('@playwright/test').Page,
   url: string,

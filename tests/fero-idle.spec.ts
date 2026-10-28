@@ -4,7 +4,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
 import type { Hotspot, SceneDefinition, GameContent } from '../src/game/types';
-import { test } from './editorFixture';
+import { authoredTest as test } from './editorFixture';
 import { ready } from './helpers';
 
 async function sampleActor(

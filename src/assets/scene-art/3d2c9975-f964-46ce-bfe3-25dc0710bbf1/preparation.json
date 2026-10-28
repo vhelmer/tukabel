@@ -1,0 +1,20 @@
+{
+  "character": "climbing-boy",
+  "scene": "scene7",
+  "appearance": "Original source RGB and native SAM3 alpha; no subject redraw or rescaling.",
+  "openaiExtraction": "scene-art/4033f8aa-84dd-4395-ab06-5582a3742ca3/recipe.json",
+  "backgroundRepair": "scene-art/4033f8aa-84dd-4395-ab06-5582a3742ca3/recipe.json",
+  "source": "scene-art/6a199470-844a-4316-8ea0-c26fc9f38173/image.png",
+  "frame": {
+    "x": 1320,
+    "y": 267,
+    "width": 204,
+    "height": 316,
+    "sourceWidth": 1672,
+    "sourceHeight": 941
+  },
+  "clips": [
+    "animations/eafc2b2c-28c2-44ae-86f4-3dcf57949b4c/clip.json",
+    "animations/5337155a-717d-48a0-b196-31831c5d6438/clip.json"
+  ]
+}

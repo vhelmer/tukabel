@@ -1,0 +1,87 @@
+{
+  "version": 3,
+  "assetScale": 1,
+  "cutoutFrame": {
+    "x": 202,
+    "y": 300,
+    "width": 249,
+    "height": 177,
+    "sourceWidth": 1672,
+    "sourceHeight": 941
+  },
+  "cutoutFull": "cutout-full.png",
+  "source": "imported/Rustik-ln--hospoda-bez-elekt-iny-2a99b18a.png",
+  "sourceSha256": "1af53e69113e3176527a502f2903202ba66df5603265040868139410757ea99e",
+  "operation": "cutout",
+  "selection": [
+    {
+      "x": 185.59199999999998,
+      "y": 466.488
+    },
+    {
+      "x": 193.952,
+      "y": 419.67199999999997
+    },
+    {
+      "x": 252.47199999999998,
+      "y": 394.592
+    },
+    {
+      "x": 285.912,
+      "y": 342.76
+    },
+    {
+      "x": 314.336,
+      "y": 304.304
+    },
+    {
+      "x": 367.84,
+      "y": 302.632
+    },
+    {
+      "x": 407.96799999999996,
+      "y": 331.056
+    },
+    {
+      "x": 431.376,
+      "y": 386.23199999999997
+    },
+    {
+      "x": 458.128,
+      "y": 444.752
+    },
+    {
+      "x": 454.784,
+      "y": 473.176
+    },
+    {
+      "x": 421.344,
+      "y": 498.256
+    },
+    {
+      "x": 387.904,
+      "y": 491.568
+    },
+    {
+      "x": 376.2,
+      "y": 474.84799999999996
+    },
+    {
+      "x": 302.632,
+      "y": 476.52
+    },
+    {
+      "x": 242.44,
+      "y": 478.192
+    }
+  ],
+  "objectMask": {
+    "file": "object-mask.png",
+    "method": "sam3",
+    "refineEdges": true,
+    "detailPass": true,
+    "pixelOwnership": "binary"
+  },
+  "repairPadding": 0,
+  "repairFeather": 0
+}

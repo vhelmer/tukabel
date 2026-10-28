@@ -1,0 +1,20 @@
+{
+  "character": "priest",
+  "scene": "scene3",
+  "appearance": "Original source RGB and native SAM3 alpha; no subject redraw or rescaling.",
+  "openaiExtraction": "scene-art/b1cd0ba5-ef22-407a-8c62-e8a0b0db202f/recipe.json",
+  "backgroundRepair": "scene-art/b1cd0ba5-ef22-407a-8c62-e8a0b0db202f/recipe.json",
+  "source": "imported/Rustik-ln--vesnick--kostel-a-h-bitovn--br-na-c37f5f43.png",
+  "frame": {
+    "x": 448,
+    "y": 476,
+    "width": 157,
+    "height": 322,
+    "sourceWidth": 1672,
+    "sourceHeight": 941
+  },
+  "clips": [
+    "animations/fe17c3f8-f41b-48c4-a523-5a983f058ad6/clip.json",
+    "animations/75d26b43-7cef-4010-a213-58988d04637f/clip.json"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "character": "innkeeper",
+  "scene": "scene6",
+  "appearance": "Original source RGB and native SAM3 alpha; no subject redraw or rescaling.",
+  "openaiExtraction": "scene-art/119b48ed-879e-4d26-984c-3a0ed16ae64d/recipe.json",
+  "backgroundRepair": "scene-art/119b48ed-879e-4d26-984c-3a0ed16ae64d/recipe.json",
+  "source": "imported/Rustik-ln--hospoda-bez-elekt-iny-2a99b18a.png",
+  "frame": {
+    "x": 202,
+    "y": 300,
+    "width": 249,
+    "height": 235,
+    "sourceWidth": 1672,
+    "sourceHeight": 941
+  },
+  "clips": [
+    "animations/6f443452-2c1d-4af4-a51b-bc38966b79d4/clip.json",
+    "animations/22d106ac-a8ef-4e30-b371-c6a9f1aad73c/clip.json"
+  ]
+}

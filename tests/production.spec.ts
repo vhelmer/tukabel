@@ -1,11 +1,10 @@
-import { hudClick } from './helpers';
 import { test, expect } from '@playwright/test';
 import { preview } from 'vite';
 import { readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
 import { initialState } from '../src/game/state';
 import type { GameContent } from '../src/game/types';
-import { ready, object } from './helpers';
+import { ready, object, menuAction } from './helpers';
 
 test('production serves a static game without editor code or write endpoints', async ({
   page,
@@ -20,36 +19,49 @@ test('production serves a static game without editor code or write endpoints', a
       page.getByRole('button', { name: 'Dev Mode', exact: true }),
     ).toHaveCount(0);
     await expect(page.locator('.dev-workspace')).toHaveCount(0);
-    await (await object(page, 'Router')).click();
-    await expect(page.getByRole('status', { name: 'Reakcia' })).toContainText(
-      'Dve antény',
+    await expect(page.locator('.scene-frame')).toHaveAttribute(
+      'aria-label',
+      /^Lokácia: .+/,
     );
+    // Exercise bundled audio through a voiced branch in the current story.
     const project = JSON.parse(source) as GameContent;
+    const spoken = project.dialogues.flatMap((dialogue) => {
+      const start = dialogue.nodes.find((node) => node.id === dialogue.start)!;
+      return start.choices.flatMap((choice) => {
+        const node = dialogue.nodes.find((node) => node.id === choice.next);
+        if (choice.when || !node?.speech || !node.actor) return [];
+        const scene = project.scenes.find((s) => s.id === node.actor!.sceneId)!;
+        const actor = scene.hotspots.find(
+          (h) => h.id === node.actor!.hotspotId,
+        )!;
+        if (
+          !actor.onClick.some(
+            (rule) =>
+              !rule.when &&
+              rule.effects?.some(
+                (effect) =>
+                  effect.type === 'dialogue' && effect.id === dialogue.id,
+              ),
+          )
+        )
+          return [];
+        return [{ choice, scene, actor }];
+      });
+    })[0];
+    expect(spoken).toBeDefined();
     await page.evaluate(
       (save) => localStorage.setItem('tukabel.save.v1', JSON.stringify(save)),
       {
         version: 1,
         contentId: project.id,
-        state: { ...initialState(project), sceneId: 'animation-lab' },
+        state: { ...initialState(project), sceneId: spoken!.scene.id },
       },
     );
-    await hudClick(
-      page,
-      page.getByRole('button', { name: 'Menu', exact: true }),
-    );
-    await page
-      .getByRole('button', { name: 'Načítať hru', exact: true })
-      .click();
-    await page
-      .getByRole('button', { name: 'Pokračovať v hre', exact: true })
-      .click();
+    await menuAction(page, 'Načítať hru');
     await ready(page);
-    const actor = project.scenes
-      .find((s) => s.id === 'animation-lab')!
-      .hotspots.find((h) => h.id === 'blink-character')!;
-    await (await object(page, actor.label)).click();
+    await (await object(page, spoken!.actor.label)).click();
     await page
-      .getByRole('button', { name: 'Porozprávať sa.', exact: true })
+      .getByRole('button', { name: spoken!.choice.text, exact: true })
       .click();
     const audio = page.locator('.dialogue-panel audio');
     await expect(audio).toHaveCount(1);

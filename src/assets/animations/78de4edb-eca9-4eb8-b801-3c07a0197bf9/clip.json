@@ -1,0 +1,23 @@
+{
+  "id": "animation-78de4edb-eca9-4eb8-b801-3c07a0197bf9",
+  "label": "Dievčatko v piesku · mrkanie",
+  "source": "scene-art/005f7aa7-4599-4f92-adbd-93f3762765be/image.png",
+  "kind": "blink",
+  "fps": 12,
+  "frames": [
+    "animations/78de4edb-eca9-4eb8-b801-3c07a0197bf9/frame-001.png",
+    "animations/78de4edb-eca9-4eb8-b801-3c07a0197bf9/frame-002.png",
+    "animations/78de4edb-eca9-4eb8-b801-3c07a0197bf9/frame-003.png",
+    "animations/78de4edb-eca9-4eb8-b801-3c07a0197bf9/frame-004.png",
+    "animations/78de4edb-eca9-4eb8-b801-3c07a0197bf9/frame-005.png"
+  ],
+  "loop": false,
+  "region": {
+    "x": 27,
+    "y": 93,
+    "width": 72,
+    "height": 41
+  },
+  "sourceHash": "1a1d4080d412a7c7000fd0c9f38cf0eb15e03366f677b9e01f92e657cb97f975",
+  "durationsMs": [35, 45, 65, 45, 35]
+}

@@ -1,0 +1,4 @@
+Lokální warp původního RGB, bez API.
+Reprodukce: python3 generate.py --kind talk
+Oblasti a SHA-256 jsou v config.json a audit.json.
+Klip byl importován přes dev/animationImport.ts importAnimation.

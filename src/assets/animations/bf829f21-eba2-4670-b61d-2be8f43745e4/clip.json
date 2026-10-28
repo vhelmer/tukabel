@@ -1,0 +1,22 @@
+{
+  "id": "animation-bf829f21-eba2-4670-b61d-2be8f43745e4",
+  "label": "Dievčatko v piesku · rozprávanie",
+  "source": "scene-art/94d45f53-dbcb-45b7-a562-c273e5fab174/image.png",
+  "kind": "talk",
+  "fps": 12,
+  "frames": [
+    "animations/bf829f21-eba2-4670-b61d-2be8f43745e4/frame-001.png",
+    "animations/bf829f21-eba2-4670-b61d-2be8f43745e4/frame-002.png",
+    "animations/bf829f21-eba2-4670-b61d-2be8f43745e4/frame-003.png",
+    "animations/bf829f21-eba2-4670-b61d-2be8f43745e4/frame-004.png",
+    "animations/bf829f21-eba2-4670-b61d-2be8f43745e4/frame-005.png"
+  ],
+  "loop": true,
+  "region": {
+    "x": 48,
+    "y": 135,
+    "width": 51,
+    "height": 15
+  },
+  "sourceHash": "0a5b8d4aced04cd0ea0e8c9a2458183c0be6bda55c5bc911f25f0748d057479c"
+}

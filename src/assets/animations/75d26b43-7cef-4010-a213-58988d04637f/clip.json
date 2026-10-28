@@ -1,0 +1,22 @@
+{
+  "id": "animation-75d26b43-7cef-4010-a213-58988d04637f",
+  "label": "Farár · Rozprávanie",
+  "source": "scene-art/7e531d0a-465d-4cdb-843a-0e7ac148ae03/image.png",
+  "kind": "talk",
+  "fps": 12,
+  "frames": [
+    "animations/75d26b43-7cef-4010-a213-58988d04637f/frame-001.png",
+    "animations/75d26b43-7cef-4010-a213-58988d04637f/frame-002.png",
+    "animations/75d26b43-7cef-4010-a213-58988d04637f/frame-003.png",
+    "animations/75d26b43-7cef-4010-a213-58988d04637f/frame-004.png",
+    "animations/75d26b43-7cef-4010-a213-58988d04637f/frame-005.png"
+  ],
+  "loop": true,
+  "region": {
+    "x": 87,
+    "y": 45,
+    "width": 19,
+    "height": 10
+  },
+  "sourceHash": "a586530c18b39e510cc3000b2f9c499d913d27fecb60886faaecd9b5ab3f1d57"
+}
