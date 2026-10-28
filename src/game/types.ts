@@ -119,7 +119,7 @@ export type Condition =
 export type Effect =
   | { type: 'flag'; id: string; value: boolean }
   | { type: 'addItem' | 'removeItem'; id: string }
-  | { type: 'scene'; id: string }
+  | { type: 'scene' | 'unlockScene'; id: string }
   | { type: 'dialogue'; id: string }
   | { type: 'startTask' | 'completeTask'; id: string };
 
@@ -131,6 +131,24 @@ export interface TaskDefinition {
   readonly completeWhen?: Condition;
 }
 export type TaskStatus = 'active' | 'completed';
+
+export interface WorldMapPoint {
+  readonly id: string;
+  readonly label: string;
+  readonly sceneId: string;
+  readonly x: number;
+  readonly y: number;
+  // Absent means visited/manual only; { all: [] } unlocks immediately.
+  readonly unlockWhen?: Condition;
+  readonly fastTravel?: boolean;
+}
+
+export interface WorldMapDefinition {
+  readonly image: string;
+  readonly width: number;
+  readonly height: number;
+  readonly points: readonly WorldMapPoint[];
+}
 
 export interface Rule {
   readonly when?: Condition;
@@ -224,6 +242,7 @@ export interface GameContent {
   readonly dialogues: readonly DialogueDefinition[];
   readonly animations?: readonly AnimationDefinition[];
   readonly tasks?: readonly TaskDefinition[];
+  readonly worldMap?: WorldMapDefinition;
   readonly combinations: readonly {
     items: readonly [string, string];
     rules: readonly Rule[];
@@ -233,6 +252,7 @@ export interface GameContent {
 // Only serializable player progress; definitions and UI selection stay outside.
 export interface GameState {
   sceneId: string;
+  unlockedScenes: string[];
   inventory: string[];
   flags: Record<string, boolean>;
   tasks: Record<string, TaskStatus>;
@@ -241,6 +261,7 @@ export interface GameState {
 }
 
 export type GameAction =
+  | { type: 'travel'; sceneId: string }
   | { type: 'interact'; hotspotId: string; itemId?: string }
   | { type: 'combine'; first: string; second: string }
   | { type: 'choose'; choiceId: string; from?: { id: string; nodeId: string } }

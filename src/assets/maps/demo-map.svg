@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+ <defs><pattern id="paper" width="64" height="64" patternUnits="userSpaceOnUse"><rect width="64" height="64" fill="#d6bc83"/><path d="M0 12h34m10 28h20M12 60h10" stroke="#9d7c48" stroke-opacity=".18"/></pattern><filter id="shadow"><feDropShadow dx="4" dy="6" stdDeviation="1" flood-color="#5b3c28" flood-opacity=".4"/></filter></defs>
+ <rect x="8" y="8" width="1264" height="704" rx="22" fill="url(#paper)" stroke="#553b2d" stroke-width="12"/>
+ <path d="M35 43q160-35 290 0t310 0 310 0 300 0M38 674q160-35 290 0t310 0 310 0 300 0" fill="none" stroke="#946a3d" stroke-width="3"/>
+ <text x="640" y="90" text-anchor="middle" fill="#513a2e" font-family="Georgia,serif" font-size="38" font-weight="bold">KAM SA ZASE STRATIL TEN KÁBEL?</text>
+ <path d="M130 510Q260 430 380 450T600 385T820 450T1150 500" fill="none" stroke="#716c47" stroke-width="56"/>
+ <path d="M130 510Q260 430 380 450T600 385T820 450T1150 500" fill="none" stroke="#b09e65" stroke-width="42"/>
+ <path d="M350 397Q550 240 700 365T935 380" fill="none" stroke="#6d4934" stroke-width="5" stroke-dasharray="12 13"/>
+ <g stroke="#4d392d" stroke-width="7" stroke-linejoin="round" filter="url(#shadow)"><path d="M207 365v-125h245v125" fill="#ac8e5a"/><path d="m182 247 144-103 152 103Z" fill="#925b3e"/><path d="M292 365v-92h61v92" fill="#5e5140"/><path d="M229 271h40v45h-40zm147 0h40v45h-40z" fill="#b7c5a2"/>
+ <path d="M818 365v-110h220v110" fill="#a9a76b"/><path d="m801 257 124-80 132 80Z" fill="#766644"/><path d="M850 367v-74h160v74" fill="#759078"/><path d="M890 367v-52h39v52" fill="#ccb579"/></g>
+ <g fill="#8e9b63" stroke="#5b6947" stroke-width="5"><path d="m90 290 45-95 46 95h-24l37 70H77l38-70z"/><path d="m1080 340 40-88 45 88h-22l30 62h-103l32-62z"/></g>
+ <g stroke="#59422e" stroke-width="4" fill="none"><circle cx="1118" cy="601" r="42"/><path d="m1118 544 12 46 45 11-45 11-12 46-12-46-45-11 45-11z"/></g>
+ <text x="110" y="615" fill="#6b4f34" font-family="Georgia,serif" font-size="21" font-style="italic">Nie je to mierka. Je to odhad správcu.</text>
+</svg>

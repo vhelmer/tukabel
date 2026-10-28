@@ -1,7 +1,7 @@
 import { lazy, Suspense, useCallback, useMemo, useState } from 'react';
 import { content } from './game/content';
 import { resolveAssets } from './game/assets';
-import { initialState, reduceGame } from './game/state';
+import { initialState, reduceGame, syncLocations } from './game/state';
 import { validateProject } from './game/validateProject';
 import type { GameAction, GameContent, GameState } from './game/types';
 import { GameWindow } from './ui/GameWindow';
@@ -30,12 +30,14 @@ export function App() {
   function preview() {
     if (errors.length) return;
     setPlayDocument(document);
-    setState({
-      ...initialState(document),
-      sceneId: document.scenes.some((scene) => scene.id === sceneId)
-        ? sceneId
-        : document.startScene,
-    });
+    setState(
+      syncLocations(document, {
+        ...initialState(document),
+        sceneId: document.scenes.some((scene) => scene.id === sceneId)
+          ? sceneId
+          : document.startScene,
+      }),
+    );
     setMode('game');
   }
   return (

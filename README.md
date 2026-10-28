@@ -841,7 +841,7 @@ normálním rozhovorem; běžné dialogy dál začínají nabídkou témat.
 ## Obsah a architektura
 
 - `src/game/content/project.json` — **jediný zdroj autorského obsahu**: lokace,
-  objekty, předměty, dialogy, příznaky, kombinace a animace. Jeden soubor zjednodušuje atomický
+  objekty, předměty, dialogy, příznaky, kombinace, animace a mapu lokací. Jeden soubor zjednodušuje atomický
   zápis a kontrolu konfliktů; nevznikají rozporné částečné zápisy několika souborů.
 - `src/game/content/index.ts` — validované načtení JSON.
 - `src/game/assets.ts` — mapa stabilních ID assetů na Vite URL pro runtime.
@@ -858,7 +858,7 @@ normálním rozhovorem; běžné dialogy dál začínají nabídkou témat.
   a polygonů, cache pixelů a kontrola geometrie pro Pixi, dropy a SVG editor.
 - `src/editor/polygonTools.ts`, `PolygonHandles.tsx` — úpravy geometrie a úchyty vrcholů.
 - `src/game/animation.ts` — vizuální hodiny, náhodné mrkání a priorita klipů.
-- `src/game/createHud.ts`, `hudLayout.ts` — Pixi HUD, inventář, deník a vizuální efekty;
+- `src/game/createHud.ts`, `hudLayout.ts` — Pixi HUD, inventář, deník, mapu a vizuální efekty;
   společný viewport scény a cílení předmětů bez změny autorských souřadnic.
 - `src/assets/hud/`, `src/game/hudArt.ts` — místní kreslené SVG poličky, obálky,
   otevřeného zápisníku a cedulek; měnitelné bez externí služby.
@@ -867,6 +867,7 @@ normálním rozhovorem; běžné dialogy dál začínají nabídkou témat.
 - `src/editor/` — pouze vývojový editor, SVG autorování oblastí, formuláře a graf.
   `SceneImage.tsx` používá stejnou geometrii jako Pixi; `transformTools.ts` počítá
   proporcionální tahy a limity scény. Zoom, pomůcky a rozpracovaný tah jsou jen UI stav.
+- `src/editor/WorldMapPanel.tsx` — obrázek mapy, body, cílové lokace a podmínky odemčení.
 - `dev/editorPlugin.ts` — lokální Vite middleware pro načtení/zápis a import assetů.
 - `src/editor/MaskEditor.tsx`, `ExtractionComparison.tsx` — štětcové masky a kontrola složení.
 - `dev/artSource.ts`, `objectMask.ts`, `segmentation.ts` — bezpečný rastrový zdroj,
@@ -964,6 +965,39 @@ Projektové příklady jsou převedené; staré vlastní JSON převeď výběrem
 pravidel výchozího slovesa do `onClick`. `uses` i podmínky a efekty se nemění.
 Animační vazby dřívějšího `onInteract` převeď na `onClick` / `onUse`.
 Uložený hráčský postup zůstává kompatibilní, protože ID a herní příznaky se nemění.
+
+## Interaktivní mapa lokací
+
+Mapa se kreslí v Pixi uvnitř stejného herního okna. Myší najeď ke spodnímu
+okraji obrazu lokace a klikni na **ikonku mapy**; na dotyku je ikonka dostupná stále.
+Klávesa **M** mapu otevře/zavře, **Escape** ji zavře. Mapa má vlastní focus trap,
+Pixi focus a neviditelnou HTML sémantiku. Při otevření blokuje scénu i inventář;
+menu/deník se s ní nepřekrývají. Během rozhovoru se rychlé cestování neotevírá.
+Podklad i body se škálují společně ve vlastních souřadnicích mapy a respektují
+letterbox herního obrazu. HUD nevyhrazuje mapě další pruh canvasu.
+
+V **Dev Mode → Mapa lokací** vyber nebo importuj obrázek, přidej bod a přiřaď
+existující lokaci. Bod umístíš kliknutím/tapnutím, táhneš jej myší i prstem;
+číselná pole a tlačítko přidání poskytují alternativu. Celý tah je jeden undo krok,
+Escape/pointercancel jej vrátí. Výměna obrázku přepočte body podle nových nativních
+rozměrů; Save používá stejný projektový JSON, revize a atomický zápis jako ostatní
+editor. Body mají stabilní ID a jedna cílová lokace smí mít nejvýše jeden bod.
+
+Volitelné `worldMap` v `src/game/content/project.json` obsahuje `image`, `width`,
+`height` a `points`. Bod má `id`, slovenský `label`, `sceneId`, `x`, `y`, volitelné
+`unlockWhen` a `fastTravel`. Bez podmínky se místo odemkne první návštěvou nebo
+explicitním efektem `unlockScene`. `{ "all": [] }` jej odemkne na začátku; jiné
+podmínky používají společná pravidla příznaků/předmětů. Odemčení je trvalé, i když
+se podmínka později zneplatní. `fastTravel: false` cestování z mapy zakáže i po
+odemčení; běžné autorské přechody `scene` tím nejsou omezené. Stav zná jen ID scén,
+nikoli kopie bodů nebo obrázků. Mapa logiky ukazuje podmínky odemčení i efekty.
+
+`GameState.unlockedScenes` se ukládá v save v1. Starší pozice bez tohoto pole
+zůstávají čitelné: dopočítá se startovní/aktuální scéna a jen odemčení doložitelné
+současnými podmínkami. Neznámá a duplicitní ID se odmítají. Otevření mapy ani focus
+nepatří do save. Reducer kontroluje odemčení i zákaz mapové cesty nezávisle na UI.
+Demo mapa v `src/assets/maps/demo-map.svg` nabízí Skúšobňu a Dvor; Dvor se zpřístupní
+až po původním průchodu dveřmi, takže mapa nepřeskočí technickou hádanku.
 
 ## Deník úkolů a tvorba obsahu
 

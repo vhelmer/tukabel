@@ -118,6 +118,7 @@ function MountedCanvas({
       }
       if (hudPublished) {
         onHudReady?.(null);
+        hudRef.current?.destroy();
         hudRef.current = null;
         hudPublished = false;
       }
@@ -149,6 +150,7 @@ function MountedCanvas({
           ...new Set([
             scene.background,
             ...(hudContent ? Object.values(hudArt) : []),
+            ...(hudContent?.worldMap ? [hudContent.worldMap.image] : []),
             ...(hudContent?.items.flatMap((item) =>
               item.image ? [item.image] : [],
             ) ?? []),

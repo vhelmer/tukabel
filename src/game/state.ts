@@ -8,14 +8,18 @@ import type {
 } from './types';
 
 export function initialState(content: GameContent): GameState {
-  return syncTasks(content, {
-    sceneId: content.startScene,
-    inventory: [],
-    flags: {},
-    tasks: {},
-    dialogue: null,
-    message: content.initialMessage,
-  });
+  return syncLocations(
+    content,
+    syncTasks(content, {
+      sceneId: content.startScene,
+      unlockedScenes: [],
+      inventory: [],
+      flags: {},
+      tasks: {},
+      dialogue: null,
+      message: content.initialMessage,
+    }),
+  );
 }
 
 export function matches(state: GameState, condition?: Condition): boolean {
@@ -50,6 +54,43 @@ export function syncTasks(content: GameContent, state: GameState): GameState {
   return tasks === state.tasks ? state : { ...state, tasks };
 }
 
+// Discovery survives consumed items and later changes to authoring conditions.
+export function syncLocations(
+  content: GameContent,
+  state: GameState,
+): GameState {
+  let unlockedScenes = state.unlockedScenes;
+  const unlock = (id: string) => {
+    if (unlockedScenes.includes(id)) return;
+    if (unlockedScenes === state.unlockedScenes)
+      unlockedScenes = [...unlockedScenes];
+    unlockedScenes.push(id);
+  };
+  unlock(content.startScene);
+  unlock(state.sceneId);
+  for (const point of content.worldMap?.points ?? [])
+    if (point.unlockWhen && matches(state, point.unlockWhen))
+      unlock(point.sceneId);
+  return unlockedScenes === state.unlockedScenes
+    ? state
+    : { ...state, unlockedScenes };
+}
+
+export function canTravel(
+  content: GameContent,
+  state: GameState,
+  sceneId: string,
+): boolean {
+  return (
+    !state.dialogue &&
+    sceneId !== state.sceneId &&
+    state.unlockedScenes.includes(sceneId) &&
+    !!content.worldMap?.points.some(
+      (point) => point.sceneId === sceneId && point.fastTravel !== false,
+    )
+  );
+}
+
 function applyEffects(
   content: GameContent,
   state: GameState,
@@ -57,6 +98,7 @@ function applyEffects(
 ): GameState {
   const next: GameState = {
     ...state,
+    unlockedScenes: [...state.unlockedScenes],
     inventory: [...state.inventory],
     flags: { ...state.flags },
     tasks: { ...state.tasks },
@@ -75,6 +117,12 @@ function applyEffects(
       case 'scene':
         next.sceneId = effect.id;
         next.dialogue = null;
+        if (!next.unlockedScenes.includes(effect.id))
+          next.unlockedScenes.push(effect.id);
+        break;
+      case 'unlockScene':
+        if (!next.unlockedScenes.includes(effect.id))
+          next.unlockedScenes.push(effect.id);
         break;
       case 'dialogue': {
         const dialogue = content.dialogues.find(
@@ -145,6 +193,10 @@ function reduceAction(
   }
   // A conversation blocks world actions, including keyboard and stale clicks.
   if (state.dialogue) return state;
+  if (action.type === 'travel')
+    return canTravel(content, state, action.sceneId)
+      ? { ...state, sceneId: action.sceneId, message: '' }
+      : state;
   if (action.type === 'inspectItem') {
     const item = content.items.find(
       (entry) =>
@@ -198,5 +250,7 @@ export function reduceGame(
   action: GameAction,
 ): GameState {
   const next = reduceAction(content, state, action);
-  return next === state ? state : syncTasks(content, next);
+  return next === state
+    ? state
+    : syncLocations(content, syncTasks(content, next));
 }

@@ -86,6 +86,7 @@ export function validateProject(
           'addItem',
           'removeItem',
           'scene',
+          'unlockScene',
           'dialogue',
           'startTask',
           'completeTask',
@@ -131,12 +132,53 @@ export function validateProject(
       'combinations',
       'animations',
       'tasks',
+      'worldMap',
     ])
   )
     return errors;
   for (const key of ['id', 'startScene', 'initialMessage'])
     string(value[key], key);
   list(value.flags, 'flags', string);
+  if (
+    value.worldMap !== undefined &&
+    object(value.worldMap, 'worldMap', ['image', 'width', 'height', 'points'])
+  ) {
+    const map = value.worldMap;
+    asset(map.image, 'worldMap.image');
+    if (
+      typeof map.image === 'string' &&
+      map.image
+        .split('/')
+        .some((part) => !part || part === '.' || part === '..')
+    )
+      errors.push('worldMap.image: expected relative local image asset ID');
+    number(map.width, 'worldMap.width');
+    number(map.height, 'worldMap.height');
+    list(map.points, 'worldMap.points', (point, path) => {
+      if (
+        !object(point, path, [
+          'id',
+          'label',
+          'sceneId',
+          'x',
+          'y',
+          'unlockWhen',
+          'fastTravel',
+        ])
+      )
+        return;
+      for (const key of ['id', 'label', 'sceneId'])
+        string(point[key], `${path}.${key}`);
+      number(point.x, `${path}.x`);
+      number(point.y, `${path}.y`);
+      condition(point.unlockWhen, `${path}.unlockWhen`);
+      if (
+        point.fastTravel !== undefined &&
+        typeof point.fastTravel !== 'boolean'
+      )
+        errors.push(`${path}.fastTravel: expected boolean`);
+    });
+  }
   if (value.tasks !== undefined)
     list(value.tasks, 'tasks', (task, path) => {
       if (!object(task, path, ['id', 'text', 'startWhen', 'completeWhen']))
@@ -533,6 +575,7 @@ export function validateProject(
   for (const id of [
     content.id,
     ...content.flags,
+    ...(content.worldMap?.points ?? []).map((point) => point.id),
     ...(content.animations ?? []).map((animation) => animation.id),
     ...content.items.map((item) => item.id),
     ...content.scenes.flatMap((scene) => [

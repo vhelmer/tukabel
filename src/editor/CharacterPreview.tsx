@@ -16,6 +16,7 @@ const background =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNgYGBgAAAABQABpfZFQAAAAABJRU5ErkJggg==';
 const state: GameState = {
   sceneId: 'character-preview',
+  unlockedScenes: ['character-preview'],
   inventory: [],
   flags: {},
   tasks: {},

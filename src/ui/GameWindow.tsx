@@ -9,7 +9,7 @@ import type {
 import { useDialogueAudio } from './DialogueAudio';
 import { useConversation } from './useConversation';
 import { subtitleText } from '../game/subtitles';
-import { getDialogueNode } from '../game/state';
+import { canTravel, getDialogueNode } from '../game/state';
 import { reduceGame } from '../game/state';
 import { SceneCursor } from './SceneCursor';
 import type { HudController, InventoryPointer } from '../game/createHud';
@@ -51,7 +51,9 @@ export function GameWindow({
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [menu, setMenu] = useState(false);
   const [journal, setJournal] = useState(false);
-  const modalOpen = menu || journal;
+  const [mapOpen, setMapOpen] = useState(false);
+  const mapTravelLock = useRef(false);
+  const modalOpen = menu || journal || mapOpen;
   const hudController = useRef<HudController | null>(null);
   const registerHud = useCallback((controller: HudController | null) => {
     hudController.current = controller;
@@ -245,7 +247,33 @@ export function GameWindow({
   }, []);
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
+      if (
+        event.key.toLowerCase() === 'm' &&
+        !event.repeat &&
+        content.worldMap &&
+        !state.dialogue &&
+        !(
+          event.target instanceof Element &&
+          event.target.closest('input,textarea,select,[contenteditable="true"]')
+        )
+      ) {
+        event.preventDefault();
+        finishDrag();
+        setSelectedItem(null);
+        setObjectsOpen(false);
+        setHovered(null);
+        setMenu(false);
+        setJournal(false);
+        mapTravelLock.current = false;
+        setMapOpen((v) => !v);
+        return;
+      }
       if (event.key === 'Escape') {
+        if (mapOpen) {
+          event.preventDefault();
+          setMapOpen(false);
+          return;
+        }
         if (journal) {
           setJournal(false);
           focusHud('journal');
@@ -269,7 +297,7 @@ export function GameWindow({
       window.removeEventListener('keydown', onKey);
       window.removeEventListener('blur', onBlur);
     };
-  }, [finishDrag, menu, journal]);
+  }, [finishDrag, menu, journal, mapOpen, content.worldMap, state.dialogue]);
   // Pointer capture keeps both mouse and touch drags alive across the canvas.
   useEffect(() => {
     const targetAt = (event: PointerEvent): Target | null => {
@@ -399,7 +427,28 @@ export function GameWindow({
         setSelectedItem(selected === itemId ? null : itemId);
         dispatch({ type: 'inspectItem', itemId });
       }
+    } else if (id === 'map' || id === 'map-close') {
+      if (!content.worldMap || state.dialogue) return;
+      finishDrag();
+      setSelectedItem(null);
+      setObjectsOpen(false);
+      setHovered(null);
+      setMenu(false);
+      setJournal(false);
+      mapTravelLock.current = false;
+      setMapOpen((v) => (id === 'map-close' ? false : !v));
+    } else if (id.startsWith('map-point:')) {
+      if (!mapOpen || mapTravelLock.current) return;
+      const point = content.worldMap?.points.find((p) => p.id === id.slice(10));
+      if (!point || !canTravel(content, state, point.sceneId)) return;
+      mapTravelLock.current = true;
+      finishDrag();
+      setSelectedItem(null);
+      setHovered(null);
+      setMapOpen(false);
+      dispatch({ type: 'travel', sceneId: point.sceneId });
     } else if (id === 'journal' || id === 'journal-close') {
+      setMapOpen(false);
       finishDrag();
       setSelectedItem(null);
       setObjectsOpen(false);
@@ -407,6 +456,7 @@ export function GameWindow({
       setMenu(false);
       setJournal((value) => (id === 'journal-close' ? false : !value));
     } else if (id === 'menu') {
+      setMapOpen(false);
       finishDrag();
       setJournal(false);
       setMenu((value) => !value);
@@ -471,6 +521,7 @@ export function GameWindow({
             selectedItem: selected,
             drag,
             journal,
+            map: mapOpen,
             menu,
             objectsOpen,
           }}

@@ -286,7 +286,7 @@ export function EffectsField({
   const firstId = (type: Effect['type']) =>
     type === 'flag'
       ? (content.flags[0] ?? '')
-      : type === 'scene'
+      : type === 'scene' || type === 'unlockScene'
         ? (content.scenes[0]?.id ?? '')
         : type === 'dialogue'
           ? (content.dialogues[0]?.id ?? '')
@@ -300,7 +300,7 @@ export function EffectsField({
         const values =
           effect.type === 'flag'
             ? content.flags.map((id) => ({ id }))
-            : effect.type === 'scene'
+            : effect.type === 'scene' || effect.type === 'unlockScene'
               ? content.scenes.map((scene) => ({
                   id: scene.id,
                   label: scene.title,
@@ -336,6 +336,7 @@ export function EffectsField({
                   <option value="addItem">Přidat předmět</option>
                   <option value="removeItem">Odebrat předmět</option>
                   <option value="scene">Změnit lokaci</option>
+                  <option value="unlockScene">Odemknout lokaci na mapě</option>
                   <option value="dialogue">Otevřít dialog</option>
                   <option value="startTask" disabled={!content.tasks?.length}>
                     Přidat úkol do deníku

@@ -22,6 +22,7 @@ import { JobTray } from './JobTray';
 import { SceneArtPanel } from './SceneArtPanel';
 import { SceneLivePreview } from './SceneLivePreview';
 import { TasksPanel } from './TasksPanel';
+import { WorldMapPanel } from './WorldMapPanel';
 import type { Point } from '../game/transforms';
 import type { GraphTarget } from './LogicGraph';
 import './editor.css';
@@ -29,6 +30,7 @@ import './editor.css';
 type Tab =
   | 'animations'
   | 'scenes'
+  | 'worldMap'
   | 'items'
   | 'dialogues'
   | 'tasks'
@@ -37,6 +39,7 @@ type Tab =
 const serialize = (value: GameContent) => JSON.stringify(value);
 const tabs: { id: Tab; label: string }[] = [
   { id: 'scenes', label: 'Lokace' },
+  { id: 'worldMap', label: 'Mapa lokací' },
   { id: 'animations', label: 'Animace' },
   { id: 'items', label: 'Předměty' },
   { id: 'dialogues', label: 'Dialogy' },
@@ -235,6 +238,8 @@ export default function DevWorkspace({
       setDialogueId(target.id);
       setGraphNodeId(target.nodeId);
       setTab('dialogues');
+    } else if (target.type === 'worldMap') {
+      setTab('worldMap');
     } else if (target.type === 'tasks') {
       setTaskId(target.id);
       setTab('tasks');
@@ -544,6 +549,14 @@ export default function DevWorkspace({
               </div>
             )}
           </>
+        )}
+        {tab === 'worldMap' && (
+          <WorldMapPanel
+            content={document}
+            assets={assets}
+            onAssets={addAssets}
+            onChange={change}
+          />
         )}
         {tab === 'animations' && (
           <>

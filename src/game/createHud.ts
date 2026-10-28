@@ -11,6 +11,7 @@ import type { FederatedPointerEvent, Texture } from 'pixi.js';
 import type { GameContent, GameState } from './types';
 import type { Bounds } from './transforms';
 import { contains, sceneFrame } from './hudLayout';
+import { canTravel } from './state';
 import { hudArt } from './hudArt';
 import type { AlphaMask } from './hitTest';
 
@@ -33,6 +34,7 @@ export interface HudState {
   selectedItem: string | null;
   drag: HudDrag | null;
   journal: boolean;
+  map?: boolean;
   menu: boolean;
   objectsOpen: boolean;
 }
@@ -45,6 +47,7 @@ export interface HudControl {
   expanded?: boolean;
   itemId?: string;
   image?: string;
+  visible?: boolean;
 }
 export interface HudLayout {
   width: number;
@@ -52,6 +55,7 @@ export interface HudLayout {
   controls: HudControl[];
   inventory: Bounds;
   book?: Bounds;
+  map?: Bounds;
 }
 export interface HudPickup {
   image?: string;
@@ -98,6 +102,8 @@ export function createHud(
   const focusRing = root.addChild(new Graphics());
   focusRing.eventMode = 'none';
   let snapshot = initial;
+  let mapEntry: Container | null = null;
+  let edgeVisible = window.matchMedia('(pointer: coarse)').matches;
   let width = 1,
     height = 1;
   let inventoryPage = 0,
@@ -179,7 +185,8 @@ export function createHud(
     tooltip
       .removeChildren()
       .forEach((child) => child.destroy({ children: true }));
-    if (snapshot.journal || snapshot.menu || snapshot.drag) return;
+    if (snapshot.journal || snapshot.map || snapshot.menu || snapshot.drag)
+      return;
     const control = layout.controls.find((c) => c.id === (hoverId ?? focused));
     if (!control || control.disabled) return;
     const title = text(
@@ -280,6 +287,8 @@ export function createHud(
     let origin: { x: number; y: number; id: number } | null = null;
     c.on('pointerdown', (e: FederatedPointerEvent) => {
       e.stopPropagation();
+      // A compatibility mousedown after touch would blur the modal's initial focus.
+      if (e.pointerType === 'touch') e.preventDefault();
       if (control.disabled) return;
       origin = { x: e.clientX, y: e.clientY, id: e.pointerId };
       if (control.itemId)
@@ -352,6 +361,7 @@ export function createHud(
     }
   }
   function rebuild() {
+    mapEntry = null;
     // Destroyed controls cannot emit pointerout. Never retain their tooltip
     // when opening a menu, dropping an item or moving between dialogue phases.
     hoverId = null;
@@ -403,7 +413,10 @@ export function createHud(
         ),
     };
     const blocked = Boolean(
-      snapshot.state.dialogue || snapshot.menu || snapshot.journal,
+      snapshot.state.dialogue ||
+      snapshot.menu ||
+      snapshot.journal ||
+      snapshot.map,
     );
     const active = Object.values(snapshot.state.tasks).filter(
       (status) => status === 'active',
@@ -568,11 +581,134 @@ export function createHud(
             .stroke({ width: 3, color: 0xc7e597 }),
         ).eventMode = 'none';
     });
+    const map = snapshot.content.worldMap;
+    if (map && !snapshot.journal && !snapshot.menu && !snapshot.map) {
+      const control = {
+        id: 'map',
+        label: 'Otvoriť mapu',
+        bounds: {
+          x: frame.x + frame.width / 2 - 22,
+          y: frame.y + frame.height - 48,
+          width: 44,
+          height: 44,
+        },
+        disabled: Boolean(snapshot.state.dialogue || snapshot.drag),
+        visible: edgeVisible || focused === 'map',
+      };
+      const view = button(control, '', 16);
+      view.addChild(
+        new Graphics()
+          .poly([8, 13, 16, 9, 28, 14, 36, 10, 36, 31, 28, 35, 16, 30, 8, 34])
+          .fill(0xead2a0)
+          .stroke({ width: 2, color: 0x493725 })
+          .moveTo(16, 9)
+          .lineTo(16, 30)
+          .moveTo(28, 14)
+          .lineTo(28, 35)
+          .stroke({ width: 1.5, color: 0x7d6949 }),
+      ).eventMode = 'none';
+      mapEntry = view;
+      view.visible = control.visible;
+    }
     if (snapshot.journal) drawBook();
+    if (snapshot.map && map) drawMap();
     drawFocus();
     syncTooltip();
     callbacks.onLayout(layout);
     render();
+  }
+  function drawMap() {
+    const map = snapshot.content.worldMap!;
+    const scene = snapshot.content.scenes.find(
+      (s) => s.id === snapshot.state.sceneId,
+    )!;
+    const frame = sceneFrame(width, height, scene);
+    const b = {
+      x: frame.x + 6,
+      y: frame.y + 6,
+      width: Math.max(1, frame.width - 12),
+      height: Math.max(1, frame.height - 12),
+    };
+    const dim = panels.addChild(
+      new Graphics()
+        .rect(0, 0, width, height)
+        .fill({ color: 0x100d15, alpha: 0.85 }),
+    );
+    dim.eventMode = 'static';
+    const paper = panels.addChild(
+      new Graphics()
+        .roundRect(b.x, b.y, b.width, b.height, 12)
+        .fill(0x30291e)
+        .stroke({ color: 0xddbf7d, width: 3 }),
+    );
+    paper.eventMode = 'static';
+    const area = {
+      x: b.x + 8,
+      y: b.y + 48,
+      width: Math.max(1, b.width - 16),
+      height: Math.max(1, b.height - 92),
+    };
+    const scale = Math.min(area.width / map.width, area.height / map.height);
+    const imageFrame = {
+      x: area.x + (area.width - map.width * scale) / 2,
+      y: area.y + (area.height - map.height * scale) / 2,
+      width: map.width * scale,
+      height: map.height * scale,
+    };
+    art(panels, map.image, imageFrame);
+    layout.controls = [];
+    layout.map = b;
+    text(panels, 'Mapa okolia', b.x + 14, b.y + 10, 20);
+    button(
+      {
+        id: 'map-close',
+        label: 'Zavrieť mapu',
+        bounds: { x: b.x + b.width - 48, y: b.y + 3, width: 44, height: 40 },
+      },
+      '×',
+      24,
+    );
+    for (const point of map.points) {
+      const unlocked = snapshot.state.unlockedScenes.includes(point.sceneId);
+      const current = point.sceneId === snapshot.state.sceneId;
+      const label = current
+        ? `Tu si: ${point.label}`
+        : !unlocked
+          ? `Zamknuté: ${point.label}`
+          : point.fastTravel === false
+            ? `Iba prechodom: ${point.label}`
+            : `Cestovať: ${point.label}`;
+      const x = imageFrame.x + point.x * scale,
+        y = imageFrame.y + point.y * scale;
+      const bw = Math.min(150, Math.max(74, b.width * 0.18));
+      const bounds = {
+        x: Math.max(b.x + 5, Math.min(b.x + b.width - bw - 5, x - bw / 2)),
+        y: Math.max(b.y + 46, Math.min(b.y + b.height - 48, y - 22)),
+        width: bw,
+        height: 44,
+      };
+      const view = button(
+        {
+          id: 'map-point:' + point.id,
+          label,
+          bounds,
+          disabled: !canTravel(snapshot.content, snapshot.state, point.sceneId),
+          pressed: current,
+        },
+        (current ? '● ' : unlocked ? '◆ ' : '× ') + point.label,
+        13,
+      );
+      if (current) view.alpha = 1;
+    }
+    text(
+      panels,
+      'Zamknuté miesta a miesta iba prechodom nie sú dostupné na rýchlu cestu.',
+      b.x + 12,
+      b.y + b.height - 35,
+      Math.max(9, Math.min(12, b.width / 65)),
+      0xe7d6ae,
+      b.width - 24,
+    );
   }
   function drawBook() {
     const dim = panels.addChild(
@@ -780,8 +916,11 @@ export function createHud(
       const p = canvasPoint(clientX, clientY);
       return (
         snapshot.journal ||
+        snapshot.map ||
         snapshot.menu ||
-        layout.controls.some((c) => contains(c.bounds, p.x, p.y)) ||
+        layout.controls.some(
+          (c) => c.visible !== false && contains(c.bounds, p.x, p.y),
+        ) ||
         shelfContains(p.x, p.y)
       );
     },
@@ -797,7 +936,9 @@ export function createHud(
     },
     activate,
     focus(id) {
+      const reveal = id === 'map' || focused === 'map';
       focused = id;
+      if (reveal) syncMapEntry();
       drawFocus();
       syncTooltip();
       render();
@@ -824,7 +965,57 @@ export function createHud(
       syncPlayback();
     },
   };
+  function syncMapEntry() {
+    const control = layout.controls.find((c) => c.id === 'map');
+    if (!control || !mapEntry) return;
+    const visible = edgeVisible || focused === 'map';
+    mapEntry.visible = visible;
+    if (control.visible !== visible) {
+      layout = {
+        ...layout,
+        controls: layout.controls.map((c) =>
+          c.id === 'map' ? { ...c, visible } : c,
+        ),
+      };
+      callbacks.onLayout(layout);
+    }
+    drawFocus();
+    render();
+  }
+  function revealMap(event: PointerEvent) {
+    if (!snapshot.content.worldMap) return;
+    const scene = snapshot.content.scenes.find(
+      (s) => s.id === snapshot.state.sceneId,
+    )!;
+    const b = sceneFrame(width, height, scene),
+      p = canvasPoint(event.clientX, event.clientY);
+    const next =
+      event.pointerType === 'touch' ||
+      (p.x >= b.x &&
+        p.x <= b.x + b.width &&
+        p.y >= b.y + b.height - 60 &&
+        p.y <= b.y + b.height);
+    if (next !== edgeVisible) {
+      edgeVisible = next;
+      syncMapEntry();
+    }
+  }
+  function leaveMap() {
+    const next = window.matchMedia('(pointer: coarse)').matches;
+    if (next !== edgeVisible) {
+      edgeVisible = next;
+      syncMapEntry();
+    }
+  }
+  canvas.addEventListener('pointermove', revealMap);
+  canvas.addEventListener('pointerdown', revealMap);
+  canvas.addEventListener('pointerleave', leaveMap);
   return {
+    destroy() {
+      canvas.removeEventListener('pointermove', revealMap);
+      canvas.removeEventListener('pointerdown', revealMap);
+      canvas.removeEventListener('pointerleave', leaveMap);
+    },
     root,
     controller,
     get active() {
@@ -839,6 +1030,9 @@ export function createHud(
       const key = JSON.stringify([
         next.state.inventory,
         next.state.tasks,
+        next.state.unlockedScenes,
+        next.content.worldMap,
+        next.map,
         next.state.dialogue,
         next.selectedItem,
         next.menu,
@@ -849,7 +1043,7 @@ export function createHud(
       ]);
       const wasJournal = snapshot.journal;
       snapshot = next;
-      effects.visible = !next.journal && !next.menu;
+      effects.visible = !next.journal && !next.map && !next.menu;
       if (!wasJournal && next.journal) journalScroll = 0;
       if (key !== structuralKey) {
         structuralKey = key;

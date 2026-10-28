@@ -57,7 +57,7 @@ export function validateContent(content: GameContent): string[] {
       reference(
         effect.type === 'flag'
           ? flags
-          : effect.type === 'scene'
+          : effect.type === 'scene' || effect.type === 'unlockScene'
             ? scenes
             : effect.type === 'dialogue'
               ? dialogues
@@ -79,6 +79,42 @@ export function validateContent(content: GameContent): string[] {
     });
   };
   reference(scenes, content.startScene, 'startScene');
+  if (content.worldMap) {
+    const map = content.worldMap;
+    if (
+      ![map.width, map.height].every(
+        (value) => Number.isFinite(value) && value > 0,
+      )
+    )
+      errors.push('worldMap: invalid dimensions');
+    collect(
+      map.points.map((point) => point.id),
+      'worldMap.points',
+    );
+    collect(
+      map.points.map((point) => point.sceneId),
+      'worldMap destinations',
+    );
+    for (const point of map.points) {
+      const path = `worldMap/${point.id}`;
+      if (
+        !/^[a-zA-Z][a-zA-Z0-9_-]*$/.test(point.id) ||
+        ['__proto__', 'constructor', 'prototype'].includes(point.id)
+      )
+        errors.push(`${path}: invalid stable id`);
+      if (!point.label.trim()) errors.push(`${path}: empty label`);
+      reference(scenes, point.sceneId, path);
+      if (
+        ![point.x, point.y].every(Number.isFinite) ||
+        point.x < 0 ||
+        point.y < 0 ||
+        point.x > map.width ||
+        point.y > map.height
+      )
+        errors.push(`${path}: point outside map`);
+      condition(point.unlockWhen, `${path}/unlockWhen`);
+    }
+  }
   for (const task of content.tasks ?? []) {
     condition(task.startWhen, 'tasks/' + task.id + '/start');
     condition(task.completeWhen, 'tasks/' + task.id + '/complete');

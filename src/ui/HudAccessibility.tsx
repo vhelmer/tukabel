@@ -13,22 +13,29 @@ export function HudAccessibility({
   controller: HudController | null;
 }) {
   const root = useRef<HTMLDivElement>(null);
-  const wasBook = useRef(false);
+  const wasModal = useRef<'map' | 'journal' | null>(null);
   useEffect(() => {
-    if (layout.book && !wasBook.current)
+    const current = layout.map ? 'map' : layout.book ? 'journal' : null;
+    if (current && current !== wasModal.current)
       root.current
-        ?.querySelector<HTMLButtonElement>('[data-hud-control="journal-close"]')
+        ?.querySelector<HTMLButtonElement>(
+          `[data-hud-control="${current === 'map' ? 'map-close' : 'journal-close'}"]`,
+        )
         ?.focus();
-    else if (!layout.book && wasBook.current)
+    else if (!current && wasModal.current)
       root.current
-        ?.querySelector<HTMLButtonElement>('[data-hud-control="journal"]')
+        ?.querySelector<HTMLButtonElement>(
+          `[data-hud-control="${wasModal.current === 'map' ? 'map' : 'journal'}"]`,
+        )
         ?.focus();
-    wasBook.current = Boolean(layout.book);
+    wasModal.current = current;
   }, [layout]);
+  const panel = layout.map ?? layout.book;
   const controls = layout.controls.map((c) => (
     <button
       key={c.id}
       data-hud-control={c.id}
+      data-visible={c.visible === undefined ? undefined : String(c.visible)}
       data-inventory-id={c.itemId}
       data-image={c.image}
       aria-label={c.label}
@@ -38,27 +45,33 @@ export function HudAccessibility({
           ? hud.objectsOpen
           : c.id === 'menu'
             ? hud.menu
-            : c.id === 'journal'
-              ? hud.journal
-              : c.expanded
+            : c.id === 'map'
+              ? Boolean(hud.map)
+              : c.id === 'journal'
+                ? hud.journal
+                : c.expanded
       }
       disabled={c.disabled}
       style={{
         position: 'absolute',
         left:
           c.bounds.x -
-          (layout.book?.x ??
+          (panel?.x ??
             (c.itemId || c.id.startsWith('inventory-')
               ? layout.inventory.x
               : 0)),
         top:
           c.bounds.y -
-          (layout.book?.y ??
+          (panel?.y ??
             (c.itemId || c.id.startsWith('inventory-')
               ? layout.inventory.y
               : 0)),
         width: c.bounds.width,
         height: c.bounds.height,
+      }}
+      onKeyDown={(e) => {
+        if (e.repeat && (e.key === 'Enter' || e.key === ' '))
+          e.preventDefault();
       }}
       onClick={(e) => {
         if (e.detail === 0) controller?.activate(c.id);
@@ -76,17 +89,17 @@ export function HudAccessibility({
       data-width={layout.width}
       data-height={layout.height}
     >
-      {layout.book ? (
+      {panel ? (
         <section
           role="dialog"
-          aria-label="Denník úloh"
+          aria-label={layout.map ? 'Mapa lokácií' : 'Denník úloh'}
           aria-modal="true"
           style={{
             position: 'absolute',
-            left: layout.book.x,
-            top: layout.book.y,
-            width: layout.book.width,
-            height: layout.book.height,
+            left: panel.x,
+            top: panel.y,
+            width: panel.width,
+            height: panel.height,
           }}
           onKeyDown={(e) => {
             if (e.key !== 'Tab') return;
@@ -106,38 +119,46 @@ export function HudAccessibility({
           }}
         >
           {controls}
-          <h2>Môj pochybný plán</h2>
-          <ul aria-label="Zapísané úlohy">
-            {(hud.content.tasks ?? [])
-              .filter((task) => Object.hasOwn(hud.state.tasks, task.id))
-              .map((task) => (
-                <li
-                  key={task.id}
-                  data-task-id={task.id}
-                  data-status={hud.state.tasks[task.id]}
-                >
-                  <span className="sr-only">
-                    {hud.state.tasks[task.id] === 'completed'
-                      ? 'Splnené: '
-                      : 'Aktívne: '}
-                  </span>
-                  {hud.state.tasks[task.id] === 'completed' ? (
-                    <s>{task.text}</s>
-                  ) : (
-                    task.text
-                  )}
-                </li>
-              ))}
-          </ul>
-          {!Object.keys(hud.state.tasks).length && (
-            <p>Zatiaľ nemám nič zapísané.</p>
+          {layout.map ? (
+            <h2>Mapa okolia</h2>
+          ) : (
+            <>
+              <h2>Môj pochybný plán</h2>
+              <ul aria-label="Zapísané úlohy">
+                {(hud.content.tasks ?? [])
+                  .filter((task) => Object.hasOwn(hud.state.tasks, task.id))
+                  .map((task) => (
+                    <li
+                      key={task.id}
+                      data-task-id={task.id}
+                      data-status={hud.state.tasks[task.id]}
+                    >
+                      <span className="sr-only">
+                        {hud.state.tasks[task.id] === 'completed'
+                          ? 'Splnené: '
+                          : 'Aktívne: '}
+                      </span>
+                      {hud.state.tasks[task.id] === 'completed' ? (
+                        <s>{task.text}</s>
+                      ) : (
+                        task.text
+                      )}
+                    </li>
+                  ))}
+              </ul>
+              {!Object.keys(hud.state.tasks).length && (
+                <p>Zatiaľ nemám nič zapísané.</p>
+              )}
+            </>
           )}
         </section>
       ) : (
         <div
           role="group"
           aria-label="Inventár"
-          aria-disabled={Boolean(hud.state.dialogue || hud.menu || hud.journal)}
+          aria-disabled={Boolean(
+            hud.state.dialogue || hud.menu || hud.journal || hud.map,
+          )}
           style={{
             position: 'absolute',
             left: layout.inventory.x,
@@ -153,7 +174,7 @@ export function HudAccessibility({
           )}
         </div>
       )}
-      {!layout.book &&
+      {!panel &&
         controls.filter(
           (_, i) =>
             !layout.controls[i]!.itemId &&

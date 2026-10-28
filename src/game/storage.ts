@@ -1,5 +1,5 @@
 import type { GameContent, GameState } from './types';
-import { syncTasks } from './state';
+import { syncLocations, syncTasks } from './state';
 
 export const SAVE_KEY = 'tukabel.save.v1';
 const SAVE_VERSION = 1;
@@ -62,23 +62,39 @@ export function decodeSave(
       )
     )
       throw new Error('Invalid journal');
+    const unlockedScenes =
+      state.unlockedScenes === undefined ? [] : state.unlockedScenes;
+    if (
+      !Array.isArray(unlockedScenes) ||
+      !unlockedScenes.every(
+        (id) =>
+          typeof id === 'string' &&
+          content.scenes.some((scene) => scene.id === id),
+      ) ||
+      new Set(unlockedScenes).size !== unlockedScenes.length
+    )
+      throw new Error('Invalid unlocked locations');
     // Copy only the known fields; never merge untrusted storage into definitions.
     return {
       ok: true,
-      value: syncTasks(content, {
-        sceneId: state.sceneId as string,
-        inventory: [...state.inventory] as string[],
-        flags: { ...state.flags } as Record<string, boolean>,
-        tasks: { ...tasks } as GameState['tasks'],
-        dialogue:
-          state.dialogue === null
-            ? null
-            : {
-                id: state.dialogue.id as string,
-                nodeId: state.dialogue.nodeId as string,
-              },
-        message: state.message,
-      }),
+      value: syncLocations(
+        content,
+        syncTasks(content, {
+          sceneId: state.sceneId as string,
+          unlockedScenes: [...unlockedScenes] as string[],
+          inventory: [...state.inventory] as string[],
+          flags: { ...state.flags } as Record<string, boolean>,
+          tasks: { ...tasks } as GameState['tasks'],
+          dialogue:
+            state.dialogue === null
+              ? null
+              : {
+                  id: state.dialogue.id as string,
+                  nodeId: state.dialogue.nodeId as string,
+                },
+          message: state.message,
+        }),
+      ),
     };
   } catch {
     return {

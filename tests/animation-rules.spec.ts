@@ -219,6 +219,7 @@ test('visual clocks prioritize speech, schedule finite blinks and hold once-only
   expect(frameAt(idle, 10000, true)).toBe('neutral');
   const state = {
     sceneId: 'room',
+    unlockedScenes: ['room'],
     inventory: [],
     tasks: {},
     flags: {},
@@ -574,6 +575,7 @@ test('local animation metadata rejects overlap, invalid regions, source overflow
   };
   const configured = {
     ...clean,
+    worldMap: undefined,
     scenes: [{ ...clean.scenes[0]!, hotspots: [actor] }],
     dialogues: clean.dialogues.map((d) => ({
       ...d,

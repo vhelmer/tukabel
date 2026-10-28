@@ -557,6 +557,12 @@ export function editorPlugin(
                 .slice(0, 48) || 'image';
             const id = `imported/${stem}-${randomUUID().slice(0, 8)}${extension}`;
             await writeFile(path.join(assetsRoot, id), bytes, { flag: 'wx' });
+            const modules =
+              server.environments.client.moduleGraph.getModulesByFile(
+                path.resolve(server.config.root, 'src/game/assets.ts'),
+              );
+            for (const module of modules ?? [])
+              server.environments.client.moduleGraph.invalidateModule(module);
             respond(201, { id, assets: await listAssets(assetsRoot) });
           } else respond(404, { error: 'Neznámá operace editoru.' });
         };

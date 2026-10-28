@@ -6,6 +6,7 @@ export type GraphTarget =
   | { type: 'scene'; sceneId: string; hotspotId: string }
   | { type: 'dialogue'; id: string; nodeId: string }
   | { type: 'tasks'; id: string }
+  | { type: 'worldMap' }
   | { type: 'puzzles' };
 interface Row {
   label: string;
@@ -27,10 +28,24 @@ function describe(condition?: Condition): string[] {
 function effectText(effect: Effect) {
   return effect.type === 'flag'
     ? `${effect.id} ← ${effect.value}`
-    : `${{ addItem: '+ předmět', removeItem: '− předmět', scene: '→ lokace', dialogue: '→ dialog', startTask: '+ úkol', completeTask: '✓ úkol' }[effect.type]}: ${effect.id}`;
+    : `${{ addItem: '+ předmět', removeItem: '− předmět', scene: '→ lokace', unlockScene: 'odemknout lokaci', dialogue: '→ dialog', startTask: '+ úkol', completeTask: '✓ úkol' }[effect.type]}: ${effect.id}`;
 }
 function graphRows(content: GameContent): Row[] {
   const rows: Row[] = [];
+  for (const point of content.worldMap?.points ?? []) {
+    if (!point.unlockWhen) continue;
+    rows.push({
+      label: 'Mapa · ' + point.label,
+      when: point.unlockWhen,
+      requires: describe(point.unlockWhen),
+      outcomes: [
+        'Odemknout lokaci: ' + point.sceneId,
+        ...(point.fastTravel === false ? ['Přístup pouze přechodem'] : []),
+      ],
+      message: '',
+      target: { type: 'worldMap' },
+    });
+  }
   for (const task of content.tasks ?? []) {
     for (const [when, outcome] of [
       [task.startWhen, '+ zapsat do deníku'],
