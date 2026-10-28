@@ -352,6 +352,34 @@ případně `SAM2_CHECKPOINT`). Browserový test masky použije SAM, pokud je na
 Produkční hra nepotřebuje Python, modely ani API. Segmentace běží mimo zámek
 projektového save, bez shellu a s timeoutem.
 
+### Segmentace a matting na vzdáleném počítači
+
+Dev Mode může spouštět SAM 2/3, GrabCut, ViTMatte, closed-form i odstranění
+barevného lemu přes OpenSSH na jiném Linuxovém počítači. Do serverového `.env.local`
+nastav `SEGMENTATION_BACKEND=ssh`, `MY_LOCAL_PC_HOST`, `MY_LOCAL_PC_USER` a případně
+`MY_LOCAL_PC_PASSWORD`; bez hesla fungují SSH klíče a ssh-agent. Nejprve se připoj
+běžným `ssh user@host` a ověř klíč serveru. Transport vyžaduje známý klíč
+(`StrictHostKeyChecking=yes`); vlastní soubor určuje `SEGMENTATION_SSH_KNOWN_HOSTS`.
+Volitelné `SEGMENTATION_SSH_PORT` mění port. Potom restartuj Vite.
+
+Vzdálený projekt je standardně `~/Projects/tukabel`, jinou absolutní cestu nastav
+přes `SEGMENTATION_SSH_ROOT`. Jeho `.env.local` určuje `SEGMENTATION_PYTHON`,
+`SAM2_CHECKPOINT`, `SAM2_CONFIG`, `SAM3_PYTHON`, `SAM3_MODEL` a `VITMATTE_MODEL`.
+Modely i závislosti musí být již nainstalované. Aktuální helpery se posílají s každou
+úlohou do dočasného adresáře; vzdálený Git ani projektový JSON se nemění. Zdroj,
+masky a tahy zůstávají v původním rozlišení, zpět se vracejí pouze výsledné PNG.
+Stejný backend používá náhled i přepočet barev při exportu. Dočasná data runner
+uklízí i při chybě; po násilném ukončení počítače mohou zůstat v systémovém tmp.
+
+`SEGMENTATION_DEVICE=auto` použije CUDA, pokud ji vzdálený PyTorch podporuje,
+jinak CPU. `cuda` GPU výslovně vyžaduje a `cpu` jej vypne. Samotná přítomnost
+NVIDIA karty nestačí: CPU sestavení PyTorch GPU nepoužije. GrabCut a closed-form
+zůstávají CPU operace. Lokální backend zachovává výchozí CPU. Za běhu se nic
+nestahuje ani automaticky neopakuje; při chybě SSH se nepřepíná na místní modely.
+Každý požadavek má limit 300 s. Údaje nejsou součástí klienta ani produkčního API.
+SSH klient a Python 3 musí být dostupné také na stroji s Vite (heslo předává
+lokální `SSH_ASKPASS` helper, nikdy argument příkazu).
+
 ### Alpha matting: instalace, kvalita a soubory
 
 ViTMatte i PyMatting jsou lokálně ověřené se skutečnými modely na CPU.
@@ -408,11 +436,13 @@ a `SAM3_MODEL` umožňují jiné lokální cesty. Za běhu editoru se nic nestah
 načítají se pouze lokální safetensors bez vzdáleného modelového kódu.
 Editor povolí SAM 3 až po stažení všech částí checkpointu; samotný stažený index nestačí.
 
-V tomto prostředí je ověřený runtime a skutečný offline průchod adaptérem na malé
-náhodně inicializované testovací architektuře (tvary vstupů a nativní souřadnice,
-nikoli kvalita). Chybí schválený přístup k vahám; reálné srovnání SAM 3 proti SAM 2
-proto zatím není ověřené. Pravidlový test s naučenými vahami se do jejich instalace
-výslovně přeskočí. Produkce model ani Python nepotřebuje.
+Lokální pravidlový test ověřuje offline průchod adaptérem na malé náhodně
+inicializované architektuře (tvary vstupů a nativní souřadnice, nikoli kvalitu).
+Test s naučenými vahami se bez jejich lokální instalace výslovně přeskočí.
+Přes SSH byl ověřen skutečný průchod nainstalovanými SAM 2, SAM 3 a ViTMatte
+na syntetickém obrázku, včetně GrabCutu, closed-form a dočištění barev. To ověřuje
+propojení a rozměry výsledků, nikoli srovnání kvality na herních objektech.
+Produkce model ani Python nepotřebuje.
 
 **`npm run compare:matting`** reprodukuje porovnání na routeru ze zkušební lokace a
 druhém kresleném objektu s tenkou čárou a otvorem. Vyžaduje instalovaný SAM 2 Large

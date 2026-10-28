@@ -8,6 +8,10 @@ import { readArtSource, artHash } from './artSource.ts';
 import { isObject, maskPng, maskPixels, readObjectMask } from './objectMask.ts';
 import { ALPHA_LEVELS } from './objectMask.ts';
 import sharp from 'sharp';
+import {
+  remoteSegmentation,
+  type RemoteSegmentationOptions,
+} from './remoteSegmentation.ts';
 
 const execute = promisify(execFile);
 const helper = fileURLToPath(
@@ -17,6 +21,7 @@ const matteHelper = fileURLToPath(
   new URL('../scripts/segmentation/matting.py', import.meta.url),
 );
 export interface SegmentationOptions {
+  remote?: RemoteSegmentationOptions;
   python?: string;
   checkpoint?: string;
   modelConfig?: string;
@@ -51,6 +56,18 @@ function environment(options: SegmentationOptions) {
   };
 }
 export async function segmentationStatus(options: SegmentationOptions) {
+  if (options.remote) {
+    const status = await remoteSegmentation(options.remote, {
+      operation: 'status',
+    });
+    return {
+      grabcut: status.grabcut === true,
+      sam2: status.sam2 === true,
+      sam3: status.sam3 === true,
+      vitmatte: status.vitmatte === true,
+      closedForm: status['closed-form'] === true,
+    };
+  }
   try {
     const [{ stdout }, matte, sam3] = await Promise.all([
       execute(await python(options), [helper, '--status'], {
@@ -132,11 +149,13 @@ export async function segmentObject(
     const status = await segmentationStatus(options);
     if (!status[input.method as 'grabcut' | 'sam2' | 'sam3'])
       throw Error(
-        input.method === 'sam3'
-          ? 'SAM 3 potřebuje npm run setup:sam3 a schválený přístup k vahám facebook/sam3. Viz README.'
-          : input.method === 'sam2'
-            ? 'SAM 2 potřebuje lokální inštaláciu a SAM2_CHECKPOINT; pozri README.'
-            : 'Spusť npm run setup:segmentation a restartuj Vite.',
+        options.remote
+          ? `Nástroj ${String(input.method)} není na vzdáleném počítači dostupný. Ověř jeho Python, modely a konfiguraci. Místní nástroje se nepoužijí.`
+          : input.method === 'sam3'
+            ? 'SAM 3 potřebuje npm run setup:sam3 a schválený přístup k vahám facebook/sam3. Viz README.'
+            : input.method === 'sam2'
+              ? 'SAM 2 potřebuje lokální inštaláciu a SAM2_CHECKPOINT; pozri README.'
+              : 'Spusť npm run setup:segmentation a restartuj Vite.',
       );
     directory = await mkdtemp(path.join(tmpdir(), 'tukabel-segmentation-'));
     await writeFile(path.join(directory, 'source.png'), original.source);
@@ -149,7 +168,8 @@ export async function segmentObject(
       await maskPng(seeds, original.width, original.height),
     );
     try {
-      await execute(
+      await inference(
+        options,
         input.method === 'sam3'
           ? (options.sam3Python ?? path.resolve('.local-tools/sam3/bin/python'))
           : await python(options),
@@ -221,7 +241,9 @@ export async function matteObject(
     const status = await segmentationStatus(options);
     if (!(input.method === 'vitmatte' ? status.vitmatte : status.closedForm))
       throw Error(
-        'Spusť npm run setup:matting a restartuj Vite. Matting je pouze lokální.',
+        options.remote
+          ? 'Matting není na vzdáleném počítači dostupný. Ověř jeho Python, závislosti a model ViTMatte.'
+          : 'Spusť npm run setup:matting a restartuj Vite. Matting je pouze lokální.',
       );
     directory = await mkdtemp(path.join(tmpdir(), 'tukabel-matting-'));
     await writeFile(path.join(directory, 'source.png'), original.source);
@@ -234,7 +256,8 @@ export async function matteObject(
       await maskPng(seeds, original.width, original.height),
     );
     try {
-      await execute(
+      await inference(
+        options,
         await python(options),
         [
           matteHelper,
@@ -297,7 +320,8 @@ export async function matteForeground(
       await maskPng(pixels, original.width, original.height),
     );
     try {
-      await execute(
+      await inference(
+        options,
         await python(options),
         [matteHelper, directory, 'foreground'],
         { timeout: 300000, maxBuffer: 32768, env: environment(options) },
@@ -324,5 +348,36 @@ export async function matteForeground(
     return result;
   } finally {
     await rm(directory, { recursive: true, force: true });
+  }
+}
+
+async function inference(
+  options: SegmentationOptions,
+  runtime: string,
+  args: string[],
+  execution: { timeout: number; maxBuffer: number; env: NodeJS.ProcessEnv },
+) {
+  if (!options.remote) return execute(runtime, args, execution);
+  const directory = args[1]!;
+  const files: Record<string, string> = {};
+  for (const name of args[2] === 'foreground'
+    ? ['source.png', 'prior.png']
+    : ['source.png', 'prior.png', 'seeds.png']) {
+    files[name] = (await readFile(path.join(directory, name))).toString(
+      'base64',
+    );
+  }
+  const result = await remoteSegmentation(options.remote, {
+    operation: args[0] === helper ? 'segment' : 'matte',
+    args: args.slice(2),
+    files,
+  });
+  for (const name of ['result.png', 'foreground.png']) {
+    if (typeof result[name] === 'string') {
+      await writeFile(
+        path.join(directory, name),
+        Buffer.from(result[name], 'base64'),
+      );
+    }
   }
 }

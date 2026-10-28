@@ -139,7 +139,23 @@ export function editorPlugin(
         model: process.env.OPENAI_ANIMATION_MODEL || env.OPENAI_ANIMATION_MODEL,
         ...options.direction,
       };
+      const remoteValue = (name: string) => process.env[name] || env[name];
       const segmentationOptions: SegmentationOptions = {
+        remote:
+          remoteValue('SEGMENTATION_BACKEND') === 'ssh'
+            ? {
+                host: remoteValue('MY_LOCAL_PC_HOST') || '',
+                user: remoteValue('MY_LOCAL_PC_USER') || '',
+                password: remoteValue('MY_LOCAL_PC_PASSWORD'),
+                port: remoteValue('SEGMENTATION_SSH_PORT')
+                  ? Number(remoteValue('SEGMENTATION_SSH_PORT'))
+                  : undefined,
+                root: remoteValue('SEGMENTATION_SSH_ROOT'),
+                knownHosts: remoteValue('SEGMENTATION_SSH_KNOWN_HOSTS'),
+                device: (remoteValue('SEGMENTATION_DEVICE') || 'auto') as
+                  'auto' | 'cpu' | 'cuda',
+              }
+            : undefined,
         sam3Python: process.env.SAM3_PYTHON || env.SAM3_PYTHON,
         sam3Model: process.env.SAM3_MODEL || env.SAM3_MODEL,
         python: process.env.SEGMENTATION_PYTHON || env.SEGMENTATION_PYTHON,

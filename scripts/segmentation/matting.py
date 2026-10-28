@@ -46,13 +46,15 @@ def estimate_alpha(image, prior, seeds, method, radius, model_dir=None):
     tri = trimap[y0:y1, x0:x1]
     if method in ("vitmatte", "vitmatte-raw"):
         import torch
+        from device import inference_device
+        device = inference_device()
         from transformers import VitMatteImageProcessor, VitMatteForImageMatting
         model_dir = model_dir or os.environ.get("TUKABEL_VITMATTE_MODEL", ".local-tools/models/vitmatte-small")
         processor = VitMatteImageProcessor.from_pretrained(model_dir, local_files_only=True)
-        model = VitMatteForImageMatting.from_pretrained(model_dir, local_files_only=True, use_safetensors=True).eval()
+        model = VitMatteForImageMatting.from_pretrained(model_dir, local_files_only=True, use_safetensors=True).to(device).eval()
 
         def predict(im, tm):
-            inputs = processor(images=im, trimaps=tm, return_tensors="pt")
+            inputs = processor(images=im, trimaps=tm, return_tensors="pt").to(device)
             with torch.inference_mode():
                 return model(**inputs).alphas[0, 0, :im.shape[0], :im.shape[1]].cpu().numpy()
     elif method == "closed-form":

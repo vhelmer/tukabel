@@ -121,7 +121,7 @@ elif method in ("sam2", "sam3"):
         else:
             from sam2.build_sam import build_sam2
             from sam2.sam2_image_predictor import SAM2ImagePredictor
-            predictor = SAM2ImagePredictor(build_sam2(os.environ.get("TUKABEL_SAM2_CONFIG", "configs/sam2.1/sam2.1_hiera_t.yaml"), os.environ["TUKABEL_SAM2_CHECKPOINT"], device="cpu", apply_postprocessing=False))
+            predictor = SAM2ImagePredictor(build_sam2(os.environ.get("TUKABEL_SAM2_CONFIG", "configs/sam2.1/sam2.1_hiera_t.yaml"), os.environ["TUKABEL_SAM2_CHECKPOINT"], device=__import__("device").inference_device(), apply_postprocessing=False))
         predictor.set_image(cv.cvtColor(roi, cv.COLOR_BGR2RGB))
         masks, scores, _ = predictor.predict(point_coords=np.asarray(points, dtype=np.float32) if points else None, point_labels=np.asarray(labels, dtype=np.int32) if points else None, box=np.array([xs.min() - x0, ys.min() - y0, xs.max() - x0, ys.max() - y0], dtype=np.float32), multimask_output=True)
         mask = masks[int(np.argmax(scores))].astype(bool)

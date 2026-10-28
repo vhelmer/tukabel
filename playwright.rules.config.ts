@@ -10,6 +10,7 @@ export default defineConfig({
     'scene-art-rules.spec.ts',
     'editor-jobs-rules.spec.ts',
     'object-mask-rules.spec.ts',
+    'remote-segmentation-rules.spec.ts',
     'codex-rules.spec.ts',
   ],
   reporter: 'list',
