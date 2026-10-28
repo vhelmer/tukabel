@@ -120,6 +120,11 @@ export function createHud(
   const tooltip = root.addChild(new Container());
   tooltip.eventMode = 'none';
   let hoverId: string | null = null;
+  let mapShade: Graphics | null = null;
+  let mapShadeFrame: Bounds | null = null;
+  let shadePolygon: readonly Point[] | null = null;
+  let shadeAlpha = 0;
+  let shadeTarget = 0;
   let shelfBounds: Bounds | null = null;
   let ghost: Container | null = null;
   let ghostId: string | null = null;
@@ -186,8 +191,11 @@ export function createHud(
     tooltip
       .removeChildren()
       .forEach((child) => child.destroy({ children: true }));
-    if (snapshot.journal || snapshot.menu || snapshot.drag) return;
     const control = layout.controls.find((c) => c.id === (hoverId ?? focused));
+    selectMapSpotlight(
+      snapshot.map && !control?.disabled ? control : undefined,
+    );
+    if (snapshot.journal || snapshot.menu || snapshot.drag) return;
     if (!control || control.disabled) return;
     if (snapshot.map) {
       const point = snapshot.content.worldMap?.points.find(
@@ -216,6 +224,30 @@ export function createHud(
       ),
       control.bounds.y + control.bounds.height + 9,
     );
+  }
+  function selectMapSpotlight(control?: HudControl) {
+    if (!mapShade || !mapShadeFrame) return;
+    const polygon = control?.polygon;
+    const target = polygon ? 0.6 : 0;
+    if (shadeTarget === target && (!polygon || polygon === shadePolygon))
+      return;
+    if (polygon && polygon !== shadePolygon) {
+      const b = mapShadeFrame;
+      mapShade
+        .clear()
+        .rect(b.x, b.y, b.width, b.height)
+        .fill(0x000000)
+        .poly(polygon.flatMap((p) => [p.x, p.y]))
+        .cut();
+      shadePolygon = polygon;
+    }
+    shadeTarget = target;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      shadeAlpha = shadeTarget;
+      mapShade.alpha = shadeAlpha;
+      mapShade.visible = shadeAlpha > 0;
+    }
+    syncPlayback();
   }
   function drawMapSign(bounds: Bounds, label: string) {
     const map = layout.map!;
@@ -444,6 +476,12 @@ export function createHud(
     }
   }
   function rebuild() {
+    const wasFading = shadeAlpha !== shadeTarget;
+    mapShade = null;
+    mapShadeFrame = null;
+    shadePolygon = null;
+    shadeAlpha = shadeTarget = 0;
+    if (wasFading) syncPlayback();
     // Destroyed controls cannot emit pointerout. Never retain their tooltip
     // when opening a menu, dropping an item or moving between dialogue phases.
     hoverId = null;
@@ -723,6 +761,11 @@ export function createHud(
       height: map.height * scale,
     };
     art(panels, map.image, imageFrame);
+    mapShade = panels.addChild(new Graphics());
+    mapShadeFrame = imageFrame;
+    mapShade.eventMode = 'none';
+    mapShade.visible = false;
+    mapShade.alpha = 0;
     layout.controls = [];
     layout.map = b;
     text(panels, 'Mapa okolia', b.x + 14, b.y + 10, 20);
@@ -1034,7 +1077,7 @@ export function createHud(
     root,
     controller,
     get active() {
-      return flights.length > 0;
+      return flights.length > 0 || shadeAlpha !== shadeTarget;
     },
     resize(w: number, h: number) {
       width = w;
@@ -1073,12 +1116,26 @@ export function createHud(
       render();
     },
     resetEffects() {
+      shadeAlpha = shadeTarget;
+      if (mapShade) {
+        mapShade.alpha = shadeAlpha;
+        mapShade.visible = shadeAlpha > 0;
+      }
       for (const flight of flights) flight.view.destroy({ children: true });
       flights.length = 0;
       callbacks.onEffects({ dragging: Boolean(snapshot.drag), pickups: 0 });
       render();
     },
     animate(deltaMs: number) {
+      if (mapShade && shadeAlpha !== shadeTarget) {
+        const step = (Math.max(0, deltaMs) / 180) * 0.6;
+        shadeAlpha =
+          shadeTarget > shadeAlpha
+            ? Math.min(shadeTarget, shadeAlpha + step)
+            : Math.max(shadeTarget, shadeAlpha - step);
+        mapShade.alpha = shadeAlpha;
+        mapShade.visible = shadeAlpha > 0;
+      }
       for (let i = flights.length - 1; i >= 0; i--) {
         const flight = flights[i]!;
         flight.time += deltaMs;

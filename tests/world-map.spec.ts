@@ -166,6 +166,27 @@ test('polygon entrances and map regions preserve unlocks without shortcut or gam
       .removeAlpha()
       .raw()
       .toBuffer({ resolveWithObject: true });
+  const outsidePoint = {
+    x: lockedBox.x - lockedBox.width * 1.6,
+    y: lockedBox.y + lockedBox.height * 2,
+  };
+  const mapColor = async (point: { x: number; y: number }) => {
+    const frame = await pixels();
+    const ratio = frame.info.width / canvasBox.width;
+    const offset =
+      (Math.floor((point.y - canvasBox.y) * ratio) * frame.info.width +
+        Math.floor((point.x - canvasBox.x) * ratio)) *
+      3;
+    return [...frame.data.subarray(offset, offset + 3)];
+  };
+  const waitForDim = async () => {
+    await expect
+      .poll(async () => (await mapColor(outsidePoint))[0])
+      .toBeLessThan(30);
+  };
+  const waitForRestored = async () => {
+    await expect.poll(() => mapColor(outsidePoint)).toEqual([57, 88, 106]);
+  };
   const expectMapPixel = (
     frame: Awaited<ReturnType<typeof pixels>>,
     x: number,
@@ -236,27 +257,40 @@ test('polygon entrances and map regions preserve unlocks without shortcut or gam
   );
   // Keyboard focus reveals the same wooden sign, without drawing the polygon.
   await yard.focus();
+  await waitForDim();
   const focusedFrame = await pixels();
   expect(focusedFrame.data.equals(beforeHover.data)).toBe(false);
   if (!isMobile)
+    expect(
+      (
+        await mapColor({
+          x: box!.x + box!.width * 0.6,
+          y: box!.y + box!.height * 0.8,
+        })
+      )[0],
+    ).toBeLessThan(30);
+  if (!isMobile)
     expectMapPixel(
       focusedFrame,
-      box!.x + box!.width * 0.005,
+      box!.x + box!.width * 0.1,
       box!.y + box!.height * 0.8,
     );
   await close.focus();
   await page.mouse.move(0, 0);
+  await waitForRestored();
   const beforeMouseHover = await pixels();
   await page.mouse.move(box!.x + box!.width * 0.2, box!.y + box!.height * 0.2);
+  await waitForDim();
   const hoveredFrame = await pixels();
   expect(hoveredFrame.data.equals(beforeMouseHover.data)).toBe(false);
   if (!isMobile)
     expectMapPixel(
       hoveredFrame,
-      box!.x + box!.width * 0.005,
+      box!.x + box!.width * 0.1,
       box!.y + box!.height * 0.8,
     );
   await page.mouse.move(0, 0);
+  await waitForRestored();
   // Centre is inside the bounding rectangle but outside this L-shaped region.
   await tapRegion(0.5, 0.5);
   await expect(map).toBeVisible();

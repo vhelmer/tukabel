@@ -988,7 +988,10 @@ revize a atomický zápis. Klikací plocha ve hře odpovídá skutečnému konk�
 polygonu, nikoli jeho obdélníkovému rámu. Polygony a jejich názvy se ve hře trvale
 nekreslí; při najetí nebo klávesnicovém focusu na dostupnou lokaci se nad oblastí
 ukáže dřevěná cedulka se jménem a jemnou zlatou září (sdílený asset
-`hud/wood-tag.svg`). Efekt je statický a neblokuje vstup. Na dotyku se
+`hud/wood-tag.svg`). Zbytek obrázku mapy plynule během 180 ms ztmavne do černé
+na 60 %; přesný konkávní polygon zůstává světlý. Po opuštění se mapa stejným
+přechodem obnoví. Cedulka i ztmavení propouštějí vstup; při omezení pohybu se
+konečný stav nastaví okamžitě. Na dotyku se
 cedulka ukáže při stisku; tapnutí dál cestuje přímo. Cedulka neblokuje klikání do
 mapy. Zamčené lokace a místa pouze pro běžný přechod cedulku nezobrazují.
 Otevřená mapa obsahuje jen obrázek, případnou cedulku a tlačítko zavření.
