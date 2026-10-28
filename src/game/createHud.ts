@@ -1,4 +1,5 @@
 import {
+  BlurFilter,
   CanvasTextMetrics,
   Container,
   Graphics,
@@ -763,6 +764,21 @@ export function createHud(
     art(panels, map.image, imageFrame);
     mapShade = panels.addChild(new Graphics());
     mapShadeFrame = imageFrame;
+    const feather = new BlurFilter({ strength: 6, quality: 3 });
+    // Keep the soft edge inside the map image, without blurring its artwork.
+    feather.repeatEdgePixels = true;
+    mapShade.filters = [feather];
+    mapShade.filterArea = new Rectangle(
+      imageFrame.x,
+      imageFrame.y,
+      imageFrame.width,
+      imageFrame.height,
+    );
+    mapShade.once('destroyed', () => {
+      feather.blurXFilter.destroy();
+      feather.blurYFilter.destroy();
+      feather.destroy();
+    });
     mapShade.eventMode = 'none';
     mapShade.visible = false;
     mapShade.alpha = 0;

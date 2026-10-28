@@ -275,6 +275,19 @@ test('polygon entrances and map regions preserve unlocks without shortcut or gam
       box!.x + box!.width * 0.1,
       box!.y + box!.height * 0.8,
     );
+  if (!isMobile) {
+    // The visual boundary is feathered even though the clickable polygon stays exact.
+    const innerEdge = (
+      await mapColor({ x: box!.x + 1.5, y: box!.y + box!.height * 0.7 })
+    )[0]!;
+    expect(innerEdge).toBeGreaterThan(30);
+    expect(innerEdge).toBeLessThan(55);
+    const outerEdge = (
+      await mapColor({ x: box!.x - 1.5, y: box!.y + box!.height * 0.7 })
+    )[0]!;
+    expect(outerEdge).toBeGreaterThan(25);
+    expect(outerEdge).toBeLessThan(innerEdge);
+  }
   await close.focus();
   await page.mouse.move(0, 0);
   await waitForRestored();

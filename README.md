@@ -989,7 +989,9 @@ polygonu, nikoli jeho obdélníkovému rámu. Polygony a jejich názvy se ve hř
 nekreslí; při najetí nebo klávesnicovém focusu na dostupnou lokaci se nad oblastí
 ukáže dřevěná cedulka se jménem a jemnou zlatou září (sdílený asset
 `hud/wood-tag.svg`). Zbytek obrázku mapy plynule během 180 ms ztmavne do černé
-na 60 %; přesný konkávní polygon zůstává světlý. Po opuštění se mapa stejným
+na 60 %; kolem světlého polygonu je měkký 6px přechod, který opticky zjemní
+rohy. Klikací geometrie zůstává přesná, obrázek ani cedulka se nerozostřují.
+Po opuštění se mapa stejným
 přechodem obnoví. Cedulka i ztmavení propouštějí vstup; při omezení pohybu se
 konečný stav nastaví okamžitě. Na dotyku se
 cedulka ukáže při stisku; tapnutí dál cestuje přímo. Cedulka neblokuje klikání do
