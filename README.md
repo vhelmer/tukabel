@@ -968,36 +968,44 @@ Uložený hráčský postup zůstává kompatibilní, protože ID a herní pří
 
 ## Interaktivní mapa lokací
 
-Mapa se kreslí v Pixi uvnitř stejného herního okna. Myší najeď ke spodnímu
-okraji obrazu lokace a klikni na **ikonku mapy**; na dotyku je ikonka dostupná stále.
-Klávesa **M** mapu otevře/zavře, **Escape** ji zavře. Mapa má vlastní focus trap,
-Pixi focus a neviditelnou HTML sémantiku. Při otevření blokuje scénu i inventář;
-menu/deník se s ní nepřekrývají. Během rozhovoru se rychlé cestování neotevírá.
-Podklad i body se škálují společně ve vlastních souřadnicích mapy a respektují
-letterbox herního obrazu. HUD nevyhrazuje mapě další pruh canvasu.
+Mapa se kreslí v Pixi uvnitř stejného herního okna. Otevírá ji běžný hotspot
+scény s `openMap: true`; jeho polygon, viditelnost i kurzor upravíš stejnými nástroji
+jako přechod mezi scénami. V **Dev Mode → Lokace** nakresli polygon u spodního okraje
+a v inspektoru zapni **Otevřít mapu lokací**. Ikonka mapy se ukáže při najetí dovnitř,
+na dotyku zůstává viditelná. Kliknutí/tapnutí otevře mapu; klávesnicí lze vstup
+aktivovat přes **Objekty**. Klávesa M nemá mapovou zkratku. **Escape** nebo křížek
+mapu zavře. Při otevření se inventář, celý herní HUD a reakce skryjí; scéna
+nepřijímá vstup. Mapa má vlastní focus trap a neviditelnou HTML sémantiku.
+Během rozhovoru se mapa neotevírá.
 
-V **Dev Mode → Mapa lokací** vyber nebo importuj obrázek, přidej bod a přiřaď
-existující lokaci. Bod umístíš kliknutím/tapnutím, táhneš jej myší i prstem;
-číselná pole a tlačítko přidání poskytují alternativu. Celý tah je jeden undo krok,
-Escape/pointercancel jej vrátí. Výměna obrázku přepočte body podle nových nativních
-rozměrů; Save používá stejný projektový JSON, revize a atomický zápis jako ostatní
-editor. Body mají stabilní ID a jedna cílová lokace smí mít nejvýše jeden bod.
+V **Dev Mode → Mapa lokací** vyber nebo importuj obrázek a cílovou lokaci,
+potom použij **Nakreslit polygon**. Jde o stejný `EditorStage` jako u scény:
+Enter/první vrchol/tlačítko uzavře obrys, úchyty upraví jednotlivé vrcholy,
+hrany přidají vrchol a šipky poskytují klávesnicovou alternativu. Posun/resize
+je jeden undo krok; Escape/pointercancel jej vrátí. Změna obrázku/rozměrů
+proporcionálně přepočítá celé polygony. Save používá společný projektový JSON,
+revize a atomický zápis. Klikací plocha ve hře odpovídá skutečnému konkávnímu
+polygonu, nikoli jeho obdélníkovému rámu. Otevřená mapa obsahuje pouze své oblasti
+a tlačítko zavření.
 
 Volitelné `worldMap` v `src/game/content/project.json` obsahuje `image`, `width`,
-`height` a `points`. Bod má `id`, slovenský `label`, `sceneId`, `x`, `y`, volitelné
-`unlockWhen` a `fastTravel`. Bez podmínky se místo odemkne první návštěvou nebo
-explicitním efektem `unlockScene`. `{ "all": [] }` jej odemkne na začátku; jiné
-podmínky používají společná pravidla příznaků/předmětů. Odemčení je trvalé, i když
-se podmínka později zneplatní. `fastTravel: false` cestování z mapy zakáže i po
-odemčení; běžné autorské přechody `scene` tím nejsou omezené. Stav zná jen ID scén,
-nikoli kopie bodů nebo obrázků. Mapa logiky ukazuje podmínky odemčení i efekty.
+`height` a `points`. Oblast má stabilní `id`, slovenský `label`, `sceneId`,
+`polygon` (3–128 různých vrcholů bez křížení v souřadnicích mapy), `x`, `y`,
+volitelné `unlockWhen` a `fastTravel`. `x/y` jsou původní kotva; starší mapy bez
+polygonu zůstávají čitelné a používají malou obdélníkovou oblast kolem této kotvy.
+Editor ukládá nové a upravené oblasti s polygonem. Jedna cílová lokace má nejvýše
+jednu oblast. Bez podmínky se místo odemkne první návštěvou nebo explicitním efektem
+`unlockScene`. `{ "all": [] }` jej odemkne na začátku; jiné podmínky používají společná
+pravidla příznaků/předmětů. Odemčení je trvalé i po zániku podmínky.
+`fastTravel: false` zakáže cestování z mapy i po odemčení; běžné přechody `scene`
+tím nejsou omezené. Mapa logiky ukazuje podmínky odemčení i efekty.
 
-`GameState.unlockedScenes` se ukládá v save v1. Starší pozice bez tohoto pole
-zůstávají čitelné: dopočítá se startovní/aktuální scéna a jen odemčení doložitelné
-současnými podmínkami. Neznámá a duplicitní ID se odmítají. Otevření mapy ani focus
-nepatří do save. Reducer kontroluje odemčení i zákaz mapové cesty nezávisle na UI.
-Demo mapa v `src/assets/maps/demo-map.svg` nabízí Skúšobňu a Dvor; Dvor se zpřístupní
-až po původním průchodu dveřmi, takže mapa nepřeskočí technickou hádanku.
+`GameState.unlockedScenes` se nadále ukládá v save v1. Starší pozice bez tohoto
+pole zůstávají čitelné: dopočítá se startovní/aktuální scéna a jen odemčení
+doložitelné současnými podmínkami. Neznámá a duplicitní ID se odmítají.
+Otevření mapy ani focus nepatří do save. Reducer kontroluje odemčení i zákaz
+mapové cesty nezávisle na UI. Demo mapa nabízí Skúšobňu a Dvor; Dvor se
+zpřístupní až po původním průchodu dveřmi.
 
 ## Deník úkolů a tvorba obsahu
 

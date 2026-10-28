@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { containsPolygon } from '../src/game/polygon';
 import { initialState, reduceGame } from '../src/game/state';
 import { decodeSave, saveGame } from '../src/game/storage';
 import type { GameContent, GameState, WorldMapPoint } from '../src/game/types';
@@ -294,4 +295,170 @@ test('world map image IDs are relative local paths even without an asset registr
       validateProject({ ...content, worldMap: { ...content.worldMap, image } })
         .length,
     ).toBeGreaterThan(0);
+});
+
+const concaveMapPolygon = [
+  { x: 10, y: 10 },
+  { x: 90, y: 10 },
+  { x: 90, y: 90 },
+  { x: 50, y: 50 },
+  { x: 10, y: 90 },
+];
+const withMapPolygon = (polygon: unknown) => ({
+  ...content,
+  worldMap: {
+    ...content.worldMap,
+    points: [{ ...points[0], polygon }],
+  },
+});
+
+test('map destinations accept concave polygon areas while legacy points remain valid', () => {
+  expect(validateProject(withMapPolygon(concaveMapPolygon))).toEqual([]);
+  expect(validateProject(content)).toEqual([]);
+});
+
+test('map polygon validation rejects malformed vertices and invalid geometry', () => {
+  for (const polygon of [
+    null,
+    {},
+    [],
+    concaveMapPolygon.slice(0, 2),
+    [...concaveMapPolygon, concaveMapPolygon[0]],
+    [
+      { x: 10, y: 10 },
+      { x: 90, y: 90 },
+      { x: 90, y: 10 },
+      { x: 10, y: 90 },
+    ],
+    [
+      { x: 0, y: 0 },
+      { x: 10, y: 10 },
+      { x: 20, y: 20 },
+    ],
+    [{ x: -1, y: 10 }, ...concaveMapPolygon.slice(1)],
+    [{ x: 101, y: 10 }, ...concaveMapPolygon.slice(1)],
+    [{ x: 10, y: -1 }, ...concaveMapPolygon.slice(1)],
+    [{ x: 10, y: 101 }, ...concaveMapPolygon.slice(1)],
+    [{ x: NaN, y: 10 }, ...concaveMapPolygon.slice(1)],
+    [{ x: 10, y: Infinity }, ...concaveMapPolygon.slice(1)],
+    [null, ...concaveMapPolygon.slice(1)],
+    [{ x: 10 }, ...concaveMapPolygon.slice(1)],
+    [{ x: '10', y: 10 }, ...concaveMapPolygon.slice(1)],
+    [{ x: 10, y: 10, extra: true }, ...concaveMapPolygon.slice(1)],
+    Array.from({ length: 129 }, (_, index) => ({
+      x: 50 + 40 * Math.cos((index * Math.PI * 2) / 129),
+      y: 50 + 40 * Math.sin((index * Math.PI * 2) / 129),
+    })),
+  ]) {
+    expect(
+      validateProject(withMapPolygon(polygon)),
+      JSON.stringify(polygon),
+    ).not.toEqual([]);
+  }
+});
+
+test('map opener is an optional boolean on an interactive hotspot without requiring a map', () => {
+  const opener = {
+    ...content,
+    worldMap: undefined,
+    scenes: [
+      {
+        ...content.scenes[0]!,
+        hotspots: [{ ...content.scenes[0]!.hotspots[0]!, openMap: true }],
+      },
+    ],
+  };
+  expect(validateProject(opener)).toEqual([]);
+  for (const openMap of [false, undefined])
+    expect(
+      validateProject({
+        ...opener,
+        scenes: [
+          {
+            ...opener.scenes[0],
+            hotspots: [{ ...opener.scenes[0]!.hotspots[0], openMap }],
+          },
+        ],
+      }),
+    ).toEqual([]);
+  for (const openMap of [null, 'true', 1, {}])
+    expect(
+      validateProject({
+        ...opener,
+        scenes: [
+          {
+            ...opener.scenes[0],
+            hotspots: [{ ...opener.scenes[0]!.hotspots[0], openMap }],
+          },
+        ],
+      }),
+    ).not.toEqual([]);
+  expect(
+    validateProject({
+      ...opener,
+      scenes: [
+        {
+          ...opener.scenes[0],
+          hotspots: [
+            {
+              ...opener.scenes[0]!.hotspots[0],
+              image: 'map.svg',
+              decorative: true,
+            },
+          ],
+        },
+      ],
+    }).join(' '),
+  ).toContain('openMap');
+});
+
+test('legacy map points get bounded clickable rectangles while explicit concave areas keep their shape', async () => {
+  const { worldMapPolygon } = await import('../src/game/worldMap');
+  const map = { ...content.worldMap!, width: 1280, height: 720 };
+  const legacy = { ...points[0]!, x: 640, y: 360 };
+  const central = worldMapPolygon(legacy, map);
+  expect(containsPolygon(central, { x: 640, y: 360 })).toBe(true);
+  expect(containsPolygon(central, { x: 701, y: 360 })).toBe(false);
+  expect(containsPolygon(central, { x: 640, y: 401 })).toBe(false);
+  expect(central).toHaveLength(4);
+  expect(legacy).not.toHaveProperty('polygon');
+  for (const [x, y] of [
+    [0, 0],
+    [1280, 720],
+    [0, 720],
+    [1280, 0],
+  ]) {
+    const polygon = worldMapPolygon({ ...legacy, x: x!, y: y! }, map);
+    expect(containsPolygon(polygon, { x: x!, y: y! })).toBe(true);
+    for (const vertex of polygon) {
+      expect(vertex.x).toBeGreaterThanOrEqual(0);
+      expect(vertex.x).toBeLessThanOrEqual(1280);
+      expect(vertex.y).toBeGreaterThanOrEqual(0);
+      expect(vertex.y).toBeLessThanOrEqual(720);
+    }
+  }
+  const small = worldMapPolygon(legacy, { ...map, width: 20, height: 10 });
+  expect(small).toEqual([
+    { x: 0, y: 0 },
+    { x: 20, y: 0 },
+    { x: 20, y: 10 },
+    { x: 0, y: 10 },
+  ]);
+  const explicit = worldMapPolygon(
+    { ...legacy, polygon: concaveMapPolygon },
+    map,
+  );
+  expect(explicit).toBe(concaveMapPolygon);
+  expect(containsPolygon(explicit, { x: 50, y: 20 })).toBe(true);
+  expect(containsPolygon(explicit, { x: 50, y: 75 })).toBe(false);
+});
+
+test('map point schema rejects nonobjects before semantic validation', () => {
+  for (const point of [null, [], 'home', 42, { id: 'home-point' }])
+    expect(
+      validateProject({
+        ...content,
+        worldMap: { ...content.worldMap, points: [point] },
+      }),
+    ).not.toEqual([]);
 });

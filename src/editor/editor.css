@@ -1252,42 +1252,6 @@
   max-height: 100px;
   object-fit: contain;
 }
-.world-map-stage {
-  display: block;
-  width: 100%;
-  background: #10231d;
-  border: 1px solid #ffffff33;
-  border-radius: 8px;
-  touch-action: none;
-  user-select: none;
-  cursor: crosshair;
-}
-.world-map-stage:focus-visible {
-  outline: 2px solid var(--yellow);
-  outline-offset: 3px;
-}
-.world-map-point {
-  cursor: grab;
-}
-.world-map-point circle,
-.world-map-new-point {
-  fill: #f0c069;
-  stroke: #172823;
-  stroke-width: 3px;
-  vector-effect: non-scaling-stroke;
-}
-.world-map-point.selected circle {
-  fill: #fff5cd;
-  stroke: #d76033;
-}
-.world-map-point text {
-  fill: white;
-  stroke: #10231d;
-  stroke-width: 3px;
-  paint-order: stroke;
-  stroke-linejoin: round;
-  vector-effect: non-scaling-stroke;
-}
 .world-map-layout aside > button {
   margin: 6px 6px 0 0;
 }

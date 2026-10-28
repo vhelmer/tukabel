@@ -164,6 +164,7 @@ export function validateProject(
           'y',
           'unlockWhen',
           'fastTravel',
+          'polygon',
         ])
       )
         return;
@@ -171,6 +172,13 @@ export function validateProject(
         string(point[key], `${path}.${key}`);
       number(point.x, `${path}.x`);
       number(point.y, `${path}.y`);
+      if (point.polygon !== undefined)
+        list(point.polygon, `${path}.polygon`, (vertex, key) => {
+          if (object(vertex, key, ['x', 'y'])) {
+            number(vertex.x, `${key}.x`);
+            number(vertex.y, `${key}.y`);
+          }
+        });
       condition(point.unlockWhen, `${path}.unlockWhen`);
       if (
         point.fastTravel !== undefined &&
@@ -229,6 +237,7 @@ export function validateProject(
           'polygon',
           'visibleWhen',
           'onClick',
+          'openMap',
           'cursor',
           'cursorImage',
           'cursorAnimation',
@@ -247,7 +256,7 @@ export function validateProject(
         return;
       string(hotspot.id, `${key}.id`);
       string(hotspot.label, `${key}.label`);
-      for (const field of ['decorative', 'hidden', 'locked'])
+      for (const field of ['decorative', 'hidden', 'locked', 'openMap'])
         if (hotspot[field] !== undefined && typeof hotspot[field] !== 'boolean')
           errors.push(`${key}.${field}: expected boolean`);
       if (hotspot.opacity !== undefined) {

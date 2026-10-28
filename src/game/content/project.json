@@ -12,7 +12,14 @@
         "label": "Skúšobňa",
         "sceneId": "workshop",
         "x": 330,
-        "y": 365
+        "y": 365,
+        "polygon": [
+          { "x": 180, "y": 245 },
+          { "x": 325, "y": 140 },
+          { "x": 480, "y": 245 },
+          { "x": 455, "y": 420 },
+          { "x": 205, "y": 420 }
+        ]
       },
       {
         "id": "courtyard-map",
@@ -20,6 +27,13 @@
         "sceneId": "courtyard",
         "x": 930,
         "y": 370,
+        "polygon": [
+          { "x": 800, "y": 250 },
+          { "x": 925, "y": 175 },
+          { "x": 1060, "y": 250 },
+          { "x": 1040, "y": 420 },
+          { "x": 815, "y": 420 }
+        ],
         "unlockWhen": { "flag": "completed" }
       }
     ]
@@ -174,6 +188,20 @@
           "label": "Škrabanec",
           "bounds": { "x": 270, "y": 180, "width": 65, "height": 130 },
           "onClick": []
+        },
+        {
+          "id": "workshop-map-entry",
+          "label": "Mapa okolia",
+          "openMap": true,
+          "cursor": "exit",
+          "bounds": { "x": 540, "y": 630, "width": 200, "height": 90 },
+          "polygon": [
+            { "x": 560, "y": 630 },
+            { "x": 720, "y": 630 },
+            { "x": 740, "y": 720 },
+            { "x": 540, "y": 720 }
+          ],
+          "onClick": []
         }
       ]
     },
@@ -205,6 +233,20 @@
               "message": "Ukážka dokončená! Rozhovor, inventár, kombinovanie, hádanka aj prechod fungujú. Skutočný príbeh príde neskôr."
             }
           ]
+        },
+        {
+          "id": "courtyard-map-entry",
+          "label": "Mapa okolia",
+          "openMap": true,
+          "cursor": "exit",
+          "bounds": { "x": 540, "y": 630, "width": 200, "height": 90 },
+          "polygon": [
+            { "x": 560, "y": 630 },
+            { "x": 720, "y": 630 },
+            { "x": 740, "y": 720 },
+            { "x": 540, "y": 720 }
+          ],
+          "onClick": []
         }
       ]
     },
@@ -321,6 +363,20 @@
             { "x": 835.993, "y": 142.299 }
           ],
           "onClick": [{ "message": "Zatiaľ nenápadný objekt." }]
+        },
+        {
+          "id": "animation-lab-map-entry",
+          "label": "Mapa okolia",
+          "openMap": true,
+          "cursor": "exit",
+          "bounds": { "x": 540, "y": 630, "width": 200, "height": 90 },
+          "polygon": [
+            { "x": 560, "y": 630 },
+            { "x": 720, "y": 630 },
+            { "x": 740, "y": 720 },
+            { "x": 540, "y": 720 }
+          ],
+          "onClick": []
         }
       ]
     },
@@ -681,6 +737,20 @@
             }
           ],
           "decorative": false
+        },
+        {
+          "id": "scene1-map-entry",
+          "label": "Mapa okolia",
+          "openMap": true,
+          "cursor": "exit",
+          "bounds": { "x": 540, "y": 630, "width": 200, "height": 90 },
+          "polygon": [
+            { "x": 560, "y": 630 },
+            { "x": 720, "y": 630 },
+            { "x": 740, "y": 720 },
+            { "x": 540, "y": 720 }
+          ],
+          "onClick": []
         }
       ]
     },
@@ -727,6 +797,20 @@
             "blinkIntervalMs": [3000, 7000],
             "talk": "codex-ddf0e886-2a73-4f45-91c0-f96f46f59806-talk"
           }
+        },
+        {
+          "id": "scene2-map-entry",
+          "label": "Mapa okolia",
+          "openMap": true,
+          "cursor": "exit",
+          "bounds": { "x": 540, "y": 630, "width": 200, "height": 90 },
+          "polygon": [
+            { "x": 560, "y": 630 },
+            { "x": 720, "y": 630 },
+            { "x": 740, "y": 720 },
+            { "x": 540, "y": 720 }
+          ],
+          "onClick": []
         }
       ]
     }

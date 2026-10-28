@@ -112,6 +112,25 @@ export function validateContent(content: GameContent): string[] {
         point.y > map.height
       )
         errors.push(`${path}: point outside map`);
+      if (point.polygon) {
+        const issue = polygonIssue(point.polygon);
+        if (issue)
+          errors.push(
+            `${path}: invalid polygon (${issue}); use 3–128 distinct vertices without self-intersections`,
+          );
+        if (
+          point.polygon.some(
+            (vertex) =>
+              !Number.isFinite(vertex.x) ||
+              !Number.isFinite(vertex.y) ||
+              vertex.x < 0 ||
+              vertex.y < 0 ||
+              vertex.x > map.width ||
+              vertex.y > map.height,
+          )
+        )
+          errors.push(`${path}: polygon vertex outside map`);
+      }
       condition(point.unlockWhen, `${path}/unlockWhen`);
     }
   }
@@ -132,6 +151,8 @@ export function validateContent(content: GameContent): string[] {
     );
     for (const hotspot of scene.hotspots) {
       const path = `${scene.id}/${hotspot.id}`;
+      if (hotspot.openMap && hotspot.decorative)
+        errors.push(`${path}: openMap requires an interactive hotspot`);
       const { x, y, width, height } = hotspot.bounds;
       if (
         ![x, y, width, height].every(Number.isFinite) ||

@@ -1,5 +1,5 @@
 import { Container, Graphics, Sprite } from 'pixi.js';
-import type { Texture } from 'pixi.js';
+import type { Texture, FederatedPointerEvent } from 'pixi.js';
 import type {
   AnimationDefinition,
   SceneSpeechPlayback,
@@ -69,10 +69,16 @@ export function createScene(
   };
   let pointer: Point | null = null;
   let hovered: Hotspot | null = null;
+  const mapIcons = new Map<string, Graphics>();
+  const coarse = window.matchMedia('(pointer: coarse)').matches;
   const hover = (hotspot: Hotspot | null) => {
     if (hotspot?.id === hovered?.id) return;
     hovered = hotspot;
+    for (const [id, icon] of mapIcons)
+      icon.visible =
+        !paused && !state?.dialogue && (coarse || id === hovered?.id);
     callbacks.onHover(hotspot);
+    render();
   };
   const regions = new Map<string, Container>();
   const hits = new Map<
@@ -168,6 +174,28 @@ export function createScene(
       indicator.visible = false;
       indicators.set(hotspot.id, indicator);
       region.addChild(indicator);
+    }
+    if (hotspot.openMap) {
+      const size = Math.min(64, width * 0.8, height * 0.8);
+      const icon = new Graphics()
+        .poly([8, 13, 16, 9, 28, 14, 36, 10, 36, 31, 28, 35, 16, 30, 8, 34])
+        .fill(0xead2a0)
+        .stroke({ width: 2, color: 0x493725 })
+        .moveTo(16, 9)
+        .lineTo(16, 30)
+        .moveTo(28, 14)
+        .lineTo(28, 35)
+        .stroke({ width: 1.5, color: 0x7d6949 });
+      icon.pivot.set(22, 22);
+      icon.position.set(width / 2, height / 2);
+      icon.scale.set(size / 44);
+      icon.eventMode = 'none';
+      icon.visible = coarse;
+      region.addChild(icon);
+      mapIcons.set(hotspot.id, icon);
+      region.on('pointerdown', (event: FederatedPointerEvent) => {
+        if (event.pointerType === 'touch') event.preventDefault();
+      });
     }
     region.on('pointerover', () => hover(hotspot));
     region.on('pointerout', () => hover(null));
@@ -276,6 +304,12 @@ export function createScene(
           matches(state, hotspot.visibleWhen);
         region.eventMode =
           state.dialogue || blocked || hotspot.decorative ? 'none' : 'static';
+        const mapIcon = mapIcons.get(hotspot.id);
+        if (mapIcon)
+          mapIcon.visible =
+            !state.dialogue &&
+            !blocked &&
+            (coarse || hovered?.id === hotspot.id);
         const indicator = indicators.get(hotspot.id);
         if (indicator) indicator.visible = matches(state, hotspot.tintWhen);
       }

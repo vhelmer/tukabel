@@ -227,6 +227,21 @@ export function GameWindow({
     conversation.phase === 'speech' ? dialogueAudio.clock : silentPlayback;
   const act = useCallback(
     (hotspot: Hotspot) => {
+      if (
+        hotspot.openMap &&
+        content.worldMap &&
+        !state.dialogue &&
+        !modalOpen
+      ) {
+        setSelectedItem(null);
+        setObjectsOpen(false);
+        setHovered(null);
+        setMenu(false);
+        setJournal(false);
+        mapTravelLock.current = false;
+        setMapOpen(true);
+        return;
+      }
       dispatch({
         type: 'interact',
         hotspotId: hotspot.id,
@@ -235,7 +250,7 @@ export function GameWindow({
       setSelectedItem(null);
       setObjectsOpen(false);
     },
-    [dispatch, selectedItem],
+    [dispatch, selectedItem, content.worldMap, state.dialogue, modalOpen],
   );
   const finishDrag = useCallback(() => {
     const current = dragRef.current;
@@ -247,27 +262,6 @@ export function GameWindow({
   }, []);
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (
-        event.key.toLowerCase() === 'm' &&
-        !event.repeat &&
-        content.worldMap &&
-        !state.dialogue &&
-        !(
-          event.target instanceof Element &&
-          event.target.closest('input,textarea,select,[contenteditable="true"]')
-        )
-      ) {
-        event.preventDefault();
-        finishDrag();
-        setSelectedItem(null);
-        setObjectsOpen(false);
-        setHovered(null);
-        setMenu(false);
-        setJournal(false);
-        mapTravelLock.current = false;
-        setMapOpen((v) => !v);
-        return;
-      }
       if (event.key === 'Escape') {
         if (mapOpen) {
           event.preventDefault();
@@ -297,7 +291,7 @@ export function GameWindow({
       window.removeEventListener('keydown', onKey);
       window.removeEventListener('blur', onBlur);
     };
-  }, [finishDrag, menu, journal, mapOpen, content.worldMap, state.dialogue]);
+  }, [finishDrag, menu, journal, mapOpen]);
   // Pointer capture keeps both mouse and touch drags alive across the canvas.
   useEffect(() => {
     const targetAt = (event: PointerEvent): Target | null => {
@@ -427,7 +421,7 @@ export function GameWindow({
         setSelectedItem(selected === itemId ? null : itemId);
         dispatch({ type: 'inspectItem', itemId });
       }
-    } else if (id === 'map' || id === 'map-close') {
+    } else if (id === 'map-close') {
       if (!content.worldMap || state.dialogue) return;
       finishDrag();
       setSelectedItem(null);
@@ -436,7 +430,7 @@ export function GameWindow({
       setMenu(false);
       setJournal(false);
       mapTravelLock.current = false;
-      setMapOpen((v) => (id === 'map-close' ? false : !v));
+      setMapOpen(false);
     } else if (id.startsWith('map-point:')) {
       if (!mapOpen || mapTravelLock.current) return;
       const point = content.worldMap?.points.find((p) => p.id === id.slice(10));
@@ -559,7 +553,7 @@ export function GameWindow({
             {currentHover.label}
           </div>
         )}
-        {!state.dialogue && Boolean(state.message) && (
+        {!state.dialogue && !mapOpen && Boolean(state.message) && (
           <div
             className="reaction"
             role="status"

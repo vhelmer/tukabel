@@ -260,6 +260,26 @@ export function SceneInspector({
               }
             />
           )}
+          <label className="editor-toggle">
+            <input
+              type="checkbox"
+              checked={Boolean(hotspot.openMap)}
+              onChange={(event) =>
+                onHotspot({
+                  ...hotspot,
+                  openMap: event.target.checked || undefined,
+                })
+              }
+            />{' '}
+            Otevřít mapu lokací
+          </label>
+          <p className="field-note">
+            Kliknutí na tento hotspot otevře mapu lokací. Vstup nakresli
+            nástrojem Nakreslit polygon a podle potřeby nastav kurzor Odchod.
+            Při zapnutí se místo pravidel kliknutí otevře mapa; pravidla se
+            zachovají pro případ vypnutí. Mapu nejprve vytvoř v záložce Mapa
+            lokací.
+          </p>
           <h3>Kliknutí na objekt</h3>
           <p className="field-note">
             První splněná reakce se vykoná automaticky. Prázdný seznam znamená

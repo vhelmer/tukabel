@@ -1,22 +1,21 @@
 import { useEffect, useRef, useState } from 'react';
-import type { PointerEvent } from 'react';
 import { assetUrl } from '../game/assets';
-import type { GameContent, WorldMapPoint } from '../game/types';
+import { polygonBounds, rectanglePoints } from '../game/polygon';
+import { centre, isInsideScene, rotateAround } from '../game/transforms';
+import type { Bounds } from '../game/transforms';
+import type {
+  GameContent,
+  Hotspot,
+  SceneDefinition,
+  WorldMapPoint,
+} from '../game/types';
+import { worldMapPolygon } from '../game/worldMap';
+import { EditorStage } from './EditorStage';
 import { AssetField, ConditionField, Field, SelectId } from './fields';
 import { nextId } from './model';
+import { withHotspotBounds } from './polygonTools';
 
 type WorldMap = NonNullable<GameContent['worldMap']>;
-type Position = { x: number; y: number };
-type Gesture = {
-  pointerId: number;
-  map: WorldMap;
-  pointId: string;
-  sceneId: string;
-  offset: Position;
-  fromMarker: boolean;
-  start: Position;
-  moved: boolean;
-};
 
 function resizeMap(map: WorldMap, width: number, height: number): WorldMap {
   return {
@@ -27,7 +26,22 @@ function resizeMap(map: WorldMap, width: number, height: number): WorldMap {
       ...point,
       x: (point.x / map.width) * width,
       y: (point.y / map.height) * height,
+      polygon: point.polygon?.map((p) => ({
+        x: (p.x / map.width) * width,
+        y: (p.y / map.height) * height,
+      })),
     })),
+  };
+}
+
+function mapHotspot(point: WorldMapPoint, map: WorldMap): Hotspot {
+  const polygon = worldMapPolygon(point, map);
+  return {
+    id: point.id,
+    label: point.label,
+    polygon,
+    bounds: polygonBounds(polygon),
+    onClick: [],
   };
 }
 
@@ -45,12 +59,7 @@ export function WorldMapPanel({
   const map = content.worldMap;
   const [selectedId, setSelectedId] = useState('');
   const [newSceneId, setNewSceneId] = useState('');
-  const [preview, setPreview] = useState<
-    Position & { map: WorldMap; pointId: string }
-  >();
   const [imageStatus, setImageStatus] = useState('');
-  const svg = useRef<SVGSVGElement>(null);
-  const gesture = useRef<Gesture | null>(null);
   const imageRequest = useRef(0);
   const mounted = useRef(false);
   const latest = useRef({ content, onChange });
@@ -59,23 +68,23 @@ export function WorldMapPanel({
   }, [content, onChange]);
   useEffect(() => {
     mounted.current = true;
-    const cancel = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape' || !gesture.current) return;
-      event.preventDefault();
-      const pointerId = gesture.current.pointerId;
-      gesture.current = null;
-      setPreview(undefined);
-      if (svg.current?.hasPointerCapture(pointerId))
-        svg.current.releasePointerCapture(pointerId);
-    };
-    window.addEventListener('keydown', cancel);
     return () => {
-      window.removeEventListener('keydown', cancel);
       mounted.current = false;
     };
   }, []);
 
   const selected = map?.points.find((point) => point.id === selectedId);
+  const mapScene: SceneDefinition | undefined = map && {
+    id: 'world-map',
+    title: 'Mapa lokací',
+    background: map.image,
+    width: map.width,
+    height: map.height,
+    hotspots: map.points.map((point) => mapHotspot(point, map)),
+  };
+  const selectedRegion = mapScene?.hotspots.find(
+    (hotspot) => hotspot.id === selectedId,
+  );
   const availableScenes = content.scenes.filter(
     (scene) => !map?.points.some((point) => point.sceneId === scene.id),
   );
@@ -93,23 +102,33 @@ export function WorldMapPanel({
         ),
       });
   };
-  const addPoint = (position: Position, destination = newScene?.id) => {
-    const scene = content.scenes.find((entry) => entry.id === destination);
-    if (
-      !map ||
-      !scene ||
-      map.points.some((point) => point.sceneId === scene.id)
-    )
-      return;
+  const updateRegion = (hotspot: Hotspot) => {
+    const point = map?.points.find((entry) => entry.id === hotspot.id);
+    if (!point) return;
+    // A map region stores world vertices; bake the shared stage's rotation in.
+    const polygon = (hotspot.polygon ?? rectanglePoints(hotspot.bounds)).map(
+      (p) => rotateAround(p, centre(hotspot.bounds), hotspot.rotation ?? 0),
+    );
+    updatePoint({ ...point, polygon, ...centre(polygonBounds(polygon)) });
+  };
+  const addRegion = (bounds: Bounds, outline?: Hotspot['polygon']) => {
+    if (!map || !newScene) return;
     const id = nextId(
       'place',
       map.points.map((point) => point.id),
     );
+    const polygon = outline ?? rectanglePoints(bounds);
     updateMap({
       ...map,
       points: [
         ...map.points,
-        { id, label: scene.title, sceneId: scene.id, ...position },
+        {
+          id,
+          label: newScene.title,
+          sceneId: newScene.id,
+          polygon,
+          ...centre(polygonBounds(polygon)),
+        },
       ],
     });
     setSelectedId(id);
@@ -140,7 +159,7 @@ export function WorldMapPanel({
               points: [],
             },
       });
-      setImageStatus('Obrázek načtený; body zachovaly poměrnou polohu.');
+      setImageStatus('Obrázek načtený; oblasti zachovaly poměrné souřadnice.');
     };
     image.onerror = () => {
       if (mounted.current && request === imageRequest.current)
@@ -150,84 +169,12 @@ export function WorldMapPanel({
     };
     image.src = assetUrl(id);
   }
-  const position = (event: { clientX: number; clientY: number }) => {
-    const matrix = svg.current?.getScreenCTM();
-    if (!matrix || !map) return null;
-    const point = new DOMPoint(event.clientX, event.clientY).matrixTransform(
-      matrix.inverse(),
-    );
-    return { x: point.x, y: point.y };
-  };
-  const clamp = (point: Position): Position => ({
-    x: Math.max(0, Math.min(map?.width ?? 0, point.x)),
-    y: Math.max(0, Math.min(map?.height ?? 0, point.y)),
-  });
-  function begin(event: PointerEvent<SVGSVGElement>) {
-    if (!map || event.button !== 0 || gesture.current) return;
-    const point = position(event);
-    if (
-      !point ||
-      point.x < 0 ||
-      point.y < 0 ||
-      point.x > map.width ||
-      point.y > map.height
-    )
-      return;
-    const targetId = (event.target as Element)
-      .closest('[data-point-id]')
-      ?.getAttribute('data-point-id');
-    const pointId = targetId ?? selected?.id ?? '';
-    const marker = map.points.find((entry) => entry.id === targetId);
-    const offset = marker
-      ? { x: point.x - marker.x, y: point.y - marker.y }
-      : { x: 0, y: 0 };
-    if (!pointId && !newScene) return;
-    event.preventDefault();
-    setSelectedId(pointId);
-    gesture.current = {
-      pointerId: event.pointerId,
-      map,
-      pointId,
-      sceneId: newScene?.id ?? '',
-      offset,
-      fromMarker: Boolean(marker),
-      start: { x: event.clientX, y: event.clientY },
-      moved: false,
-    };
-    setPreview({ x: point.x - offset.x, y: point.y - offset.y, map, pointId });
-    event.currentTarget.setPointerCapture(event.pointerId);
-    event.currentTarget.focus();
-  }
-  function finish(event: PointerEvent<SVGSVGElement>, cancelled = false) {
-    const current = gesture.current;
-    if (!current || current.pointerId !== event.pointerId) return;
-    gesture.current = null;
-    setPreview(undefined);
-    if (event.currentTarget.hasPointerCapture(event.pointerId))
-      event.currentTarget.releasePointerCapture(event.pointerId);
-    const point = position(event);
-    if (
-      cancelled ||
-      !point ||
-      map !== current.map ||
-      (current.fromMarker && !current.moved)
-    )
-      return;
-    const placed = clamp({
-      x: point.x - current.offset.x,
-      y: point.y - current.offset.y,
-    });
-    const target = map.points.find((entry) => entry.id === current.pointId);
-    if (target) updatePoint({ ...target, ...placed });
-    else addPoint(placed, current.sceneId);
-  }
-
   return (
     <section className="content-panel" aria-label="Editor mapy lokací">
       <h2>Mapa lokací</h2>
       <p className="field-note">
-        Obrázek a body sdílejí souřadnice mapy. Popisky pro hráče piš slovensky.
-        Odemčená lokace zůstane na mapě i po zániku podmínky.
+        Obrázek a polygonové oblasti sdílejí souřadnice mapy. Popisky pro hráče
+        piš slovensky. Odemčená lokace zůstane na mapě i po zániku podmínky.
       </p>
       {!map ? (
         <button
@@ -274,8 +221,8 @@ export function WorldMapPanel({
                 ))}
               </div>
               <p className="field-note">
-                Změna rozměrů přepočítá všechny body. Jiný obrázek použije
-                vlastní nativní rozměry.
+                Změna rozměrů přepočítá všechny vrcholy oblastí. Jiný obrázek
+                použije vlastní nativní rozměry.
               </p>
               <button
                 className="danger-button"
@@ -287,107 +234,31 @@ export function WorldMapPanel({
           </div>
           <div className="world-map-layout">
             <div>
-              <svg
-                ref={svg}
-                className="world-map-stage"
-                aria-label="Náhled mapy lokací"
-                role="group"
-                tabIndex={0}
-                viewBox={`0 0 ${map.width} ${map.height}`}
-                style={{ aspectRatio: `${map.width} / ${map.height}` }}
-                onPointerDown={begin}
-                onPointerMove={(event) => {
-                  if (gesture.current?.pointerId !== event.pointerId) return;
-                  const point = position(event);
-                  const current = gesture.current;
-                  if (point && current) {
-                    if (
-                      Math.hypot(
-                        event.clientX - current.start.x,
-                        event.clientY - current.start.y,
-                      ) >= 3
-                    )
-                      current.moved = true;
-                    setPreview({
-                      ...clamp({
-                        x: point.x - current.offset.x,
-                        y: point.y - current.offset.y,
-                      }),
-                      map: current.map,
-                      pointId: current.pointId,
-                    });
-                  }
-                }}
-                onPointerUp={(event) => finish(event)}
-                onPointerCancel={(event) => finish(event, true)}
-                onLostPointerCapture={() => {
-                  gesture.current = null;
-                  setPreview(undefined);
-                }}
-              >
-                <image
-                  href={assetUrl(map.image)}
-                  width={map.width}
-                  height={map.height}
-                  preserveAspectRatio="none"
-                />
-                {map.points.map((point) => {
-                  const shown =
-                    preview &&
-                    preview.map === map &&
-                    preview.pointId === point.id
-                      ? { ...point, ...preview }
-                      : point;
-                  return (
-                    <g
-                      key={point.id}
-                      data-point-id={point.id}
-                      className={
-                        selected?.id === point.id
-                          ? 'world-map-point selected'
-                          : 'world-map-point'
-                      }
-                      transform={`translate(${shown.x} ${shown.y})`}
-                    >
-                      <circle r={Math.max(map.width / 55, 8)} />
-                      <text
-                        x={0}
-                        y={-Math.max(map.width / 40, 14)}
-                        textAnchor="middle"
-                        fontSize={Math.max(map.width / 50, 10)}
-                      >
-                        {point.label}
-                      </text>
-                    </g>
-                  );
-                })}
-                {preview && preview.map === map && !preview.pointId && (
-                  <circle
-                    cx={preview.x}
-                    cy={preview.y}
-                    r={Math.max(map.width / 55, 8)}
-                    className="world-map-new-point"
-                  />
-                )}
-              </svg>
+              <EditorStage
+                scene={mapScene!}
+                selectedId={selected?.id ?? ''}
+                onSelect={setSelectedId}
+                onHotspot={updateRegion}
+                onCreate={addRegion}
+              />
               <p className="field-note">
-                Bod vyber kliknutím a přetáhni jej. Kliknutí do mapy přesune
-                vybraný bod; bez výběru přidá nový. Escape nebo zrušený dotyk
-                tah zahodí.
+                Oblasti kresli stejným polygonovým nástrojem jako hotspoty v
+                lokaci. Vrcholy, přesun, velikost i natočení se ukládají jedním
+                krokem; Escape nebo zrušený dotyk zahodí celý tah.
               </p>
             </div>
-            <aside className="editor-card" aria-label="Vlastnosti bodu mapy">
+            <aside className="editor-card" aria-label="Vlastnosti oblasti mapy">
               <SelectId
-                label="Bod na úpravu"
+                label="Oblast na úpravu"
                 value={selected?.id ?? ''}
-                empty="Nový bod"
+                empty="Nová oblast"
                 values={map.points}
                 onChange={setSelectedId}
               />
               {!selected ? (
                 <>
                   <SelectId
-                    label="Lokace nového bodu"
+                    label="Lokace nové oblasti"
                     value={newScene?.id ?? ''}
                     values={availableScenes.map((scene) => ({
                       id: scene.id,
@@ -396,17 +267,22 @@ export function WorldMapPanel({
                     empty={
                       availableScenes.length
                         ? undefined
-                        : 'Všechny lokace už mají bod'
+                        : 'Všechny lokace už mají oblast'
                     }
                     onChange={setNewSceneId}
                   />
                   <button
                     disabled={!newScene}
                     onClick={() =>
-                      addPoint({ x: map.width / 2, y: map.height / 2 })
+                      addRegion({
+                        x: map.width * 0.4,
+                        y: map.height * 0.4,
+                        width: map.width * 0.2,
+                        height: map.height * 0.2,
+                      })
                     }
                   >
-                    + Bod doprostřed mapy
+                    + Oblast doprostřed mapy
                   </button>
                 </>
               ) : (
@@ -436,26 +312,26 @@ export function WorldMapPanel({
                       updatePoint({ ...selected, sceneId })
                     }
                   />
-                  <div className="field-row">
-                    {(['x', 'y'] as const).map((axis) => (
-                      <Field key={axis} label={`Pozice ${axis.toUpperCase()}`}>
+                  <div className="bounds-fields">
+                    {(['x', 'y', 'width', 'height'] as const).map((key) => (
+                      <Field key={key} label={`Oblast ${key}`}>
                         <input
                           type="number"
-                          min={0}
-                          max={axis === 'x' ? map.width : map.height}
+                          min={key === 'x' || key === 'y' ? 0 : 1}
                           step={1}
-                          value={selected[axis]}
+                          value={selectedRegion!.bounds[key]}
                           onChange={(event) => {
-                            const value = Number(event.target.value);
-                            if (Number.isFinite(value))
-                              updatePoint({
-                                ...selected,
-                                ...clamp({
-                                  x: selected.x,
-                                  y: selected.y,
-                                  [axis]: value,
-                                }),
-                              });
+                            const value = event.target.valueAsNumber;
+                            if (!Number.isFinite(value)) return;
+                            const next = withHotspotBounds(selectedRegion!, {
+                              ...selectedRegion!.bounds,
+                              [key]: value,
+                            });
+                            if (
+                              value >= (key === 'x' || key === 'y' ? 0 : 1) &&
+                              isInsideScene(next.bounds, map)
+                            )
+                              updateRegion(next);
                           }}
                         />
                       </Field>
@@ -528,14 +404,14 @@ export function WorldMapPanel({
                     </select>
                   </Field>
                   <p className="field-note">
-                    Efekt „Odemknout lokaci na mapě“ může bod zpřístupnit z akce
-                    i dialogu.
+                    Efekt „Odemknout lokaci na mapě“ může oblast zpřístupnit z
+                    akce i dialogu.
                   </p>
                   <button
                     onClick={() => setSelectedId('')}
                     disabled={!availableScenes.length}
                   >
-                    Umístit další bod
+                    Přidat další oblast
                   </button>
                   <button
                     className="danger-button"
@@ -549,7 +425,7 @@ export function WorldMapPanel({
                       setSelectedId('');
                     }}
                   >
-                    Odstranit bod
+                    Odstranit oblast
                   </button>
                 </>
               )}

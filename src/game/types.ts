@@ -1,3 +1,5 @@
+import type { Point } from './transforms.ts';
+
 export type AnimationKind = 'blink' | 'talk' | 'expression' | 'idle';
 export interface AnimationRegion {
   readonly x: number;
@@ -138,6 +140,8 @@ export interface WorldMapPoint {
   readonly sceneId: string;
   readonly x: number;
   readonly y: number;
+  // Native map coordinates. Absent preserves the legacy point target.
+  readonly polygon?: readonly Point[];
   // Absent means visited/manual only; { all: [] } unlocks immediately.
   readonly unlockWhen?: Condition;
   readonly fastTravel?: boolean;
@@ -168,6 +172,8 @@ export interface Hotspot {
   // Original scene coordinates, before rotation about the bounds centre.
   readonly polygon?: readonly { readonly x: number; readonly y: number }[];
   readonly visibleWhen?: Condition;
+  // Opens the transient world map from an ordinary scene hotspot.
+  readonly openMap?: boolean;
   // First matching click rule wins. Empty means an intentionally silent prop.
   readonly onClick: readonly Rule[];
   readonly cursor?: 'auto' | 'interact' | 'talk' | 'exit';

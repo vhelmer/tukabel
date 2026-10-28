@@ -118,7 +118,6 @@ function MountedCanvas({
       }
       if (hudPublished) {
         onHudReady?.(null);
-        hudRef.current?.destroy();
         hudRef.current = null;
         hudPublished = false;
       }

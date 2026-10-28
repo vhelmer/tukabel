@@ -25,7 +25,7 @@ export function HudAccessibility({
     else if (!current && wasModal.current)
       root.current
         ?.querySelector<HTMLButtonElement>(
-          `[data-hud-control="${wasModal.current === 'map' ? 'map' : 'journal'}"]`,
+          `[data-hud-control="${wasModal.current === 'map' ? 'objects' : 'journal'}"]`,
         )
         ?.focus();
     wasModal.current = current;
@@ -35,7 +35,6 @@ export function HudAccessibility({
     <button
       key={c.id}
       data-hud-control={c.id}
-      data-visible={c.visible === undefined ? undefined : String(c.visible)}
       data-inventory-id={c.itemId}
       data-image={c.image}
       aria-label={c.label}
@@ -68,6 +67,9 @@ export function HudAccessibility({
               : 0)),
         width: c.bounds.width,
         height: c.bounds.height,
+        clipPath: c.polygon
+          ? `polygon(${c.polygon.map((p) => `${p.x - c.bounds.x}px ${p.y - c.bounds.y}px`).join(',')})`
+          : undefined,
       }}
       onKeyDown={(e) => {
         if (e.repeat && (e.key === 'Enter' || e.key === ' '))

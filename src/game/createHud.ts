@@ -12,6 +12,9 @@ import type { GameContent, GameState } from './types';
 import type { Bounds } from './transforms';
 import { contains, sceneFrame } from './hudLayout';
 import { canTravel } from './state';
+import { containsPolygon, polygonBounds } from './polygon';
+import { worldMapPolygon } from './worldMap';
+import type { Point } from './transforms';
 import { hudArt } from './hudArt';
 import type { AlphaMask } from './hitTest';
 
@@ -47,7 +50,7 @@ export interface HudControl {
   expanded?: boolean;
   itemId?: string;
   image?: string;
-  visible?: boolean;
+  polygon?: readonly Point[];
 }
 export interface HudLayout {
   width: number;
@@ -102,8 +105,6 @@ export function createHud(
   const focusRing = root.addChild(new Graphics());
   focusRing.eventMode = 'none';
   let snapshot = initial;
-  let mapEntry: Container | null = null;
-  let edgeVisible = window.matchMedia('(pointer: coarse)').matches;
   let width = 1,
     height = 1;
   let inventoryPage = 0,
@@ -232,31 +233,49 @@ export function createHud(
     control: HudControl,
     label = control.label,
     size = 14,
-    skin: 'tag' | 'bare' | 'notebook' = 'tag',
+    skin: 'tag' | 'bare' | 'notebook' | 'region' = 'tag',
   ) {
     layout.controls.push(control);
     const c = panels.addChild(new Container());
     const b = control.bounds;
     c.position.set(b.x, b.y);
-    c.hitArea = new Rectangle(0, 0, b.width, b.height);
+    c.hitArea = control.polygon
+      ? {
+          contains: (x: number, y: number) =>
+            containsPolygon(control.polygon!, { x: x + b.x, y: y + b.y }),
+        }
+      : new Rectangle(0, 0, b.width, b.height);
     c.eventMode = 'static';
     c.cursor = 'pointer';
     const bg =
-      skin === 'bare'
+      skin === 'region'
         ? c.addChild(
             new Graphics()
-              .ellipse(b.width / 2, b.height - 7, b.width * 0.37, 7)
+              .poly(control.polygon!.flatMap((p) => [p.x - b.x, p.y - b.y]))
               .fill({
-                color: control.pressed ? 0xf2cf80 : 0x19171a,
-                alpha: control.pressed ? 0.6 : 0.22,
+                color: control.pressed ? 0xf4d18a : 0xc7ddac,
+                alpha: control.pressed ? 0.35 : 0.12,
+              })
+              .stroke({
+                color: control.pressed ? 0xf4d18a : 0xe5d8b5,
+                width: 2,
               }),
           )
-        : art(c, skin === 'notebook' ? hudArt.notebook : hudArt.tag, {
-            x: 0,
-            y: 0,
-            width: b.width,
-            height: b.height,
-          });
+        : skin === 'bare'
+          ? c.addChild(
+              new Graphics()
+                .ellipse(b.width / 2, b.height - 7, b.width * 0.37, 7)
+                .fill({
+                  color: control.pressed ? 0xf2cf80 : 0x19171a,
+                  alpha: control.pressed ? 0.6 : 0.22,
+                }),
+            )
+          : art(c, skin === 'notebook' ? hudArt.notebook : hudArt.tag, {
+              x: 0,
+              y: 0,
+              width: b.width,
+              height: b.height,
+            });
     if (control.pressed && skin === 'bare')
       c.addChild(
         new Graphics()
@@ -355,13 +374,18 @@ export function createHud(
     const control = layout.controls.find((c) => c.id === focused);
     if (control && !control.disabled) {
       const b = control.bounds;
+      if (control.polygon) {
+        focusRing
+          .poly(control.polygon.flatMap((p) => [p.x, p.y]))
+          .stroke({ width: 3, color: 0xffe2a1 });
+        return;
+      }
       focusRing
         .roundRect(b.x + 2, b.y + 2, b.width - 4, b.height - 4, 5)
         .stroke({ width: 3, color: 0xffe2a1 });
     }
   }
   function rebuild() {
-    mapEntry = null;
     // Destroyed controls cannot emit pointerout. Never retain their tooltip
     // when opening a menu, dropping an item or moving between dialogue phases.
     hoverId = null;
@@ -372,6 +396,21 @@ export function createHud(
       (s) => s.id === snapshot.state.sceneId,
     )!;
     const frame = sceneFrame(width, height, scene);
+    if (snapshot.map && snapshot.content.worldMap) {
+      shelfBounds = null;
+      layout = {
+        width,
+        height,
+        controls: [],
+        inventory: { x: 0, y: 0, width: 0, height: 0 },
+      };
+      drawMap();
+      drawFocus();
+      syncTooltip();
+      callbacks.onLayout(layout);
+      render();
+      return;
+    }
     const top = frame.y + 6;
     const compact = frame.width < 600;
     const leading = compact ? 94 : 0;
@@ -581,37 +620,7 @@ export function createHud(
             .stroke({ width: 3, color: 0xc7e597 }),
         ).eventMode = 'none';
     });
-    const map = snapshot.content.worldMap;
-    if (map && !snapshot.journal && !snapshot.menu && !snapshot.map) {
-      const control = {
-        id: 'map',
-        label: 'Otvoriť mapu',
-        bounds: {
-          x: frame.x + frame.width / 2 - 22,
-          y: frame.y + frame.height - 48,
-          width: 44,
-          height: 44,
-        },
-        disabled: Boolean(snapshot.state.dialogue || snapshot.drag),
-        visible: edgeVisible || focused === 'map',
-      };
-      const view = button(control, '', 16);
-      view.addChild(
-        new Graphics()
-          .poly([8, 13, 16, 9, 28, 14, 36, 10, 36, 31, 28, 35, 16, 30, 8, 34])
-          .fill(0xead2a0)
-          .stroke({ width: 2, color: 0x493725 })
-          .moveTo(16, 9)
-          .lineTo(16, 30)
-          .moveTo(28, 14)
-          .lineTo(28, 35)
-          .stroke({ width: 1.5, color: 0x7d6949 }),
-      ).eventMode = 'none';
-      mapEntry = view;
-      view.visible = control.visible;
-    }
     if (snapshot.journal) drawBook();
-    if (snapshot.map && map) drawMap();
     drawFocus();
     syncTooltip();
     callbacks.onLayout(layout);
@@ -678,25 +687,23 @@ export function createHud(
           : point.fastTravel === false
             ? `Iba prechodom: ${point.label}`
             : `Cestovať: ${point.label}`;
-      const x = imageFrame.x + point.x * scale,
-        y = imageFrame.y + point.y * scale;
-      const bw = Math.min(150, Math.max(74, b.width * 0.18));
-      const bounds = {
-        x: Math.max(b.x + 5, Math.min(b.x + b.width - bw - 5, x - bw / 2)),
-        y: Math.max(b.y + 46, Math.min(b.y + b.height - 48, y - 22)),
-        width: bw,
-        height: 44,
-      };
+      const polygon = worldMapPolygon(point, map).map((p) => ({
+        x: imageFrame.x + p.x * scale,
+        y: imageFrame.y + p.y * scale,
+      }));
+      const bounds = polygonBounds(polygon);
       const view = button(
         {
           id: 'map-point:' + point.id,
           label,
           bounds,
+          polygon,
           disabled: !canTravel(snapshot.content, snapshot.state, point.sceneId),
           pressed: current,
         },
-        (current ? '● ' : unlocked ? '◆ ' : '× ') + point.label,
+        (current ? '● ' : unlocked ? '' : '× ') + point.label,
         13,
+        'region',
       );
       if (current) view.alpha = 1;
     }
@@ -918,8 +925,10 @@ export function createHud(
         snapshot.journal ||
         snapshot.map ||
         snapshot.menu ||
-        layout.controls.some(
-          (c) => c.visible !== false && contains(c.bounds, p.x, p.y),
+        layout.controls.some((c) =>
+          c.polygon
+            ? containsPolygon(c.polygon, p)
+            : contains(c.bounds, p.x, p.y),
         ) ||
         shelfContains(p.x, p.y)
       );
@@ -936,9 +945,7 @@ export function createHud(
     },
     activate,
     focus(id) {
-      const reveal = id === 'map' || focused === 'map';
       focused = id;
-      if (reveal) syncMapEntry();
       drawFocus();
       syncTooltip();
       render();
@@ -965,57 +972,7 @@ export function createHud(
       syncPlayback();
     },
   };
-  function syncMapEntry() {
-    const control = layout.controls.find((c) => c.id === 'map');
-    if (!control || !mapEntry) return;
-    const visible = edgeVisible || focused === 'map';
-    mapEntry.visible = visible;
-    if (control.visible !== visible) {
-      layout = {
-        ...layout,
-        controls: layout.controls.map((c) =>
-          c.id === 'map' ? { ...c, visible } : c,
-        ),
-      };
-      callbacks.onLayout(layout);
-    }
-    drawFocus();
-    render();
-  }
-  function revealMap(event: PointerEvent) {
-    if (!snapshot.content.worldMap) return;
-    const scene = snapshot.content.scenes.find(
-      (s) => s.id === snapshot.state.sceneId,
-    )!;
-    const b = sceneFrame(width, height, scene),
-      p = canvasPoint(event.clientX, event.clientY);
-    const next =
-      event.pointerType === 'touch' ||
-      (p.x >= b.x &&
-        p.x <= b.x + b.width &&
-        p.y >= b.y + b.height - 60 &&
-        p.y <= b.y + b.height);
-    if (next !== edgeVisible) {
-      edgeVisible = next;
-      syncMapEntry();
-    }
-  }
-  function leaveMap() {
-    const next = window.matchMedia('(pointer: coarse)').matches;
-    if (next !== edgeVisible) {
-      edgeVisible = next;
-      syncMapEntry();
-    }
-  }
-  canvas.addEventListener('pointermove', revealMap);
-  canvas.addEventListener('pointerdown', revealMap);
-  canvas.addEventListener('pointerleave', leaveMap);
   return {
-    destroy() {
-      canvas.removeEventListener('pointermove', revealMap);
-      canvas.removeEventListener('pointerdown', revealMap);
-      canvas.removeEventListener('pointerleave', leaveMap);
-    },
     root,
     controller,
     get active() {

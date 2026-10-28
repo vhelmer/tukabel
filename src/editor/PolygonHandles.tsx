@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import type { PointerEvent } from 'react';
 import type { Point } from '../game/transforms';
 import { maxPolygonPoints } from '../game/polygon';
@@ -23,6 +24,12 @@ export function PolygonHandles({
   onRemove: (index: number) => void;
   onNudge: (index: number, delta: Point) => void;
 }) {
+  const edgePress = useRef<{
+    index: number;
+    pointerId: number;
+    x: number;
+    y: number;
+  } | null>(null);
   const handle = 28 / screenScale;
   return (
     <>
@@ -39,8 +46,36 @@ export function PolygonHandles({
                 onPointerDown={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
+                  if (e.button === 0)
+                    edgePress.current = {
+                      index: i,
+                      pointerId: e.pointerId,
+                      x: e.clientX,
+                      y: e.clientY,
+                    };
                 }}
-                onClick={() => onAdd(i)}
+                onPointerUp={(e) => {
+                  const start = edgePress.current;
+                  edgePress.current = null;
+                  if (
+                    start?.index === i &&
+                    start.pointerId === e.pointerId &&
+                    Math.hypot(e.clientX - start.x, e.clientY - start.y) <= 7
+                  ) {
+                    e.stopPropagation();
+                    onAdd(i);
+                  }
+                }}
+                onPointerCancel={() => {
+                  edgePress.current = null;
+                }}
+                onPointerLeave={() => {
+                  edgePress.current = null;
+                }}
+                onClick={(e) => {
+                  // Touch compatibility clicks may target a handle moved under a drag.
+                  if (e.detail === 0) onAdd(i);
+                }}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
