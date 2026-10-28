@@ -74,7 +74,11 @@ test('Fero keeps scratching his head in a continuous idle loop without moving hi
   expect(fero.animation?.idleLoop).toBe(true);
   const clip = content.animations!.find((a) => a.id === fero.animation!.idle)!;
   expect(clip.loop).toBe(true);
-  expect(clip.frames).toHaveLength(12);
+  expect(clip.frames.map((frame) => path.basename(frame))).toEqual(
+    [1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1].map(
+      (index) => `frame-${String(index).padStart(2, '0')}.png`,
+    ),
+  );
   expect(clip.fps).toBe(10);
   expect(clip.region).toBeUndefined();
   expect(clip.source).toBe(fero.image);
@@ -106,7 +110,7 @@ test('Fero keeps scratching his head in a continuous idle loop without moving hi
       { timeout: 4000, intervals: [80, 120, 160] },
     )
     .toBe(false);
-  // A 12-frame clip at 10 fps has already ended if it was accidentally a one-shot.
+  // An 11-position clip at 10 fps has already ended if it was accidentally a one-shot.
   await page.waitForTimeout(1300);
   const later = await sampleActor(page, scene, fero, sourceSize);
   await expect

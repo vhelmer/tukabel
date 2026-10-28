@@ -2123,12 +2123,11 @@
         "animations/fero-head-scratch/frame-04.png",
         "animations/fero-head-scratch/frame-05.png",
         "animations/fero-head-scratch/frame-06.png",
-        "animations/fero-head-scratch/frame-07.png",
-        "animations/fero-head-scratch/frame-08.png",
-        "animations/fero-head-scratch/frame-09.png",
-        "animations/fero-head-scratch/frame-10.png",
-        "animations/fero-head-scratch/frame-11.png",
-        "animations/fero-head-scratch/frame-12.png"
+        "animations/fero-head-scratch/frame-05.png",
+        "animations/fero-head-scratch/frame-04.png",
+        "animations/fero-head-scratch/frame-03.png",
+        "animations/fero-head-scratch/frame-02.png",
+        "animations/fero-head-scratch/frame-01.png"
       ],
       "fps": 10,
       "loop": true
