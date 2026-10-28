@@ -352,6 +352,31 @@ případně `SAM2_CHECKPOINT`). Browserový test masky použije SAM, pokud je na
 Produkční hra nepotřebuje Python, modely ani API. Segmentace běží mimo zámek
 projektového save, bez shellu a s timeoutem.
 
+### OpenAI výřez objektu
+
+U **AI · oddělit objekt + opravit pozadí** lze v poli **Způsob výřezu objektu**
+vybrat **OpenAI · transparentní výřez**. Výchozí zůstává výřez původních pixelů
+podle ruční/SAM masky. Nová varianta nevyžaduje SAM: stačí označit objekt;
+připravená SAM 2/3 či jemná maska ale zpřesní původní cílový rám i vodítko.
+OpenAI dostane čistý původní výřez s okolím a oddělenou označenou referenci,
+a vrátí transparentní PNG. Nepřebírá se RGB již oříznutého nebo odbarveného náhledu.
+
+Jedno výslovné spuštění provede dva placené požadavky bez retry: dosavadní opravu
+pozadí a navíc izolaci objektu stejným vybraným modelem/kvalitou. Diagnostika bez API
+nespouští ani jeden. Výsledek se ořízne podle alfy a proporčně vejde do původního
+rámu s kotvou dolní střed; zachová otisk zdroje, offset i původní transformace
+včetně rotace přes `croppedPlacement`. SAM zde určuje rám, nepřesouvá pixely.
+OpenAI může objekt jemně překreslit: původní obrys ani pixelovou shodu nezaručuje.
+Před použitím zkontroluj původní pozadí s vloženým objektem a posuvné porovnání
+s kompozicí nad maskovanou opravou. Tato varianta nehlásí nulovou chybu reassembly.
+Prázdné, neprůhledné a na okraji useknuté výstupy se odmítnou bez dalšího volání.
+
+Archiv obsahuje navíc `extraction-input.png`, `extraction-guide.png`,
+`extraction-returned.png`, `preview.png` a `reassembled.png`; `recipe.json`
+zachycuje metodu, původní rám, zdroj vodítka a umístění. Výsledky lze znovu
+otevřít z historie bez generace. Oprava pozadí, její obě varianty, vědomé Apply,
+kontrola změněného cíle a jeden undo krok zůstávají stejné.
+
 ### Segmentace a matting na vzdáleném počítači
 
 Dev Mode může spouštět SAM 2/3, GrabCut, ViTMatte, closed-form i odstranění

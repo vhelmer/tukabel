@@ -93,6 +93,9 @@ export function SceneArtPanel({
   const target =
     targetChoice.jobId === selectedJob ? targetChoice.value : jobTarget;
   const [prompt, setPrompt] = useState('');
+  const [extractionMethod, setExtractionMethod] = useState<'mask' | 'openai'>(
+    'mask',
+  );
   const [repairPadding, setRepairPadding] = useState(12);
   const [repairFeather, setRepairFeather] = useState(2);
   const [modelChoice, setModelChoice] = useState<string>();
@@ -309,6 +312,8 @@ export function SceneArtPanel({
           model: ai ? model : undefined,
           quality: ai ? quality : undefined,
           confirmed: ai ? true : undefined,
+          extractionMethod:
+            operation === 'extract' ? extractionMethod : undefined,
           repairPadding,
           repairFeather,
           debugOnly,
@@ -498,6 +503,34 @@ export function SceneArtPanel({
             transparentní PNG. Původní pozadí se nemění. Výsledek nejprve
             zkontroluj v náhledu a potom ho vlož jako novou interaktivní vrstvu.
           </p>
+        )}
+        {operation === 'extract' && (
+          <>
+            <Field label="Způsob výřezu objektu">
+              <select
+                value={extractionMethod}
+                onChange={(e) =>
+                  setExtractionMethod(e.target.value as 'mask' | 'openai')
+                }
+              >
+                <option value="mask">
+                  Původní pixely podle masky (SAM / ruční)
+                </option>
+                <option value="openai">OpenAI · transparentní výřez</option>
+              </select>
+            </Field>
+            {extractionMethod === 'openai' && (
+              <p className="field-note">
+                OpenAI odstraní pozadí objektu a může jemně překreslit jeho
+                kresbu. Připravená SAM maska nebo ruční výběr určuje původní rám
+                a polohu; výsledek se do něj vejde bez deformace, s dolním
+                středem na původním místě. Nepotřebuješ spouštět SAM. Oprava
+                pozadí zůstává stejná. Spuštění provede dva placené API
+                požadavky: opravu pozadí a výřez objektu. Zarovnání a obrys
+                zkontroluj v náhledu před použitím.
+              </p>
+            )}
+          </>
         )}
         {['cutout', 'extract', 'remove', 'edit'].includes(operation) && (
           <div className="mask-launcher">
@@ -936,10 +969,16 @@ export function SceneArtPanel({
                 <figure>
                   <img
                     src={assetUrl(result.data.preview)}
-                    alt="Nový asset na původním pozadí"
+                    alt={
+                      result.data.extractionMethod === 'openai'
+                        ? 'Umístění objektu na původním pozadí'
+                        : 'Nový asset na původním pozadí'
+                    }
                   />
                   <figcaption>
-                    Náhled umístění · pozadí zůstává původní
+                    {result.data.extractionMethod === 'openai'
+                      ? 'Náhled umístění na původním pozadí'
+                      : 'Náhled umístění · pozadí zůstává původní'}
                   </figcaption>
                 </figure>
               )}

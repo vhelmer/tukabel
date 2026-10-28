@@ -129,6 +129,7 @@ export interface ArtworkResult {
   image: string;
   cutout?: string;
   preview?: string;
+  extractionMethod?: 'openai';
   cutoutFull?: string;
   cutoutFrame?: import('../game/transforms').CropFrame;
   backgrounds?: { restored: string; masked: string };

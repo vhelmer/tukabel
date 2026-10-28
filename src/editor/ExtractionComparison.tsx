@@ -17,14 +17,20 @@ export function ExtractionComparison({ result }: { result: ArtworkResult }) {
   }[view];
   return (
     <section className="extraction-comparison" aria-label="Porovnání oddělení">
-      <h3>Kontrola přesného zarovnání</h3>
+      <h3>
+        {result.extractionMethod === 'openai'
+          ? 'Kontrola umístění OpenAI výřezu'
+          : 'Kontrola přesného zarovnání'}
+      </h3>
       <p>
-        {(result.reconstruction?.unexpectedPixels ??
-          result.reconstruction?.changedPixels) === 0
-          ? result.reconstruction?.edgePixels !== undefined
-            ? 'Výřez: 0 chyb v pevných pixelech a zarovnání. Jemná alfa se vyhodnocuje samostatně.'
-            : 'Výřez: 0 chyb při zachování původních pixelů a zarovnání.'
-          : 'Zkontroluj výsledek oproti originálu.'}
+        {result.extractionMethod === 'openai'
+          ? 'Objekt je překreslený OpenAI a proporčně vložený do původního rámu. Srovnání ukazuje objekt na maskované variantě opraveného pozadí; neposuzuje pixelovou shodu s originálem.'
+          : (result.reconstruction?.unexpectedPixels ??
+                result.reconstruction?.changedPixels) === 0
+            ? result.reconstruction?.edgePixels !== undefined
+              ? 'Výřez: 0 chyb v pevných pixelech a zarovnání. Jemná alfa se vyhodnocuje samostatně.'
+              : 'Výřez: 0 chyb při zachování původních pixelů a zarovnání.'
+            : 'Zkontroluj výsledek oproti originálu.'}
       </p>
       {result.reconstruction?.edgePixels !== undefined && (
         <p>
@@ -50,9 +56,11 @@ export function ExtractionComparison({ result }: { result: ArtworkResult }) {
           {result.repairMask && (
             <option value="repair">Maska opravy pozadí · bílá = oprava</option>
           )}
-          <option value="difference">
-            Rozdíl · zlatá = pozadí, modrá = alfa, červená = chyba
-          </option>
+          {result.difference && (
+            <option value="difference">
+              Rozdíl · zlatá = pozadí, modrá = alfa, červená = chyba
+            </option>
+          )}
         </select>
       </Field>
       {view === 'compare' && (
@@ -79,7 +87,7 @@ export function ExtractionComparison({ result }: { result: ArtworkResult }) {
               className="extraction-overlay"
               style={{ clipPath: `inset(0 ${100 - split}% 0 0)` }}
               src={assetUrl(result.reassembled)}
-              alt="Složené pozadí a původní výřez"
+              alt="Složené pozadí a oddělený objekt"
             />
             <span
               className="comparison-divider"

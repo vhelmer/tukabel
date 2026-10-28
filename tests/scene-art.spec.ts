@@ -1071,3 +1071,114 @@ test('archived extraction offers both backgrounds without API access and saves c
     fullPage: true,
   });
 });
+
+test.describe('OpenAI object extraction', () => {
+  let apiCalls = 0;
+  test.use({
+    artTools: {
+      apiKey: 'mock-extraction-key',
+      fetch: (async (_url, init) => {
+        apiCalls++;
+        const body = JSON.parse(init!.body as string);
+        if (body.background === 'transparent') {
+          expect(body.mask).toBeUndefined();
+          expect(body.images).toHaveLength(2);
+          const png = await sharp(
+            Buffer.from(
+              '<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96"><rect x="24" y="16" width="48" height="64" rx="6" fill="#ee7744"/></svg>',
+            ),
+          )
+            .png()
+            .toBuffer();
+          return Response.json({
+            data: [{ b64_json: png.toString('base64') }],
+          });
+        }
+        expect(body.mask).toBeDefined();
+        return Response.json({
+          data: [{ b64_json: body.images[0].image_url.split(',')[1] }],
+        });
+      }) as typeof fetch,
+    },
+  });
+  test('chooses OpenAI, reviews alignment, saves native placement and reloads without generating again', async ({
+    page,
+    workspace,
+    isMobile,
+  }) => {
+    apiCalls = 0;
+    await seed(workspace.root, workspace.source);
+    await openEditor(page, workspace.url);
+    const original = await readFile(workspace.source, 'utf8');
+    await rectangle(page, isMobile);
+    const panel = art(page);
+    await panel
+      .getByLabel('Grafická operace', { exact: true })
+      .selectOption('extract');
+    await panel
+      .getByLabel('Způsob výřezu objektu', { exact: true })
+      .selectOption('openai');
+    await expect(panel).toContainText('dva placené API požadavky');
+    await panel
+      .getByLabel('Název výsledné vrstvy nebo lokace', { exact: true })
+      .fill('OpenAI výrez');
+    const submitted = page.waitForRequest(
+      (r) => r.url().endsWith('/jobs') && r.method() === 'POST',
+    );
+    await panel
+      .getByRole('button', {
+        name: 'Spustit AI úpravu (API kredit)',
+        exact: true,
+      })
+      .click();
+    expect((await submitted).postDataJSON().input.extractionMethod).toBe(
+      'openai',
+    );
+    await expect(
+      panel.getByAltText('Oddělený transparentní objekt'),
+    ).toBeVisible();
+    await expect(
+      panel.getByRole('heading', { name: 'Kontrola umístění OpenAI výřezu' }),
+    ).toBeVisible();
+    await expect(panel).not.toContainText('0 chyb');
+    expect(await readFile(workspace.source, 'utf8')).toBe(original);
+    await panel
+      .getByRole('button', { name: 'Použít výsledek ve scéně', exact: true })
+      .click();
+    await save(page);
+    const disk = JSON.parse(
+      await readFile(workspace.source, 'utf8'),
+    ) as GameContent;
+    const layer = disk.scenes[0]!.hotspots.find(
+      (h) => h.label === 'OpenAI výrez',
+    )!;
+    const recipe = JSON.parse(
+      await readFile(
+        path.join(
+          workspace.root,
+          'src/assets',
+          layer.image!.replace('/cutout.png', '/recipe.json'),
+        ),
+        'utf8',
+      ),
+    );
+    expect(layer.bounds).toEqual({
+      x: recipe.cutoutFrame.x,
+      y: recipe.cutoutFrame.y,
+      width: recipe.cutoutFrame.width,
+      height: recipe.cutoutFrame.height,
+    });
+    expect(recipe.extraction.method).toBe('openai');
+    expect(layer.decorative).toBe(true);
+    await page.reload();
+    await ready(page);
+    await page.getByRole('button', { name: 'Dev Mode', exact: true }).click();
+    await page
+      .getByLabel('Vybraný objekt', { exact: true })
+      .selectOption(layer.id);
+    expect(apiCalls).toBe(2);
+    await expect(page.getByLabel('Název objektu', { exact: true })).toHaveValue(
+      'OpenAI výrez',
+    );
+  });
+});

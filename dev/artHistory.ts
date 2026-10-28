@@ -112,6 +112,16 @@ export async function artworkHistory(
           .split(path.sep)
           .join('/'),
         image,
+        extractionMethod:
+          recipe.extraction?.method === 'openai' ? 'openai' : undefined,
+        reassembled:
+          recipe.extraction?.method === 'openai' && !appliedVariant
+            ? await png('reassembled.png')
+            : undefined,
+        preview:
+          recipe.extraction?.method === 'openai' && !appliedVariant
+            ? await png('preview.png')
+            : undefined,
         width: original.width,
         height: original.height,
         manifest: `${prefix}/recipe.json`,

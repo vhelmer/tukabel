@@ -11,6 +11,7 @@ import path from 'node:path';
 import { setImmediate as yieldToEditor } from 'node:timers/promises';
 import sharp from 'sharp';
 import { readArtSource, ART_MAX_PIXELS, artHash as hash } from './artSource.ts';
+import { prepareExtractedAsset } from './extractedAsset.ts';
 import { readObjectMask, maskPng } from './objectMask.ts';
 import { matteForeground, type SegmentationOptions } from './segmentation.ts';
 import {
@@ -51,6 +52,7 @@ export interface ArtResult {
   image: string;
   cutout?: string;
   preview?: string;
+  extractionMethod?: 'openai';
   cutoutFull?: string;
   cutoutFrame?: import('../src/game/transforms.ts').CropFrame;
   backgrounds?: { restored: string; masked: string };
@@ -201,6 +203,17 @@ export async function createArtwork(
   const operation = input.operation as ArtOperation;
   const debugOnly = input.debugOnly === true;
   if (
+    input.extractionMethod !== undefined &&
+    (operation !== 'extract' ||
+      typeof input.extractionMethod !== 'string' ||
+      !['mask', 'openai'].includes(input.extractionMethod))
+  )
+    throw Error('Neplatná metoda výřezu objektu.');
+  const openaiExtraction =
+    operation === 'extract' &&
+    input.extractionMethod === 'openai' &&
+    !debugOnly;
+  if (
     (input.debugOnly !== undefined && typeof input.debugOnly !== 'boolean') ||
     (debugOnly && !['extract', 'remove'].includes(operation))
   )
@@ -344,10 +357,10 @@ export async function createArtwork(
     height,
     feather,
   );
-  if (!debugOnly && suppliedMask?.matting?.decontaminate)
+  if (!debugOnly && !openaiExtraction && suppliedMask?.matting?.decontaminate)
     options.onStage?.('Odděluji barvu pozadí pouze v jemných hranách');
   const cutoutRaw =
-    !debugOnly && suppliedMask?.matting?.decontaminate
+    !debugOnly && !openaiExtraction && suppliedMask?.matting?.decontaminate
       ? await matteForeground(
           original,
           suppliedMask.pixels,
@@ -417,6 +430,10 @@ export async function createArtwork(
     pipeline = await prepareInpaint(source, providerMask, width, height);
   }
   let assetPreview: Buffer | undefined;
+  let extractionRequest:
+    Awaited<ReturnType<typeof prepareExtractedAsset>> | undefined;
+  let extractionReturned: Buffer | undefined;
+  let extractionComposite: Buffer | undefined;
   if (assetRequest) {
     options.onStage?.(
       'AI vytváří transparentní objekt podle pozadí a označeného místa',
@@ -485,6 +502,40 @@ export async function createArtwork(
       } else image = await png(restored);
     }
   }
+  if (openaiExtraction && !blockedReason) {
+    extractionRequest = await prepareExtractedAsset(
+      source,
+      objectPixels,
+      width,
+      height,
+    );
+    options.onStage?.('OpenAI odděluje objekt · druhý požadavek bez opakování');
+    extractionReturned = await editImage(
+      extractionRequest.reference,
+      undefined,
+      'Extract ONLY the existing object highlighted in pink in image 2 from the unmodified image 1. Remove all surrounding scenery and background. Return one complete isolated object on genuine transparent alpha, including holes and fine edges. Preserve its original cartoon design, identity, pose, proportions, perspective, outline and colors as closely as possible; only subtle cleanup is allowed. Do not include the pink guide, floor, contact shadow, extra objects, text, UI, or a checkerboard. Center the complete object with at least 8% transparent margin on every side. Do not crop any part. Image 2 is a selection guide only, never copy its pink color.',
+      extractionRequest.size,
+      { ...options, ...settings },
+      { transparent: true, guide: extractionRequest.guide },
+    );
+    const placed = await placeGeneratedAsset(
+      extractionReturned,
+      extractionRequest.target,
+      width,
+      height,
+    );
+    cutout = placed.full;
+    croppedCutout = placed.image;
+    cutoutFrame = placed.frame;
+    assetPreview = await sharp(source)
+      .composite([{ input: placed.full }])
+      .png()
+      .toBuffer();
+    extractionComposite = await sharp(image)
+      .composite([{ input: placed.full }])
+      .png()
+      .toBuffer();
+  }
   const folder = path.join(root, 'scene-art');
   await mkdir(folder, { recursive: true });
   if ((await realpath(folder)) !== path.resolve(folder))
@@ -509,6 +560,21 @@ export async function createArtwork(
         ['placement-guide.png', assetRequest.guide],
         ['provider-returned.png', returned],
         ['preview.png', assetPreview],
+      ] as const)
+        await writeFile(path.join(staging, name), bytes, { flag: 'wx' });
+    }
+    if (
+      extractionRequest &&
+      extractionReturned &&
+      assetPreview &&
+      extractionComposite
+    ) {
+      for (const [name, bytes] of [
+        ['extraction-input.png', extractionRequest.reference],
+        ['extraction-guide.png', extractionRequest.guide],
+        ['extraction-returned.png', extractionReturned],
+        ['preview.png', assetPreview],
+        ['reassembled.png', extractionComposite],
       ] as const)
         await writeFile(path.join(staging, name), bytes, { flag: 'wx' });
     }
@@ -538,7 +604,12 @@ export async function createArtwork(
           flag: 'wx',
         });
     }
-    if (operation === 'extract' && !debugOnly && !blockedReason) {
+    if (
+      operation === 'extract' &&
+      !debugOnly &&
+      !blockedReason &&
+      !openaiExtraction
+    ) {
       const background = await sharp(image).ensureAlpha().raw().toBuffer();
       const combined = Buffer.from(background),
         difference = Buffer.alloc(raw.length, 0);
@@ -876,6 +947,20 @@ export async function createArtwork(
     }
     const manifest = {
       version: 3,
+      extraction: extractionRequest
+        ? {
+            method: 'openai',
+            target: extractionRequest.target,
+            inputCrop: extractionRequest.crop,
+            guideMethod: suppliedMask?.method ?? 'polygon',
+            fit: 'contain',
+            anchor: 'bottom-center',
+            provider: 'extraction-returned.png',
+            input: 'extraction-input.png',
+            guide: 'extraction-guide.png',
+            pixelExact: false,
+          }
+        : undefined,
       assetPlacement: assetRequest
         ? {
             target: assetRequest.target,
@@ -958,6 +1043,7 @@ export async function createArtwork(
     await rename(staging, path.join(folder, id));
     return {
       operation,
+      extractionMethod: openaiExtraction ? 'openai' : undefined,
       source: input.source,
       ...settings,
       debugOnly: debugOnly || undefined,
@@ -985,7 +1071,10 @@ export async function createArtwork(
       manifest: `${prefix}/recipe.json`,
       objectMask: exact ? `${prefix}/object-mask.png` : undefined,
       original: `${prefix}/source.png`,
-      reassembled: reconstruction ? `${prefix}/reassembled.png` : undefined,
+      reassembled:
+        reconstruction || extractionComposite
+          ? `${prefix}/reassembled.png`
+          : undefined,
       difference: reconstruction ? `${prefix}/difference.png` : undefined,
       repairMask: ['extract', 'remove'].includes(operation)
         ? `${prefix}/repair-mask.png`

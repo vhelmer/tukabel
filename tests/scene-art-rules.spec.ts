@@ -1018,3 +1018,191 @@ test('cropped assets retain every RGBA byte and archived restored backgrounds re
     ).rejects.toThrow();
   });
 });
+
+test('OpenAI extraction keeps repair unchanged, uses SAM frame for placement and archives its own provider inputs', async () => {
+  await fixture(async (root, original) => {
+    const generated = await sharp(
+      Buffer.from(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96"><rect x="24" y="16" width="48" height="64" rx="6" fill="#dd7733"/></svg>',
+      ),
+    )
+      .png()
+      .toBuffer();
+    let calls = 0;
+    const result = await createArtwork(
+      root,
+      {
+        source: 'source.png',
+        operation: 'extract',
+        selection: rectangle,
+        extractionMethod: 'openai',
+        objectMask: {
+          data: (
+            await maskPng(
+              Buffer.from(
+                Array.from({ length: 64 * 48 }, (_, i) => {
+                  const x = i % 64,
+                    y = Math.floor(i / 64);
+                  return x >= 20 && x < 44 && y >= 10 && y < 42 ? 255 : 0;
+                }),
+              ),
+              64,
+              48,
+            )
+          ).toString('base64'),
+          width: 64,
+          height: 48,
+          sourceSha256: (await readArtSource(root, 'source.png')).sourceSha256,
+          method: 'sam3',
+        },
+        prompt: 'Oprav pozadí.',
+        confirmed: true,
+        repairPadding: 2,
+      },
+      {
+        apiKey: 'test-secret',
+        fetch: (async (_url, init) => {
+          calls++;
+          const body = JSON.parse(init!.body as string);
+          if (calls === 1) {
+            expect(body.background).toBeUndefined();
+            expect(body.mask).toBeDefined();
+            return Response.json({
+              data: [{ b64_json: body.images[0].image_url.split(',')[1] }],
+            });
+          }
+          expect(body.background).toBe('transparent');
+          expect(body.mask).toBeUndefined();
+          expect(body.images).toHaveLength(2);
+          expect(body.prompt).toContain('Extract');
+          return Response.json({
+            data: [{ b64_json: generated.toString('base64') }],
+          });
+        }) as typeof fetch,
+      },
+    );
+    expect(calls).toBe(2);
+    expect(result.extractionMethod).toBe('openai');
+    expect(result.cutoutFrame).toEqual({
+      x: 20,
+      y: 10,
+      width: 24,
+      height: 32,
+      sourceWidth: 64,
+      sourceHeight: 48,
+    });
+    expect(result.reconstruction).toBeUndefined();
+    expect(result.reassembled).toBeDefined();
+    expect(
+      (await readFile(path.join(root, 'source.png'))).equals(original),
+    ).toBe(true);
+    const recipe = JSON.parse(
+      await readFile(path.join(root, result.manifest), 'utf8'),
+    );
+    expect(recipe.extraction).toMatchObject({
+      method: 'openai',
+      target: { x: 20, y: 10, width: 24, height: 32 },
+      guideMethod: 'sam3',
+    });
+    const files = await readdir(path.dirname(path.join(root, result.manifest)));
+    for (const name of [
+      'extraction-input.png',
+      'extraction-guide.png',
+      'extraction-returned.png',
+      'cutout-full.png',
+      'cutout.png',
+      'preview.png',
+      'reassembled.png',
+    ])
+      expect(files).toContain(name);
+    const { artworkHistory } = await import('../dev/artHistory');
+    const [archived] = await artworkHistory(root, { source: 'source.png' });
+    expect(archived?.extractionMethod).toBe('openai');
+    expect(archived?.reassembled).toBe(result.reassembled);
+  });
+});
+
+test('OpenAI extraction is opt-in, validates its method and rejects opaque results without publishing or retrying', async () => {
+  await fixture(async (root) => {
+    let calls = 0;
+    const fetchMock = (async (_url: unknown, init: RequestInit) => {
+      calls++;
+      const body = JSON.parse(init.body as string);
+      return Response.json({
+        data: [{ b64_json: body.images[0].image_url.split(',')[1] }],
+      });
+    }) as typeof fetch;
+    for (const input of [
+      { operation: 'cutout', extractionMethod: 'openai' },
+      { operation: 'extract', extractionMethod: 'other' },
+    ]) {
+      await expect(
+        createArtwork(
+          root,
+          {
+            source: 'source.png',
+            selection: rectangle,
+            prompt: 'Oprav.',
+            confirmed: true,
+            ...input,
+          },
+          { apiKey: 'secret', fetch: fetchMock },
+        ),
+      ).rejects.toThrow('výřezu');
+    }
+    expect(calls).toBe(0);
+    await expect(
+      createArtwork(
+        root,
+        {
+          source: 'source.png',
+          operation: 'extract',
+          extractionMethod: 'openai',
+          selection: rectangle,
+          prompt: 'Oprav.',
+          confirmed: true,
+        },
+        { apiKey: 'secret', fetch: fetchMock },
+      ),
+    ).rejects.toThrow('průhledným');
+    expect(calls).toBe(2);
+    expect(await readdir(root)).toEqual(['source.png']);
+  });
+});
+
+test('OpenAI extraction skips the extra call for debug or a mis-sized background response', async () => {
+  await fixture(async (root) => {
+    let calls = 0;
+    const options = {
+      apiKey: 'test-secret',
+      fetch: (async () => {
+        calls++;
+        const png = await sharp({
+          create: { width: 96, height: 96, channels: 4, background: '#998877' },
+        })
+          .png()
+          .toBuffer();
+        return Response.json({ data: [{ b64_json: png.toString('base64') }] });
+      }) as typeof fetch,
+    };
+    const input = {
+      source: 'source.png',
+      operation: 'extract',
+      extractionMethod: 'openai',
+      selection: rectangle,
+      prompt: 'Oprav pozadí.',
+      confirmed: true,
+    };
+    const debug = await createArtwork(
+      root,
+      { ...input, debugOnly: true },
+      options,
+    );
+    expect(debug.debugOnly).toBe(true);
+    expect(calls).toBe(0);
+    const blocked = await createArtwork(root, input, options);
+    expect(blocked.blockedReason).toContain('96');
+    expect(blocked.cutout).toBeUndefined();
+    expect(calls).toBe(1);
+  });
+});
