@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "method": "local articulated arm layers with thin-plate-spline inverse warp",
+  "adaptedFrom": "codex/1f5c8915-841d-4f60-a153-dcc30131a5b0/generate.py",
+  "source": "scene-art/2d60f8f0-ff05-48fb-90dc-0bffff272597/cutout.png",
+  "sourceSha256": "2aae32ee95febdc791f11e30a57024713edab7f25508331e7c1c1c33a4b86121",
+  "archivedSource": "source.png",
+  "width": 355,
+  "height": 580,
+  "frames": 12,
+  "fps": 10,
+  "loop": true,
+  "binding": {
+    "sceneId": "scene4",
+    "hotspotId": "layer1",
+    "slot": "idle"
+  },
+  "referenceCanvas": {
+    "width": 386,
+    "height": 613
+  },
+  "jointScale": {
+    "x": 0.9196891191709845,
+    "y": 0.9461663947797716
+  },
+  "script": "generate.py",
+  "validation": "validation.json",
+  "notes": "Převzatý lokální rig ruky a prstů, přepočítané souřadnice kloubů bez škálování rastru. Oči a ústa jsou chráněné pro nezávislé klipy; trup a nohy zůstávají původní. Bez API a dokreslování."
+}

@@ -1169,6 +1169,19 @@ otevřené a přivřené pózy sdílejí PNG. Otevřené pózy mají krátké pr
 protože čekání mezi mrknutími zajišťuje vazba, nikoli samotný klip.
 Celý import si vyzkoušíš výběrem týchž pěti PNG nebo `spritesheet.png` + JSON.
 
+Ve **Ferově dvoře (`scene4`)** má Fero nepřetržitou základní smyčku
+`fero-head-scratch-loop`: 12 snímků po 100 ms, `idleLoop: true`, bez náhodných
+prodlev. Vzniká ze stejného lokálního kloubového rigu jako archivované
+`codex/1f5c8915-841d-4f60-a153-dcc30131a5b0/expression-02.png` až `expression-05.png`,
+ale používá současný transparentní zdroj 355 × 580 bez škálování plátna. Pohybují
+se jen prsty a zdvižená ruka. Mrkání a ústa mají své původní nezávislé regiony;
+trup, nohy i chráněná tvář zůstávají původní. Nastavení reduced motion smyčku
+zastaví stejně jako ostatní animace. Reprodukce bez API:
+`python3 src/assets/animations/fero-head-scratch/generate.py` (Pillow).
+`recipe.json` zaznamenává původ rigu, zdroj a parametry; `validation.json` ověřuje
+nativní rozměry, otisky snímků, shodné krajní pózy a ochranu pevného těla i tváře.
+Jde o drobné opakované poškrábání, nikoli zvedání ruky ze svěšené polohy.
+
 ### Formát a přehrávání
 
 `animations[]` obsahuje `id`, `label`, `source`, `kind`, `frames`, `fps` (1–30),

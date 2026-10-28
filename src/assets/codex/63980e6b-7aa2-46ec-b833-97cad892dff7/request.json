@@ -1,0 +1,26 @@
+{
+  "context": {
+    "mode": "character",
+    "sceneId": "scene4",
+    "targetId": "layer2",
+    "source": "scene-art/baa7c0dd-9cba-4436-a27c-71697c3c5619/image.png",
+    "label": "Ferova žena",
+    "fingerprint": "[1448,1086,{\"id\":\"layer2\",\"label\":\"Ferova žena\",\"bounds\":{\"x\":111,\"y\":229,\"width\":133,\"height\":201},\"imageFit\":\"contain\",\"image\":\"scene-art/baa7c0dd-9cba-4436-a27c-71697c3c5619/image.png\",\"onClick\":[],\"decorative\":true}]",
+    "placement": {
+      "bounds": {
+        "x": 111,
+        "y": 229,
+        "width": 133,
+        "height": 201
+      },
+      "imageFit": "contain"
+    },
+    "instruction": "Připrav přirozené mrknutí a odlišné tvary úst pro mluvení. Zachovej původní kresbu, obrysy a všechny pixely mimo oči a ústa."
+  },
+  "prompt": "Připrav přirozené mrknutí a odlišné tvary úst pro mluvení. Zachovej původní kresbu, obrysy a všechny pixely mimo oči a ústa.",
+  "task": "blink-talk",
+  "count": 5,
+  "fps": 12,
+  "width": 133,
+  "height": 201
+}

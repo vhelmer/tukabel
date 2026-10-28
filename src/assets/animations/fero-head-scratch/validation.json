@@ -1,0 +1,39 @@
+{
+  "sourceSha256": "2aae32ee95febdc791f11e30a57024713edab7f25508331e7c1c1c33a4b86121",
+  "width": 355,
+  "height": 580,
+  "frames": 12,
+  "distinctPoses": 11,
+  "changedBounds": [215, 0, 355, 121],
+  "protectedRegions": [
+    {
+      "x": 182,
+      "y": 44,
+      "width": 55,
+      "height": 36
+    },
+    {
+      "x": 184,
+      "y": 94,
+      "width": 68,
+      "height": 54
+    }
+  ],
+  "protectedPixelsChanged": 0,
+  "opaqueCoreHoles": 0,
+  "exactEndpoints": true,
+  "frameSha256": {
+    "frame-01.png": "2aae32ee95febdc791f11e30a57024713edab7f25508331e7c1c1c33a4b86121",
+    "frame-02.png": "53054e2e6fdc6cb4976d07d8359c93fd04d30c58d79a2e75188eeb13346912a2",
+    "frame-03.png": "8f1fbe191dacaa9cbe2b2c554f9e15bde4fdff418e855a0609594a3c48d6e5e3",
+    "frame-04.png": "3a62c60ba6974374ec3e77038cac9179ac3061cd02a4aae6c4e44f1cf59639be",
+    "frame-05.png": "bf85c232d9c4f1d4f3d9f9554a76ff47990556c005e14702a1cd3b0bc7f59f05",
+    "frame-06.png": "f10d5ae6f8429b9f535b6bd95db8a7d8b8590d01d07af34436e19cffc7e7900d",
+    "frame-07.png": "591832c36e330af749b0f4d86345ab17878cabb07d4a07c98b783458bccb30f0",
+    "frame-08.png": "fafa7124aa01f7f862b66239977b2233eef8c74aca74dc1f53ac093930f4e3f1",
+    "frame-09.png": "1aeebb23ea28d46b20114e12c2091fbf76c09eb87dde6fa566fce721a6e95d31",
+    "frame-10.png": "2b5d764fdb5564722f0977b9442ad5f2be1b7568e4e07d86a1c31b3a4af6b93c",
+    "frame-11.png": "837d9c10a4be7e905d9f017dff6da6b21bda6fb8369e412a2be8a9f93d615c94",
+    "frame-12.png": "2aae32ee95febdc791f11e30a57024713edab7f25508331e7c1c1c33a4b86121"
+  }
+}

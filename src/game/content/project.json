@@ -813,6 +813,55 @@
           "onClick": []
         }
       ]
+    },
+    {
+      "id": "scene4",
+      "title": "Ferův dvůr",
+      "width": 1448,
+      "height": 1086,
+      "background": "imported/image-5dd2c9a7.png",
+      "hotspots": [
+        {
+          "id": "layer2",
+          "label": "Ferova žena",
+          "bounds": {
+            "x": 111,
+            "y": 229,
+            "width": 133,
+            "height": 201
+          },
+          "imageFit": "contain",
+          "image": "scene-art/baa7c0dd-9cba-4436-a27c-71697c3c5619/image.png",
+          "onClick": [],
+          "decorative": true,
+          "animation": {
+            "blink": "codex-63980e6b-7aa2-46ec-b833-97cad892dff7-blink",
+            "blinkIntervalMs": [3000, 7000],
+            "talk": "codex-63980e6b-7aa2-46ec-b833-97cad892dff7-talk"
+          }
+        },
+        {
+          "id": "layer1",
+          "label": "Fero",
+          "bounds": {
+            "x": 330,
+            "y": 343,
+            "width": 355,
+            "height": 580
+          },
+          "imageFit": "contain",
+          "image": "scene-art/2d60f8f0-ff05-48fb-90dc-0bffff272597/cutout.png",
+          "onClick": [],
+          "decorative": true,
+          "animation": {
+            "idle": "fero-head-scratch-loop",
+            "idleLoop": true,
+            "blink": "codex-07111c67-89c0-451b-9cb3-a598dec43b90-blink",
+            "blinkIntervalMs": [3000, 7000],
+            "talk": "codex-07111c67-89c0-451b-9cb3-a598dec43b90-talk"
+          }
+        }
+      ]
     }
   ],
   "items": [
@@ -1977,6 +2026,112 @@
         "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-032.png"
       ],
       "loop": false
+    },
+    {
+      "id": "codex-63980e6b-7aa2-46ec-b833-97cad892dff7-blink",
+      "source": "scene-art/baa7c0dd-9cba-4436-a27c-71697c3c5619/image.png",
+      "kind": "blink",
+      "label": "Přirozené mrknutí",
+      "frames": [
+        "codex/63980e6b-7aa2-46ec-b833-97cad892dff7/blink-01.png",
+        "codex/63980e6b-7aa2-46ec-b833-97cad892dff7/blink-02.png",
+        "codex/63980e6b-7aa2-46ec-b833-97cad892dff7/blink-03.png",
+        "codex/63980e6b-7aa2-46ec-b833-97cad892dff7/blink-04.png",
+        "codex/63980e6b-7aa2-46ec-b833-97cad892dff7/blink-05.png"
+      ],
+      "fps": 12,
+      "loop": false,
+      "region": {
+        "x": 53,
+        "y": 44,
+        "width": 51,
+        "height": 27
+      }
+    },
+    {
+      "id": "codex-63980e6b-7aa2-46ec-b833-97cad892dff7-talk",
+      "source": "scene-art/baa7c0dd-9cba-4436-a27c-71697c3c5619/image.png",
+      "kind": "talk",
+      "label": "Mluvení – klid, E, A, O, M",
+      "frames": [
+        "codex/63980e6b-7aa2-46ec-b833-97cad892dff7/talk-01.png",
+        "codex/63980e6b-7aa2-46ec-b833-97cad892dff7/talk-02.png",
+        "codex/63980e6b-7aa2-46ec-b833-97cad892dff7/talk-03.png",
+        "codex/63980e6b-7aa2-46ec-b833-97cad892dff7/talk-04.png",
+        "codex/63980e6b-7aa2-46ec-b833-97cad892dff7/talk-05.png"
+      ],
+      "fps": 12,
+      "loop": true,
+      "region": {
+        "x": 53,
+        "y": 84,
+        "width": 34,
+        "height": 15
+      }
+    },
+    {
+      "id": "codex-07111c67-89c0-451b-9cb3-a598dec43b90-blink",
+      "source": "scene-art/2d60f8f0-ff05-48fb-90dc-0bffff272597/cutout.png",
+      "kind": "blink",
+      "label": "Přirozené mrknutí",
+      "frames": [
+        "codex/07111c67-89c0-451b-9cb3-a598dec43b90/blink-01.png",
+        "codex/07111c67-89c0-451b-9cb3-a598dec43b90/blink-02.png",
+        "codex/07111c67-89c0-451b-9cb3-a598dec43b90/blink-03.png",
+        "codex/07111c67-89c0-451b-9cb3-a598dec43b90/blink-04.png",
+        "codex/07111c67-89c0-451b-9cb3-a598dec43b90/blink-05.png"
+      ],
+      "fps": 12,
+      "loop": false,
+      "region": {
+        "x": 182,
+        "y": 44,
+        "width": 55,
+        "height": 36
+      }
+    },
+    {
+      "id": "codex-07111c67-89c0-451b-9cb3-a598dec43b90-talk",
+      "source": "scene-art/2d60f8f0-ff05-48fb-90dc-0bffff272597/cutout.png",
+      "kind": "talk",
+      "label": "Mluvení: klid, A, E, O, M",
+      "frames": [
+        "codex/07111c67-89c0-451b-9cb3-a598dec43b90/talk-01.png",
+        "codex/07111c67-89c0-451b-9cb3-a598dec43b90/talk-02.png",
+        "codex/07111c67-89c0-451b-9cb3-a598dec43b90/talk-03.png",
+        "codex/07111c67-89c0-451b-9cb3-a598dec43b90/talk-04.png",
+        "codex/07111c67-89c0-451b-9cb3-a598dec43b90/talk-05.png"
+      ],
+      "fps": 12,
+      "loop": true,
+      "region": {
+        "x": 184,
+        "y": 94,
+        "width": 68,
+        "height": 54
+      }
+    },
+    {
+      "id": "fero-head-scratch-loop",
+      "source": "scene-art/2d60f8f0-ff05-48fb-90dc-0bffff272597/cutout.png",
+      "kind": "idle",
+      "label": "Fero · škrabanie hlavy",
+      "frames": [
+        "animations/fero-head-scratch/frame-01.png",
+        "animations/fero-head-scratch/frame-02.png",
+        "animations/fero-head-scratch/frame-03.png",
+        "animations/fero-head-scratch/frame-04.png",
+        "animations/fero-head-scratch/frame-05.png",
+        "animations/fero-head-scratch/frame-06.png",
+        "animations/fero-head-scratch/frame-07.png",
+        "animations/fero-head-scratch/frame-08.png",
+        "animations/fero-head-scratch/frame-09.png",
+        "animations/fero-head-scratch/frame-10.png",
+        "animations/fero-head-scratch/frame-11.png",
+        "animations/fero-head-scratch/frame-12.png"
+      ],
+      "fps": 10,
+      "loop": true
     }
   ]
 }

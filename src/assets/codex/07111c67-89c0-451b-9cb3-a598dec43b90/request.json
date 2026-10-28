@@ -1,0 +1,26 @@
+{
+  "context": {
+    "mode": "character",
+    "sceneId": "scene4",
+    "targetId": "layer1",
+    "source": "scene-art/2d60f8f0-ff05-48fb-90dc-0bffff272597/cutout.png",
+    "label": "Fero",
+    "fingerprint": "[1448,1086,{\"id\":\"layer1\",\"label\":\"Fero\",\"bounds\":{\"x\":330,\"y\":343,\"width\":355,\"height\":580},\"imageFit\":\"contain\",\"image\":\"scene-art/2d60f8f0-ff05-48fb-90dc-0bffff272597/cutout.png\",\"onClick\":[],\"decorative\":true}]",
+    "placement": {
+      "bounds": {
+        "x": 330,
+        "y": 343,
+        "width": 355,
+        "height": 580
+      },
+      "imageFit": "contain"
+    },
+    "instruction": "Připrav přirozené mrknutí a odlišné tvary úst pro mluvení. Zachovej původní kresbu, obrysy a všechny pixely mimo oči a ústa."
+  },
+  "prompt": "Připrav přirozené mrknutí a odlišné tvary úst pro mluvení. Zachovej původní kresbu, obrysy a všechny pixely mimo oči a ústa.",
+  "task": "blink-talk",
+  "count": 5,
+  "fps": 12,
+  "width": 355,
+  "height": 580
+}
