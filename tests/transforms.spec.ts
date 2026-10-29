@@ -270,7 +270,6 @@ test('proportional handles, numeric edits, zoom and explicit distortion persist 
   workspace,
   isMobile,
 }, testInfo) => {
-  testInfo.setTimeout(45000);
   await seed(workspace);
   await openEditor(page, workspace.url);
   await select(page, 'actor');

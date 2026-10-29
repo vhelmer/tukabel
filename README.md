@@ -112,6 +112,15 @@ pixely a přesuň/zvětši/otoč existujícími úchyty. **Interaktivní objekt*
 hotspotové reakce a inventární pravidla v pravém inspektoru. Dekorace propouštějí
 herní hover, kliknutí i drop na objekty pod nimi. Zamknutí nemění chování hry.
 
+Chování zástupného objektu přeneseš na novou grafiku tlačítkem **Kopírovat chování**
+pod scénou: vyber původní objekt a potom klikni na cíl ve scéně nebo v seznamu
+vrstev. Přenesou se podmínky viditelnosti, kliknutí, použití inventáře, otevření
+mapy, kurzor a příznak interaktivní/dekorativní vrstvy; dosavadní pravidla cíle se
+nahradí. Obrázek, název, ID, umístění, polygon, animace, krytí a ruční skrytí cíle
+zůstávají zachované. Zamčený cíl nejdřív odemkni. Escape kopírování zruší,
+**Zpět/Znovu** vrátí celý přenos v jednom kroku. Původní objekt zůstává na místě;
+po kontrole výsledku ho ručně smaž a použij **Uložit do projektu**.
+
 1. V **Zdroj grafické úpravy** vyber pozadí nebo právě vybranou obrázkovou vrstvu.
 2. Nad scénou zvol **Vybrat obdélník** a táhni, nebo **Vybrat polygon** a přidávej body.
    Polygon uzavři Enterem, prvním bodem nebo **Dokončit polygon**. Escape ruší návrh.

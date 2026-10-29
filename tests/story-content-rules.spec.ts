@@ -490,9 +490,7 @@ test('Dežo barters one unique alley scrap pickup and refuses bottles, holy wate
     hotspot.image,
   );
   expect(hotspot.placeholder).not.toBe(true);
-  expect(hotspot.bounds.x).toBeGreaterThanOrEqual(440);
-  expect(hotspot.bounds.x + hotspot.bounds.width).toBeLessThanOrEqual(720);
-  expect(hotspot.bounds.y + hotspot.bounds.height).toBeLessThan(761);
+  // Placement is editable in Dev Mode; shared validation checks scene bounds.
   expect(
     matches(
       { ...p.state, flags: { ...p.state.flags, 'magnet-given': true } },

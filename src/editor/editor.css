@@ -321,11 +321,13 @@
 }
 .hotspot-list {
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-end;
   gap: 12px;
 }
 .hotspot-list .editor-field {
-  flex: 1;
+  flex: 1 1 220px;
+  min-width: 0;
 }
 .hotspot-list button {
   margin-bottom: 12px;
@@ -1262,4 +1264,8 @@
   .world-map-layout {
     grid-template-columns: minmax(0, 1fr);
   }
+}
+
+.editor-stage.copying-behavior * {
+  cursor: inherit;
 }

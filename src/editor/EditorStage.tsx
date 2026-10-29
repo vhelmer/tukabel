@@ -44,6 +44,8 @@ export function EditorStage({
   onCreate,
   selection,
   onSelection,
+  pickTargetSourceId,
+  onPickTarget,
 }: {
   scene: SceneDefinition;
   selectedId: string;
@@ -52,9 +54,19 @@ export function EditorStage({
   onCreate: (bounds: Bounds, polygon?: Hotspot['polygon']) => void;
   selection?: readonly Point[];
   onSelection?: (points: readonly Point[]) => void;
+  pickTargetSourceId?: string;
+  onPickTarget?: (id: string) => void;
 }) {
   const svg = useRef<SVGSVGElement>(null);
   const gesture = useRef<Gesture | null>(null);
+  const pickingTarget = Boolean(pickTargetSourceId && onPickTarget);
+  const targetPress = useRef<{
+    pointerId: number;
+    id: string;
+    x: number;
+    y: number;
+    moved: boolean;
+  } | null>(null);
   const draftPointer = useRef<number | null>(null);
   const [preview, setPreview] = useState<Gesture | null>(null);
   const [drawing, setDrawing] = useState(false);
@@ -71,6 +83,24 @@ export function EditorStage({
   const [screenScale, setScreenScale] = useState(1);
   const { masks, error: maskError } = useAlphaMasks(scene);
   const [hoveredId, setHoveredId] = useState('');
+  if (
+    pickingTarget &&
+    (drawing || selecting || polygonDraft !== null || panning)
+  ) {
+    setDrawing(false);
+    setSelecting(false);
+    setPolygonDraft(null);
+    setPanning(false);
+  }
+  useEffect(() => {
+    const element = svg.current;
+    return () => {
+      const press = targetPress.current;
+      targetPress.current = null;
+      if (press && element?.hasPointerCapture(press.pointerId))
+        element.releasePointerCapture(press.pointerId);
+    };
+  }, [pickTargetSourceId]);
   const pick = (p: Point) =>
     [...scene.hotspots]
       .reverse()
@@ -78,7 +108,9 @@ export function EditorStage({
         (hotspot) =>
           !hotspot.hidden &&
           (hotspot.opacity ?? 1) > 0 &&
-          !hotspot.locked &&
+          (pickingTarget
+            ? hotspot.id !== pickTargetSourceId
+            : !hotspot.locked) &&
           hitTestHotspot(
             hotspot,
             p,
@@ -110,7 +142,11 @@ export function EditorStage({
       setSelecting(false);
       setPolygonDraft(null);
       setPolygonError('');
-      const pointerId = current?.pointerId ?? draftPointer.current;
+      const pointerId =
+        current?.pointerId ??
+        targetPress.current?.pointerId ??
+        draftPointer.current;
+      targetPress.current = null;
       draftPointer.current = null;
       if (pointerId !== null && svg.current?.hasPointerCapture(pointerId))
         svg.current.releasePointerCapture(pointerId);
@@ -132,7 +168,13 @@ export function EditorStage({
     hotspot?: Hotspot,
     vertexIndex?: number,
   ) {
-    if (event.button !== 0 || gesture.current || hotspot?.locked) return;
+    if (
+      pickingTarget ||
+      event.button !== 0 ||
+      gesture.current ||
+      hotspot?.locked
+    )
+      return;
     const start = point(event);
     if (!start) return;
     event.stopPropagation();
@@ -163,6 +205,16 @@ export function EditorStage({
   function move(event: PointerEvent<SVGElement>) {
     const current = gesture.current,
       end = point(event);
+    if (pickingTarget) {
+      const press = targetPress.current;
+      if (
+        press?.pointerId === event.pointerId &&
+        Math.hypot(event.clientX - press.x, event.clientY - press.y) > 7
+      )
+        press.moved = true;
+      setHoveredId(end ? (pick(end)?.id ?? '') : '');
+      return;
+    }
     if (!current) {
       if (polygonDraft) {
         setDraftCursor(end);
@@ -216,6 +268,22 @@ export function EditorStage({
       };
     }
     setPreview({ ...current });
+  }
+  function finishTarget(event: PointerEvent<SVGElement>, cancel = false) {
+    const press = targetPress.current;
+    if (!press || press.pointerId !== event.pointerId) return;
+    targetPress.current = null;
+    if (svg.current?.hasPointerCapture(event.pointerId))
+      svg.current.releasePointerCapture(event.pointerId);
+    const end = point(event);
+    if (
+      !cancel &&
+      !press.moved &&
+      Math.hypot(event.clientX - press.x, event.clientY - press.y) <= 7 &&
+      end &&
+      pick(end)?.id === press.id
+    )
+      onPickTarget?.(press.id);
   }
   function finish(event: PointerEvent<SVGElement>, cancel = false) {
     const current = gesture.current;
@@ -362,6 +430,7 @@ export function EditorStage({
           <input
             type="checkbox"
             checked={panning}
+            disabled={pickingTarget}
             onChange={(event) => {
               setPanning(event.target.checked);
               setDrawing(false);
@@ -371,6 +440,7 @@ export function EditorStage({
           Posun pohledu
         </label>
         <button
+          disabled={pickingTarget}
           aria-pressed={drawing && !selecting}
           onClick={() => {
             setSelecting(false);
@@ -384,6 +454,7 @@ export function EditorStage({
           {drawing && !selecting ? 'Zrušit kreslení' : 'Nakreslit hotspot'}
         </button>
         <button
+          disabled={pickingTarget}
           aria-pressed={polygonDraft !== null && !selecting}
           onClick={() => {
             setSelecting(false);
@@ -403,6 +474,7 @@ export function EditorStage({
           (['rectangle', 'polygon'] as const).map((tool) => (
             <button
               key={tool}
+              disabled={pickingTarget}
               aria-pressed={
                 selecting &&
                 (tool === 'rectangle' ? drawing : polygonDraft !== null)
@@ -428,7 +500,7 @@ export function EditorStage({
           Transformační nástroj{' '}
           <select
             aria-label="Transformační nástroj"
-            disabled={!selected?.image}
+            disabled={pickingTarget || !selected?.image}
             value={selected?.imageFit ?? 'contain'}
             onChange={(e) =>
               selected &&
@@ -467,11 +539,17 @@ export function EditorStage({
         >
           <svg
             ref={svg}
-            className={`editor-stage ${drawing ? 'drawing' : ''} ${panning ? 'panning' : ''}`}
+            className={`editor-stage ${drawing ? 'drawing' : ''} ${panning ? 'panning' : ''} ${pickingTarget ? 'copying-behavior' : ''}`}
             viewBox={`0 0 ${scene.width} ${scene.height}`}
             style={{
               aspectRatio: `${scene.width} / ${scene.height}`,
-              cursor: !drawing && !panning && hoveredId ? 'move' : undefined,
+              cursor: pickingTarget
+                ? scene.hotspots.find((h) => h.id === hoveredId)?.locked
+                  ? 'not-allowed'
+                  : 'copy'
+                : !drawing && !panning && hoveredId
+                  ? 'move'
+                  : undefined,
             }}
             data-hovered-id={hoveredId}
             aria-label="Vizuální editor lokace"
@@ -488,6 +566,10 @@ export function EditorStage({
               }
             }}
             onPointerUp={(e) => {
+              if (pickingTarget) {
+                finishTarget(e);
+                return;
+              }
               if (
                 polygonDraft === null ||
                 draftPointer.current !== e.pointerId
@@ -517,6 +599,23 @@ export function EditorStage({
                 setPolygonDraft([...polygonDraft, next]);
             }}
             onPointerDown={(e) => {
+              if (pickingTarget) {
+                if (e.button !== 0 || targetPress.current) return;
+                e.preventDefault();
+                const p = point(e);
+                const target = p && pick(p);
+                if (target) {
+                  targetPress.current = {
+                    pointerId: e.pointerId,
+                    id: target.id,
+                    x: e.clientX,
+                    y: e.clientY,
+                    moved: false,
+                  };
+                  svg.current?.setPointerCapture(e.pointerId);
+                }
+                return;
+              }
               if (polygonDraft !== null) {
                 if (e.button === 0) {
                   e.preventDefault();
@@ -537,10 +636,12 @@ export function EditorStage({
             onPointerLeave={() => setHoveredId('')}
             onPointerCancel={(e) => {
               draftPointer.current = null;
+              finishTarget(e, true);
               finish(e, true);
             }}
             onLostPointerCapture={(e) => {
               draftPointer.current = null;
+              finishTarget(e, true);
               finish(e, true);
             }}
           >
@@ -680,6 +781,7 @@ export function EditorStage({
               );
             })}
             {helpers &&
+              !pickingTarget &&
               active &&
               !active.locked &&
               !panning &&
@@ -843,7 +945,7 @@ export function EditorStage({
         ) : (
           <>
             <button
-              disabled={!selected}
+              disabled={pickingTarget || !selected}
               onClick={() =>
                 selected &&
                 onHotspot({
@@ -859,6 +961,7 @@ export function EditorStage({
             </button>
             <button
               disabled={
+                pickingTarget ||
                 selectedVertex < 0 ||
                 !selected?.polygon ||
                 selected.polygon.length <= 3

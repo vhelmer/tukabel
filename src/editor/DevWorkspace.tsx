@@ -10,6 +10,7 @@ import type {
 } from '../game/types';
 import { readProject, writeProject } from './api';
 import { nextId } from './model';
+import { copyHotspotBehavior } from './hotspotBehavior';
 import { Field, SelectId } from './fields';
 import { AnimationStudio } from './AnimationStudio';
 import { EditorStage } from './EditorStage';
@@ -71,6 +72,11 @@ export default function DevWorkspace({
   const [taskId, setTaskId] = useState('');
   const [graphNodeId, setGraphNodeId] = useState('');
   const [hotspotId, setHotspotId] = useState('');
+  const [behaviorCopy, setBehaviorCopy] = useState<{
+    sceneId: string;
+    document: GameContent;
+    source: Hotspot;
+  }>();
   const [artSelection, setArtSelection] = useState<{
     scope: string;
     points: readonly Point[];
@@ -97,6 +103,26 @@ export default function DevWorkspace({
   const scene =
     document.scenes.find((entry) => entry.id === sceneId) ?? document.scenes[0];
   const hotspot = scene?.hotspots.find((entry) => entry.id === hotspotId);
+  // Changing the editing context invalidates the tool, including a later undo
+  // back to the same document. The pending operation never enters project JSON.
+  if (
+    behaviorCopy &&
+    (behaviorCopy.document !== document ||
+      behaviorCopy.sceneId !== scene?.id ||
+      !active ||
+      tab !== 'scenes' ||
+      livePreview ||
+      busy)
+  )
+    setBehaviorCopy(undefined);
+  useEffect(() => {
+    if (!behaviorCopy) return;
+    const cancel = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setBehaviorCopy(undefined);
+    };
+    window.addEventListener('keydown', cancel);
+    return () => window.removeEventListener('keydown', cancel);
+  }, [behaviorCopy]);
   const artScope = `${scene?.id}/${hotspot?.id ?? ''}`;
   const selection =
     artSelection?.scope === artScope ? artSelection.points : undefined;
@@ -149,6 +175,7 @@ export default function DevWorkspace({
     };
   }, [onChange]);
   function change(next: GameContent) {
+    setBehaviorCopy(undefined);
     if (serialize(next) === serialize(document)) return;
     setHistory({ undo: [...history.undo.slice(-49), document], redo: [] });
     onChange(next);
@@ -169,6 +196,32 @@ export default function DevWorkspace({
           entry.id === next.id ? next : entry,
         ),
       });
+  }
+  function selectHotspot(id: string) {
+    if (!behaviorCopy) {
+      setHotspotId(id);
+      return;
+    }
+    if (
+      !scene ||
+      behaviorCopy.sceneId !== scene.id ||
+      behaviorCopy.document !== document ||
+      id === behaviorCopy.source.id
+    )
+      return;
+    const target = scene.hotspots.find((entry) => entry.id === id);
+    if (!target) return;
+    if (target.locked) {
+      setMessage(
+        'Cílová vrstva je zamknutá. Nejdřív ji odemkni nebo vyber jinou.',
+      );
+      return;
+    }
+    updateHotspot(copyHotspotBehavior(behaviorCopy.source, target));
+    setHotspotId(id);
+    setMessage(
+      `Chování z „${behaviorCopy.source.label}“ zkopírované na „${target.label}“. Původní objekt zůstal zachovaný; operaci vrátí Zpět.`,
+    );
   }
   function createHotspot(
     bounds: Hotspot['bounds'],
@@ -433,7 +486,7 @@ export default function DevWorkspace({
                   selectedId={hotspotId}
                   assets={assets}
                   onAssets={addAssets}
-                  onSelect={setHotspotId}
+                  onSelect={selectHotspot}
                   onChange={updateScene}
                 />
                 <div className="scene-art-canvas">
@@ -456,7 +509,9 @@ export default function DevWorkspace({
                       key={scene.id}
                       scene={scene}
                       selectedId={hotspotId}
-                      onSelect={setHotspotId}
+                      onSelect={selectHotspot}
+                      pickTargetSourceId={behaviorCopy?.source.id}
+                      onPickTarget={selectHotspot}
                       onHotspot={updateHotspot}
                       onCreate={createHotspot}
                       selection={selection}
@@ -467,7 +522,7 @@ export default function DevWorkspace({
                     <Field label="Vybraný objekt">
                       <select
                         value={hotspot?.id ?? ''}
-                        onChange={(event) => setHotspotId(event.target.value)}
+                        onChange={(event) => selectHotspot(event.target.value)}
                       >
                         <option value="">Vyber objekt…</option>
                         {scene.hotspots.map((entry) => (
@@ -477,6 +532,19 @@ export default function DevWorkspace({
                         ))}
                       </select>
                     </Field>
+                    <button
+                      disabled={!behaviorCopy && (!hotspot || livePreview)}
+                      aria-pressed={Boolean(behaviorCopy)}
+                      onClick={() =>
+                        setBehaviorCopy(
+                          behaviorCopy || !hotspot
+                            ? undefined
+                            : { sceneId: scene.id, document, source: hotspot },
+                        )
+                      }
+                    >
+                      {behaviorCopy ? 'Zrušit kopírování' : 'Kopírovat chování'}
+                    </button>
                     <button
                       onClick={() => {
                         const x = Math.min(100, Math.floor(scene.width / 4));
@@ -492,6 +560,19 @@ export default function DevWorkspace({
                       + Objekt
                     </button>
                   </div>
+                  {behaviorCopy && (
+                    <p
+                      className="field-note"
+                      role="status"
+                      aria-label="Kopírování chování"
+                    >
+                      Kopíruješ z „{behaviorCopy.source.label}“. Klikni na
+                      cílový objekt ve scéně nebo v seznamu vrstev. Podmínky
+                      viditelnosti, kliknutí, použití inventáře a kurzor nahradí
+                      cílová pravidla. Grafika, umístění a animace cíle zůstanou
+                      zachované. Escape kopírování zruší.
+                    </p>
+                  )}
                   <SceneArtPanel
                     key={`${artScope}/${hotspot?.image ?? ''}`}
                     active={active}
