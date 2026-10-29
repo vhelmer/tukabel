@@ -803,7 +803,9 @@ zapuštěné přihrádce, vybraný předmět se v ní zlatě podsvítí. Nevyuž
 prázdné, bez textu. Bedýnka se prodlužuje podle počtu předmětů, její kované konce se
 nedeformují; sahá až k Menu. Než bedýnka začne stránkovat, přihrádky se zúží
 (na 48 px, na úzkém obrazu 36 px), aby šly všechny předměty kombinovat na jedné
-stránce. Teprve další předměty zobrazí šipky.
+stránce. Teprve další předměty zobrazí šipky. Vybraný předmět zůstane vybraný i
+při listování, takže jde kliknout na předmět na jiné stránce. Při tažení stačí
+podržet předmět nad šipkou a stránka se po 0,6 s otočí.
 Názvy se ukážou při najetí nebo zaměření klávesnicí, výběr předmětu zobrazí popis.
 Viditelné dřevo a ovládací prvky blokují svět pod sebou; průhledná místa HUDu
 propouštějí hover, kliky i drop do scény. Geometrie scény nezávisí na HUDu.

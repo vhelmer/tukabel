@@ -108,6 +108,10 @@ export function createHud(
   let inventoryPage = 0,
     journalScroll = 0,
     journalMaxScroll = 0;
+  // Holding a dragged item over a paging arrow turns pages, so items on
+  // different pages can still be combined by drag/drop.
+  const DRAG_PAGE_MS = 600;
+  let dragPaging: { id: string; timer: number } | null = null;
   let focused: string | null = null;
   const controlArt = new Map<string, Container>();
   let layout: HudLayout = {
@@ -996,6 +1000,32 @@ export function createHud(
         0x956747,
       );
   }
+  function stopDragPaging() {
+    if (dragPaging) window.clearInterval(dragPaging.timer);
+    dragPaging = null;
+  }
+  function syncDragPaging() {
+    const drag = snapshot.drag;
+    const arrow =
+      drag &&
+      layout.controls.find(
+        (c) =>
+          (c.id === 'inventory-prev' || c.id === 'inventory-next') &&
+          !c.disabled &&
+          contains(c.bounds, drag.x, drag.y),
+      );
+    if (arrow && arrow.id === dragPaging?.id) return;
+    stopDragPaging();
+    if (!arrow) return;
+    const id = arrow.id;
+    dragPaging = {
+      id,
+      timer: window.setInterval(() => {
+        if (!snapshot.drag) stopDragPaging();
+        else activate(id);
+      }, DRAG_PAGE_MS),
+    };
+  }
   function syncGhost() {
     const drag = snapshot.drag;
     if (ghostId !== drag?.id) {
@@ -1087,6 +1117,7 @@ export function createHud(
   return {
     root,
     controller,
+    destroy: stopDragPaging,
     get active() {
       return flights.length > 0 || shadeAlpha !== shadeTarget;
     },
@@ -1118,6 +1149,7 @@ export function createHud(
         rebuild();
       }
       syncGhost();
+      syncDragPaging();
       callbacks.onEffects({
         dragging: Boolean(next.drag),
         pickups: flights.length,
