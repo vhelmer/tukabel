@@ -1975,6 +1975,7 @@
           "bounds": { "x": 410, "y": 379, "width": 409, "height": 405 },
           "imageFit": "contain",
           "image": "scene-art/5f80ae25-c1b8-4d0f-bbd5-7b33398d005a/image.png",
+          "clipMask": "scene-art/5f80ae25-c1b8-4d0f-bbd5-7b33398d005a/upper-body-mask.png",
           "onClick": [
             { "effects": [{ "type": "dialogue", "id": "dingo-chat" }] }
           ],
