@@ -6,11 +6,13 @@ export function DialoguePanel({
   conversation,
   audio,
   subtitle,
+  needsAudioGesture = false,
   onAdvance,
 }: {
   conversation: ReturnType<typeof useConversation>;
   audio?: ReactNode;
   subtitle?: string;
+  needsAudioGesture?: boolean;
   onAdvance: () => void;
 }) {
   const panel = useRef<HTMLDivElement>(null);
@@ -65,9 +67,15 @@ export function DialoguePanel({
           <button
             type="button"
             className="dialogue-caption"
-            aria-label="Dokončiť repliku"
+            aria-label={
+              needsAudioGesture ? 'Spustiť dabing' : 'Dokončiť repliku'
+            }
             aria-describedby="dialogue-text"
-            title="Kliknutím alebo dotykom dokončíš repliku"
+            title={
+              needsAudioGesture
+                ? 'Kliknutím alebo dotykom spustíš dabing'
+                : 'Kliknutím alebo dotykom dokončíš repliku'
+            }
             disabled={!ready}
             onClick={onAdvance}
           >

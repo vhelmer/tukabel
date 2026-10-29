@@ -27,6 +27,7 @@ export function useDialogueAudio(
     resume = useRef(false);
   const [status, setStatus] = useState('');
   const [unavailable, setUnavailable] = useState(false);
+  const [needsGesture, setNeedsGesture] = useState(false);
   const completed = useRef(false);
   const speech = node?.speech?.text === node?.text ? node?.speech : undefined;
   const audioUrl = speech?.audio,
@@ -43,6 +44,7 @@ export function useDialogueAudio(
     resume.current = false;
     completed.current = false;
     setUnavailable(false);
+    setNeedsGesture(false);
     setStatus('');
     audio.src = audioUrl;
     if (lipSyncUrl)
@@ -60,10 +62,13 @@ export function useDialogueAudio(
             );
         });
     if (autoplay)
-      void audio.play().catch(() => {
+      void audio.play().catch((error: unknown) => {
         if (!abort.signal.aborted) {
           setUnavailable(true);
           failed.current = true;
+          setNeedsGesture(
+            error instanceof DOMException && error.name === 'NotAllowedError',
+          );
           setStatus(
             audio.error
               ? 'Dabing sa nepodarilo prehrať. Text zostáva dostupný.'
@@ -146,6 +151,16 @@ export function useDialogueAudio(
     stop();
     finish();
   };
+  const playFromGesture = () => {
+    const audio = ref.current;
+    if (!audio || !needsGesture || paused || !enabled) return;
+    void audio.play().catch(() => {
+      if (ref.current !== audio) return;
+      failed.current = true;
+      setUnavailable(true);
+      setNeedsGesture(false);
+    });
+  };
   const controls =
     speech && enabled ? (
       <div
@@ -164,11 +179,13 @@ export function useDialogueAudio(
             skipped.current = false;
             failed.current = false;
             setUnavailable(false);
+            setNeedsGesture(false);
           }}
           onEnded={finish}
           onError={() => {
             failed.current = true;
             setUnavailable(true);
+            setNeedsGesture(false);
             setStatus('Dabing sa nepodarilo prehrať. Text zostáva dostupný.');
           }}
         />
@@ -180,11 +197,21 @@ export function useDialogueAudio(
         {options.compact
           ? unavailable && (
               <p role="status">
-                Dabing nie je dostupný. Pokračuj kliknutím na titulky.
+                {needsGesture
+                  ? 'Klikni na titulky a spustíš dabing.'
+                  : 'Dabing nie je dostupný. Pokračuj kliknutím na titulky.'}
               </p>
             )
           : status && <p role="status">{status}</p>}
       </div>
     ) : null;
-  return { clock, controls, stop, unavailable, ...subtitles };
+  return {
+    clock,
+    controls,
+    stop,
+    unavailable,
+    needsGesture,
+    playFromGesture,
+    ...subtitles,
+  };
 }

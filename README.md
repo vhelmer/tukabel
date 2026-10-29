@@ -830,6 +830,12 @@ Aktuální příběh (`tukabel-grotesque-2`) začíná automatickým rozhovorem
 s Ferem na **Ferovom dvore**. Rudo bere pátrání po ukradeném hlavním kabelu za
 štartovné zdarma na zrušeném mistrovství v automatech. Hra má 12 zachovaných
 lokací, 13 postav, 24 předmětů, devět úkolů v deníku a dva fyzicky odlišné konce.
+Po načtení úvodní scény hra jednu sekundu nepřijímá vstup a teprve potom
+zobrazí titulky a spustí hotový Ferův dabing s lip-syncem. Stejná pauza platí
+pro **Nová hra**; načtení uložené pozice úvod neopakuje. Pauza není součástí save.
+Když prohlížeč zablokuje automatický zvuk, titulková plocha nabídne **Spustiť
+dabing**: první klik/tap/Enter přehraje repliku a nepřeskočí ji. Další potvrzení
+už řeč běžně dokončí. Pokud zvuk selže i po tomto gestu, lze pokračovat titulky.
 Nové ID obsahu odmítne starší uložené pozice s nekompatibilním stavem hádanek;
 ruční slot samo nemaže ani nepřepisuje.
 

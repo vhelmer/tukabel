@@ -27,6 +27,7 @@ export function useConversation(
   const phase = flow.key === key ? flow.phase : autoEntry ? 'speech' : 'entry';
   const token = `${key}:${flow.nonce}:${phase}`;
   const [armed, setArmed] = useState({ token: '', paused });
+  const [inputNonce, setInputNonce] = useState(0);
   // Invalidate readiness when the menu changes, even if this is the same line.
   if (armed.paused !== paused) setArmed({ token: '', paused });
   const gate = useRef(true);
@@ -49,7 +50,7 @@ export function useConversation(
     };
     timer = window.setTimeout(arm, INPUT_QUIET_MS);
     return () => window.clearTimeout(timer);
-  }, [token, key, paused, phase]);
+  }, [token, key, paused, phase, inputNonce]);
   const choices =
     node?.choices.filter((choice) => matches(state, choice.when)) ?? [];
   const ready = armed.token === token && !paused;
@@ -92,6 +93,11 @@ export function useConversation(
     intro: phase === 'entry' && !node?.choices.some((choice) => choice.next),
     utteranceKey: `${key}:${flow.nonce}`,
     reset,
+    lockInput: () => {
+      gate.current = true;
+      setArmed({ token: '', paused });
+      setInputNonce((nonce) => nonce + 1);
+    },
     start: () => {
       if (gate.current || paused || phase !== 'entry' || !node) return;
       gate.current = true;

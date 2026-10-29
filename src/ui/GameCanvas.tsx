@@ -39,6 +39,8 @@ interface GameCanvasProps extends SceneCallbacks {
   onHudAction?: (id: string, pointer: boolean) => void;
   onItemDown?: (id: string, event: InventoryPointer) => void;
   onHudReady?: (controller: HudController | null) => void;
+  onReady?: (sceneId: string) => void;
+  onError?: () => void;
 }
 
 const noAnimations: readonly AnimationDefinition[] = [];
@@ -62,6 +64,8 @@ function MountedCanvas({
   onHudAction,
   onItemDown,
   onHudReady,
+  onReady,
+  onError,
 }: GameCanvasProps) {
   const hudRef = useRef<ReturnType<typeof createHud> | null>(null);
   const hudSnapshot = useRef(hud);
@@ -380,11 +384,13 @@ function MountedCanvas({
         resize();
         syncPlayback();
         setStatus('ready');
+        onReady?.(scene.id);
       } catch (error) {
         destroy();
         if (!disposed) {
           console.error('Scene initialization failed:', error);
           setStatus('error');
+          onError?.();
         }
       }
     };
@@ -395,7 +401,15 @@ function MountedCanvas({
       sceneRef.current = null;
       destroy();
     };
-  }, [scene, animations, onPickerReady, hudContent, onHudReady]);
+  }, [
+    scene,
+    animations,
+    onPickerReady,
+    hudContent,
+    onHudReady,
+    onReady,
+    onError,
+  ]);
 
   useEffect(() => {
     if (status === 'ready') {

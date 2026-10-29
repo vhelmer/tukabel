@@ -14,6 +14,7 @@ export function App() {
   const [document, setDocument] = useState<GameContent>(content);
   const [playDocument, setPlayDocument] = useState<GameContent>(content);
   const [state, setState] = useState(() => initialState(content));
+  const [gameSession, setGameSession] = useState(0);
   const [sceneId, setSceneId] = useState(content.startScene);
   const [mode, setMode] = useState<'game' | 'dev'>('game');
   const [editorOpened, setEditorOpened] = useState(false);
@@ -83,11 +84,15 @@ export function App() {
       )}
       {mode === 'game' && (
         <GameWindow
+          openingSequence={gameSession}
           content={gameContent}
           state={state}
           dispatch={dispatch}
           restore={(saved: GameState) => setState(saved)}
-          reset={() => setState(initialState(gameContent))}
+          reset={() => {
+            setState(initialState(gameContent));
+            setGameSession((session) => session + 1);
+          }}
         />
       )}
       {DevWorkspace && editorOpened && (

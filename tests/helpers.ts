@@ -161,6 +161,9 @@ export async function menuAction(page: Page, name: string, close = true) {
 // intercept a pointer. Exercise the canvas itself, not a DOM handler.
 export async function hudClick(page: Page, control: Locator, touch = false) {
   await expect(control).toBeEnabled();
+  await expect
+    .poll(() => control.evaluate((element) => !element.closest('[inert]')))
+    .toBe(true);
   const box = await control.boundingBox();
   if (!box) throw new Error('HUD control has no bounds');
   const x = box.x + box.width / 2,

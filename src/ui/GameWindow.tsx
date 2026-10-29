@@ -40,13 +40,43 @@ export function GameWindow({
   dispatch: dispatchGame,
   restore,
   reset,
+  openingSequence = 0,
 }: {
   content: GameContent;
   state: GameState;
   dispatch: (action: GameAction) => void;
   restore: (state: GameState) => void;
   reset: () => void;
+  openingSequence?: number;
 }) {
+  const startsWithDialogue = Boolean(
+    content.startDialogue &&
+    state.sceneId === content.startScene &&
+    state.dialogue?.id === content.startDialogue,
+  );
+  const [opening, setOpening] = useState({
+    sequence: openingSequence,
+    pending: startsWithDialogue,
+  });
+  if (opening.sequence !== openingSequence)
+    setOpening({ sequence: openingSequence, pending: startsWithDialogue });
+  const openingPending =
+    opening.sequence === openingSequence ? opening.pending : startsWithDialogue;
+  const [readyScene, setReadyScene] = useState<string | null>(null);
+  const [sceneFailed, setSceneFailed] = useState(false);
+  const markSceneReady = useCallback((id: string) => {
+    setReadyScene(id);
+    setSceneFailed(false);
+  }, []);
+  const markSceneFailed = useCallback(() => setSceneFailed(true), []);
+  useEffect(() => {
+    if (!openingPending || readyScene !== state.sceneId) return;
+    const timer = window.setTimeout(
+      () => setOpening({ sequence: openingSequence, pending: false }),
+      1000,
+    );
+    return () => window.clearTimeout(timer);
+  }, [openingPending, readyScene, state.sceneId, openingSequence]);
   const [animationTrigger, setAnimationTrigger] =
     useState<AnimationTrigger | null>(null);
   const [hovered, setHovered] = useState<Hotspot | null>(null);
@@ -107,7 +137,7 @@ export function GameWindow({
     playEffect,
   } = useSceneAudio(
     ending ? ending.ambient : scene.ambient,
-    menu || journal || mapOpen,
+    openingPending || menu || journal || mapOpen,
   );
   const dialogueNode = getDialogueNode(content, state);
   const voiceActor = dialogueNode?.actor
@@ -142,7 +172,7 @@ export function GameWindow({
   );
   const dispatch = useCallback(
     (action: GameAction) => {
-      if (ending) return;
+      if (ending || openingPending) return;
       if (action.type === 'interact' && !state.dialogue) {
         const scene = content.scenes.find(
           (entry) => entry.id === state.sceneId,
@@ -231,15 +261,20 @@ export function GameWindow({
       }
       dispatchGame(action);
     },
-    [dispatchGame, content, state, ending, playEffect],
+    [dispatchGame, content, state, ending, openingPending, playEffect],
   );
-  const conversation = useConversation(content, state, dispatch, modalOpen);
+  const conversation = useConversation(
+    content,
+    state,
+    dispatch,
+    modalOpen || openingPending,
+  );
   const { reset: resetConversation } = conversation;
   const dialogueAudio = useDialogueAudio(
     dialogueNode,
     voiceActor?.animation,
-    modalOpen,
-    !ending && conversation.phase === 'speech',
+    modalOpen || openingPending,
+    !openingPending && !ending && conversation.phase === 'speech',
     true,
     conversation.utteranceKey,
     { compact: true, onComplete: conversation.finish },
@@ -254,6 +289,7 @@ export function GameWindow({
       : silentPlayback;
   const act = useCallback(
     (hotspot: Hotspot) => {
+      if (openingPending) return;
       if (
         hotspot.openMap &&
         content.worldMap &&
@@ -275,7 +311,14 @@ export function GameWindow({
       });
       setSelectedItem(null);
     },
-    [dispatch, selectedItem, content.worldMap, state.dialogue, modalOpen],
+    [
+      dispatch,
+      selectedItem,
+      content.worldMap,
+      state.dialogue,
+      modalOpen,
+      openingPending,
+    ],
   );
   const finishDrag = useCallback(() => {
     const current = dragRef.current;
@@ -431,6 +474,7 @@ export function GameWindow({
   }
 
   function hudAction(id: string, pointer: boolean) {
+    if (openingPending) return;
     if (ending && id !== 'menu') return;
     if (id.startsWith('item:')) {
       if (state.dialogue || modalOpen) return;
@@ -501,6 +545,7 @@ export function GameWindow({
       ref={gameRef}
       className={`game-window ${pointer?.inScene && (interactiveHover || selected) && !modalOpen && !state.dialogue ? 'has-scene-cursor' : ''} ${drag?.active ? 'is-dragging' : ''} ${journal ? 'is-journal-open' : ''}`}
       aria-label="Herné okno"
+      aria-busy={openingPending && !sceneFailed}
       onPointerMove={(event) => {
         if (event.pointerType === 'touch') return;
         const box = event.currentTarget.getBoundingClientRect();
@@ -530,7 +575,11 @@ export function GameWindow({
         setHovered(null);
       }}
     >
-      <div className="play-area" ref={viewport}>
+      <div
+        className="play-area"
+        ref={viewport}
+        inert={openingPending && !sceneFailed}
+      >
         <div inert={Boolean(ending)}>
           <GameCanvas
             scene={scene}
@@ -549,11 +598,13 @@ export function GameWindow({
               menu: menu || Boolean(ending),
             }}
             onHudReady={registerHud}
+            onReady={markSceneReady}
+            onError={markSceneFailed}
             onHudAction={hudAction}
             onItemDown={startDrag}
             onHover={setHovered}
             onInteract={act}
-            blocked={modalOpen || Boolean(drag?.active)}
+            blocked={openingPending || modalOpen || Boolean(drag?.active)}
           />
         </div>
         {currentHover && !state.dialogue && !modalOpen && (
@@ -583,18 +634,22 @@ export function GameWindow({
             {currentHover.label}
           </div>
         )}
-        {!ending && !state.dialogue && !mapOpen && Boolean(state.message) && (
-          <div
-            className="reaction"
-            role="status"
-            aria-label="Reakcia"
-            aria-live="polite"
-            aria-atomic="true"
-          >
-            <p key={state.message}>{state.message}</p>
-          </div>
-        )}
-        {!ending && state.dialogue && (
+        {!openingPending &&
+          !ending &&
+          !state.dialogue &&
+          !mapOpen &&
+          Boolean(state.message) && (
+            <div
+              className="reaction"
+              role="status"
+              aria-label="Reakcia"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              <p key={state.message}>{state.message}</p>
+            </div>
+          )}
+        {!openingPending && !ending && state.dialogue && (
           <DialoguePanel
             conversation={conversation}
             audio={dialogueAudio.controls}
@@ -603,7 +658,13 @@ export function GameWindow({
                 ? subtitleText(dialogueNode)
                 : dialogueAudio.subtitle
             }
-            onAdvance={() => conversation.advance(dialogueAudio.stop)}
+            needsAudioGesture={dialogueAudio.needsGesture}
+            onAdvance={() => {
+              if (dialogueAudio.needsGesture) {
+                conversation.lockInput();
+                dialogueAudio.playFromGesture();
+              } else conversation.advance(dialogueAudio.stop);
+            }}
           />
         )}
         {!state.dialogue && !modalOpen && (
