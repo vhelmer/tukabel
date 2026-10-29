@@ -209,6 +209,14 @@
       "completeWhen": { "flag": "tools-taken" }
     },
     {
+      "id": "cow-ritual",
+      "text": "Pokrsti kravu, uspi ju úradným čítaním a využi vedro aj zvonec.",
+      "startWhen": { "flag": "farm-known" },
+      "completeWhen": {
+        "all": [{ "flag": "cow-milked" }, { "flag": "bell-taken" }]
+      }
+    },
+    {
       "id": "open-herna",
       "text": "Oprav pípu, vypusť staré pivo do krígľov a prezri kryt automatu v herni.",
       "startWhen": { "flag": "tools-taken" },
@@ -219,6 +227,14 @@
       "text": "Bonifác počuje jackpot aj v kravskom zvonci. Jeho automat má ručnú kľuku.",
       "startWhen": { "flag": "bell-taken" },
       "completeWhen": { "flag": "cemetery-open" }
+    },
+    {
+      "id": "swing-contraption",
+      "text": "Povoľ čap, zaťaž sedadlo kamenným rožkom a rozhýb hojdačku. Špagát a podložku potom seber.",
+      "startWhen": { "flag": "tap-fixed" },
+      "completeWhen": {
+        "all": [{ "flag": "string-taken" }, { "flag": "washer-taken" }]
+      }
     },
     {
       "id": "fake-death",
@@ -237,22 +253,6 @@
       "text": "Kábel je tvoj. Oblep ho izolačkou a vráť do Ferovej rozvodnej skrine.",
       "startWhen": { "flag": "cable-recovered" },
       "completeWhen": { "flag": "ending-community" }
-    },
-    {
-      "id": "cow-ritual",
-      "text": "Pokrsti kravu, uspi ju úradným čítaním a využi vedro aj zvonec.",
-      "startWhen": { "flag": "farm-known" },
-      "completeWhen": {
-        "all": [{ "flag": "cow-milked" }, { "flag": "bell-taken" }]
-      }
-    },
-    {
-      "id": "swing-contraption",
-      "text": "Povoľ čap, zaťaž sedadlo kamenným rožkom a rozhýb hojdačku. Špagát a podložku potom seber.",
-      "startWhen": { "flag": "tap-fixed" },
-      "completeWhen": {
-        "all": [{ "flag": "string-taken" }, { "flag": "washer-taken" }]
-      }
     }
   ],
   "scenes": [
@@ -627,15 +627,15 @@
         {
           "id": "map-exit",
           "label": "Mapa osady",
-          "bounds": { "x": 512, "y": 662.4, "width": 256, "height": 57.6 },
+          "bounds": { "x": 0, "y": 644.365, "width": 1280, "height": 75.635 },
           "onClick": [],
           "openMap": true,
           "cursor": "exit",
           "polygon": [
-            { "x": 512, "y": 720 },
-            { "x": 563.2, "y": 662.4 },
-            { "x": 716.8000000000001, "y": 662.4 },
-            { "x": 768, "y": 720 }
+            { "x": 0, "y": 720 },
+            { "x": 0, "y": 647.944 },
+            { "x": 1280, "y": 644.365 },
+            { "x": 1280, "y": 720 }
           ]
         }
       ],
@@ -792,7 +792,7 @@
         {
           "id": "junction-box",
           "label": "Rozvodná skriňa",
-          "bounds": { "x": 1220, "y": 360, "width": 195, "height": 270 },
+          "bounds": { "x": 1204.94, "y": 19.644, "width": 195, "height": 270 },
           "onClick": [
             {
               "message": "Rudo: Chýba kábel. Skúsil by som tam strčiť prst, ale Fero hovoril, že už nie som v záruke."
@@ -819,70 +819,69 @@
         {
           "id": "alley-door",
           "label": "Prechod do uličky",
-          "bounds": { "x": 745, "y": 330, "width": 190, "height": 520 },
+          "bounds": {
+            "x": 757.608,
+            "y": 373.823,
+            "width": 339.008,
+            "height": 378.913
+          },
           "onClick": [{ "effects": [{ "type": "scene", "id": "scene11" }] }],
           "cursor": "exit",
           "polygon": [
-            { "x": 765, "y": 350 },
-            { "x": 900, "y": 350 },
-            { "x": 925, "y": 820 },
-            { "x": 748, "y": 847 }
+            { "x": 761.854, "y": 380.852 },
+            { "x": 1055.644, "y": 388.243 },
+            { "x": 1096.616, "y": 373.823 },
+            { "x": 1091.861, "y": 553.43 },
+            { "x": 1092.212, "y": 752.736 },
+            { "x": 1045.808, "y": 721.752 },
+            { "x": 757.608, "y": 728.857 }
           ]
         },
         {
           "id": "washing-line",
           "label": "Šnúra s bielizňou",
-          "bounds": { "x": 400, "y": 170, "width": 450, "height": 160 },
+          "bounds": {
+            "x": 407.355,
+            "y": 149.749,
+            "width": 364.317,
+            "height": 208.218
+          },
           "onClick": [
             {
               "message": "Eržika suší trenírky na šnúre a nádeje na Ferovi. Kolíčky zatiaľ vydržali viac."
             }
+          ],
+          "polygon": [
+            { "x": 431.311, "y": 149.749 },
+            { "x": 593.063, "y": 204.846 },
+            { "x": 771.672, "y": 173.625 },
+            { "x": 761.965, "y": 229.292 },
+            { "x": 764.031, "y": 285.845 },
+            { "x": 742.112, "y": 326.136 },
+            { "x": 510.824, "y": 357.967 },
+            { "x": 407.355, "y": 321.848 }
           ]
-        },
-        {
-          "id": "restored-light",
-          "label": "Obnovené svetlo",
-          "bounds": { "x": 191, "y": 61, "width": 58, "height": 75 },
-          "onClick": [],
-          "decorative": true,
-          "image": "story/power-bulb.svg",
-          "visibleWhen": { "flag": "power-restored" }
-        },
-        {
-          "id": "tournament-banner",
-          "label": "Majstrovstvá zachránené",
-          "bounds": { "x": 510, "y": 85, "width": 520, "height": 140 },
-          "onClick": [],
-          "decorative": true,
-          "image": "story/winner-banner.svg",
-          "visibleWhen": { "flag": "ending-community" }
         },
         {
           "id": "map-exit",
           "label": "Mapa osady",
-          "bounds": {
-            "x": 579.2,
-            "y": 999.12,
-            "width": 289.6,
-            "height": 86.88
-          },
+          "bounds": { "x": 0, "y": 949.959, "width": 1448, "height": 136.041 },
           "onClick": [],
           "openMap": true,
           "cursor": "exit",
           "polygon": [
-            { "x": 579.2, "y": 1086 },
-            { "x": 637.12, "y": 999.12 },
-            { "x": 810.8800000000001, "y": 999.12 },
-            { "x": 868.8, "y": 1086 }
+            { "x": 0, "y": 1086 },
+            { "x": 0, "y": 952.675 },
+            { "x": 1448, "y": 949.959 },
+            { "x": 1448, "y": 1086 }
           ]
         },
         {
-          "id": "bread-box",
+          "id": "layer3",
           "label": "Rožok zo včerajšieho storočia",
-          "bounds": { "x": 80, "y": 770, "width": 160, "height": 95 },
-          "placeholder": true,
-          "cursor": "interact",
-          "visibleWhen": { "not": { "flag": "bread-taken" } },
+          "bounds": { "x": 127, "y": 869, "width": 106, "height": 74 },
+          "imageFit": "contain",
+          "image": "scene-art/6c07cc6d-ab39-4b71-8f2c-755a4332d1d6/image.png",
           "onClick": [
             {
               "message": "Rudo: Rožok. Keď s ním niekoho trafím, je to ešte stále potravinová pomoc.",
@@ -891,15 +890,16 @@
                 { "type": "addItem", "id": "bread" }
               ]
             }
-          ]
+          ],
+          "visibleWhen": { "not": { "flag": "bread-taken" } },
+          "cursor": "interact"
         },
         {
-          "id": "peg-basket",
+          "id": "layer6",
           "label": "Drevený kolíček",
-          "bounds": { "x": 700, "y": 220, "width": 135, "height": 95 },
-          "placeholder": true,
-          "cursor": "interact",
-          "visibleWhen": { "not": { "flag": "peg-taken" } },
+          "bounds": { "x": 700, "y": 778, "width": 72, "height": 43 },
+          "imageFit": "contain",
+          "image": "scene-art/3892464f-490b-4bde-9e4c-98f5903c6b2f/image.png",
           "onClick": [
             {
               "message": "Rudo: Kolíček. Keby som si zaštipol nos, môžem konečne prestať cítiť vlastné rozhodnutia.",
@@ -908,7 +908,9 @@
                 { "type": "addItem", "id": "clothespin" }
               ]
             }
-          ]
+          ],
+          "visibleWhen": { "not": { "flag": "peg-taken" } },
+          "cursor": "interact"
         }
       ],
       "ambient": "ambience/village.wav"
@@ -982,7 +984,7 @@
         {
           "id": "holy-font",
           "label": "Pumpa so svätenou vodou",
-          "bounds": { "x": 42, "y": 540, "width": 185, "height": 310 },
+          "bounds": { "x": 42, "y": 540, "width": 160.414, "height": 210.732 },
           "onClick": [
             {
               "message": "Voda tečie samospádom. Zázrak, ktorý konečne nepotrebuje zásuvku."
@@ -1019,7 +1021,12 @@
         {
           "id": "cemetery-gate",
           "label": "Brána na cintorín",
-          "bounds": { "x": 1410, "y": 410, "width": 240, "height": 400 },
+          "bounds": {
+            "x": 1423.502,
+            "y": 423.952,
+            "width": 234.766,
+            "height": 280.878
+          },
           "onClick": [
             {
               "when": { "flag": "cemetery-open" },
@@ -1044,28 +1051,23 @@
         {
           "id": "map-exit",
           "label": "Mapa osady",
-          "bounds": {
-            "x": 668.8000000000001,
-            "y": 865.72,
-            "width": 334.40000000000003,
-            "height": 75.28
-          },
+          "bounds": { "x": 0, "y": 799.886, "width": 1672, "height": 141.114 },
           "onClick": [],
           "openMap": true,
           "cursor": "exit",
           "polygon": [
-            { "x": 668.8000000000001, "y": 941 },
-            { "x": 735.68, "y": 865.72 },
-            { "x": 936.32, "y": 865.72 },
-            { "x": 1003.1999999999999, "y": 941 }
+            { "x": 0, "y": 941 },
+            { "x": 0, "y": 812.373 },
+            { "x": 1672, "y": 799.886 },
+            { "x": 1672, "y": 941 }
           ]
         },
         {
-          "id": "absolution-machine",
-          "label": "Ručný automat na odpustky",
-          "bounds": { "x": 235, "y": 535, "width": 170, "height": 180 },
-          "placeholder": true,
-          "cursor": "interact",
+          "id": "layer1",
+          "label": "Automat na odpustky",
+          "bounds": { "x": 323, "y": 558, "width": 124, "height": 182 },
+          "imageFit": "contain",
+          "image": "scene-art/5cb70ad0-94eb-4916-b411-02b52a78a945/image.png",
           "onClick": [
             {
               "when": { "flag": "cemetery-open" },
@@ -1096,7 +1098,8 @@
                 ]
               }
             ]
-          }
+          },
+          "cursor": "interact"
         }
       ],
       "ambient": "ambience/graveyard.wav"
@@ -1106,7 +1109,7 @@
       "title": "Cintorín",
       "width": 1672,
       "height": 941,
-      "background": "scene-art/13435c1e-cc90-44de-be3b-8e727c0a5890/provider-restored.png",
+      "background": "scene-art/ae538529-cee9-45d0-b12c-50ccf4bc7f2d/image.png",
       "hotspots": [
         {
           "id": "layer1",
@@ -1157,14 +1160,28 @@
         {
           "id": "church-return",
           "label": "Späť ku kostolu",
-          "bounds": { "x": 0, "y": 600, "width": 190, "height": 310 },
+          "bounds": { "x": 0, "y": 786.955, "width": 1672, "height": 154.045 },
           "onClick": [{ "effects": [{ "type": "scene", "id": "scene3" }] }],
-          "cursor": "exit"
+          "cursor": "exit",
+          "polygon": [
+            { "x": 125.626, "y": 788.99 },
+            { "x": 1102.524, "y": 894.781 },
+            { "x": 1331.981, "y": 831.389 },
+            { "x": 1672, "y": 828.127 },
+            { "x": 1672, "y": 941 },
+            { "x": 0, "y": 941 },
+            { "x": 0, "y": 786.955 }
+          ]
         },
         {
           "id": "chapel-door",
           "label": "Vstup do kaplnky",
-          "bounds": { "x": 1250, "y": 330, "width": 280, "height": 430 },
+          "bounds": {
+            "x": 1312.829,
+            "y": 277.111,
+            "width": 114.848,
+            "height": 240.986
+          },
           "onClick": [
             {
               "when": { "flag": "chapel-open" },
@@ -1179,29 +1196,64 @@
         {
           "id": "lubo-grave",
           "label": "Ľubov prázdny hrob",
-          "bounds": { "x": 735, "y": 650, "width": 650, "height": 245 },
+          "bounds": {
+            "x": 598.789,
+            "y": 786.214,
+            "width": 718.567,
+            "height": 97.916
+          },
           "onClick": [
             {
               "message": "Ľubov prázdny hrob. V kúte obal od bagety a veniec ÚPRIMNÚ SPLÁTKA. Rudo: Že by sa zosnulý odišiel najesť?"
             }
+          ],
+          "polygon": [
+            { "x": 680.928, "y": 786.214 },
+            { "x": 1317.356, "y": 826.109 },
+            { "x": 1087.785, "y": 884.13 },
+            { "x": 598.789, "y": 835.26 }
           ]
         },
         {
           "id": "wheelbarrow",
           "label": "Fúrik",
-          "bounds": { "x": 150, "y": 570, "width": 320, "height": 230 },
+          "bounds": {
+            "x": 150.651,
+            "y": 549.823,
+            "width": 289.286,
+            "height": 207.619
+          },
           "onClick": [
             {
               "message": "Milanov služobný voz. Spotreba: jeden živý človek na sto metrov."
             }
+          ],
+          "polygon": [
+            { "x": 150.651, "y": 549.823 },
+            { "x": 439.937, "y": 571.068 },
+            { "x": 391.107, "y": 757.442 },
+            { "x": 236.976, "y": 681.517 },
+            { "x": 189.224, "y": 731.801 }
           ]
         },
         {
-          "id": "coffin",
+          "id": "object1",
           "label": "Skúšobná rakva",
-          "bounds": { "x": 925, "y": 430, "width": 255, "height": 165 },
-          "placeholder": true,
-          "cursor": "interact",
+          "bounds": {
+            "x": 918.841,
+            "y": 593.277,
+            "width": 498.5300000000001,
+            "height": 196.375
+          },
+          "polygon": [
+            { "x": 931.448, "y": 692.613 },
+            { "x": 918.841, "y": 615.633 },
+            { "x": 1023.942, "y": 593.277 },
+            { "x": 1133.297, "y": 606.151 },
+            { "x": 1417.371, "y": 678.98 },
+            { "x": 1413.865, "y": 768.561 },
+            { "x": 1308.632, "y": 789.652 }
+          ],
           "onClick": [
             {
               "when": { "flag": "chapel-open" },
@@ -1258,7 +1310,8 @@
                 ]
               }
             ]
-          }
+          },
+          "cursor": "interact"
         }
       ],
       "ambient": "ambience/graveyard.wav"
@@ -1281,8 +1334,8 @@
           ],
           "decorative": false,
           "animation": {
-            "blink": "animation-6f443452-2c1d-4af4-a51b-bc38966b79d4",
-            "talk": "animation-22d106ac-a8ef-4e30-b371-c6a9f1aad73c",
+            "blink": "codex-a34b97bc-8cb5-48a1-bb43-d7fc7204fd16-blink",
+            "talk": "codex-a34b97bc-8cb5-48a1-bb43-d7fc7204fd16-talk",
             "blinkIntervalMs": [2800, 6500],
             "voice": {
               "modelId": "eleven_v4",
@@ -1296,17 +1349,6 @@
               "slot": "rotating",
               "retired": true,
               "retirementManifest": "speech/85ee077f-1160-4701-a06d-cef6bdc3a0ad/retirement.json"
-            },
-            "mouthShapes": {
-              "A": 4,
-              "B": 2,
-              "C": 1,
-              "D": 1,
-              "E": 3,
-              "F": 3,
-              "G": 2,
-              "H": 1,
-              "X": 4
             }
           },
           "cursor": "talk",
@@ -1315,7 +1357,7 @@
         {
           "id": "beer-tap",
           "label": "Pokazená pípa",
-          "bounds": { "x": 15, "y": 300, "width": 190, "height": 390 },
+          "bounds": { "x": 15, "y": 300, "width": 179.475, "height": 178.355 },
           "onClick": [
             { "message": "Páka sa pretáča. Opraviť ju môže francúzsky kľúč." }
           ],
@@ -1337,7 +1379,12 @@
         {
           "id": "gaming-door",
           "label": "Schody do herne",
-          "bounds": { "x": 1330, "y": 180, "width": 300, "height": 520 },
+          "bounds": {
+            "x": 1488.672,
+            "y": 601.413,
+            "width": 178.17,
+            "height": 269.318
+          },
           "onClick": [
             {
               "when": { "flag": "beer-drained" },
@@ -1347,22 +1394,39 @@
               "message": "Karol: Najprv dotiahni pípu a vypusť ten hnus do krígľov. Potom ti otvorím herňu, nech si zavadziaš tam."
             }
           ],
-          "cursor": "exit"
+          "cursor": "exit",
+          "polygon": [
+            { "x": 1494.819, "y": 601.413 },
+            { "x": 1664.949, "y": 613.906 },
+            { "x": 1666.842, "y": 870.731 },
+            { "x": 1488.672, "y": 856.38 }
+          ]
         },
         {
           "id": "pub-radio",
           "label": "Tiché rádio",
-          "bounds": { "x": 1150, "y": 95, "width": 350, "height": 175 },
+          "bounds": {
+            "x": 417.825,
+            "y": 216.018,
+            "width": 83.822,
+            "height": 70.183
+          },
           "onClick": [
             {
               "message": "Rádio mlčí. Rudo mu poďakoval za konečne normálny program."
             }
+          ],
+          "polygon": [
+            { "x": 425.135, "y": 216.018 },
+            { "x": 501.442, "y": 237.206 },
+            { "x": 501.647, "y": 286.201 },
+            { "x": 417.825, "y": 280.602 }
           ]
         },
         {
           "id": "beer-mugs",
           "label": "Pivové poháre",
-          "bounds": { "x": 1080, "y": 530, "width": 420, "height": 200 },
+          "bounds": { "x": 1080, "y": 530, "width": 197.3, "height": 196.967 },
           "onClick": [
             {
               "when": { "flag": "beer-drained" },
@@ -1384,33 +1448,27 @@
           "id": "map-exit",
           "label": "Mapa osady",
           "bounds": {
-            "x": 668.8000000000001,
-            "y": 865.72,
-            "width": 334.40000000000003,
-            "height": 75.28
+            "x": 851.292,
+            "y": 243.962,
+            "width": 174.748,
+            "height": 373.667
           },
           "onClick": [],
           "openMap": true,
           "cursor": "exit",
           "polygon": [
-            { "x": 668.8000000000001, "y": 941 },
-            { "x": 735.68, "y": 865.72 },
-            { "x": 936.32, "y": 865.72 },
-            { "x": 1003.1999999999999, "y": 941 }
+            { "x": 854.286, "y": 609.897 },
+            { "x": 851.292, "y": 249.379 },
+            { "x": 1025.294, "y": 243.962 },
+            { "x": 1026.04, "y": 617.629 }
           ]
         },
         {
-          "id": "foil-wrapper",
-          "label": "Zlatý obal v odkvapkávači",
-          "bounds": { "x": 495, "y": 485, "width": 145, "height": 85 },
-          "placeholder": true,
-          "cursor": "interact",
-          "visibleWhen": {
-            "all": [
-              { "flag": "beer-drained" },
-              { "not": { "flag": "foil-taken" } }
-            ]
-          },
+          "id": "layer1",
+          "label": "Zlatý obal ",
+          "bounds": { "x": 928, "y": 706, "width": 102, "height": 41 },
+          "imageFit": "contain",
+          "image": "scene-art/20f58840-c178-41e8-8a24-8a6edebb62e0/image.png",
           "onClick": [
             {
               "message": "Zlatý obal od čokolády. Rudo: Takto vyzerá bohatstvo pred zdanením.",
@@ -1419,7 +1477,14 @@
                 { "type": "addItem", "id": "foil" }
               ]
             }
-          ]
+          ],
+          "visibleWhen": {
+            "all": [
+              { "flag": "beer-drained" },
+              { "not": { "flag": "foil-taken" } }
+            ]
+          },
+          "cursor": "interact"
         }
       ],
       "ambient": "ambience/tavern.wav"
@@ -1442,8 +1507,8 @@
           ],
           "decorative": false,
           "animation": {
-            "blink": "animation-e0ad4935-dfa1-4868-8c9b-489e34236036",
-            "talk": "animation-bdfdd278-4a13-4e56-a7bc-02a206eb8046",
+            "blink": "codex-7a4e93c0-87ed-494c-84b1-032d9b88f3ff-blink",
+            "talk": "codex-7a4e93c0-87ed-494c-84b1-032d9b88f3ff-talk",
             "blinkIntervalMs": [2800, 6500],
             "voice": {
               "modelId": "eleven_v4",
@@ -1458,17 +1523,6 @@
               "retired": true,
               "retirementManifest": "speech/bbefdfff-203d-40a0-b602-5f5e847ca02b/retirement.json",
               "designPrompt": "Native Slovak child voice, a fictional boy aged nine to ten. Natural growing-child vocal anatomy, a slightly scratchy youthful middle-high register and energetic breath, never an adult baritone or digitally raised adult voice. Impatient, mischievously confident playground speech with sudden bursts of excitement, tiny hesitations and believable child rhythm. Light eastern Slovak cadence, clearly articulated Slovak consonants. Ordinary natural child pitch, no mosquito falsetto, no cartoon pitch effect. Keep every word understandable. Clean dry studio recording without background or music."
-            },
-            "mouthShapes": {
-              "A": 4,
-              "B": 2,
-              "C": 1,
-              "D": 1,
-              "E": 3,
-              "F": 3,
-              "G": 2,
-              "H": 1,
-              "X": 4
             }
           },
           "cursor": "talk",
@@ -1491,8 +1545,8 @@
           ],
           "decorative": false,
           "animation": {
-            "blink": "animation-78de4edb-eca9-4eb8-b801-3c07a0197bf9",
-            "talk": "animation-a2a56f09-2976-4a56-b930-5fd5e31e14da",
+            "blink": "codex-da24b58f-4f8d-4399-9286-4dfa7f15d985-blink",
+            "talk": "codex-da24b58f-4f8d-4399-9286-4dfa7f15d985-talk",
             "blinkIntervalMs": [2800, 6500],
             "voice": {
               "modelId": "eleven_v4",
@@ -1507,17 +1561,6 @@
               "retired": true,
               "retirementManifest": "speech/a01466f7-2d2f-4dd6-90d5-662df165422e/retirement.json",
               "designPrompt": "Native Slovak child voice, a fictional girl aged eight to nine. Bright clear natural child resonance, precise youthful articulation and quick confident matter-of-fact delivery. Clever and slightly cheeky, with small expressive rises and genuine child phrasing rather than an adult actress performing a stage soprano. Light natural breath and lively but understandable pace. Distinct from a rough boy and from a shy younger boy. No shrill whistle, no falsetto, no electronic pitch shifting. Clean close dry recording without ambience or music."
-            },
-            "mouthShapes": {
-              "A": 4,
-              "B": 1,
-              "C": 2,
-              "D": 2,
-              "E": 3,
-              "F": 3,
-              "G": 1,
-              "H": 2,
-              "X": 4
             }
           },
           "cursor": "talk",
@@ -1534,8 +1577,8 @@
           "imageFit": "contain",
           "image": "scene-art/3d2c9975-f964-46ce-bfe3-25dc0710bbf1/image.png",
           "animation": {
-            "blink": "animation-eafc2b2c-28c2-44ae-86f4-3dcf57949b4c",
-            "talk": "animation-5337155a-717d-48a0-b196-31831c5d6438",
+            "blink": "codex-746fdd86-42e3-464a-b83e-ad7ceaee1664-blink",
+            "talk": "codex-746fdd86-42e3-464a-b83e-ad7ceaee1664-talk",
             "blinkIntervalMs": [2800, 6500],
             "voice": {
               "modelId": "eleven_v4",
@@ -1550,17 +1593,6 @@
               "retired": true,
               "retirementManifest": "speech/c37d455f-0054-4d64-ba46-a3b574c04c5d/retirement.json",
               "designPrompt": "Native Slovak child voice, a fictional boy aged seven to eight. A naturally small soft youthful voice with slightly uncertain starts, quick little breaths and gentle uneven intonation. A younger boy trying very hard to sound brave, switching between quiet concentration and short confident exclamations. Natural child anatomy and comfortable pitch, not an adult nasal falsetto and not a squeaking cartoon insect. Clear intelligible Slovak words with plausible young-child pacing. Clean dry studio recording, no music or effects."
-            },
-            "mouthShapes": {
-              "A": 4,
-              "B": 1,
-              "C": 2,
-              "D": 2,
-              "E": 3,
-              "F": 3,
-              "G": 1,
-              "H": 2,
-              "X": 4
             }
           },
           "cursor": "talk",
@@ -1569,20 +1601,15 @@
         {
           "id": "map-exit",
           "label": "Mapa osady",
-          "bounds": {
-            "x": 668.8000000000001,
-            "y": 865.72,
-            "width": 334.40000000000003,
-            "height": 75.28
-          },
+          "bounds": { "x": 0, "y": 832.666, "width": 1672, "height": 108.334 },
           "onClick": [],
           "openMap": true,
           "cursor": "exit",
           "polygon": [
-            { "x": 668.8000000000001, "y": 941 },
-            { "x": 735.68, "y": 865.72 },
-            { "x": 936.32, "y": 865.72 },
-            { "x": 1003.1999999999999, "y": 941 }
+            { "x": 0, "y": 941 },
+            { "x": 0, "y": 851.237 },
+            { "x": 1672, "y": 832.666 },
+            { "x": 1672, "y": 941 }
           ]
         },
         {
@@ -1618,7 +1645,7 @@
         {
           "id": "swing-seat",
           "label": "Sedadlo pre domácu tehlu",
-          "bounds": { "x": 545, "y": 710, "width": 185, "height": 85 },
+          "bounds": { "x": 601.345, "y": 520.672, "width": 185, "height": 85 },
           "placeholder": true,
           "cursor": "interact",
           "onClick": [
@@ -1666,7 +1693,7 @@
         {
           "id": "loose-string",
           "label": "Uvoľnený špagát",
-          "bounds": { "x": 770, "y": 775, "width": 125, "height": 65 },
+          "bounds": { "x": 404.436, "y": 739.381, "width": 125, "height": 65 },
           "placeholder": true,
           "cursor": "interact",
           "visibleWhen": {
@@ -1688,7 +1715,7 @@
         {
           "id": "loose-washer",
           "label": "Vypadnutá podložka",
-          "bounds": { "x": 930, "y": 785, "width": 125, "height": 65 },
+          "bounds": { "x": 1012.02, "y": 657.605, "width": 125, "height": 65 },
           "placeholder": true,
           "cursor": "interact",
           "visibleWhen": {
@@ -1718,16 +1745,14 @@
       "background": "scene-art/68c7e55d-4730-4419-876c-7c25f8eff8de/image.png",
       "hotspots": [
         {
-          "id": "pub-return",
-          "label": "Schody späť do krčmy",
-          "bounds": { "x": 690, "y": 160, "width": 350, "height": 530 },
-          "onClick": [{ "effects": [{ "type": "scene", "id": "scene6" }] }],
-          "cursor": "exit"
-        },
-        {
           "id": "service-hatch",
           "label": "Servisný kryt automatu",
-          "bounds": { "x": 35, "y": 510, "width": 270, "height": 260 },
+          "bounds": {
+            "x": 64.024,
+            "y": 516.918,
+            "width": 217.147,
+            "height": 245.451
+          },
           "onClick": [
             {
               "message": "Kryt drží matica. Vo vnútri môže byť servisný denník."
@@ -1747,12 +1772,23 @@
                 "message": "Zo servisu si už vybral jedinú vec, ktorá neklame."
               }
             ]
-          }
+          },
+          "polygon": [
+            { "x": 70.301, "y": 516.918 },
+            { "x": 279.796, "y": 517.106 },
+            { "x": 281.171, "y": 734.042 },
+            { "x": 64.024, "y": 762.369 }
+          ]
         },
         {
           "id": "dead-machines",
           "label": "Vypnuté automaty",
-          "bounds": { "x": 1070, "y": 380, "width": 540, "height": 440 },
+          "bounds": {
+            "x": 1142.796,
+            "y": 292.456,
+            "width": 529.204,
+            "height": 436.897
+          },
           "onClick": [
             {
               "message": "Ani jeden blik. Bez prúdu sú to konečne iba drahé skrinky."
@@ -1769,16 +1805,53 @@
                 "message": "Podložka cinkla a vypadla späť. Bez fólie to neoklame ani mŕtvy stroj."
               }
             ]
-          }
+          },
+          "polygon": [
+            { "x": 1177.029, "y": 322.847 },
+            { "x": 1672, "y": 292.456 },
+            { "x": 1672, "y": 701.816 },
+            { "x": 1602.44, "y": 697.944 },
+            { "x": 1597.359, "y": 622.088 },
+            { "x": 1481.111, "y": 616.072 },
+            { "x": 1476.966, "y": 727.548 },
+            { "x": 1404.231, "y": 729.353 },
+            { "x": 1142.796, "y": 702.243 },
+            { "x": 1144.911, "y": 540.467 },
+            { "x": 1167.853, "y": 511.011 }
+          ]
         },
         {
           "id": "oil-lamp",
           "label": "Petrolejka",
-          "bounds": { "x": 710, "y": 110, "width": 100, "height": 150 },
+          "bounds": {
+            "x": 780.999,
+            "y": 152.119,
+            "width": 64.13,
+            "height": 127.284
+          },
           "onClick": [
             {
               "message": "Petrolejka. Jediný miestny spotrebič, ktorý nekúpil batériu na lízing."
             }
+          ]
+        },
+        {
+          "id": "object1",
+          "label": "Schody späť do krčmy",
+          "bounds": {
+            "x": 919.542,
+            "y": 125.759,
+            "width": 170.102,
+            "height": 245.256
+          },
+          "polygon": [
+            { "x": 925.295, "y": 371.015 },
+            { "x": 919.542, "y": 150.1 },
+            { "x": 1082.083, "y": 125.759 },
+            { "x": 1089.644, "y": 357 }
+          ],
+          "onClick": [
+            { "message": "", "effects": [{ "type": "scene", "id": "scene6" }] }
           ]
         }
       ],
@@ -1794,14 +1867,19 @@
         {
           "id": "cemetery-return",
           "label": "Späť na cintorín",
-          "bounds": { "x": 0, "y": 640, "width": 240, "height": 290 },
+          "bounds": {
+            "x": 30.867,
+            "y": 808.007,
+            "width": 1641.133,
+            "height": 132.993
+          },
           "onClick": [{ "effects": [{ "type": "scene", "id": "scene5" }] }],
           "cursor": "exit"
         },
         {
           "id": "key-grate",
           "label": "Kľúč pod mrežou",
-          "bounds": { "x": 950, "y": 695, "width": 125, "height": 85 },
+          "bounds": { "x": 945.935, "y": 692.662, "width": 125, "height": 85 },
           "onClick": [
             {
               "when": { "not": { "flag": "key-taken" } },
@@ -1837,7 +1915,12 @@
         {
           "id": "crypt-door",
           "label": "Dvere do krypty",
-          "bounds": { "x": 1250, "y": 250, "width": 270, "height": 460 },
+          "bounds": {
+            "x": 1102.382,
+            "y": 144.321,
+            "width": 232.57,
+            "height": 606.735
+          },
           "onClick": [
             {
               "when": { "flag": "crypt-open" },
@@ -1861,22 +1944,46 @@
               },
               { "effects": [{ "type": "scene", "id": "scene12" }] }
             ]
-          }
+          },
+          "polygon": [
+            { "x": 1103.978, "y": 221.668 },
+            { "x": 1145.869, "y": 187.509 },
+            { "x": 1214.41, "y": 144.321 },
+            { "x": 1320.743, "y": 173.477 },
+            { "x": 1334.952, "y": 751.056 },
+            { "x": 1102.382, "y": 738.341 }
+          ]
         },
         {
           "id": "skeleton",
           "label": "Kostlivec v lavici",
-          "bounds": { "x": 690, "y": 425, "width": 180, "height": 280 },
+          "bounds": {
+            "x": 350.972,
+            "y": 429.989,
+            "width": 164.092,
+            "height": 251.791
+          },
           "onClick": [
             {
               "message": "Kostlivec drží poradové číslo. Rudo: Takže aj po smrti si tu ešte chvíľu počkám."
             }
+          ],
+          "polygon": [
+            { "x": 355.265, "y": 429.989 },
+            { "x": 503.694, "y": 446.273 },
+            { "x": 515.064, "y": 681.78 },
+            { "x": 350.972, "y": 649.416 }
           ]
         },
         {
           "id": "candles",
           "label": "Sviečky na oltári",
-          "bounds": { "x": 1010, "y": 440, "width": 170, "height": 160 },
+          "bounds": {
+            "x": 656.279,
+            "y": 348.806,
+            "width": 370.03,
+            "height": 155.621
+          },
           "onClick": [
             {
               "message": "Sviečky idú na vosk. Rudo: Konečne palivo, ktoré sa nedá prehrať v automate."
@@ -1942,7 +2049,12 @@
         {
           "id": "junk-scale",
           "label": "Váha na kov",
-          "bounds": { "x": 1080, "y": 480, "width": 210, "height": 300 },
+          "bounds": {
+            "x": 1410.139,
+            "y": 219.924,
+            "width": 210,
+            "height": 300
+          },
           "onClick": [
             {
               "message": "Váha má taru ĽUBO BEZ TRUHLY. Rudo: Čiže naozaj rátali s tým, že mu bude treba vrátiť telo."
@@ -1952,7 +2064,7 @@
         {
           "id": "scrap-batteries",
           "label": "Vyčerpané batérie",
-          "bounds": { "x": 1320, "y": 530, "width": 330, "height": 220 },
+          "bounds": { "x": 1247.49, "y": 496.553, "width": 330, "height": 220 },
           "onClick": [
             {
               "message": "Všetky batérie sú vybité. Poslednú nabitú požičal Dingo mužovi, čo sa podpísal krížikom a pripojil úmrtný list."
@@ -1962,20 +2074,15 @@
         {
           "id": "map-exit",
           "label": "Mapa osady",
-          "bounds": {
-            "x": 668.8000000000001,
-            "y": 865.72,
-            "width": 334.40000000000003,
-            "height": 75.28
-          },
+          "bounds": { "x": 0, "y": 815.173, "width": 1672, "height": 125.827 },
           "onClick": [],
           "openMap": true,
           "cursor": "exit",
           "polygon": [
-            { "x": 668.8000000000001, "y": 941 },
-            { "x": 735.68, "y": 865.72 },
-            { "x": 936.32, "y": 865.72 },
-            { "x": 1003.1999999999999, "y": 941 }
+            { "x": 0, "y": 941 },
+            { "x": 0, "y": 830.408 },
+            { "x": 1672, "y": 815.173 },
+            { "x": 1672, "y": 941 }
           ]
         },
         {
@@ -2105,7 +2212,12 @@
         {
           "id": "cow",
           "label": "Poistená krava",
-          "bounds": { "x": 655, "y": 340, "width": 550, "height": 380 },
+          "bounds": {
+            "x": 543.191,
+            "y": 247.806,
+            "width": 278.236,
+            "height": 302.813
+          },
           "onClick": [
             {
               "when": { "flag": "cow-asleep" },
@@ -2191,7 +2303,12 @@
         {
           "id": "pig",
           "label": "Prasa audítor",
-          "bounds": { "x": 1160, "y": 560, "width": 270, "height": 240 },
+          "bounds": {
+            "x": 885.777,
+            "y": 470.294,
+            "width": 208.357,
+            "height": 164.541
+          },
           "onClick": [
             {
               "message": "Prasa práve zožralo výluku z poistky. Jolanda mu už šije malé sako."
@@ -2201,20 +2318,15 @@
         {
           "id": "map-exit",
           "label": "Mapa osady",
-          "bounds": {
-            "x": 670.8000000000001,
-            "y": 862.96,
-            "width": 335.40000000000003,
-            "height": 75.04
-          },
+          "bounds": { "x": 0, "y": 820.816, "width": 1677, "height": 117.184 },
           "onClick": [],
           "openMap": true,
           "cursor": "exit",
           "polygon": [
-            { "x": 670.8000000000001, "y": 938 },
-            { "x": 737.88, "y": 862.96 },
-            { "x": 939.1200000000001, "y": 862.96 },
-            { "x": 1006.1999999999999, "y": 938 }
+            { "x": 0, "y": 938 },
+            { "x": 0, "y": 835.627 },
+            { "x": 1677, "y": 820.816 },
+            { "x": 1677, "y": 938 }
           ]
         },
         {
@@ -2291,14 +2403,24 @@
         {
           "id": "yard-door",
           "label": "Späť na Ferov dvor",
-          "bounds": { "x": 0, "y": 350, "width": 190, "height": 520 },
+          "bounds": {
+            "x": 40.006,
+            "y": 761.923,
+            "width": 1631.994,
+            "height": 179.077
+          },
           "onClick": [{ "effects": [{ "type": "scene", "id": "scene4" }] }],
           "cursor": "exit"
         },
         {
           "id": "ladder",
           "label": "Rebrík",
-          "bounds": { "x": 830, "y": 210, "width": 210, "height": 470 },
+          "bounds": {
+            "x": 839.311,
+            "y": 177.62,
+            "width": 153.946,
+            "height": 425.366
+          },
           "onClick": [
             {
               "message": "Rudo: Tadiaľto ten hajzel s káblom zdrhal. Škoda, že si nezlomil väz."
@@ -2306,19 +2428,14 @@
           ]
         },
         {
-          "id": "rubbish",
-          "label": "Staré fľaše a vrecia",
-          "bounds": { "x": 175, "y": 570, "width": 350, "height": 330 },
-          "onClick": [
-            {
-              "message": "Odpad je triedený na predvčerajší a národnú kultúrnu pamiatku."
-            }
-          ]
-        },
-        {
           "id": "graffiti",
           "label": "Koleso na stene",
-          "bounds": { "x": 1320, "y": 390, "width": 160, "height": 190 },
+          "bounds": {
+            "x": 1127.479,
+            "y": 291.525,
+            "width": 118.565,
+            "height": 140.166
+          },
           "onClick": [
             {
               "message": "Niekto nakreslil koleso a pod neho ZOMREL V POHYBE. Rudo si z úcty sadol."
@@ -2326,53 +2443,11 @@
           ]
         },
         {
-          "id": "map-exit",
-          "label": "Mapa osady",
-          "bounds": {
-            "x": 668.8000000000001,
-            "y": 865.72,
-            "width": 334.40000000000003,
-            "height": 75.28
-          },
-          "onClick": [],
-          "openMap": true,
-          "cursor": "exit",
-          "polygon": [
-            { "x": 668.8000000000001, "y": 941 },
-            { "x": 735.68, "y": 865.72 },
-            { "x": 936.32, "y": 865.72 },
-            { "x": 1003.1999999999999, "y": 941 }
-          ]
-        },
-        {
-          "id": "tape-roll",
-          "label": "Izolačná páska",
-          "bounds": { "x": 825, "y": 651, "width": 90, "height": 72 },
-          "image": "cursors/tape-icon.svg",
-          "cursor": "interact",
-          "visibleWhen": { "not": { "flag": "tape-taken" } },
-          "onClick": [
-            {
-              "message": "Rudo: Izolačka. Jediná vec, ktorá u Fera drží rodinu aj napätie pokope.",
-              "effects": [
-                { "type": "flag", "id": "tape-taken", "value": true },
-                { "type": "addItem", "id": "tape" }
-              ]
-            }
-          ]
-        },
-        {
-          "id": "scrap-metal",
+          "id": "layer1",
           "label": "Hrdzavý šrot",
-          "bounds": { "x": 500, "y": 655, "width": 120, "height": 80 },
-          "image": "story/scrap-metal.svg",
-          "cursor": "interact",
-          "visibleWhen": {
-            "all": [
-              { "not": { "flag": "scrap-taken" } },
-              { "not": { "flag": "magnet-given" } }
-            ]
-          },
+          "bounds": { "x": 1022, "y": 474, "width": 144, "height": 119 },
+          "imageFit": "contain",
+          "image": "scene-art/dd2d8703-a232-41ef-9ace-9328064555db/image.png",
           "onClick": [
             {
               "message": "Rudo: Hrdzavá rúra. Pre niekoho odpad, pre Deža termínovaný vklad.",
@@ -2381,7 +2456,32 @@
                 { "type": "addItem", "id": "scrap-metal" }
               ]
             }
-          ]
+          ],
+          "visibleWhen": {
+            "all": [
+              { "not": { "flag": "scrap-taken" } },
+              { "not": { "flag": "magnet-given" } }
+            ]
+          },
+          "cursor": "interact"
+        },
+        {
+          "id": "layer3",
+          "label": "Izolačná páska",
+          "bounds": { "x": 660, "y": 661, "width": 71, "height": 66 },
+          "imageFit": "contain",
+          "image": "scene-art/4dc5ccc9-3e40-4ef3-acca-ba05a3d87c0c/image.png",
+          "onClick": [
+            {
+              "message": "Rudo: Izolačka. Jediná vec, ktorá u Fera drží rodinu aj napätie pokope.",
+              "effects": [
+                { "type": "flag", "id": "tape-taken", "value": true },
+                { "type": "addItem", "id": "tape" }
+              ]
+            }
+          ],
+          "visibleWhen": { "not": { "flag": "tape-taken" } },
+          "cursor": "interact"
         }
       ],
       "ambient": "ambience/village.wav"
@@ -2437,7 +2537,7 @@
         {
           "id": "chapel-return",
           "label": "Späť do kaplnky",
-          "bounds": { "x": 1440, "y": 400, "width": 210, "height": 460 },
+          "bounds": { "x": 1392.692, "y": 12.393, "width": 210, "height": 460 },
           "onClick": [{ "effects": [{ "type": "scene", "id": "scene2" }] }],
           "cursor": "exit"
         },
@@ -2581,7 +2681,7 @@
         {
           "id": "burnt-machine",
           "label": "Ohorený jackpot",
-          "bounds": { "x": 644, "y": 146, "width": 222, "height": 496 },
+          "bounds": { "x": 973.307, "y": 167.285, "width": 222, "height": 496 },
           "onClick": [],
           "decorative": true,
           "image": "story/burnt-machine.svg",
@@ -2637,6 +2737,13 @@
       "description": "Meď nepriťahuje, zato železné kľúče áno. Dežo si týmto zabezpečil jediné slušné alibi v osade.",
       "icon": "✦",
       "image": "story/magnet.svg"
+    },
+    {
+      "id": "scrap-metal",
+      "label": "Hrdzavý šrot",
+      "description": "Ohnutá železná rúra s hrdzavým držiakom z uličky. Dežo za poriadny kus železa vymení magnet; fľašami ho neuplatíš.",
+      "icon": "✦",
+      "image": "story/scrap-metal.svg"
     },
     {
       "id": "string",
@@ -2776,13 +2883,6 @@
       "label": "Drevený kolíček",
       "description": "Eržikin kolíček. Na nose zastaví pohyb, ktorý Milan považuje za nežiaducu známku života.",
       "icon": "II"
-    },
-    {
-      "id": "scrap-metal",
-      "label": "Hrdzavý šrot",
-      "description": "Ohnutá železná rúra s hrdzavým držiakom z uličky. Dežo za poriadny kus železa vymení magnet; fľašami ho neuplatíš.",
-      "icon": "✦",
-      "image": "story/scrap-metal.svg"
     }
   ],
   "dialogues": [
@@ -6187,6 +6287,166 @@
         "story/machine-glow-bright.svg",
         "story/machine-glow-dim.svg"
       ]
+    },
+    {
+      "id": "codex-66f5f7d2-54dc-47c2-aa25-03bc125cff77-blink",
+      "source": "scene-art/4bcdf3eb-0f64-4c48-9fde-9c1ce4ad62a3/image.png",
+      "kind": "blink",
+      "label": "Přirozené mrknutí",
+      "frames": [
+        "codex/66f5f7d2-54dc-47c2-aa25-03bc125cff77/blink-01.png",
+        "codex/66f5f7d2-54dc-47c2-aa25-03bc125cff77/blink-02.png",
+        "codex/66f5f7d2-54dc-47c2-aa25-03bc125cff77/blink-03.png",
+        "codex/66f5f7d2-54dc-47c2-aa25-03bc125cff77/blink-04.png",
+        "codex/66f5f7d2-54dc-47c2-aa25-03bc125cff77/blink-05.png"
+      ],
+      "fps": 12,
+      "loop": false,
+      "region": { "x": 143, "y": 42, "width": 44, "height": 16 }
+    },
+    {
+      "id": "codex-66f5f7d2-54dc-47c2-aa25-03bc125cff77-talk",
+      "source": "scene-art/4bcdf3eb-0f64-4c48-9fde-9c1ce4ad62a3/image.png",
+      "kind": "talk",
+      "label": "Mluvení – pět tvarů úst",
+      "frames": [
+        "codex/66f5f7d2-54dc-47c2-aa25-03bc125cff77/talk-01.png",
+        "codex/66f5f7d2-54dc-47c2-aa25-03bc125cff77/talk-02.png",
+        "codex/66f5f7d2-54dc-47c2-aa25-03bc125cff77/talk-03.png",
+        "codex/66f5f7d2-54dc-47c2-aa25-03bc125cff77/talk-04.png",
+        "codex/66f5f7d2-54dc-47c2-aa25-03bc125cff77/talk-05.png"
+      ],
+      "fps": 12,
+      "loop": true,
+      "region": { "x": 148, "y": 77, "width": 24, "height": 15 }
+    },
+    {
+      "id": "codex-a34b97bc-8cb5-48a1-bb43-d7fc7204fd16-blink",
+      "source": "scene-art/4bcdf3eb-0f64-4c48-9fde-9c1ce4ad62a3/image.png",
+      "kind": "blink",
+      "label": "Přirozené mrknutí",
+      "frames": [
+        "codex/a34b97bc-8cb5-48a1-bb43-d7fc7204fd16/blink-01.png",
+        "codex/a34b97bc-8cb5-48a1-bb43-d7fc7204fd16/blink-02.png",
+        "codex/a34b97bc-8cb5-48a1-bb43-d7fc7204fd16/blink-03.png",
+        "codex/a34b97bc-8cb5-48a1-bb43-d7fc7204fd16/blink-04.png",
+        "codex/a34b97bc-8cb5-48a1-bb43-d7fc7204fd16/blink-05.png"
+      ],
+      "fps": 12,
+      "loop": false,
+      "region": { "x": 141, "y": 44, "width": 45, "height": 15 }
+    },
+    {
+      "id": "codex-a34b97bc-8cb5-48a1-bb43-d7fc7204fd16-talk",
+      "source": "scene-art/4bcdf3eb-0f64-4c48-9fde-9c1ce4ad62a3/image.png",
+      "kind": "talk",
+      "label": "Mluvení – klid, pootevření, A, O, E",
+      "frames": [
+        "codex/a34b97bc-8cb5-48a1-bb43-d7fc7204fd16/talk-01.png",
+        "codex/a34b97bc-8cb5-48a1-bb43-d7fc7204fd16/talk-02.png",
+        "codex/a34b97bc-8cb5-48a1-bb43-d7fc7204fd16/talk-03.png",
+        "codex/a34b97bc-8cb5-48a1-bb43-d7fc7204fd16/talk-04.png",
+        "codex/a34b97bc-8cb5-48a1-bb43-d7fc7204fd16/talk-05.png"
+      ],
+      "fps": 12,
+      "loop": true,
+      "region": { "x": 150, "y": 77, "width": 22, "height": 14 }
+    },
+    {
+      "id": "codex-7a4e93c0-87ed-494c-84b1-032d9b88f3ff-blink",
+      "source": "scene-art/f0d7db85-3ef1-4989-9860-fbd71b808e38/image.png",
+      "kind": "blink",
+      "label": "Přirozené mrknutí",
+      "frames": [
+        "codex/7a4e93c0-87ed-494c-84b1-032d9b88f3ff/blink-01.png",
+        "codex/7a4e93c0-87ed-494c-84b1-032d9b88f3ff/blink-02.png",
+        "codex/7a4e93c0-87ed-494c-84b1-032d9b88f3ff/blink-03.png",
+        "codex/7a4e93c0-87ed-494c-84b1-032d9b88f3ff/blink-04.png",
+        "codex/7a4e93c0-87ed-494c-84b1-032d9b88f3ff/blink-05.png"
+      ],
+      "fps": 12,
+      "loop": false,
+      "region": { "x": 40, "y": 48, "width": 71, "height": 20 }
+    },
+    {
+      "id": "codex-7a4e93c0-87ed-494c-84b1-032d9b88f3ff-talk",
+      "source": "scene-art/f0d7db85-3ef1-4989-9860-fbd71b808e38/image.png",
+      "kind": "talk",
+      "label": "Mluvení – pět tvarů úst",
+      "frames": [
+        "codex/7a4e93c0-87ed-494c-84b1-032d9b88f3ff/talk-01.png",
+        "codex/7a4e93c0-87ed-494c-84b1-032d9b88f3ff/talk-02.png",
+        "codex/7a4e93c0-87ed-494c-84b1-032d9b88f3ff/talk-03.png",
+        "codex/7a4e93c0-87ed-494c-84b1-032d9b88f3ff/talk-04.png",
+        "codex/7a4e93c0-87ed-494c-84b1-032d9b88f3ff/talk-05.png"
+      ],
+      "fps": 12,
+      "loop": true,
+      "region": { "x": 44, "y": 68, "width": 55, "height": 16 }
+    },
+    {
+      "id": "codex-da24b58f-4f8d-4399-9286-4dfa7f15d985-blink",
+      "source": "scene-art/005f7aa7-4599-4f92-adbd-93f3762765be/image.png",
+      "kind": "blink",
+      "label": "Přirozené mrknutí",
+      "frames": [
+        "codex/da24b58f-4f8d-4399-9286-4dfa7f15d985/blink-01.png",
+        "codex/da24b58f-4f8d-4399-9286-4dfa7f15d985/blink-02.png",
+        "codex/da24b58f-4f8d-4399-9286-4dfa7f15d985/blink-03.png",
+        "codex/da24b58f-4f8d-4399-9286-4dfa7f15d985/blink-04.png",
+        "codex/da24b58f-4f8d-4399-9286-4dfa7f15d985/blink-05.png"
+      ],
+      "fps": 12,
+      "loop": false,
+      "region": { "x": 26, "y": 91, "width": 74, "height": 41 }
+    },
+    {
+      "id": "codex-da24b58f-4f8d-4399-9286-4dfa7f15d985-talk",
+      "source": "scene-art/005f7aa7-4599-4f92-adbd-93f3762765be/image.png",
+      "kind": "talk",
+      "label": "Mluvení – klid, M, E, A, O",
+      "frames": [
+        "codex/da24b58f-4f8d-4399-9286-4dfa7f15d985/talk-01.png",
+        "codex/da24b58f-4f8d-4399-9286-4dfa7f15d985/talk-02.png",
+        "codex/da24b58f-4f8d-4399-9286-4dfa7f15d985/talk-03.png",
+        "codex/da24b58f-4f8d-4399-9286-4dfa7f15d985/talk-04.png",
+        "codex/da24b58f-4f8d-4399-9286-4dfa7f15d985/talk-05.png"
+      ],
+      "fps": 12,
+      "loop": true,
+      "region": { "x": 46, "y": 132, "width": 36, "height": 13 }
+    },
+    {
+      "id": "codex-746fdd86-42e3-464a-b83e-ad7ceaee1664-blink",
+      "source": "scene-art/3d2c9975-f964-46ce-bfe3-25dc0710bbf1/image.png",
+      "kind": "blink",
+      "label": "Přirozené mrknutí",
+      "frames": [
+        "codex/746fdd86-42e3-464a-b83e-ad7ceaee1664/blink-01.png",
+        "codex/746fdd86-42e3-464a-b83e-ad7ceaee1664/blink-02.png",
+        "codex/746fdd86-42e3-464a-b83e-ad7ceaee1664/blink-03.png",
+        "codex/746fdd86-42e3-464a-b83e-ad7ceaee1664/blink-04.png",
+        "codex/746fdd86-42e3-464a-b83e-ad7ceaee1664/blink-05.png"
+      ],
+      "fps": 12,
+      "loop": false,
+      "region": { "x": 54, "y": 43, "width": 82, "height": 32 }
+    },
+    {
+      "id": "codex-746fdd86-42e3-464a-b83e-ad7ceaee1664-talk",
+      "source": "scene-art/3d2c9975-f964-46ce-bfe3-25dc0710bbf1/image.png",
+      "kind": "talk",
+      "label": "Řeč – klid, sevření, široké E, A, O",
+      "frames": [
+        "codex/746fdd86-42e3-464a-b83e-ad7ceaee1664/talk-01.png",
+        "codex/746fdd86-42e3-464a-b83e-ad7ceaee1664/talk-02.png",
+        "codex/746fdd86-42e3-464a-b83e-ad7ceaee1664/talk-03.png",
+        "codex/746fdd86-42e3-464a-b83e-ad7ceaee1664/talk-04.png",
+        "codex/746fdd86-42e3-464a-b83e-ad7ceaee1664/talk-05.png"
+      ],
+      "fps": 12,
+      "loop": true,
+      "region": { "x": 64, "y": 76, "width": 66, "height": 18 }
     }
   ],
   "startDialogue": "fero-intro",
