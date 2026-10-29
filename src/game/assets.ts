@@ -1,21 +1,12 @@
+import { files } from './assetFiles';
 import type { GameContent } from './types';
 
-const files = import.meta.glob<string>(
-  '../assets/**/*.{svg,png,jpg,jpeg,webp,avif,wav,json}',
-  {
-    eager: true,
-    query: '?url',
-    import: 'default',
-  },
-);
-export const assetIds = Object.keys(files)
-  .map((path) => path.slice('../assets/'.length))
-  .sort();
+export const assetIds = Object.keys(files).sort();
 
 export function assetUrl(id: string): string {
   // Newly imported assets can be previewed before Vite refreshes its glob module.
   return (
-    files[`../assets/${id}`] ??
+    files[id] ??
     (import.meta.env.DEV
       ? `/src/assets/${id.split('/').map(encodeURIComponent).join('/')}`
       : '')

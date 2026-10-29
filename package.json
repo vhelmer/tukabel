@@ -23,7 +23,8 @@
     "setup:matting": "node scripts/setup-matting.mjs",
     "compare:matting": "node experiments/object-matting/compare.mjs",
     "setup:sam3": "node scripts/setup-sam3.mjs",
-    "speech:regenerate": "node scripts/regenerate-speech.mjs"
+    "speech:regenerate": "node scripts/regenerate-speech.mjs",
+    "build:release": "npm run typecheck && node scripts/build-release.mjs"
   },
   "dependencies": {
     "pixi.js": "^8.22.0",
@@ -31,6 +32,7 @@
     "react-dom": "^19.3.1"
   },
   "devDependencies": {
+    "@breezystack/lamejs": "^1.2.7",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.64.1",
     "@types/node": "^22.20.5",

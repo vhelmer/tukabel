@@ -8,6 +8,8 @@ export default tseslint.config(
   {
     ignores: [
       'dist/**',
+      'dist-release/**',
+      '.release/**',
       'node_modules/**',
       '.local-tools/**',
       'test-results/**',
