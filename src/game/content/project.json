@@ -1465,7 +1465,8 @@
               "designRegistration": "speech/9d24dc00-0a83-4c1e-9355-581e887151dc/registration.json",
               "slot": "rotating",
               "retired": true,
-              "retirementManifest": "speech/bbefdfff-203d-40a0-b602-5f5e847ca02b/retirement.json"
+              "retirementManifest": "speech/bbefdfff-203d-40a0-b602-5f5e847ca02b/retirement.json",
+              "designPrompt": "Native Slovak child voice, a fictional boy aged nine to ten. Natural growing-child vocal anatomy, a slightly scratchy youthful middle-high register and energetic breath, never an adult baritone or digitally raised adult voice. Impatient, mischievously confident playground speech with sudden bursts of excitement, tiny hesitations and believable child rhythm. Light eastern Slovak cadence, clearly articulated Slovak consonants. Ordinary natural child pitch, no mosquito falsetto, no cartoon pitch effect. Keep every word understandable. Clean dry studio recording without background or music."
             },
             "mouthShapes": {
               "A": 4,
@@ -1513,7 +1514,8 @@
               "designRegistration": "speech/ec91583d-d4de-4ffa-b468-ed16f52dc72d/registration.json",
               "slot": "rotating",
               "retired": true,
-              "retirementManifest": "speech/a01466f7-2d2f-4dd6-90d5-662df165422e/retirement.json"
+              "retirementManifest": "speech/a01466f7-2d2f-4dd6-90d5-662df165422e/retirement.json",
+              "designPrompt": "Native Slovak child voice, a fictional girl aged eight to nine. Bright clear natural child resonance, precise youthful articulation and quick confident matter-of-fact delivery. Clever and slightly cheeky, with small expressive rises and genuine child phrasing rather than an adult actress performing a stage soprano. Light natural breath and lively but understandable pace. Distinct from a rough boy and from a shy younger boy. No shrill whistle, no falsetto, no electronic pitch shifting. Clean close dry recording without ambience or music."
             },
             "mouthShapes": {
               "A": 4,
@@ -1555,7 +1557,8 @@
               "designRegistration": "speech/4a2d83b0-cdb8-40af-939b-259cbf5812ee/registration.json",
               "slot": "rotating",
               "retired": true,
-              "retirementManifest": "speech/c37d455f-0054-4d64-ba46-a3b574c04c5d/retirement.json"
+              "retirementManifest": "speech/c37d455f-0054-4d64-ba46-a3b574c04c5d/retirement.json",
+              "designPrompt": "Native Slovak child voice, a fictional boy aged seven to eight. A naturally small soft youthful voice with slightly uncertain starts, quick little breaths and gentle uneven intonation. A younger boy trying very hard to sound brave, switching between quiet concentration and short confident exclamations. Natural child anatomy and comfortable pitch, not an adult nasal falsetto and not a squeaking cartoon insect. Clear intelligible Slovak words with plausible young-child pacing. Clean dry studio recording, no music or effects."
             },
             "mouthShapes": {
               "A": 4,

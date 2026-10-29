@@ -363,6 +363,7 @@ export function validateProject(
             object(binding.voice, `${key}.animation.voice`, [
               'voiceId',
               'designRegistration',
+              'designPrompt',
               'slot',
               'retired',
               'retirementManifest',

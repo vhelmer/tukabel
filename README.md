@@ -915,7 +915,7 @@ Všech 13 hlasových přiřazení zůstalo zachovaných, stejně jako osm chrán
 stálých slotů a dva rotační sloty. Název Margita se změnil na Eržika pouze
 v autorském obsahu; archivní nahrávky a registrace se nepřepisují.
 
-Nově čeká **47 hraných replik**: 42 má zachovanou starší nahrávku s odlišným
+Před spuštěním dávky scénář připravil **47 hraných replik**: 42 má zachovanou starší nahrávku s odlišným
 `speech.text` a pět nových Eržičiných štěků zatím audio nemá. Runtime
 zastaralé audio ani jeho lip-sync nepřehraje; ukáže aktuální slovenské titulky.
 Kliknutí/tapnutí na titulkovou plochu nebo Enter/mezerník repliku potvrdí.
@@ -985,6 +985,7 @@ Původní technická hádanka a staré zastávkové dialogy zůstávají pouze v
 - `dev/animationImport.ts` — lokální import PNG sekvencí a atlasů přes Sharp, obnova
   plátna oříznutých snímků, atomický zápis a kontrola rozměrů. Bez runtime závislosti.
 - `dev/speech.ts` — ElevenLabs Voice Design/TTS, WAV import, Rhubarb a validace archivů.
+- `dev/speechBatchPlan.ts`, `dev/speechBatch.ts`, `scripts/regenerate-speech.mjs` — náhled, dávkové přegenerování, všechny lip-sync a obnovitelné checkpointy.
 - `dev/voiceRotation.ts` — ověření úplného dabingu a bezpečné uvolnění rotačního hlasu.
 - `src/game/speech.ts`, `src/ui/DialogueAudio.tsx` — časování tvarů a přehrávání lokálního dabingu.
 - `tests/` — pravidla, průchody hry, izolované testy editoru a produkčního buildu.
@@ -1330,6 +1331,76 @@ Ticker respektuje pauzu, skrytou záložku a reduced motion.
 Animace obrázků nepoužívají AI služby, video ani FFmpeg. Produkce přehrává místní
 obrázky, audio a časování bez editoru a zápisového API. Staré archivní soubory se
 automaticky nemažou. `OPENAI_API_KEY` lze použít pro grafické úpravy lokací a experimentální textovou réžii hotových klipů v Dev Mode. Generování nových animačních snímků přes API zůstává mimo tento workflow.
+
+### Dávkové přegenerování dabingu
+
+Příkaz používá stejné TTS, Voice Design, Rhubarb a chráněné lokální editorové API
+jako Dev Mode. Sám spustí dočasný Vite server pouze na loopbacku a po dokončení
+jej zavře; běžící editor není potřeba. Klíč načte server z `.env.local`, nikdy
+se nevypisuje. Rhubarb používá `RHUBARB_BIN`, alternativně
+`.local-tools/rhubarb/rhubarb` nebo `rhubarb` z PATH. Chybějící binárka zastaví
+běh před prvním placeným požadavkem.
+
+```bash
+# Náhled bez ElevenLabs a bez změny projektu/audio assetů:
+npm run speech:regenerate
+
+# Nové repliky nebo změněný mluvený text / hlas / model / nastavení syntézy:
+npm run speech:regenerate -- --confirm
+
+# Vynutit nové audio všech hraných replik:
+npm run speech:regenerate -- --all --confirm
+
+# Pouze nové časování pro již aktuální audio, bez ElevenLabs:
+npm run speech:regenerate -- --lip-sync-only --confirm
+```
+
+**Každý skutečný běh znovu vypočítá Rhubarb všech hraných replik**, včetně těch,
+jejichž WAV ponechá. Nabídky témat ani komentáře bez přiřazeného herce zbytečně
+nenamlouvá. Změna Voice ID, modelu, stability, podobnosti, stylu, rychlosti nebo
+speaker boostu znamená nové TTS. Náhled uvádí také neověřený původ/import audio
+(`unknown-voice`) a chybějící/neplatné WAV. Samotný přepis titulků nové TTS
+nevyvolá; jejich úseky se přepočítají k aktuálnímu WAV. Pokud je audio zastaralé,
+režim `--lip-sync-only` odmítne pokračovat a uvede potřebné TTS.
+
+Osm stálých hlasů dávka nemaže. Uvolněné rotační postavy obnoví přes Voice Design
+z archivního zadání, případně z pole **Zadání pro obnovu Voice Design** v nastavení
+postavy (`voice.designPrompt`, 20–1000 znaků). U dětí jsou připravená nová zadání
+přirozených věkových hlasů. Obnova vytvoří tři archivované ukázky, automaticky
+použije první; `--preview 2` nebo `--preview 3` volí jinou. Nové ID hlasu vyžaduje
+namluvit všechny repliky dané postavy, aby se nemíchaly dvě různé barvy hlasu.
+Po výpočtu a ověření všech jejích WAV, titulků a lip-synců se uloží projekt a
+teprve potom uvolní rotační slot. Úlohy běží postupně, nejprve stálé hlasy;
+projekt nesmí překročit osm stálých a dva aktivní rotační hlasy. Voice Design
+čerpá další kredity vedle samotného TTS. Zamítnutí poskytovatele zastaví dávku,
+bez změny modelu, automatického opakování nebo náhradního hlasu.
+
+Průběh, původní zadání a potvrzené výsledky jsou v
+`.local-tools/speech-batches/<UUID>/state.json`. WAV a timingy nadále vznikají
+atomicky v `src/assets/speech/<UUID>/`; původní generace se nepřepisují. Úklid
+assetů chrání výsledky nedokončené dávky i po uplynutí hodinové ochrany.
+
+```bash
+# Pokračování po přerušení; dokončené TTS se znovu nevolá:
+npm run speech:regenerate -- --resume UUID --confirm
+
+# Až po kontrole archivu a účtu výslovně zopakovat neúspěšný/nepotvrzený krok:
+npm run speech:regenerate -- --resume UUID --retry-failed --confirm
+
+# Pokud se zadání změnilo a starý plán už nechceš dokončit:
+npm run speech:regenerate -- --abandon UUID
+```
+
+Ctrl+C nechá doběhnout aktuální požadavek a zastaví před dalším. Chybný nebo
+nejistý placený požadavek se ani při `--resume` sám neopakuje. Při nedokončené
+dávce příkaz nabídne její ID místo nového placení částečných výsledků. Během
+běhu neupravuj texty ani hlasy cílových postav; konflikt je zastaví a uložené
+výsledky zachová. Nesouvisející změny prostředí se při zápisu zachovají.
+Opustit dávku znamená pouze uzavřít její plán, bez mazání hlasů či změny hry.
+Po chybě mezi registrací a uložením do projektu může hlas zůstat v účtu; před
+novou obnovou proto zkontroluj volné sloty.
+Po dokončení obnov stránku hry nebo načti projekt v Dev Mode. Commitni použité
+nové generace a `project.json`; lokální deníky dávek do Gitu nepatří.
 
 ### Dabing ElevenLabs a Rhubarb Lip Sync
 

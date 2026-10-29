@@ -99,6 +99,7 @@ export function VoicePanel({
             ...voice,
             voiceId: registration.voiceId,
             designRegistration: registration.manifest,
+            designPrompt: undefined,
             slot: voice.slot ?? 'rotating',
             retired: undefined,
             retirementManifest: undefined,
@@ -142,6 +143,7 @@ export function VoicePanel({
                 ...voice,
                 voiceId: e.target.value,
                 designRegistration: undefined,
+                designPrompt: undefined,
                 retired: undefined,
                 retirementManifest: undefined,
               })
@@ -181,6 +183,23 @@ export function VoicePanel({
         </Field>
         <p className="field-note">
           Stálé hlasy {fixedCount}/8 · obsazené rotační sloty {rotatingCount}/2.
+        </p>
+        <Field label="Zadání pro obnovu Voice Design">
+          <textarea
+            value={voice.designPrompt ?? ''}
+            minLength={20}
+            maxLength={1000}
+            onChange={(e) =>
+              update({
+                ...voice,
+                designPrompt: e.target.value || undefined,
+              })
+            }
+          />
+        </Field>
+        <p className="field-note">
+          Volitelné zadání pro příští obnovu uvolněného hlasu. Samotná úprava
+          hlas nevytváří; změna aktivního hlasu vyžaduje nový Voice Design.
         </p>
         {voice.slot === 'static' && (
           <p className="field-note">

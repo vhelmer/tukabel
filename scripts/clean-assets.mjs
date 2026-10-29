@@ -11,6 +11,81 @@ const batch = new RegExp(
 const textFile =
   /\.(?:json|md|adoc|txt|py|mjs|cjs|js|jsx|ts|tsx|html|css|svg)$/i;
 const sha = (value) => createHash('sha256').update(value).digest('hex');
+const object = (value) =>
+  !!value && typeof value === 'object' && !Array.isArray(value);
+const batchDirectory = new RegExp(`^${uuid}$`);
+const speechResultStep = /^(?:design|register|tts|lipsync|retire):.+/;
+
+async function unfinishedSpeechResults(root) {
+  const parent = path.join(root, '.local-tools', 'speech-batches');
+  for (const directory of [path.dirname(parent), parent]) {
+    if (!(await exists(directory))) return [];
+    const stat = await fs.lstat(directory);
+    if (
+      !stat.isDirectory() ||
+      stat.isSymbolicLink() ||
+      (await fs.realpath(directory)) !== directory
+    )
+      throw Error('Archiv dávek dabingu nesmí být symbolický odkaz.');
+  }
+  const results = [];
+  for (const entry of await fs.readdir(parent, { withFileTypes: true })) {
+    if (entry.isSymbolicLink())
+      throw Error('Archiv dávky dabingu nesmí být symbolický odkaz.');
+    if (!batchDirectory.test(entry.name)) continue;
+    const file = path.join(parent, entry.name, 'state.json');
+    const fail = () => {
+      throw Error(
+        `Neplatný archiv dávky dabingu ${entry.name}; úklid se neprovede.`,
+      );
+    };
+    if (!entry.isDirectory()) fail();
+    let state;
+    try {
+      const stat = await fs.lstat(file);
+      if (!stat.isFile() || stat.isSymbolicLink()) fail();
+      state = JSON.parse(await fs.readFile(file, 'utf8'));
+    } catch {
+      fail();
+    }
+    if (
+      !object(state) ||
+      state.version !== 1 ||
+      state.id !== entry.name ||
+      !['running', 'failed', 'complete', 'abandoned'].includes(state.status) ||
+      !object(state.plan) ||
+      typeof state.plan.projectId !== 'string' ||
+      !state.plan.projectId ||
+      !object(state.expected) ||
+      state.expected.id !== state.plan.projectId ||
+      !['scenes', 'items', 'dialogues'].every((key) =>
+        Array.isArray(state.expected[key]),
+      ) ||
+      !object(state.steps)
+    )
+      fail();
+    for (const [key, step] of Object.entries(state.steps)) {
+      if (
+        !object(step) ||
+        !['started', 'done', 'failed'].includes(step.status) ||
+        (step.status === 'done' &&
+          speechResultStep.test(key) &&
+          !object(step.result))
+      )
+        fail();
+      if (
+        ['running', 'failed'].includes(state.status) &&
+        step.status === 'done' &&
+        speechResultStep.test(key)
+      )
+        results.push({
+          text: JSON.stringify(step.result),
+          reason: `nedokončená dávka dabingu ${entry.name}`,
+        });
+    }
+  }
+  return results;
+}
 async function readReferences(file) {
   const text = await fs.readFile(file, 'utf8');
   if (!file.endsWith('.json')) return text;
@@ -125,12 +200,20 @@ export async function auditAssets(root, options = {}) {
     const g = groups.get(id);
     if (!g.reasons.includes(reason)) g.reasons.push(reason);
   };
-  const scan = (text, reason) => {
+  const scan = (text, reason, speechOnly = false) => {
     for (const [id, group] of assets)
-      if (group && text.includes(id)) protect(group, reason);
+      if (
+        group &&
+        (!speechOnly || group.startsWith('speech/')) &&
+        text.includes(id)
+      )
+        protect(group, reason);
     // UUIDs and import filenames also protect split path.join() references.
     for (const [id] of groups)
-      if (text.includes(id) || text.includes(path.basename(id)))
+      if (
+        (!speechOnly || id.startsWith('speech/')) &&
+        (text.includes(id) || text.includes(path.basename(id)))
+      )
         protect(id, reason);
   };
   scan(JSON.stringify(JSON.parse(current)), 'aktuální projekt');
@@ -149,6 +232,11 @@ export async function auditAssets(root, options = {}) {
   for (const file of sourceFiles)
     if (textFile.test(file))
       scan(await readReferences(file), path.relative(root, file));
+  // Paid results remain resumable beyond the preview grace period. Restrict
+  // journal roots to completed speech steps; their archives then retain their
+  // ordinary transitive design/registration dependencies below.
+  for (const result of await unfinishedSpeechResults(root))
+    scan(result.text, result.reason, true);
   // Account deletion receipts guard future TTS even after an actor gets a new
   // voice or the editor closes before saving. Preserve pending outcomes too;
   // their proof dependencies are followed by the ordinary recursive scan below.

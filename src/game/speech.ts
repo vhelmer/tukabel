@@ -116,6 +116,13 @@ export function voiceIssue(value: unknown): string | undefined {
   )
     return 'Vyber platný lokální archiv registrace hlasu.';
   if (
+    value.designPrompt !== undefined &&
+    (typeof value.designPrompt !== 'string' ||
+      value.designPrompt.trim().length < 20 ||
+      value.designPrompt.length > 1000)
+  )
+    return 'Zadání Voice Design musí mít 20–1000 znaků.';
+  if (
     value.slot !== undefined &&
     value.slot !== 'static' &&
     value.slot !== 'rotating'

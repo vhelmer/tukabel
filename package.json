@@ -22,7 +22,8 @@
     "setup:segmentation": "node scripts/setup-segmentation.mjs",
     "setup:matting": "node scripts/setup-matting.mjs",
     "compare:matting": "node experiments/object-matting/compare.mjs",
-    "setup:sam3": "node scripts/setup-sam3.mjs"
+    "setup:sam3": "node scripts/setup-sam3.mjs",
+    "speech:regenerate": "node scripts/regenerate-speech.mjs"
   },
   "dependencies": {
     "pixi.js": "^8.22.0",

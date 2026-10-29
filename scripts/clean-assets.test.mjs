@@ -9,6 +9,24 @@ const batch = (n) =>
   `scene-art/00000000-0000-0000-0000-${String(n).padStart(12, '0')}`;
 const empty = { scenes: [], items: [], dialogues: [] };
 const options = { headProject: JSON.stringify(empty) };
+const speech = (n) => batch(n).replace('scene-art/', 'speech/');
+async function journal(root, n, status, steps = {}) {
+  const id = path.basename(batch(n));
+  const file = path.join(root, '.local-tools/speech-batches', id, 'state.json');
+  await fs.mkdir(path.dirname(file), { recursive: true });
+  await fs.writeFile(
+    file,
+    JSON.stringify({
+      version: 1,
+      id,
+      status,
+      plan: { projectId: 'test' },
+      expected: { ...empty, id: 'test' },
+      steps,
+    }),
+  );
+  return file;
+}
 async function fixture(run) {
   const root = await fs.mkdtemp(path.join(tmpdir(), 'tukabel-asset-cleanup-'));
   const write = async (id, value = 'original pixels', fresh = false) => {
@@ -233,4 +251,182 @@ test('successful and pending voice retirement ledgers remain durable and retain 
     for (const n of [1, 2, 3, 4, 5, 6])
       assert.ok(await fs.stat(path.join(root, 'src/assets', speech(n))));
   });
+});
+
+test('unfinished speech journals retain aged paid results and transitive designs without changing audit inputs', async () => {
+  await fixture(async ({ root, write }) => {
+    for (let i = 1; i <= 7; i++) await write(`${speech(i)}/audio.wav`);
+    await write(
+      `${speech(1)}/record.json`,
+      JSON.stringify({
+        voice: { designRegistration: `${speech(5)}/registration.json` },
+      }),
+    );
+    await write(
+      `${speech(5)}/registration.json`,
+      JSON.stringify({ designManifest: `${speech(6)}/design.json` }),
+    );
+    await write(`${speech(6)}/design.json`, '{}');
+    await write(`${speech(6)}/preview-1.mp3`);
+    await write(`${speech(7)}/design.json`, '{}');
+    const running = await journal(root, 21, 'running', {
+      'tts:dialogue/line': {
+        status: 'done',
+        result: { audio: `${speech(1)}/audio.wav` },
+      },
+      'design:scene/actor': {
+        status: 'done',
+        result: { manifest: `${speech(7)}/design.json` },
+      },
+    });
+    const failed = await journal(root, 22, 'failed', {
+      'tts:dialogue/other': {
+        status: 'done',
+        result: { audio: `${speech(2)}/audio.wav` },
+      },
+      'lipsync:dialogue/other': { status: 'failed' },
+    });
+    await journal(root, 23, 'complete', {
+      'tts:dialogue/line': {
+        status: 'done',
+        result: { audio: `${speech(3)}/audio.wav` },
+      },
+    });
+    await journal(root, 24, 'abandoned', {
+      'tts:dialogue/line': {
+        status: 'done',
+        result: { audio: `${speech(4)}/audio.wav` },
+      },
+    });
+    const inputs = await Promise.all(
+      [running, failed].map((file) => fs.readFile(file)),
+    );
+    const report = await auditAssets(root, options);
+    assert.deepEqual(
+      report.remove.map((g) => g.id).sort(),
+      [speech(3), speech(4)].sort(),
+    );
+    for (const n of [1, 2, 5, 6, 7])
+      assert.ok(report.kept.some((g) => g.id === speech(n)));
+    assert.ok(
+      report.kept
+        .find((g) => g.id === speech(1))
+        .reasons.some((reason) =>
+          reason.startsWith('nedokončená dávka dabingu'),
+        ),
+    );
+    assert.deepEqual(
+      await Promise.all([running, failed].map((file) => fs.readFile(file))),
+      inputs,
+    );
+    for (let n = 1; n <= 7; n++)
+      assert.equal(
+        await fs.readFile(
+          path.join(root, 'src/assets', speech(n), 'audio.wav'),
+          'utf8',
+        ),
+        'original pixels',
+      );
+    await assert.rejects(fs.stat(path.join(root, '.local-tools/asset-trash')), {
+      code: 'ENOENT',
+    });
+    await cleanAssets(root, options);
+    for (const n of [1, 2, 5, 6, 7])
+      assert.ok(await fs.stat(path.join(root, 'src/assets', speech(n))));
+    for (const n of [3, 4])
+      await assert.rejects(fs.stat(path.join(root, 'src/assets', speech(n))), {
+        code: 'ENOENT',
+      });
+  });
+});
+
+test('batch prose, unknown steps, unfinished steps and non-speech groups do not root unrelated assets', async () => {
+  await fixture(async ({ root, write }) => {
+    await write(`${speech(1)}/audio.wav`);
+    await write(`${speech(2)}/audio.wav`);
+    await write(`${speech(3)}/audio.wav`);
+    await write(`${batch(4)}/image.png`);
+    const file = await journal(root, 21, 'running', {
+      'tts:dialogue/line': {
+        status: 'started',
+        result: { audio: `${speech(1)}/audio.wav` },
+      },
+      'unknown:dialogue/line': {
+        status: 'done',
+        result: { audio: `${speech(2)}/audio.wav` },
+      },
+      'tts:dialogue/other': {
+        status: 'done',
+        result: { audio: `${batch(4)}/image.png` },
+      },
+    });
+    const state = JSON.parse(await fs.readFile(file, 'utf8'));
+    state.plan.notes = `${speech(3)}/audio.wav`;
+    await fs.writeFile(file, JSON.stringify(state));
+    assert.deepEqual(
+      (await auditAssets(root, options)).remove.map((g) => g.id).sort(),
+      [speech(1), speech(2), speech(3), batch(4)].sort(),
+    );
+  });
+});
+
+test('malformed or mismatched batch journals refuse cleanup before moving any assets', async () => {
+  await fixture(async ({ root, write }) => {
+    await write(`${speech(1)}/audio.wav`);
+    const file = await journal(root, 21, 'running');
+    const valid = JSON.parse(await fs.readFile(file, 'utf8'));
+    const invalid = [
+      '{broken',
+      JSON.stringify({ ...valid, version: 2 }),
+      JSON.stringify({ ...valid, id: path.basename(batch(22)) }),
+      JSON.stringify({ ...valid, status: 'unknown' }),
+      JSON.stringify({ ...valid, expected: { ...empty, id: 'other' } }),
+      JSON.stringify({ ...valid, expected: { id: 'test' } }),
+      JSON.stringify({ ...valid, steps: { 'tts:a/b': { status: 'done' } } }),
+      JSON.stringify({ ...valid, steps: { 'tts:a/b': { status: 'unknown' } } }),
+    ];
+    for (const contents of invalid) {
+      await fs.writeFile(file, contents);
+      await assert.rejects(
+        cleanAssets(root, options),
+        /Neplatný archiv dávky dabingu/,
+      );
+      assert.ok(await fs.stat(path.join(root, 'src/assets', speech(1))));
+    }
+    await fs.unlink(file);
+    await assert.rejects(
+      auditAssets(root, options),
+      /Neplatný archiv dávky dabingu/,
+    );
+    await assert.rejects(fs.stat(path.join(root, '.local-tools/asset-trash')), {
+      code: 'ENOENT',
+    });
+  });
+});
+
+test('symlinks at every speech journal boundary refuse cleanup', async () => {
+  for (const boundary of [
+    '.local-tools',
+    '.local-tools/speech-batches',
+    `.local-tools/speech-batches/${path.basename(batch(21))}`,
+    `.local-tools/speech-batches/${path.basename(batch(21))}/state.json`,
+  ])
+    await fixture(async ({ root, write }) => {
+      await write(`${speech(1)}/audio.wav`);
+      await journal(root, 21, 'running', {
+        'tts:dialogue/line': {
+          status: 'done',
+          result: { audio: `${speech(1)}/audio.wav` },
+        },
+      });
+      const original = path.join(root, boundary);
+      const moved = `${original}-real`;
+      await fs.rename(original, moved);
+      await fs.symlink(moved, original);
+      await assert.rejects(
+        cleanAssets(root, options),
+        /symbolický odkaz|Neplatný archiv dávky dabingu/,
+      );
+      assert.ok(await fs.stat(path.join(root, 'src/assets', speech(1))));
+    });
 });
