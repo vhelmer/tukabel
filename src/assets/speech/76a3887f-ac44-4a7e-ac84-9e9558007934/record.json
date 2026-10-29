@@ -1,0 +1,19 @@
+{
+  "text": "Chceš magnet? Dones poriadny kus železa, hoci hrdzavú rúru z uličky za Ferovým dvorom. Fľaše neberiem, nie som smädný kontajner.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "OrfjtrzVNMp0DoREiFhZ",
+    "designRegistration": "speech/75ce1055-8c9a-4986-b319-be99eca6d363/registration.json",
+    "slot": "static",
+    "designPrompt": "Native Slovak male, about forty-five. An outrageous fictional small-time metal thief, permanently dazed and smoke-scorched. A very rough, gravelly low-mid voice with dry wheezy rasp, sticky nasal resonance and occasional creaking vocal fry. Sluggish stretched vowels, delayed thoughts, lazy uneven drawl, then sudden sly giggles and excited little bursts when he mentions scrap metal. Warmly ridiculous, shameless and slightly paranoid, audibly baked and exhausted from chain smoking; not a normal conversational man and not a clean announcer. Light eastern Slovak cadence, clear Slovak consonants. Keep every word intelligible and the pace suitable for short game dialogue. Natural human imperfections, no pitch shifting, no music, ambience or sound effects. Dry close studio recording."
+  },
+  "languageCode": "sk",
+  "duration": 9.2,
+  "audioSha256": "a850dbe53458df3aecb9a7a87d5df013358f1eafcc614d89870c3cc7f8dfcb50"
+}

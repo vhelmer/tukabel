@@ -829,7 +829,7 @@ Stejné herní okno používá i **Otestovat odsud** v Dev Mode.
 Aktuální příběh (`tukabel-grotesque-2`) začíná automatickým rozhovorem
 s Ferem na **Ferovom dvore**. Rudo bere pátrání po ukradeném hlavním kabelu za
 štartovné zdarma na zrušeném mistrovství v automatech. Hra má 12 zachovaných
-lokací, 13 postav, 24 předmětů, devět úkolů v deníku a dva fyzicky odlišné konce.
+lokací, 13 postav, 25 předmětů, devět úkolů v deníku a dva fyzicky odlišné konce.
 Po načtení úvodní scény hra jednu sekundu nepřijímá vstup a teprve potom
 zobrazí titulky a spustí hotový Ferův dabing s lip-syncem. Stejná pauza platí
 pro **Nová hra**; načtení uložené pozice úvod neopakuje. Pauza není součástí save.
@@ -845,7 +845,10 @@ Rudo považuje odpojení mínusu za odstranění špatné elektřiny. **Eržika*
 Margitu. Nemá dialogový strom: pět samostatných krátkých nadávek se střídá při
 opakovaných kliknutích, bez volby odpovědi. Pořadí drží běžné uložené příznaky.
 Rožok a kolíček jsou samostatné předměty na dvoře; izolačka leží pod žebříkem
-v uličce. Nejsou odměnou za rozhovor.
+v uličce. Vedle odpadků v uličce sebereš také hrdzavý šrot, který Dežo na zastávce
+vymění za magnet. Láhev, svätenú vodu ani podložku nebere. Prázdná láhev zůstává
+pro vodu, mléko a kávu; podložka pro druhý konec. Dežo se bez ostychu živí
+kradením kovů a jejich odnášením Dingovi do zberne.
 
 Současná mapa má zachovaných **sedm polygonů**: Ferov dvor, Zastávka, Kostol,
 Detské ihrisko, Krčma, Zberňa a Kravín. Krčma se odemkne přijetím případu,
@@ -869,8 +872,8 @@ předměty; francouzský klíč, pečiatka a magnetická udice zůstávají pou�
 
 | Hádanka              | Řešení a podmínka                                                                                                                                                                                                                                                                                           |
 | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Přijetí případu      | Potvrď Ferovu repliku a přijmi případ. Na dvoře seber rožok z chlebníku a drevený kolíček. Přejdi do uličky, pod žebříkem seber izolačnú pásku a vrať se na dvůr. Eržiku můžeš opakovaně provokovat, pro průchod to není nutné.                                                                             |
-| Dežovo alibi         | Na zastávce seber prázdnou fľašu a ukaž ji Dežovi. Dá magnet, láhev zůstane. Dotaz na kabel odemkne zberňu; měď magnet nepřitahuje. Etelin dotaz na mléko odemkne kravín.                                                                                                                                   |
+| Přijetí případu      | Potvrď Ferovu repliku a přijmi případ. Na dvoře seber rožok z chlebníku a drevený kolíček. Přejdi do uličky, pod žebříkem seber izolačnú pásku, u odpadků hrdzavý šrot a vrať se na dvůr. Eržiku můžeš opakovaně provokovat, pro průchod to není nutné.                                                     |
+| Dežovo alibi         | V uličce seber hrdzavý šrot a předej ho Dežovi na zastávce: šrot spotřebuje, dostaneš magnet a odemkne se zberňa. Láhev ani svätenú vodu nebere; prázdnou fľašu ze zastávky použiješ na vodu a mléko. Dotaz na kradení kovů také odemkne zberňu; Etela prozradí kravín.                                     |
 | Kraví bohoslužba     | U kostela seber prázdny úmrtný list a naplň láhev u pumpy. Svätenú vodu použij **na kravu**, ne na Jolandu: prázdná láhev se vrátí. Krávě přečti úmrtní list; úřední nuda ji uspí a papír zůstane. Pak seber zvonec z obojku a prázdnou lahví naber mléko z vedra. I zbytečný další křest vrátí láhev.      |
 | Dingův vnitřní budík | Karol v krčmě dá mletou kávu. Mléko + káva vytvoří studené kravučíno. Nalij je do kávového klystíru v zberni; láhev se vrátí. **Klikni na jeho pedál.** Dingo ožije a ze samostatné truhlice můžeš vzít klíč a rukavice. Magnet lze získat i teprve nyní.                                                   |
 | Zatuchlá herna       | Klíčem oprav pípu. Klikni na krígle a vypusť staré pivo. Tím se odemknou schody a v odkapávači se objeví zlatý obal; samostatně jej seber. V herně klíčem otevři servisný kryt. Deník dokládá Ľubovu reklamaci den po pohřbu a Bonifácovo tajné hraní.                                                      |
@@ -920,7 +923,10 @@ protože obrázek má při vykreslení přednost. Pro výřezy použij transpare
 | Inventář                  | Drevený kolíček (`clothespin`)                   | —                     | Rozlišení nosního kolíčku v inventáři; zatím znak `II`.     | Jediný starý dřevěný kolíček, průhledné pozadí, stejná kresba jako scénická verze.                                        |
 
 Izolačka v uličce (`tape-roll`, `825, 651 · 90×72`) už má místní obrázek
-`cursors/tape-icon.svg`; do chybějící grafiky se nepočítá.
+`cursors/tape-icon.svg`; do chybějící grafiky se nepočítá. Hrdzavý šrot
+(`scrap-metal`, `500, 655 · 120×80`) používá samostatný místní
+`story/scrap-metal.svg` ve scéně i inventáři a po sběru zmizí.
+Původní save s už získaným magnetem další šrot nenabízí; nové ID projektu není potřeba.
 
 ### Dabing tohoto scénáře
 
@@ -928,7 +934,9 @@ Schválená dávka 29. 10. 2026 nově namluvila **40 ze 47 hraných replik** př
 ElevenLabs a přepočítala jejich Rhubarb lip-sync i titulky. Osm stálých hlasů
 zůstalo zachovaných. Rotační hlasy Eržiky (pět reakcí) a Karola (tři repliky)
 se obnovily přes Voice Design a uvolnily až po ověření a uložení všech dat.
-Původní generace a registrace se nepřepisují.
+Původní generace a registrace se nepřepisují. Dežo má následně nově navržený
+vykouřený, zpomalený hlas a nové všechny čtyři hrané repliky včetně výměny šrotu;
+jejich WAV, titulky a Rhubarb data jsou přiřazené v projektu.
 
 **Zbývá sedm dětských replik**: Špľuch tři, Nika dvě a Béla dvě. ElevenLabs
 odmítlo první nový dětský Voice Design chybou HTTP 403; dávka se zastavila bez
@@ -1479,8 +1487,12 @@ nové generace a `project.json`; lokální deníky dávek do Gitu nepatří.
 
 **Limit 10 vlastních hlasů:** osm stálých slotů je určeno Ferovi, Dežovi,
 Etele, otci Bonifácovi, Milanovi Jamkovi, Dingovi, Jolandě a Ľubu Šťastnému.
-Tyto hlasy se přes správu rotace nemažou. Margita, Karol a trojice z hřiště
-používají dva rotační sloty. Nastavení je u postavy v **Správa hlasového slotu**;
+Tyto hlasy se přes správu rotace nemažou. Po schválené změně Dežova hlasu
+zůstává jeho původní „Nervózní nosový tenor“ v účtu jako chráněný archiv;
+hra používá nový „Vyhulený zlodej kovov“. Na výslovné přání uživatele je tedy
+obsazených **9 vlastních hlasů a zbývá 1 rotační slot**. Eržika, Karol a trojice
+z hřiště se při další generaci musí vystřídat postupně v tomto jediném slotu.
+Editorový počet osmi stálých přiřazení nezahrnuje archivního Deža navíc v účtu. Nastavení je u postavy v **Správa hlasového slotu**;
 editor zobrazuje počet stálých a právě obsazených rotačních slotů.
 
 Před uvolněním rotačního hlasu vygeneruj a analyzuj **všechny** jeho hrané

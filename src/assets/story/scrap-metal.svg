@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="120" viewBox="0 0 180 120">
+  <defs>
+    <linearGradient id="rust" x1="0" y1="0" x2="0.6" y2="1">
+      <stop stop-color="#c08049"/>
+      <stop offset=".4" stop-color="#965332"/>
+      <stop offset="1" stop-color="#543d31"/>
+    </linearGradient>
+    <linearGradient id="iron" x1="0" y1="0" x2="0.3" y2="1">
+      <stop stop-color="#9d9981"/>
+      <stop offset=".48" stop-color="#777766"/>
+      <stop offset="1" stop-color="#464d43"/>
+    </linearGradient>
+  </defs>
+  <g stroke="#352c24" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m24 99 12-37 30-4 8 21-25 6-5 21z" fill="url(#iron)"/>
+    <path d="m37 66 19-3 8 14-21 5z" fill="#563d2e"/>
+    <path d="M33 38 86 28Q109 23 117 44l8 22 29-5 7 22-39 9q-17 3-23-14L89 53 39 65Z" fill="url(#rust)"/>
+    <path d="m40 39 46-7q17-4 24 11l11 32 29-6" fill="none" stroke="#d39762" stroke-width="4"/>
+    <path d="m42 59 49-10 11 32q5 12 20 7l34-8" fill="none" stroke="#604133" stroke-width="3"/>
+    <path d="m149 61 11-3 9 23-12 4z" fill="url(#iron)"/>
+    <ellipse cx="36" cy="52" rx="9" ry="14" transform="rotate(-15 36 52)" fill="#54574c"/>
+    <ellipse cx="36" cy="52" rx="4" ry="8" transform="rotate(-15 36 52)" fill="#272b27" stroke-width="2"/>
+    <path d="m63 37 9 1-4 9-9-2m46 12 9 5-2 9-6-2m19 8 6-2" fill="#c3743e" stroke="none"/>
+    <path d="m74 52 7-7m-31-2 5-1m82 35 7-2m-100 19-5 1" fill="none" stroke="#c5a479" stroke-width="2"/>
+    <circle cx="35" cy="94" r="3" fill="#252d29" stroke-width="2"/>
+    <path d="m60 54 4 5m25-26 6 4m25 44 2 5" fill="none" stroke="#4e362b" stroke-width="2"/>
+  </g>
+</svg>

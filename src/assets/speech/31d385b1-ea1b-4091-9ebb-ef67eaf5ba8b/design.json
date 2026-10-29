@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "operation": "voice-design",
+  "provider": "elevenlabs",
+  "model": "eleven_ttv_v3",
+  "description": "Native Slovak male, about forty-five. An outrageous fictional small-time metal thief, permanently dazed and smoke-scorched. A very rough, gravelly low-mid voice with dry wheezy rasp, sticky nasal resonance and occasional creaking vocal fry. Sluggish stretched vowels, delayed thoughts, lazy uneven drawl, then sudden sly giggles and excited little bursts when he mentions scrap metal. Warmly ridiculous, shameless and slightly paranoid, audibly baked and exhausted from chain smoking; not a normal conversational man and not a clean announcer. Light eastern Slovak cadence, clear Slovak consonants. Keep every word intelligible and the pace suitable for short game dialogue. Natural human imperfections, no pitch shifting, no music, ambience or sound effects. Dry close studio recording.",
+  "text": "Železo nosím Dingovi do zberne. Meď magnet neberie, tú kradnem ručne. Dingo tam chrčí pod vrakmi, ešte ho nezvážili. Chceš magnet? Dones poriadny kus železa, hoci hrdzavú rúru z uličky za Ferovým dvorom. Fľaše neberiem, nie som smädný kontajner. Videl som biely pohrebák s káblom. Chcel som mu šlohnúť puklice, ale šofér žral bagetu a čumel. Ani pri mŕtvych si človek nezarobí. To je kus železa! Ber magnet, rúru nesiem Dingovi do zberne. Ak sa niekto pýta, našiel som ju ešte živú.",
+  "textSha256": "1536e052beeb5e4d2da6800edbc87456d41980bff5ebb1c96c2a6d6cba5c5699",
+  "seed": 866359205,
+  "guidanceScale": 5,
+  "outputFormat": "mp3_44100_128",
+  "previews": [
+    {
+      "audio": "preview-1.mp3",
+      "generatedVoiceId": "OrfjtrzVNMp0DoREiFhZ",
+      "duration": 39.6305,
+      "audioSha256": "dd7f4f82da5944c4c88bcf276abb0681f716ebe1cfa4cb21c0c89f13b7838af9"
+    },
+    {
+      "audio": "preview-2.mp3",
+      "generatedVoiceId": "F6eS9KVEeeR3w5rQuxLt",
+      "duration": 42.03375,
+      "audioSha256": "bd8d22f910e90f9f3be972650703c8ce96e215fba3423e3b453682e1c40d21e8"
+    },
+    {
+      "audio": "preview-3.mp3",
+      "generatedVoiceId": "YdHXz83FNB80NQYkNLyd",
+      "duration": 36.3651875,
+      "audioSha256": "54e11de9be1bf8f1a1930b1893893f668256f3768052e852d222724d187002f4"
+    }
+  ]
+}

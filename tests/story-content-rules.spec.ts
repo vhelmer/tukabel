@@ -70,10 +70,11 @@ function prepareFarm(content: GameContent, lateMagnet = false) {
   p.use('alley-door');
   expect(p.state.sceneId).toBe('scene11');
   p.use('tape-roll');
+  p.use('scrap-metal');
   p.use('yard-door');
   expect(p.state.sceneId).toBe('scene4');
   expect(p.state.inventory).toEqual(
-    expect.arrayContaining(['bread', 'tape', 'clothespin']),
+    expect.arrayContaining(['bread', 'tape', 'clothespin', 'scrap-metal']),
   );
   p.travel('scene1');
   p.use('layer3');
@@ -81,7 +82,7 @@ function prepareFarm(content: GameContent, lateMagnet = false) {
   p.choose('scrapyard');
   p.close();
   if (!lateMagnet) {
-    p.use('layer2', 'empty-bottle');
+    p.use('layer2', 'scrap-metal');
     p.close();
   }
   p.use('layer1');
@@ -130,7 +131,7 @@ function solveToCrypt(content: GameContent, lateMagnet = false) {
   );
   if (lateMagnet) {
     p.travel('scene1');
-    p.use('layer2', 'empty-bottle');
+    p.use('layer2', 'scrap-metal');
     p.close();
   }
   p.travel('scene6');
@@ -219,7 +220,7 @@ test('the authored game completes through restoration and saves both before and 
   p.use('layer1');
   expect(p.state).toBe(ending);
 });
-test('late bottle exchange remains solvable and a forged token causes the physically distinct jackpot ending', async () => {
+test('late scrap exchange remains solvable and a forged token causes the physically distinct jackpot ending', async () => {
   const content = await read(),
     p = solveToCrypt(content, true);
   p.combine('washer', 'foil');
@@ -288,6 +289,7 @@ test('seven outdoor destinations keep fast travel separate from interior passage
   p.use('alley-door');
   expect(p.state.sceneId).toBe('scene11');
   p.use('tape-roll');
+  p.use('scrap-metal');
   p.use('yard-door');
   expect(p.state.sceneId).toBe('scene4');
   const inventory = [...p.state.inventory];
@@ -412,7 +414,7 @@ test('new puzzle props are visible placeholders contained in their authored loca
 test('static actor voices stay fixed while rotating voices retain registration and retirement evidence', async () => {
   const content = await read();
   const expected = {
-    'scene1/layer2': 'hK1QkZqr6jNBJ8sJlEuc',
+    'scene1/layer2': 'OrfjtrzVNMp0DoREiFhZ',
     'scene1/layer1': 'xKlQrC6RzWnhQhiCFKBS',
     'scene4/layer1': 'T4iGZQue94RIBivJIuhN',
     'scene3/priest': 'Dm506FEP6AkprXTsWzmW',
@@ -470,4 +472,79 @@ test('starting a Dev Mode preview elsewhere can still accept Fero’s case', asy
   state = reduceGame(content, state, { type: 'choose', choiceId: 'accept' });
   expect(state.flags['case-open']).toBe(true);
   expect(canTravel(content, state, 'scene1')).toBe(true);
+});
+
+test('Dežo barters one unique alley scrap pickup and refuses bottles, holy water and the jackpot washer', async () => {
+  const content = await read(),
+    p = player(content);
+  const pickups = content.scenes.flatMap((scene) =>
+    scene.hotspots
+      .filter((hotspot) => hotspot.id === 'scrap-metal')
+      .map((hotspot) => ({ scene, hotspot })),
+  );
+  expect(pickups).toHaveLength(1);
+  const { scene, hotspot } = pickups[0]!;
+  expect(scene.id).toBe('scene11');
+  expect(hotspot.image).toBe('story/scrap-metal.svg');
+  expect(content.items.find((item) => item.id === 'scrap-metal')?.image).toBe(
+    hotspot.image,
+  );
+  expect(hotspot.placeholder).not.toBe(true);
+  expect(hotspot.bounds.x).toBeGreaterThanOrEqual(440);
+  expect(hotspot.bounds.x + hotspot.bounds.width).toBeLessThanOrEqual(720);
+  expect(hotspot.bounds.y + hotspot.bounds.height).toBeLessThan(761);
+  expect(
+    matches(
+      { ...p.state, flags: { ...p.state.flags, 'magnet-given': true } },
+      hotspot.visibleWhen,
+    ),
+  ).toBe(false);
+  p.choose('accept');
+  p.use('scrap-metal');
+  expect(p.state.inventory).not.toContain('scrap-metal');
+  p.use('alley-door');
+  expect(matches(p.state, hotspot.visibleWhen)).toBe(true);
+  p.use('scrap-metal');
+  expect(p.state.flags['scrap-taken']).toBe(true);
+  expect(p.state.inventory.filter((id) => id === 'scrap-metal')).toHaveLength(
+    1,
+  );
+  expect(matches(p.state, hotspot.visibleWhen)).toBe(false);
+  p.state = deserializeSave(content, serializeSave(content, p.state));
+  const collected = p.state;
+  p.use('scrap-metal');
+  expect(p.state).toBe(collected);
+  p.use('yard-door');
+  p.travel('scene1');
+  const base = p.state;
+  for (const itemId of ['empty-bottle', 'holy-water', 'washer']) {
+    p.state = { ...base, inventory: [...base.inventory, itemId] };
+    const before = p.state;
+    p.use('layer2', itemId);
+    expect(p.state.inventory, itemId).toEqual(before.inventory);
+    expect(p.state.flags, itemId).toEqual(before.flags);
+    expect(p.state.dialogue, itemId).toBeNull();
+    expect(p.state.message, itemId).not.toBe('');
+    expect(p.state.inventory, itemId).not.toContain('magnet');
+  }
+  p.state = deserializeSave(content, serializeSave(content, base));
+  p.use('layer2', 'scrap-metal');
+  expect(p.state.inventory).not.toContain('scrap-metal');
+  expect(p.state.inventory.filter((id) => id === 'magnet')).toHaveLength(1);
+  expect(p.state.flags['magnet-given']).toBe(true);
+  expect(p.state.flags['scrapyard-known']).toBe(true);
+  expect(p.state.dialogue?.id).toBe('dezo-bottle');
+  p.close();
+  p.state = deserializeSave(content, serializeSave(content, p.state));
+  const traded = p.state;
+  p.use('layer2', 'scrap-metal');
+  expect(p.state).toBe(traded);
+  // Even an old/inconsistent position retaining scrap cannot claim another magnet.
+  p.state = { ...p.state, inventory: [...p.state.inventory, 'scrap-metal'] };
+  p.use('layer2', 'scrap-metal');
+  expect(p.state.inventory.filter((id) => id === 'magnet')).toHaveLength(1);
+  expect(p.state.inventory).toContain('scrap-metal');
+  p.travel('scene4');
+  p.use('alley-door');
+  expect(matches(p.state, hotspot.visibleWhen)).toBe(false);
 });

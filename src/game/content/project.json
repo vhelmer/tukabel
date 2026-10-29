@@ -192,7 +192,8 @@
     "axle-loose",
     "bread-loaded",
     "resuscitator-filled",
-    "cow-asleep"
+    "cow-asleep",
+    "scrap-taken"
   ],
   "tasks": [
     {
@@ -470,9 +471,10 @@
               "style": 0.8,
               "speed": 1,
               "useSpeakerBoost": true,
-              "voiceId": "hK1QkZqr6jNBJ8sJlEuc",
-              "designRegistration": "speech/3e8208b6-b0b3-4340-b834-33458c4b61fa/registration.json",
-              "slot": "static"
+              "voiceId": "OrfjtrzVNMp0DoREiFhZ",
+              "designRegistration": "speech/75ce1055-8c9a-4986-b319-be99eca6d363/registration.json",
+              "slot": "static",
+              "designPrompt": "Native Slovak male, about forty-five. An outrageous fictional small-time metal thief, permanently dazed and smoke-scorched. A very rough, gravelly low-mid voice with dry wheezy rasp, sticky nasal resonance and occasional creaking vocal fry. Sluggish stretched vowels, delayed thoughts, lazy uneven drawl, then sudden sly giggles and excited little bursts when he mentions scrap metal. Warmly ridiculous, shameless and slightly paranoid, audibly baked and exhausted from chain smoking; not a normal conversational man and not a clean announcer. Light eastern Slovak cadence, clear Slovak consonants. Keep every word intelligible and the pace suitable for short game dialogue. Natural human imperfections, no pitch shifting, no music, ambience or sound effects. Dry close studio recording."
             },
             "mouthShapes": {
               "A": 4,
@@ -490,27 +492,33 @@
           "uses": {
             "empty-bottle": [
               {
-                "when": { "not": { "flag": "magnet-given" } },
-                "effects": [
-                  { "type": "flag", "id": "magnet-given", "value": true },
-                  { "type": "flag", "id": "scrapyard-known", "value": true },
-                  { "type": "addItem", "id": "magnet" },
-                  { "type": "dialogue", "id": "dezo-bottle" }
-                ]
-              },
-              { "message": "Magnet už máš. Ďalšiu fyziku zo mňa nevytiahneš." }
+                "message": "Dežo: Sklo neberiem. Prines kus železa, fľašu si nechaj na svoje životné rozhodnutia."
+              }
             ],
             "holy-water": [
               {
+                "message": "Dežo: Ani svätená voda zo skla železo nespraví. Tú si nechaj, ja už mám rezervovaný kotol."
+              }
+            ],
+            "washer": [
+              {
+                "message": "Dežo: Tá podložka je taká ľahká, že by mi váha ukázala sústrasť. Prines väčší kus železa."
+              }
+            ],
+            "scrap-metal": [
+              {
                 "when": { "not": { "flag": "magnet-given" } },
                 "effects": [
+                  { "type": "removeItem", "id": "scrap-metal" },
                   { "type": "flag", "id": "magnet-given", "value": true },
                   { "type": "flag", "id": "scrapyard-known", "value": true },
                   { "type": "addItem", "id": "magnet" },
                   { "type": "dialogue", "id": "dezo-bottle" }
                 ]
               },
-              { "message": "Magnet už máš. Ďalšiu fyziku zo mňa nevytiahneš." }
+              {
+                "message": "Dežo: Magnet už máš. Ďalší šrot si odnes Dingovi do zberne, charitu robím raz za život."
+              }
             ]
           }
         },
@@ -2352,6 +2360,28 @@
               ]
             }
           ]
+        },
+        {
+          "id": "scrap-metal",
+          "label": "Hrdzavý šrot",
+          "bounds": { "x": 500, "y": 655, "width": 120, "height": 80 },
+          "image": "story/scrap-metal.svg",
+          "cursor": "interact",
+          "visibleWhen": {
+            "all": [
+              { "not": { "flag": "scrap-taken" } },
+              { "not": { "flag": "magnet-given" } }
+            ]
+          },
+          "onClick": [
+            {
+              "message": "Rudo: Hrdzavá rúra. Pre niekoho odpad, pre Deža termínovaný vklad.",
+              "effects": [
+                { "type": "flag", "id": "scrap-taken", "value": true },
+                { "type": "addItem", "id": "scrap-metal" }
+              ]
+            }
+          ]
         }
       ],
       "ambient": "ambience/village.wav"
@@ -2746,6 +2776,13 @@
       "label": "Drevený kolíček",
       "description": "Eržikin kolíček. Na nose zastaví pohyb, ktorý Milan považuje za nežiaducu známku života.",
       "icon": "II"
+    },
+    {
+      "id": "scrap-metal",
+      "label": "Hrdzavý šrot",
+      "description": "Ohnutá železná rúra s hrdzavým držiakom z uličky. Dežo za poriadny kus železa vymení magnet; fľašami ho neuplatíš.",
+      "icon": "✦",
+      "image": "story/scrap-metal.svg"
     }
   ],
   "dialogues": [
@@ -2980,11 +3017,11 @@
           "id": "root",
           "speaker": "Dežo Magnet",
           "actor": { "sceneId": "scene1", "hotspotId": "layer2" },
-          "text": "More, magnet mám, ale meď neberie. Môžeš si to zapísať na čelo, nech to máš konečne v hlave.",
+          "text": "Ja beriem všetko železné, čo nie je privarené. Privarené beriem aj so stenou. Čo chceš?",
           "choices": [
             {
               "id": "scrapyard",
-              "text": "Priznaj sa, ten magnet má medené zuby!",
+              "text": "Ty to železo normálne kradneš?",
               "next": "scrapyard",
               "effects": [
                 { "type": "flag", "id": "scrapyard-known", "value": true }
@@ -2992,27 +3029,27 @@
             },
             {
               "id": "deposit",
-              "text": "Na autobus čakáš alebo ho pasieš?",
+              "text": "Čo chceš za ten magnet?",
               "next": "deposit"
             },
             {
               "id": "hearse",
-              "text": "Videl si mŕtvolu s vodičákom?",
+              "text": "Videl si niekoho s ukradnutým káblom?",
               "next": "hearse"
             },
-            { "id": "leave", "text": "Si čistý, fyziku zatknem neskôr." }
+            { "id": "leave", "text": "Dobre. Ruky preč od mojich gombíkov." }
           ],
-          "subtitle": "More, magnet mám, ale meď neberie. Môžeš si to zapísať na čelo, nech to máš konečne v hlave."
+          "subtitle": "Ja beriem všetko železné, čo nie je privarené. Privarené beriem aj so stenou. Čo chceš?"
         },
         {
           "id": "scrapyard",
           "speaker": "Dežo Magnet",
           "actor": { "sceneId": "scene1", "hotspotId": "layer2" },
-          "text": "Meď nie je magnetická, ty Einstein z kontajnera! Skús zberňu: Dingo tam chrčí pod vrakmi a predáva súčiastky vrátane vlastných.",
+          "text": "Železo nosím Dingovi do zberne. Meď magnet neberie, tú kradnem ručne. Dingo tam chrčí pod vrakmi, ešte ho nezvážili.",
           "choices": [
             {
               "id": "scrapyard",
-              "text": "Priznaj sa, ten magnet má medené zuby!",
+              "text": "Ty to železo normálne kradneš?",
               "next": "scrapyard",
               "effects": [
                 { "type": "flag", "id": "scrapyard-known", "value": true }
@@ -3020,48 +3057,53 @@
             },
             {
               "id": "deposit",
-              "text": "Na autobus čakáš alebo ho pasieš?",
+              "text": "Čo chceš za ten magnet?",
               "next": "deposit"
             },
             {
               "id": "hearse",
-              "text": "Videl si mŕtvolu s vodičákom?",
+              "text": "Videl si niekoho s ukradnutým káblom?",
               "next": "hearse"
             },
-            { "id": "leave", "text": "Si čistý, fyziku zatknem neskôr." }
+            { "id": "leave", "text": "Dobre. Ruky preč od mojich gombíkov." }
           ],
           "speech": {
-            "audio": "speech/a79e270e-ed40-456c-90e0-b2b6ed0a177e/audio.wav",
-            "text": "Meď nie je magnetická, ty Einstein z kontajnera! Skús zberňu: Dingo tam chrčí pod vrakmi a predáva súčiastky vrátane vlastných.",
+            "audio": "speech/a88f0a61-6f26-4fa6-9377-9a13bcb760d0/audio.wav",
+            "text": "Železo nosím Dingovi do zberne. Meď magnet neberie, tú kradnem ručne. Dingo tam chrčí pod vrakmi, ešte ho nezvážili.",
             "subtitles": {
-              "text": "Meď nie je magnetická, ty Einstein z kontajnera! Skús zberňu: Dingo tam chrčí pod vrakmi a predáva súčiastky vrátane vlastných.",
+              "text": "Železo nosím Dingovi do zberne. Meď magnet neberie, tú kradnem ručne. Dingo tam chrčí pod vrakmi, ešte ho nezvážili.",
               "timing": "estimated",
               "cues": [
                 {
                   "start": 0,
-                  "end": 3.6266666666666665,
-                  "text": "Meď nie je magnetická, ty Einstein z kontajnera!"
+                  "end": 2.4799999999999995,
+                  "text": "Železo nosím Dingovi do zberne."
                 },
                 {
-                  "start": 3.6266666666666665,
-                  "end": 9.52,
-                  "text": "Skús zberňu: Dingo tam chrčí pod vrakmi a predáva súčiastky vrátane vlastných."
+                  "start": 2.4799999999999995,
+                  "end": 5.4399999999999995,
+                  "text": "Meď magnet neberie, tú kradnem ručne."
+                },
+                {
+                  "start": 5.4399999999999995,
+                  "end": 9.12,
+                  "text": "Dingo tam chrčí pod vrakmi, ešte ho nezvážili."
                 }
               ]
             },
-            "lipSync": "speech/4319b83c-0ff6-4035-b020-1e85d1304681/track.lipsync.json"
+            "lipSync": "speech/bcb795f4-062d-4f9a-a746-a3af76d20f07/track.lipsync.json"
           },
-          "subtitle": "Meď nie je magnetická, ty Einstein z kontajnera! Skús zberňu: Dingo tam chrčí pod vrakmi a predáva súčiastky vrátane vlastných."
+          "subtitle": "Železo nosím Dingovi do zberne. Meď magnet neberie, tú kradnem ručne. Dingo tam chrčí pod vrakmi, ešte ho nezvážili."
         },
         {
           "id": "deposit",
           "speaker": "Dežo Magnet",
           "actor": { "sceneId": "scene1", "hotspotId": "layer2" },
-          "text": "Ukáž vratnú fľašu a magnet ti dám, fľašu si nechaj. Potrebujem len vidieť niečo, za čo ešte niekto ručí.",
+          "text": "Chceš magnet? Dones poriadny kus železa, hoci hrdzavú rúru z uličky za Ferovým dvorom. Fľaše neberiem, nie som smädný kontajner.",
           "choices": [
             {
               "id": "scrapyard",
-              "text": "Priznaj sa, ten magnet má medené zuby!",
+              "text": "Ty to železo normálne kradneš?",
               "next": "scrapyard",
               "effects": [
                 { "type": "flag", "id": "scrapyard-known", "value": true }
@@ -3069,49 +3111,48 @@
             },
             {
               "id": "deposit",
-              "text": "Na autobus čakáš alebo ho pasieš?",
+              "text": "Čo chceš za ten magnet?",
               "next": "deposit"
             },
             {
               "id": "hearse",
-              "text": "Videl si mŕtvolu s vodičákom?",
+              "text": "Videl si niekoho s ukradnutým káblom?",
               "next": "hearse"
             },
-            { "id": "leave", "text": "Si čistý, fyziku zatknem neskôr." }
+            { "id": "leave", "text": "Dobre. Ruky preč od mojich gombíkov." }
           ],
           "speech": {
-            "audio": "speech/515da008-6add-4f3f-ba49-5c2325bf6a28/audio.wav",
-            "text": "Ukáž vratnú fľašu a magnet ti dám, fľašu si nechaj. Potrebujem len vidieť niečo, za čo ešte niekto ručí.",
+            "audio": "speech/76a3887f-ac44-4a7e-ac84-9e9558007934/audio.wav",
+            "text": "Chceš magnet? Dones poriadny kus železa, hoci hrdzavú rúru z uličky za Ferovým dvorom. Fľaše neberiem, nie som smädný kontajner.",
             "subtitles": {
-              "text": "Ukáž vratnú fľašu a magnet ti dám, fľašu si nechaj. Potrebujem len vidieť niečo, za čo ešte niekto ručí.",
-              "timing": "alignment",
+              "text": "Chceš magnet? Dones poriadny kus železa, hoci hrdzavú rúru z uličky za Ferovým dvorom. Fľaše neberiem, nie som smädný kontajner.",
+              "timing": "estimated",
               "cues": [
                 {
                   "start": 0,
-                  "end": 3.84,
-                  "text": "Ukáž vratnú fľašu a magnet ti dám, fľašu si nechaj."
+                  "end": 5.650393700787401,
+                  "text": "Chceš magnet? Dones poriadny kus železa, hoci hrdzavú rúru z uličky za Ferovým"
                 },
                 {
-                  "start": 4.32,
-                  "end": 7.84,
-                  "text": "Potrebujem len vidieť niečo, za čo ešte niekto ručí."
+                  "start": 5.650393700787401,
+                  "end": 9.2,
+                  "text": "dvorom. Fľaše neberiem, nie som smädný kontajner."
                 }
               ]
             },
-            "alignment": "speech/515da008-6add-4f3f-ba49-5c2325bf6a28/alignment.json",
-            "lipSync": "speech/61069a1c-4fea-456f-917e-ea07c74fdee7/track.lipsync.json"
+            "lipSync": "speech/b2561aa3-c4c8-4b76-b45b-63f9d71b9935/track.lipsync.json"
           },
-          "subtitle": "Ukáž vratnú fľašu a magnet ti dám, fľašu si nechaj. Potrebujem len vidieť niečo, za čo ešte niekto ručí."
+          "subtitle": "Chceš magnet? Dones poriadny kus železa, hoci hrdzavú rúru z uličky za Ferovým dvorom. Fľaše neberiem, nie som smädný kontajner."
         },
         {
           "id": "hearse",
           "speaker": "Dežo Magnet",
           "actor": { "sceneId": "scene1", "hotspotId": "layer2" },
-          "text": "Biely pohrebák. Šofér žral bagetu cez smútočný veniec. Zakričal som mu sústrasť a poslal ma do piče. Tak asi rodina.",
+          "text": "Videl som biely pohrebák s káblom. Chcel som mu šlohnúť puklice, ale šofér žral bagetu a čumel. Ani pri mŕtvych si človek nezarobí.",
           "choices": [
             {
               "id": "scrapyard",
-              "text": "Priznaj sa, ten magnet má medené zuby!",
+              "text": "Ty to železo normálne kradneš?",
               "next": "scrapyard",
               "effects": [
                 { "type": "flag", "id": "scrapyard-known", "value": true }
@@ -3119,43 +3160,43 @@
             },
             {
               "id": "deposit",
-              "text": "Na autobus čakáš alebo ho pasieš?",
+              "text": "Čo chceš za ten magnet?",
               "next": "deposit"
             },
             {
               "id": "hearse",
-              "text": "Videl si mŕtvolu s vodičákom?",
+              "text": "Videl si niekoho s ukradnutým káblom?",
               "next": "hearse"
             },
-            { "id": "leave", "text": "Si čistý, fyziku zatknem neskôr." }
+            { "id": "leave", "text": "Dobre. Ruky preč od mojich gombíkov." }
           ],
           "speech": {
-            "audio": "speech/c78f0676-7919-48cc-8f99-a7a0344d563a/audio.wav",
-            "text": "Biely pohrebák. Šofér žral bagetu cez smútočný veniec. Zakričal som mu sústrasť a poslal ma do piče. Tak asi rodina.",
+            "audio": "speech/ba78571b-1247-4411-8946-945bfe7ce2e0/audio.wav",
+            "text": "Videl som biely pohrebák s káblom. Chcel som mu šlohnúť puklice, ale šofér žral bagetu a čumel. Ani pri mŕtvych si človek nezarobí.",
             "subtitles": {
-              "text": "Biely pohrebák. Šofér žral bagetu cez smútočný veniec. Zakričal som mu sústrasť a poslal ma do piče. Tak asi rodina.",
+              "text": "Videl som biely pohrebák s káblom. Chcel som mu šlohnúť puklice, ale šofér žral bagetu a čumel. Ani pri mŕtvych si človek nezarobí.",
               "timing": "estimated",
               "cues": [
                 {
                   "start": 0,
-                  "end": 4.319999999999999,
-                  "text": "Biely pohrebák. Šofér žral bagetu cez smútočný veniec."
+                  "end": 2.4880620155038757,
+                  "text": "Videl som biely pohrebák s káblom."
                 },
                 {
-                  "start": 4.319999999999999,
-                  "end": 7.919999999999999,
-                  "text": "Zakričal som mu sústrasť a poslal ma do piče."
+                  "start": 2.4880620155038757,
+                  "end": 6.8787596899224805,
+                  "text": "Chcel som mu šlohnúť puklice, ale šofér žral bagetu a čumel."
                 },
                 {
-                  "start": 7.919999999999999,
-                  "end": 9.12,
-                  "text": "Tak asi rodina."
+                  "start": 6.8787596899224805,
+                  "end": 9.44,
+                  "text": "Ani pri mŕtvych si človek nezarobí."
                 }
               ]
             },
-            "lipSync": "speech/6e963f99-d582-4dbb-a781-a7dfd63626a7/track.lipsync.json"
+            "lipSync": "speech/46e78410-6aaa-426d-a11a-5d5dd7fbb6f2/track.lipsync.json"
           },
-          "subtitle": "Biely pohrebák. Šofér žral bagetu cez smútočný veniec. Zakričal som mu sústrasť a poslal ma do piče. Tak asi rodina."
+          "subtitle": "Videl som biely pohrebák s káblom. Chcel som mu šlohnúť puklice, ale šofér žral bagetu a čumel. Ani pri mŕtvych si človek nezarobí."
         }
       ]
     },
@@ -3168,31 +3209,30 @@
           "id": "line",
           "speaker": "Dežo Magnet",
           "actor": { "sceneId": "scene1", "hotspotId": "layer2" },
-          "text": "Vratná fľaša, ty nádhera, ešte nás úplne neodpísali! Ber magnet a fľašu si nechaj; na rozdiel od teba sa vie vrátiť tam, kam patrí.",
+          "text": "To je kus železa! Ber magnet, rúru nesiem Dingovi do zberne. Ak sa niekto pýta, našiel som ju ešte živú.",
           "choices": [],
           "speech": {
-            "audio": "speech/c2de8183-11fa-476c-88bc-7c1dde00324d/audio.wav",
-            "text": "Vratná fľaša, ty nádhera, ešte nás úplne neodpísali! Ber magnet a fľašu si nechaj; na rozdiel od teba sa vie vrátiť tam, kam patrí.",
+            "audio": "speech/69ea3290-f4be-4172-b0ba-74c3f2cdfee9/audio.wav",
+            "text": "To je kus železa! Ber magnet, rúru nesiem Dingovi do zberne. Ak sa niekto pýta, našiel som ju ešte živú.",
             "subtitles": {
-              "text": "Vratná fľaša, ty nádhera, ešte nás úplne neodpísali! Ber magnet a fľašu si nechaj; na rozdiel od teba sa vie vrátiť tam, kam patrí.",
+              "text": "To je kus železa! Ber magnet, rúru nesiem Dingovi do zberne. Ak sa niekto pýta, našiel som ju ešte živú.",
               "timing": "estimated",
               "cues": [
                 {
                   "start": 0,
-                  "end": 4.0310077519379846,
-                  "text": "Vratná fľaša, ty nádhera, ešte nás úplne neodpísali!"
+                  "end": 4.753398058252428,
+                  "text": "To je kus železa! Ber magnet, rúru nesiem Dingovi do zberne."
                 },
                 {
-                  "start": 4.0310077519379846,
-                  "end": 9.224806201550388,
-                  "text": "Ber magnet a fľašu si nechaj; na rozdiel od teba sa vie vrátiť tam,"
-                },
-                { "start": 9.224806201550388, "end": 10, "text": "kam patrí." }
+                  "start": 4.753398058252428,
+                  "end": 8.16,
+                  "text": "Ak sa niekto pýta, našiel som ju ešte živú."
+                }
               ]
             },
-            "lipSync": "speech/2b8c4444-7384-4695-8bff-0dcd2abf7130/track.lipsync.json"
+            "lipSync": "speech/a768b178-7986-4ed2-82e9-8cf7c6a6af24/track.lipsync.json"
           },
-          "subtitle": "Vratná fľaša, ty nádhera, ešte nás úplne neodpísali! Ber magnet a fľašu si nechaj; na rozdiel od teba sa vie vrátiť tam, kam patrí."
+          "subtitle": "To je kus železa! Ber magnet, rúru nesiem Dingovi do zberne. Ak sa niekto pýta, našiel som ju ešte živú."
         }
       ]
     },

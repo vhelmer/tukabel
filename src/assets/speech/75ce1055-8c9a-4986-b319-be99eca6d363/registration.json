@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "operation": "voice-registration",
+  "provider": "elevenlabs",
+  "designManifest": "speech/31d385b1-ea1b-4091-9ebb-ef67eaf5ba8b/design.json",
+  "designSha256": "5a42f520bc3764b40dfbc1d6fe78b1ea618a0d2e5349907e2d869db627fb87cc",
+  "generatedVoiceId": "OrfjtrzVNMp0DoREiFhZ",
+  "previewIndex": 0,
+  "voiceId": "OrfjtrzVNMp0DoREiFhZ",
+  "name": "TUKABEL · Dežo Magnet · Vyhulený zlodej kovov",
+  "description": "Native Slovak male, about forty-five. An outrageous fictional small-time metal thief, permanently dazed and smoke-scorched. A very rough, gravelly low-mid voice with dry wheezy rasp, sticky nasal resonance and occasional creaking vocal fry. Sluggish stretched vowels, delayed thoughts, lazy uneven drawl, then sudden sly giggles and excited little bursts when he mentions scrap metal. Warmly ridiculous, shameless and slightly paranoid, audibly baked and exhausted from chain smoking; not a normal conversational man and not a clean announcer. Light eastern Slovak cadence, clear Slovak consonants. Keep every word intelligible and the pace suitable for short game dialogue. Natural human imperfections, no pitch shifting, no music, ambience or sound effects. Dry close studio recording."
+}

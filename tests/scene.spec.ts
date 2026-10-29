@@ -536,6 +536,9 @@ storyTest(
       else await button.click();
     };
     const finishSpeech = async () => {
+      await expect(
+        page.getByRole('region', { name: 'Herné okno' }),
+      ).not.toHaveAttribute('aria-busy', 'true');
       const caption = dialogue.getByRole('button', {
         name: 'Dokončiť repliku',
         exact: true,
@@ -652,11 +655,14 @@ storyTest(
     for (const id of ['bread-box', 'peg-basket']) await interact(id);
     await enter('alley-door', 'scene11');
     await interact('tape-roll');
+    await interact('scrap-metal');
     await enter('yard-door', 'scene4');
     await travel('scene1');
     await interact('layer3');
     await topic('layer2', 'dezo-chat', 'scrapyard');
     await use('layer2', 'empty-bottle');
+    await expect(page.locator('[data-inventory-id="magnet"]')).toHaveCount(0);
+    await use('layer2', 'scrap-metal');
     await topic('layer1', 'granny-chat', 'farm');
     await travel('scene3');
     await interact('funeral-form');
