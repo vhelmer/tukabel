@@ -40,7 +40,6 @@ export interface HudState {
   journal: boolean;
   map?: boolean;
   menu: boolean;
-  objectsOpen: boolean;
 }
 export interface HudControl {
   id: string;
@@ -103,8 +102,6 @@ export function createHud(
   const panels = root.addChild(new Container());
   const effects = root.addChild(new Container());
   effects.eventMode = 'none';
-  const focusRing = root.addChild(new Graphics());
-  focusRing.eventMode = 'none';
   let snapshot = initial;
   let width = 1,
     height = 1;
@@ -112,6 +109,7 @@ export function createHud(
     journalScroll = 0,
     journalMaxScroll = 0;
   let focused: string | null = null;
+  const controlArt = new Map<string, Container>();
   let layout: HudLayout = {
     width,
     height,
@@ -365,12 +363,7 @@ export function createHud(
               width: b.width,
               height: b.height,
             });
-    if (control.pressed && skin === 'bare')
-      c.addChild(
-        new Graphics()
-          .ellipse(b.width / 2, b.height / 2, b.width * 0.4, b.height * 0.4)
-          .stroke({ color: 0xf4d18a, width: 2 }),
-      );
+    controlArt.set(control.id, c);
     if (label) {
       const caption = text(c, label, 0, 0, size);
       if (caption.width > Math.max(1, b.width - 10))
@@ -466,14 +459,11 @@ export function createHud(
       );
   }
   function drawFocus() {
-    focusRing.clear();
-    const control = layout.controls.find((c) => c.id === focused);
-    if (control && !control.disabled) {
-      const b = control.bounds;
-      if (control.polygon) return;
-      focusRing
-        .roundRect(b.x + 2, b.y + 2, b.width - 4, b.height - 4, 5)
-        .stroke({ width: 3, color: 0xffe2a1 });
+    for (const control of layout.controls) {
+      const view = controlArt.get(control.id);
+      if (view)
+        view.tint =
+          control.id === focused && !control.disabled ? 0xffedc7 : 0xffffff;
     }
   }
   function rebuild() {
@@ -486,6 +476,7 @@ export function createHud(
     // Destroyed controls cannot emit pointerout. Never retain their tooltip
     // when opening a menu, dropping an item or moving between dialogue phases.
     hoverId = null;
+    controlArt.clear();
     panels
       .removeChildren()
       .forEach((child) => child.destroy({ children: true }));
@@ -558,7 +549,7 @@ export function createHud(
       (status) => status === 'active',
     ).length;
     const right = frame.x + frame.width - 6;
-    const toolsX = compact ? inventory.x + 1 : right - 160;
+    const toolsX = compact ? inventory.x + 1 : right - 110;
     const toolsY = compact ? top : top + 4;
     const notebook = { x: right - 60, y: top - 2, width: 60, height: 72 };
     button(
@@ -585,20 +576,9 @@ export function createHud(
     }
     button(
       {
-        id: 'objects',
-        label: 'Objekty',
-        bounds: { x: toolsX, y: toolsY, width: 44, height: 48 },
-        expanded: snapshot.objectsOpen,
-        disabled: blocked,
-      },
-      '◉',
-      22,
-    );
-    button(
-      {
         id: 'menu',
         label: 'Menu',
-        bounds: { x: toolsX + 50, y: toolsY, width: 44, height: 48 },
+        bounds: { x: toolsX, y: toolsY, width: 44, height: 48 },
         expanded: snapshot.menu,
       },
       '≡',
@@ -1111,7 +1091,6 @@ export function createHud(
         next.selectedItem,
         next.menu,
         next.journal,
-        next.objectsOpen,
         next.drag?.id,
         next.drag?.target,
       ]);

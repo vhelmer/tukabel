@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { frameAt } from '../game/animation';
 import type { AnimationDefinition, Hotspot } from '../game/types';
-import hand from '../assets/cursors/hand.svg';
+import grab from '../assets/cursors/grab.svg';
 import mouth from '../assets/cursors/mouth.svg';
 import exit from '../assets/cursors/exit.svg';
 
@@ -49,7 +49,7 @@ export function SceneCursor({
       aria-hidden="true"
       data-cursor-kind={kind}
     >
-      <img src={src ?? { talk: mouth, interact: hand, exit }[kind]} alt="" />
+      <img src={src ?? { talk: mouth, interact: grab, exit }[kind]} alt="" />
     </div>
   );
 }

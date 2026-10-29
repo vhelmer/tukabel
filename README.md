@@ -770,7 +770,8 @@ endpointy `/__tukabel/editor/jobs` neobsahuje.
 
 Scéna využívá celý canvas se zachováním poměru stran. Přímo přes její horní část
 PixiJS vykresluje inventář jako kreslenou dřevěnou poličku, ikonku potrhaného
-zápisníku a malé cedulky **Objekty** (oko) / **Menu** (tři čárky). Pozadí pokračuje
+zápisníku a malou cedulku **Menu** (tři čárky). Seznam odhalující objekty ve scéně
+se v Game Mode nenabízí. Pozadí pokračuje
 pod HUD; nevzniká žádná lišta ani vyhrazený okraj. Při tvorbě lokace nech horní
 část obrazu volnější. HUD zůstává uvnitř obrazu i na vysokém displeji s letterboxem;
 na úzkém obrazu jsou pomocné cedulky v levém konci poličky. Polička se prodlužuje podle
@@ -785,7 +786,9 @@ Stejné herní okno používá i **Otestovat odsud** v Dev Mode.
   přechod nebo jiný efekt. Hráč nepřepíná slovesa. Prázdné `onClick: []` je tichý
   objekt bez vlivu na postup; Škrabanec v ukázkové místnosti to demonstruje.
 - Hover zobrazí pouze název. Objekty nemají obrys ani přepínač odhalující hotspoty.
-  Kurzor je ruka, animovaná pusa nebo šipka odchodu. V editoru zvol typ, vlastní
+  Výchozí kreslená ruka platí v celém herním okně, včetně mapy, dialogů a menu.
+  Nad aktivním předmětem ji vystřídá uchopující ruka, nad postavou animovaná pusa
+  a nad přechodem šipka. Tichá kulisa výchozí ruku nemění. V editoru zvol typ, vlastní
   `cursorImage`, klip `cursorAnimation`, velikost 16–96 px a souřadnice špičky.
   Animované kurzory používají běžný registr klipů; bez samostatného obrázku vezmou
   zdroj klipu. Snímky a source podléhají stejné kontrole rozměrů jako postavy.
@@ -797,8 +800,10 @@ Stejné herní okno používá i **Otestovat odsud** v Dev Mode.
 - Alternativa bez tažení: klikni/tapni na předmět a následně na cíl. Výběr zároveň
   zobrazí jeho popis. Tab/Enter používá neviditelnou sémantickou HTML vrstvu
   pro klávesnici a čtečky; zaměřené tlačítko zvýrazní Pixi. Tato vrstva nezachytává
-  myš ani dotyk a žádný HUD nevykresluje. **Objekty** nabízí
-  přístupný seznam všech viditelných interaktivních oblastí včetně nepodstatných.
+  myš ani dotyk a žádný HUD nevykresluje. Interaktivní oblasti scény mají stejnou
+  neviditelnou klávesnicovou alternativu; Tab ukáže název aktuálního cíle a Enter
+  či mezerník jej použije. Tiché kulisy do pořadí Tab nepatří. Kliknutí ani focus
+  nekreslí žluté rámečky; zaměřenou ikonku Pixi pouze jemně zesvětlí.
 - Reakce se zobrazují v kreslené bublině; prázdný komentář žádnou bublinu nevytvoří.
   Kliknutí na postavu otevře pouze dostupná témata na křivých dřevěných cedulích.
   Výběr tématu přehraje repliku cílového uzlu; během ní nejsou vidět žádné volby.
@@ -833,15 +838,16 @@ Milan zkouší zákazníkům vlastní pohřby, Jolanda vede kult pojištěného 
 Rudo považuje odpojení mínusu za odstranění špatné elektřiny. **Eržika** nahradila
 Margitu. Nemá dialogový strom: pět samostatných krátkých nadávek se střídá při
 opakovaných kliknutích, bez volby odpovědi. Pořadí drží běžné uložené příznaky.
-Rožok, páska i kolíček jsou samostatné předměty na dvoře, nejsou odměnou za rozhovor.
+Rožok a kolíček jsou samostatné předměty na dvoře; izolačka leží pod žebříkem
+v uličce. Nejsou odměnou za rozhovor.
 
 Současná mapa má zachovaných **sedm polygonů**: Ferov dvor, Zastávka, Kostol,
 Detské ihrisko, Krčma, Zberňa a Kravín. Krčma se odemkne přijetím případu,
 zberňu prozradí Dežo a kravín Etela. **Ulička** zůstává přístupná přechodem z
 Ferova dvora. Další propojení jsou **Kostol → Cintorín → Kaplnka → Krypta**
 a **Krčma → Herňa**, vždy i s návratem. Mapa používá původní spodní hotspoty,
-bez zkratky M; během dialogu svět nereaguje. Ovládání myší, dotykem, seznamem
-**Objekty** i klávesnicí zůstává zachované.
+bez zkratky M; během dialogu svět nereaguje. Ovládání myší, dotykem
+i klávesnicí zůstává zachované.
 
 Hádanky používají původní pravidla, inventář, kombinace, podmínky a efekty.
 Postup není nová minihra: hráč upravuje rekvizity, spouští je a vyzvedává výsledek.
@@ -857,7 +863,7 @@ předměty; francouzský klíč, pečiatka a magnetická udice zůstávají pou�
 
 | Hádanka              | Řešení a podmínka                                                                                                                                                                                                                                                                                           |
 | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Přijetí případu      | Potvrď Ferovu repliku a přijmi případ. Na dvoře seber rožok z chlebníku, izolačnú pásku a drevený kolíček. Eržiku můžeš opakovaně provokovat, pro průchod to není nutné.                                                                                                                                    |
+| Přijetí případu      | Potvrď Ferovu repliku a přijmi případ. Na dvoře seber rožok z chlebníku a drevený kolíček. Přejdi do uličky, pod žebříkem seber izolačnú pásku a vrať se na dvůr. Eržiku můžeš opakovaně provokovat, pro průchod to není nutné.                                                                             |
 | Dežovo alibi         | Na zastávce seber prázdnou fľašu a ukaž ji Dežovi. Dá magnet, láhev zůstane. Dotaz na kabel odemkne zberňu; měď magnet nepřitahuje. Etelin dotaz na mléko odemkne kravín.                                                                                                                                   |
 | Kraví bohoslužba     | U kostela seber prázdny úmrtný list a naplň láhev u pumpy. Svätenú vodu použij **na kravu**, ne na Jolandu: prázdná láhev se vrátí. Krávě přečti úmrtní list; úřední nuda ji uspí a papír zůstane. Pak seber zvonec z obojku a prázdnou lahví naber mléko z vedra. I zbytečný další křest vrátí láhev.      |
 | Dingův vnitřní budík | Karol v krčmě dá mletou kávu. Mléko + káva vytvoří studené kravučíno. Nalij je do kávového klystíru v zberni; láhev se vrátí. **Klikni na jeho pedál.** Dingo ožije a ze samostatné truhlice můžeš vzít klíč a rukavice. Magnet lze získat i teprve nyní.                                                   |
@@ -883,7 +889,7 @@ Uloženou pozici před volbou lze načíst i po konci; nová hra ruční slot ne
 
 ### Chybějící grafika
 
-**14 scénických rekvizit a 1 inventární ikonka.** Všechny scénické zástupné
+**13 scénických rekvizit a 1 inventární ikonka.** Všechny scénické zástupné
 obdélníky už mají funkční pravidla, potřebnou viditelnost a správné cílení.
 Souřadnice níže jsou původní pixely lokace: `x, y · šířka×výška`, bez škálování
 na okno. V Dev Mode vyber uvedené ID a přiřaď mu lokální obrázek; ID, rám,
@@ -893,7 +899,6 @@ protože obrázek má při vykreslení přednost. Pro výřezy použij transpare
 | Lokace                    | Předmět / hotspot                                | Umístění              | Účel                                                        | Doporučený vzhled                                                                                                         |
 | ------------------------- | ------------------------------------------------ | --------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
 | Ferov dvor (`scene4`)     | Rožok zo včerajšieho storočia (`bread-box`)      | `80, 770 · 160×95`    | Závaží pro houpačku; samostatný pickup.                     | Otevřený plechový chlebník s jediným kamenně tvrdým rohlíkem; samostatný výřez.                                           |
-| Ferov dvor (`scene4`)     | Izolačná páska (`tape-roll`)                     | `1200, 700 · 135×100` | Oprava hlavního kabelu pro obnovení proudu.                 | Odřená černá role izolační pásky na bedýnce pod rozvaděčem.                                                               |
 | Ferov dvor (`scene4`)     | Drevený kolíček (`peg-basket`)                   | `700, 220 · 135×95`   | Kolíček na Rudův nos při vlastním pohřbu.                   | Dřevěný kolíček zachycený na šňůře; samostatná inventární ikonka stejného kolíčku.                                        |
 | Kravín (`scene10`)        | Vedro na posvätné mlieko (`milking-bucket`)      | `1050, 660 · 180×120` | Po uspání krávy dovolí nabrat mléko do láhve.               | Promáčklé plechové vědro pod vemenem, po dojení malé množství mléka; bez elektrického stroje.                             |
 | Kravín (`scene10`)        | Zvonec na obojku (`cow-bell-hook`)               | `1080, 350 · 120×95`  | Odpojení zvonce od spící krávy.                             | Velký odřený mosazný kravský zvonec na rozepínací kožené přezce.                                                          |
@@ -907,6 +912,9 @@ protože obrázek má při vykreslení přednost. Pro výřezy použij transpare
 | Detské ihrisko (`scene7`) | Vypadnutá podložka (`loose-washer`)              | `930, 785 · 125×65`   | Samostatný pickup po rozhýbání houpačky; volitelný jackpot. | Velká rezavá ocelová podložka v prachu, rozměrem podobná žetonu.                                                          |
 | Cintorín (`scene5`)       | Skúšobná rakva (`coffin`)                        | `925, 430 · 255×165`  | Přijme úmrtní list a kolíček; klik absolvuje Rudův pohřeb.  | Otevřená prázdná dřevěná rakev na nízkých kozách u hrobníka; cedulka pro úmrtní list a dřevěný kolíček na okraji.         |
 | Inventář                  | Drevený kolíček (`clothespin`)                   | —                     | Rozlišení nosního kolíčku v inventáři; zatím znak `II`.     | Jediný starý dřevěný kolíček, průhledné pozadí, stejná kresba jako scénická verze.                                        |
+
+Izolačka v uličce (`tape-roll`, `825, 651 · 90×72`) už má místní obrázek
+`cursors/tape-icon.svg`; do chybějící grafiky se nepočítá.
 
 ### Dabing tohoto scénáře
 
@@ -1089,7 +1097,7 @@ scény s `openMap: true`; jeho polygon, viditelnost i kurzor upravíš stejnými
 jako přechod mezi scénami. V **Dev Mode → Lokace** nakresli polygon u spodního okraje
 a v inspektoru zapni **Otevřít mapu lokací**. Ikonka mapy se ukáže při najetí dovnitř,
 na dotyku zůstává viditelná. Kliknutí/tapnutí otevře mapu; klávesnicí lze vstup
-aktivovat přes **Objekty**. Klávesa M nemá mapovou zkratku. **Escape** nebo křížek
+zaměřit Tabem a aktivovat Enterem či mezerníkem. Klávesa M nemá mapovou zkratku. **Escape** nebo křížek
 mapu zavře. Při otevření se inventář, celý herní HUD a reakce skryjí; scéna
 nepřijímá vstup. Mapa má vlastní focus trap a neviditelnou HTML sémantiku.
 Během rozhovoru se mapa neotevírá.

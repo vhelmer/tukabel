@@ -151,11 +151,11 @@ test('drawn HUD overlays the full location; shelf alpha blocks only visible timb
     /Predmet prešiel/,
   );
   if (!isMobile) {
-    // The Pixi button gets replaced when the object list opens. Its old
+    // The Pixi button gets replaced when the menu opens. Its old
     // pointerout will never run, so its tooltip must be explicitly discarded.
     await page.mouse.move(0, 0);
-    const objects = page.getByRole('button', { name: 'Objekty', exact: true });
-    const control = (await objects.boundingBox())!;
+    const menu = page.getByRole('button', { name: 'Menu', exact: true });
+    const control = (await menu.boundingBox())!;
     const canvas = page.locator('.canvas-host canvas');
     const box = (await canvas.boundingBox())!;
     async function belowButton() {
@@ -176,10 +176,13 @@ test('drawn HUD overlays the full location; shelf alpha blocks only visible timb
         .toBuffer();
     }
     const before = await belowButton();
-    await hudClick(page, objects);
+    await hudClick(page, menu);
     await page
-      .getByRole('button', { name: 'Pozadie pod HUD ↗', exact: true })
+      .getByRole('button', { name: 'Pokračovať v hre', exact: true })
       .click();
+    // Closing the menu restores keyboard focus, which legitimately shows its
+    // label. Tab away before checking for an abandoned pointer tooltip.
+    await page.keyboard.press('Tab');
     await page.mouse.move(0, 0);
     expect(
       (await belowButton()).equals(before),

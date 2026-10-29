@@ -238,7 +238,7 @@ test('polygon entrances and map regions preserve unlocks without shortcut or gam
   ).toBe(true);
   await page.keyboard.press('Escape');
   await expect(map).toHaveCount(0);
-  await (await object(page, 'Sprístupniť dvor')).click();
+  await (await object(page, 'Sprístupniť dvor')).press('Enter');
   await openMap();
   const yard = map.getByRole('button', { name: 'Cestovať: Dvor', exact: true });
   const box = await yard.boundingBox();
@@ -335,7 +335,7 @@ test('polygon entrances and map regions preserve unlocks without shortcut or gam
   await page.keyboard.press('Enter');
   await expect(map).toBeVisible();
   await page.keyboard.press('Escape');
-  await (await object(page, 'Prechod do ateliéru')).click();
+  await (await object(page, 'Prechod do ateliéru')).press('Enter');
   await ready(page);
   await expect(
     page.getByLabel('Lokácia: Animačný ateliér', { exact: true }),

@@ -75,7 +75,7 @@ test('production serves a static game without editor code or write endpoints', a
     );
     await menuAction(page, 'Načítať hru');
     await ready(page);
-    await (await object(page, spoken!.actor.label)).click();
+    await (await object(page, spoken!.actor.label)).press('Enter');
     if (spoken!.dialogue.entry === 'speech') await finishLine(page);
     await page
       .getByRole('button', { name: spoken!.choice.text, exact: true })

@@ -240,7 +240,7 @@ test('PNG blink imports, previews, saves, reloads and plays with stable placemen
   await page.getByRole('button', { name: 'Game Mode', exact: true }).click();
   await ready(page);
   const neutral = await actorPixels(page);
-  await (await object(page, 'Správca')).click();
+  await (await object(page, 'Správca')).press('Enter');
   await page.mouse.move(0, 0);
   await expect
     .poll(async () => (await actorPixels(page)).equals(neutral))
@@ -305,7 +305,7 @@ test('Codex atlas retains timing, supports dialogue playback, and works as a sta
   await page.getByRole('button', { name: 'Game Mode', exact: true }).click();
   await ready(page);
   const neutral = await actorPixels(page);
-  await (await object(page, 'Správca')).click();
+  await (await object(page, 'Správca')).press('Enter');
   await page.mouse.move(0, 0);
   await expect(page.getByRole('dialog')).toBeVisible();
   await page
@@ -348,7 +348,7 @@ test('Codex atlas retains timing, supports dialogue playback, and works as a sta
       page.getByRole('button', { name: 'Dev Mode', exact: true }),
     ).toHaveCount(0);
     const base = await actorPixels(page);
-    await (await object(page, 'Správca')).click();
+    await (await object(page, 'Správca')).press('Enter');
     await page
       .getByRole('button', { name: 'Ako opravím router?', exact: true })
       .click();

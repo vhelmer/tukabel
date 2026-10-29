@@ -223,25 +223,6 @@ button[aria-pressed='true'] {
   color: var(--muted);
   margin-top: 6px;
 }
-.objects-popover {
-  position: absolute;
-  right: 12px;
-  bottom: 14px;
-  z-index: 4;
-  background: #172a22f5;
-  border: 1px solid #f1ce8355;
-  border-radius: 8px;
-  padding: 8px;
-  display: grid;
-  gap: 5px;
-  max-height: calc(100% - 28px);
-  overflow: auto;
-  min-width: 170px;
-}
-.object-button {
-  text-align: left;
-  font-size: 12px;
-}
 .menu-overlay {
   position: absolute;
   inset: 0;
@@ -528,10 +509,6 @@ body {
   max-width: 420px;
   font-size: 11px;
 }
-.objects-popover {
-  background: #2d2229f5;
-  border-color: #ac8053;
-}
 .game-menu {
   background: repeating-linear-gradient(
     3deg,
@@ -586,6 +563,29 @@ body {
   animation: chatter 0.36s steps(2, end) infinite;
   transform-origin: 50% 55%;
 }
+.game-window {
+  cursor:
+    url('./assets/cursors/hand.svg') 7 4,
+    default;
+}
+.game-window button,
+.game-window a {
+  cursor:
+    url('./assets/cursors/grab.svg') 8 12,
+    pointer;
+}
+.game-window button:disabled {
+  cursor: inherit;
+}
+.game-window :focus {
+  outline: none;
+}
+.game-window button:focus-visible {
+  filter: brightness(1.2);
+}
+.game-window .canvas-host canvas {
+  cursor: inherit;
+}
 .has-scene-cursor .canvas-host canvas,
 .is-dragging * {
   cursor: none !important;
@@ -624,7 +624,7 @@ body {
 }
 
 .canvas-host canvas {
-  cursor: default !important;
+  cursor: default;
 }
 .scene-notice {
   background: #241d25;
@@ -656,7 +656,8 @@ body {
 }
 
 /* Nonvisual semantics for keyboard/screen readers; Pixi draws and targets the HUD. */
-.hud-accessibility {
+.hud-accessibility,
+.scene-accessibility {
   position: absolute;
   inset: 0;
   opacity: 0;
@@ -664,8 +665,12 @@ body {
   overflow: hidden;
   z-index: 30;
 }
-.hud-accessibility * {
+.hud-accessibility *,
+.scene-accessibility * {
   pointer-events: none !important;
+}
+.scene-accessibility button {
+  position: absolute;
 }
 
 /* The Pixi notebook replaces the old DOM modal, which covered these overlays. */

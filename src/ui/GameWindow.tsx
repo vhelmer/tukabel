@@ -66,7 +66,6 @@ export function GameWindow({
       ?.querySelector<HTMLButtonElement>('[data-hud-control="' + id + '"]')
       ?.focus();
   }
-  const [objectsOpen, setObjectsOpen] = useState(false);
   const [storageMessage, setStorageMessage] = useState(
     'Pozícia sa uloží až tlačidlom Uložiť hru.',
   );
@@ -262,7 +261,6 @@ export function GameWindow({
         !modalOpen
       ) {
         setSelectedItem(null);
-        setObjectsOpen(false);
         setHovered(null);
         setMenu(false);
         setJournal(false);
@@ -276,7 +274,6 @@ export function GameWindow({
         itemId: selectedItem ?? undefined,
       });
       setSelectedItem(null);
-      setObjectsOpen(false);
     },
     [dispatch, selectedItem, content.worldMap, state.dialogue, modalOpen],
   );
@@ -309,7 +306,6 @@ export function GameWindow({
         finishDrag();
         setSelectedItem(null);
         setMenu(false);
-        setObjectsOpen(false);
       }
     };
     const onBlur = () => finishDrag();
@@ -431,7 +427,6 @@ export function GameWindow({
     finishDrag();
     setSelectedItem(null);
     setHovered(null);
-    setObjectsOpen(false);
     setJournal(false);
   }
 
@@ -455,7 +450,6 @@ export function GameWindow({
       if (!content.worldMap || state.dialogue) return;
       finishDrag();
       setSelectedItem(null);
-      setObjectsOpen(false);
       setHovered(null);
       setMenu(false);
       setJournal(false);
@@ -475,7 +469,6 @@ export function GameWindow({
       setMapOpen(false);
       finishDrag();
       setSelectedItem(null);
-      setObjectsOpen(false);
       setHovered(null);
       setMenu(false);
       setJournal((value) => (id === 'journal-close' ? false : !value));
@@ -484,8 +477,7 @@ export function GameWindow({
       finishDrag();
       setJournal(false);
       setMenu((value) => !value);
-    } else if (id === 'objects' && !state.dialogue && !modalOpen)
-      setObjectsOpen((value) => !value);
+    }
   }
   const sceneArea = gameViewport(areaSize.width, areaSize.height);
   const sceneScale = Math.min(
@@ -496,11 +488,18 @@ export function GameWindow({
   const sceneTop =
     sceneArea.y + (sceneArea.height - scene.height * sceneScale) / 2;
   const labelPadding = Math.min(150, areaSize.width / 2);
+  const interactiveHover =
+    currentHover &&
+    (currentHover.openMap ||
+      currentHover.onClick.length ||
+      Object.keys(currentHover.uses ?? {}).length)
+      ? currentHover
+      : null;
 
   return (
     <section
       ref={gameRef}
-      className={`game-window ${pointer?.inScene && (currentHover || selected) && !modalOpen && !state.dialogue ? 'has-scene-cursor' : ''} ${drag?.active ? 'is-dragging' : ''} ${journal ? 'is-journal-open' : ''}`}
+      className={`game-window ${pointer?.inScene && (interactiveHover || selected) && !modalOpen && !state.dialogue ? 'has-scene-cursor' : ''} ${drag?.active ? 'is-dragging' : ''} ${journal ? 'is-journal-open' : ''}`}
       aria-label="Herné okno"
       onPointerMove={(event) => {
         if (event.pointerType === 'touch') return;
@@ -548,7 +547,6 @@ export function GameWindow({
               journal,
               map: mapOpen,
               menu: menu || Boolean(ending),
-              objectsOpen,
             }}
             onHudReady={registerHud}
             onHudAction={hudAction}
@@ -608,21 +606,43 @@ export function GameWindow({
             onAdvance={() => conversation.advance(dialogueAudio.stop)}
           />
         )}
-        {objectsOpen && !state.dialogue && !modalOpen && (
-          <div className="objects-popover" aria-label="Predmety v miestnosti">
-            {hotspots.map((hotspot) => (
-              <button
-                key={hotspot.id}
-                className="object-button"
-                onClick={() => act(hotspot)}
-                onFocus={() => setHovered(hotspot)}
-                onBlur={() => setHovered(null)}
-                onMouseEnter={() => setHovered(hotspot)}
-                onMouseLeave={() => setHovered(null)}
-              >
-                {hotspot.label} ↗
-              </button>
-            ))}
+        {!state.dialogue && !modalOpen && (
+          <div className="scene-accessibility" aria-label="Ovládanie scény">
+            {hotspots
+              .filter(
+                (hotspot) =>
+                  hotspot.openMap ||
+                  hotspot.onClick.length ||
+                  Object.keys(hotspot.uses ?? {}).length,
+              )
+              .map((hotspot) => (
+                <button
+                  key={hotspot.id}
+                  data-hotspot-id={hotspot.id}
+                  data-open-map={hotspot.openMap || undefined}
+                  aria-label={`${hotspot.label} ↗`}
+                  style={{
+                    left: sceneLeft + hotspot.bounds.x * sceneScale,
+                    top: sceneTop + hotspot.bounds.y * sceneScale,
+                    width: hotspot.bounds.width * sceneScale,
+                    height: hotspot.bounds.height * sceneScale,
+                  }}
+                  onClick={(event) => {
+                    if (event.detail === 0) act(hotspot);
+                  }}
+                  onFocus={() => setHovered(hotspot)}
+                  onBlur={() => setHovered(null)}
+                  onKeyDown={(event) => {
+                    if (
+                      event.repeat &&
+                      (event.key === 'Enter' || event.key === ' ')
+                    )
+                      event.preventDefault();
+                  }}
+                >
+                  {hotspot.label}
+                </button>
+              ))}
           </div>
         )}
         {ending && !menu && (
@@ -720,14 +740,14 @@ export function GameWindow({
         )}
       </div>
       {pointer?.inScene &&
-        currentHover &&
+        interactiveHover &&
         !drag?.active &&
         !selected &&
         !state.dialogue &&
         !modalOpen && (
           <SceneCursor
-            key={currentHover.id}
-            hotspot={currentHover}
+            key={interactiveHover.id}
+            hotspot={interactiveHover}
             clips={content.animations ?? []}
             x={pointer.x}
             y={pointer.y}

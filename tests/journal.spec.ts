@@ -231,7 +231,7 @@ test('editor saves task definitions and dialogue effects; the notebook pauses di
     0,
   );
   await closeJournal(page, isMobile);
-  await (await object(page, 'Správca')).click();
+  await (await object(page, 'Správca')).press('Enter');
   await page.getByRole('button', { name: 'Ako opravím router?' }).click();
   await expect(page.locator('.dialogue-panel')).toHaveClass(/is-speaking/);
   journal = await openJournal(page, isMobile);
@@ -440,7 +440,7 @@ test('canvas inventory pages and notebook scrolling remain usable after resize a
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto(workspace.url);
   await ready(page);
-  await (await object(page, 'Naplniť vrecká')).click();
+  await (await object(page, 'Naplniť vrecká')).press('Enter');
   const next = page.getByRole('button', {
     name: 'Ďalšie predmety',
     exact: true,

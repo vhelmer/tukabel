@@ -162,7 +162,7 @@ test.describe('asynchronous character direction', () => {
       .getByRole('button', { name: 'Otestovat odsud ↗', exact: true })
       .click();
     await ready(page);
-    await (await object(page, actor.label)).click();
+    await (await object(page, actor.label)).press('Enter');
     await page
       .getByRole('button', { name: 'Porozprávať sa.', exact: true })
       .click();

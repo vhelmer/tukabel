@@ -115,7 +115,7 @@ test('editor persists automatic speech entry; its opening line finishes into cho
   });
   await page.reload();
   await ready(page);
-  await (await object(page, 'Skúšobná postava')).click();
+  await (await object(page, 'Skúšobná postava')).press('Enter');
   const panel = page.locator('.dialogue-panel');
   await expect(panel).toHaveClass(/is-speaking/);
   await expect(panel.locator('audio')).toHaveCount(1);
@@ -142,7 +142,7 @@ test('subtitle clicks finish voiced replies while authored choices control branc
   await seed(workspace.source);
   await page.goto(workspace.url);
   await ready(page);
-  await (await object(page, 'Skúšobná postava')).click();
+  await (await object(page, 'Skúšobná postava')).press('Enter');
   const panel = page.locator('.dialogue-panel');
   await expect(panel).toHaveClass(/is-choosing/);
   await expect(panel.locator('audio')).toHaveCount(0);
@@ -254,7 +254,7 @@ test('subtitle clicks finish voiced replies while authored choices control branc
   expect(
     await lastAudio!.evaluate((el) => (el as HTMLAudioElement).paused),
   ).toBe(true);
-  await (await object(page, 'Skúšobná postava')).click();
+  await (await object(page, 'Skúšobná postava')).press('Enter');
   await expect(panel).toHaveClass(/is-choosing/);
   await expect(panel.locator('audio')).toHaveCount(0);
   await expect(
@@ -275,7 +275,7 @@ test('text-only replies wait for confirmation, preserve branches and remain usab
   );
   await page.goto(workspace.url);
   await ready(page);
-  await (await object(page, 'Skúšobná postava')).click();
+  await (await object(page, 'Skúšobná postava')).press('Enter');
   await page
     .getByRole('button', { name: 'Opýtať sa na kábel.', exact: true })
     .click();
@@ -314,7 +314,7 @@ test('missing voice audio keeps readable subtitles and a working skip path', asy
   );
   await page.goto(workspace.url);
   await ready(page);
-  await (await object(page, 'Skúšobná postava')).click();
+  await (await object(page, 'Skúšobná postava')).press('Enter');
   await page
     .getByRole('button', { name: 'Opýtať sa na kábel.', exact: true })
     .click();
@@ -336,7 +336,7 @@ test('rapid subtitle taps and held keys cannot skip into another branch', async 
   await seed(workspace.source);
   await page.goto(workspace.url);
   await ready(page);
-  await (await object(page, 'Skúšobná postava')).click();
+  await (await object(page, 'Skúšobná postava')).press('Enter');
   await page
     .getByRole('button', { name: 'Opýtať sa na kábel.', exact: true })
     .click();
@@ -460,7 +460,7 @@ test('a reply with no available choices finishes without an injected close contr
   );
   await page.goto(workspace.url);
   await ready(page);
-  await (await object(page, 'Skúšobná postava')).click();
+  await (await object(page, 'Skúšobná postava')).press('Enter');
   await page
     .getByRole('button', { name: 'Opýtať sa na kábel.', exact: true })
     .click();

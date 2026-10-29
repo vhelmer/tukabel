@@ -60,15 +60,12 @@ export async function activate(
   else await page.mouse.click(point.x, point.y);
 }
 export async function object(page: Page, name: string) {
-  const toggle = page.getByRole('button', { name: 'Objekty', exact: true });
-  if ((await toggle.getAttribute('aria-expanded')) !== 'true')
-    await hudClick(page, toggle);
   return page
-    .locator('.objects-popover')
+    .locator('.scene-accessibility')
     .getByRole('button', { name: `${name} ↗`, exact: true });
 }
 export async function getTape(page: Page) {
-  await (await object(page, 'Správca')).click();
+  await (await object(page, 'Správca')).press('Enter');
   const dialogue = page.getByRole('dialog');
   await dialogue.getByRole('button', { name: 'Ako opravím router?' }).click();
   await finishLine(page);

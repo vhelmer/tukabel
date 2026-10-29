@@ -446,7 +446,7 @@ test('rotated hotspots accept scene clicks and inventory drops at their visible 
   await expect(page.getByRole('status', { name: 'Reakcia' })).toContainText(
     'Predmet zasiahol otočenú postavu.',
   );
-  // The list is still a usable keyboard alternative.
+  // Scene controls remain a usable keyboard alternative.
   await (await object(page, 'Postava')).focus();
   await page.keyboard.press('Enter');
   await expect(page.getByRole('status', { name: 'Reakcia' })).toContainText(

@@ -94,7 +94,7 @@ export function createScene(
     region.rotation = radians(hotspot.rotation ?? 0);
     region.eventMode = hotspot.decorative ? 'none' : 'static';
     region.alpha = hotspot.opacity ?? 1;
-    region.cursor = 'none';
+    region.cursor = 'inherit';
     const hit: {
       frame: string;
       layers: readonly { region: AnimationRegion; mask: AlphaMask }[];

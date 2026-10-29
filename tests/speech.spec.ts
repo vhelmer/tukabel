@@ -220,7 +220,7 @@ stopTest(
       expect(binding.mouthShapes?.A).toBe(4);
       await page.goto(workspace.url);
       await ready(page);
-      await (await object(page, actor.label)).click();
+      await (await object(page, actor.label)).press('Enter');
       const timingLoaded = page.waitForResponse((response) =>
         response.url().includes(node.speech!.lipSync!),
       );
@@ -593,7 +593,7 @@ test('studio explicitly generates, analyzes, previews, saves and reloads speech 
   ).toHaveValue('Skúšam nový dabing.');
   await page.getByRole('button', { name: 'Game Mode', exact: true }).click();
   await ready(page);
-  await (await object(page, 'Skúšobná postava')).click();
+  await (await object(page, 'Skúšobná postava')).press('Enter');
   await page
     .getByRole('button', { name: 'Porozprávať sa.', exact: true })
     .click();
@@ -723,7 +723,7 @@ base(
     await page.emulateMedia({ reducedMotion: 'no-preference' });
     await page.goto(workspace.url);
     await ready(page);
-    await (await object(page, actor.label)).click();
+    await (await object(page, actor.label)).press('Enter');
     await page
       .getByRole('button', { name: 'Spustiť skúšobnú repliku.', exact: true })
       .click();
@@ -973,7 +973,7 @@ test('models and editable subtitle segments survive save/reload and follow the a
   );
   await page.getByRole('button', { name: 'Game Mode', exact: true }).click();
   await ready(page);
-  await (await object(page, 'Skúšobná postava')).click();
+  await (await object(page, 'Skúšobná postava')).press('Enter');
   await page
     .getByRole('button', { name: 'Porozprávať sa.', exact: true })
     .click();

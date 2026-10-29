@@ -886,23 +886,6 @@
           ]
         },
         {
-          "id": "tape-roll",
-          "label": "Izolačná páska",
-          "bounds": { "x": 1200, "y": 700, "width": 135, "height": 100 },
-          "placeholder": true,
-          "cursor": "interact",
-          "visibleWhen": { "not": { "flag": "tape-taken" } },
-          "onClick": [
-            {
-              "message": "Rudo: Izolačka. Jediná vec, ktorá u Fera drží rodinu aj napätie pokope.",
-              "effects": [
-                { "type": "flag", "id": "tape-taken", "value": true },
-                { "type": "addItem", "id": "tape" }
-              ]
-            }
-          ]
-        },
-        {
           "id": "peg-basket",
           "label": "Drevený kolíček",
           "bounds": { "x": 700, "y": 220, "width": 135, "height": 95 },
@@ -2310,7 +2293,7 @@
           "bounds": { "x": 830, "y": 210, "width": 210, "height": 470 },
           "onClick": [
             {
-              "message": "Rebrík je prikovaný. Rudo: Keby sa dalo liezť do dlhov, toto by už bolo výťah."
+              "message": "Rudo: Tadiaľto ten hajzel s káblom zdrhal. Škoda, že si nezlomil väz."
             }
           ]
         },
@@ -2351,6 +2334,23 @@
             { "x": 735.68, "y": 865.72 },
             { "x": 936.32, "y": 865.72 },
             { "x": 1003.1999999999999, "y": 941 }
+          ]
+        },
+        {
+          "id": "tape-roll",
+          "label": "Izolačná páska",
+          "bounds": { "x": 825, "y": 651, "width": 90, "height": 72 },
+          "image": "cursors/tape-icon.svg",
+          "cursor": "interact",
+          "visibleWhen": { "not": { "flag": "tape-taken" } },
+          "onClick": [
+            {
+              "message": "Rudo: Izolačka. Jediná vec, ktorá u Fera drží rodinu aj napätie pokope.",
+              "effects": [
+                { "type": "flag", "id": "tape-taken", "value": true },
+                { "type": "addItem", "id": "tape" }
+              ]
+            }
           ]
         }
       ],

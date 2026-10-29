@@ -230,10 +230,8 @@ test('layer editing, scene-space selection and local ambient clips save real ass
     .getByRole('button', { name: 'Otestovat odsud ↗', exact: true })
     .click();
   await ready(page);
-  await expect(await object(page, 'Router')).toBeVisible();
-  await expect(page.locator('.objects-popover')).not.toContainText(
-    'Živá rieka',
-  );
+  await expect(await object(page, 'Router')).toBeEnabled();
+  await expect(await object(page, 'Živá rieka')).toHaveCount(0);
   await page.getByRole('button', { name: 'Dev Mode', exact: true }).click();
   await page.reload();
   await ready(page);

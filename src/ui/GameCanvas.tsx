@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Application, Assets } from 'pixi.js';
+import grab from '../assets/cursors/grab.svg';
 import type { Texture } from 'pixi.js';
 import { scenePoint } from '../game/coordinates';
 import { loadAlphaMask } from '../game/alphaMasks';
@@ -144,6 +145,10 @@ function MountedCanvas({
         if (disposed) {
           destroy();
           return;
+        }
+        if (hudContent) {
+          app.renderer.events.cursorStyles.default = 'inherit';
+          app.renderer.events.cursorStyles.pointer = `url("${grab}") 8 12, pointer`;
         }
         const urls = [
           ...new Set([

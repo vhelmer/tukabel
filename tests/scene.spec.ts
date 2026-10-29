@@ -184,7 +184,7 @@ editorTest(
     await ready(page);
     await expect(bottle).toHaveCount(0);
     await expect(await object(page, 'Pivová fľaša')).toHaveCount(0);
-    await (await object(page, collector.label)).click();
+    await (await object(page, collector.label)).press('Enter');
     await dialogue
       .getByRole('button', { name: 'Čo podnikneš s tou zálohou?' })
       .click();
@@ -219,7 +219,7 @@ test('complete adventure supports real inventory drags, scene drops, transitions
   await expect(reaction(page)).toContainText('Najprv ho opravím páskou');
   await expect(cable).toBeVisible();
   await getTape(page);
-  await (await object(page, 'Správca')).click();
+  await (await object(page, 'Správca')).press('Enter');
   await page.getByRole('button', { name: 'Ako opravím router?' }).click();
   await finishLine(page);
   await expect(
@@ -311,7 +311,8 @@ test('context clicks, silent props, keyboard dialogue and resizing remain usable
   await (await object(page, 'Hrnček')).focus();
   await page.keyboard.press('Enter');
   await expect(reaction(page)).toContainText('Káva už vychladla');
-  await (await object(page, 'Škrabanec')).click();
+  await expect(await object(page, 'Škrabanec')).toHaveCount(0);
+  await activate(page, 300, 245, isMobile);
   await expect(reaction(page)).toHaveCount(0);
   await (await object(page, 'Správca')).focus();
   await page.keyboard.press('Enter');
@@ -364,7 +365,7 @@ test('corrupt or unavailable storage never replaces player progress', async ({
 }) => {
   await page.goto('/');
   await ready(page);
-  await (await object(page, 'Kábel pri stoličke')).click();
+  await (await object(page, 'Kábel pri stoličke')).press('Enter');
   for (const raw of ['{', '{"version":99}']) {
     await page.evaluate(
       (value) => localStorage.setItem('tukabel.save.v1', value),
@@ -432,9 +433,9 @@ test('missing background is recoverable and late loads cannot recreate an abando
   const response = page.waitForResponse('**/demo-room.svg');
   release();
   await response;
-  await (await object(page, 'Späť do skúšobne')).click();
+  await (await object(page, 'Späť do skúšobne')).press('Enter');
   await ready(page);
-  await (await object(page, 'Router')).click();
+  await (await object(page, 'Router')).press('Enter');
   await expect(reaction(page)).toContainText('Chýba mu opravený kábel');
 });
 
@@ -573,7 +574,7 @@ storyTest(
         .hotspots.find((h) => h.id === id)!;
       expect(hotspot, id).toBeDefined();
       if (item) await inventory(item);
-      await click(await object(page, hotspot.label));
+      await (await object(page, hotspot.label)).press('Enter');
     }
     async function travel(id: string) {
       if (sceneId === 'scene12') await enter('chapel-return', 'scene2');
@@ -648,8 +649,10 @@ storyTest(
     expect(thirdBark).not.toBe(firstBark);
     expect(thirdBark).not.toBe(secondBark);
     await finishSpeech();
-    for (const id of ['bread-box', 'tape-roll', 'peg-basket'])
-      await interact(id);
+    for (const id of ['bread-box', 'peg-basket']) await interact(id);
+    await enter('alley-door', 'scene11');
+    await interact('tape-roll');
+    await enter('yard-door', 'scene4');
     await travel('scene1');
     await interact('layer3');
     await topic('layer2', 'dezo-chat', 'scrapyard');

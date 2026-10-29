@@ -240,7 +240,7 @@ test('independent regional playback preserves alpha, ignores unrelated frame edi
     .screenshot({ path: testInfo.outputPath('animation-workspace.png') });
   await page.getByRole('button', { name: 'Game Mode', exact: true }).click();
   await ready(page);
-  await (await object(page, 'Postava')).click();
+  await (await object(page, 'Postava')).press('Enter');
   await page
     .getByRole('button', { name: 'Porozprávať sa.', exact: true })
     .click();
@@ -343,7 +343,7 @@ test('existing Codex blink and mouth demo run simultaneously in a dialogue', asy
   const demoActor = project.scenes
     .find((s) => s.id === 'animation-lab')!
     .hotspots.find((h) => h.id === 'blink-character')!;
-  await (await object(page, demoActor.label)).click();
+  await (await object(page, demoActor.label)).press('Enter');
   await page
     .getByRole('button', { name: 'Porozprávať sa.', exact: true })
     .click();

@@ -24,8 +24,11 @@ export function HudAccessibility({
         ?.focus();
     else if (!current && wasModal.current)
       root.current
+        ?.closest('.game-window')
         ?.querySelector<HTMLButtonElement>(
-          `[data-hud-control="${wasModal.current === 'map' ? 'objects' : 'journal'}"]`,
+          wasModal.current === 'map'
+            ? '.scene-accessibility [data-open-map="true"]'
+            : '[data-hud-control="journal"]',
         )
         ?.focus();
     wasModal.current = current;
@@ -40,15 +43,13 @@ export function HudAccessibility({
       aria-label={c.label}
       aria-pressed={c.pressed}
       aria-expanded={
-        c.id === 'objects'
-          ? hud.objectsOpen
-          : c.id === 'menu'
-            ? hud.menu
-            : c.id === 'map'
-              ? Boolean(hud.map)
-              : c.id === 'journal'
-                ? hud.journal
-                : c.expanded
+        c.id === 'menu'
+          ? hud.menu
+          : c.id === 'map'
+            ? Boolean(hud.map)
+            : c.id === 'journal'
+              ? hud.journal
+              : c.expanded
       }
       disabled={c.disabled}
       style={{

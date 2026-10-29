@@ -81,7 +81,7 @@ test('visual edits save real JSON, survive reload, preview immediately and detec
   await expect(page.getByText('● Neuložené změny')).toBeVisible();
   await page.getByRole('button', { name: 'Game Mode', exact: true }).click();
   await ready(page);
-  await (await object(page, 'Testovací terminál')).click();
+  await (await object(page, 'Testovací terminál')).press('Enter');
   await expect(page.getByRole('status', { name: 'Reakcia' })).toContainText(
     'Terminál reaguje zo zdrojového JSON.',
   );
@@ -115,13 +115,13 @@ test('visual edits save real JSON, survive reload, preview immediately and detec
   });
   await page.getByRole('button', { name: 'Game Mode', exact: true }).click();
   await ready(page);
-  await (await object(page, 'Testovací terminál')).click();
+  await (await object(page, 'Testovací terminál')).press('Enter');
   await expect(page.getByRole('status', { name: 'Reakcia' })).toContainText(
     'Terminál reaguje zo zdrojového JSON.',
   );
   await page.reload();
   await ready(page);
-  await (await object(page, 'Testovací terminál')).click();
+  await (await object(page, 'Testovací terminál')).press('Enter');
   await expect(page.getByRole('status', { name: 'Reakcia' })).toContainText(
     'Terminál reaguje zo zdrojového JSON.',
   );
@@ -265,7 +265,7 @@ test('forms create linked locations, items, uploaded assets, branching dialogue 
     'aria-label',
     'Lokácia: Testovací ateliér',
   );
-  await (await object(page, 'Testovací správca')).click();
+  await (await object(page, 'Testovací správca')).press('Enter');
   await expect(page.getByRole('dialog')).not.toContainText(
     'Tu je testovací žetón',
   );

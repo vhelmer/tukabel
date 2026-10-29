@@ -5,6 +5,7 @@ import {
   reduceGame,
   canTravel,
   getDialogueNode,
+  matches,
 } from '../src/game/state';
 import { decodeSave } from '../src/game/storage';
 import type { GameAction, GameContent, GameState } from '../src/game/types';
@@ -65,7 +66,12 @@ function prepareFarm(content: GameContent, lateMagnet = false) {
     expect.arrayContaining(['scene1', 'scene3', 'scene6', 'scene7']),
   );
   expect(p.state.unlockedScenes).not.toContain('scene10');
-  for (const id of ['bread-box', 'tape-roll', 'peg-basket']) p.use(id);
+  for (const id of ['bread-box', 'peg-basket']) p.use(id);
+  p.use('alley-door');
+  expect(p.state.sceneId).toBe('scene11');
+  p.use('tape-roll');
+  p.use('yard-door');
+  expect(p.state.sceneId).toBe('scene4');
   expect(p.state.inventory).toEqual(
     expect.arrayContaining(['bread', 'tape', 'clothespin']),
   );
@@ -278,7 +284,12 @@ test('seven outdoor destinations keep fast travel separate from interior passage
   );
   const p = player(content);
   p.choose('accept');
-  for (const id of ['bread-box', 'tape-roll', 'peg-basket']) p.use(id);
+  for (const id of ['bread-box', 'peg-basket']) p.use(id);
+  p.use('alley-door');
+  expect(p.state.sceneId).toBe('scene11');
+  p.use('tape-roll');
+  p.use('yard-door');
+  expect(p.state.sceneId).toBe('scene4');
   const inventory = [...p.state.inventory];
   p.use('layer1', 'tape');
   p.close();
@@ -321,10 +332,56 @@ test('Eržika has repeated standalone barks whose sequence survives a save witho
   expect(p.state.inventory).toEqual([]);
   expect(content.dialogues.some((d) => d.id === 'wife-chat')).toBe(false);
 });
+test('the alley tape is a unique visible pickup that stays collected after save/load', async () => {
+  const content = await read(),
+    p = player(content);
+  const pickups = content.scenes.flatMap((scene) =>
+    scene.hotspots
+      .filter((hotspot) => hotspot.id === 'tape-roll')
+      .map((hotspot) => ({ scene, hotspot })),
+  );
+  expect(pickups).toHaveLength(1);
+  const { scene, hotspot } = pickups[0]!;
+  expect(scene.id).toBe('scene11');
+  expect(hotspot.image).toBe('cursors/tape-icon.svg');
+  expect(hotspot.placeholder).not.toBe(true);
+  expect(hotspot.hidden).not.toBe(true);
+  expect(hotspot.bounds.x).toBeGreaterThanOrEqual(0);
+  expect(hotspot.bounds.y).toBeGreaterThanOrEqual(0);
+  expect(hotspot.bounds.width).toBeGreaterThan(0);
+  expect(hotspot.bounds.height).toBeGreaterThan(0);
+  expect(hotspot.bounds.x + hotspot.bounds.width).toBeLessThanOrEqual(
+    scene.width,
+  );
+  expect(hotspot.bounds.y + hotspot.bounds.height).toBeLessThanOrEqual(
+    scene.height,
+  );
+  p.choose('accept');
+  p.use('tape-roll');
+  expect(p.state.inventory).not.toContain('tape');
+  p.use('alley-door');
+  expect(p.state.sceneId).toBe('scene11');
+  expect(matches(p.state, hotspot.visibleWhen)).toBe(true);
+  p.state = deserializeSave(content, serializeSave(content, p.state));
+  p.use('tape-roll');
+  expect(p.state.flags['tape-taken']).toBe(true);
+  expect(p.state.inventory.filter((id) => id === 'tape')).toHaveLength(1);
+  expect(matches(p.state, hotspot.visibleWhen)).toBe(false);
+  p.state = deserializeSave(content, serializeSave(content, p.state));
+  const collected = p.state;
+  p.use('tape-roll');
+  expect(p.state).toBe(collected);
+  expect(matches(p.state, hotspot.visibleWhen)).toBe(false);
+  p.use('yard-door');
+  expect(p.state.sceneId).toBe('scene4');
+  p.use('alley-door');
+  p.use('tape-roll');
+  expect(p.state.inventory.filter((id) => id === 'tape')).toHaveLength(1);
+});
 test('new puzzle props are visible placeholders contained in their authored locations', async () => {
   const content = await read();
   const props = {
-    scene4: ['bread-box', 'tape-roll', 'peg-basket'],
+    scene4: ['bread-box', 'peg-basket'],
     scene10: ['milking-bucket', 'cow-bell-hook'],
     scene9: ['resuscitator', 'tool-chest'],
     scene6: ['foil-wrapper'],

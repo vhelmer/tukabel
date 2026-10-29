@@ -79,7 +79,7 @@ test('editor saves silent click rules, custom cursor animation and inventory ico
   await openEditor(page, workspace.url);
   await page
     .getByLabel('Vybraný objekt', { exact: true })
-    .selectOption('cable');
+    .selectOption('caretaker');
   await page.getByLabel('Typ kurzoru', { exact: true }).selectOption('talk');
   await page
     .getByLabel('Vlastní obrázek kurzoru', { exact: true })
@@ -89,6 +89,9 @@ test('editor saves silent click rules, custom cursor animation and inventory ico
     .selectOption('woman-blink');
   await page.getByLabel('Velikost kurzoru (px)', { exact: true }).fill('52');
   await page.getByLabel('Špička kurzoru x', { exact: true }).fill('8');
+  await page
+    .getByLabel('Vybraný objekt', { exact: true })
+    .selectOption('cable');
   await page
     .getByRole('button', { name: 'Odebrat pravidlo', exact: true })
     .first()
@@ -105,15 +108,16 @@ test('editor saves silent click rules, custom cursor animation and inventory ico
   ) as GameContent;
   const mug = saved.scenes[0]!.hotspots.find((h) => h.id === 'cable')!;
   expect(mug.onClick).toEqual([]);
-  expect(mug.cursorAnimation).toBe('woman-blink');
-  expect(mug.cursorOffset).toEqual([8, 0]);
+  const actor = saved.scenes[0]!.hotspots.find((h) => h.id === 'caretaker')!;
+  expect(actor.cursorAnimation).toBe('woman-blink');
+  expect(actor.cursorOffset).toEqual([8, 0]);
   await page.reload();
   await ready(page);
   if (!isMobile) {
     const p = await pointInScene(
       page,
-      mug.bounds.x + mug.bounds.width * (120 / 180),
-      mug.bounds.y + mug.bounds.height * (50 / 95),
+      actor.bounds.x + actor.bounds.width / 2,
+      actor.bounds.y + actor.bounds.height / 2,
     );
     await page.mouse.move(p.x, p.y);
     const cursor = page.locator('.scene-cursor img');
@@ -127,9 +131,15 @@ test('editor saves silent click rules, custom cursor animation and inventory ico
       .not.toBe(src);
     await page.mouse.move(0, 0);
   }
-  await (await object(page, 'Kábel pri stoličke')).click();
+  await expect(await object(page, 'Kábel pri stoličke')).toHaveCount(0);
+  await activate(
+    page,
+    mug.bounds.x + mug.bounds.width * (120 / 180),
+    mug.bounds.y + mug.bounds.height * (50 / 95),
+    isMobile,
+  );
   await expect(page.getByRole('status', { name: 'Reakcia' })).toHaveCount(0);
-  await (await object(page, 'Správca')).click();
+  await (await object(page, 'Správca')).press('Enter');
   await expect(page.locator('.dialogue-portrait')).toHaveCount(0);
   await expect(
     page.getByRole('button', { name: 'Ako opravím router?', exact: true }),

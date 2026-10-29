@@ -71,7 +71,7 @@ test('opening, epilogue, manual save/load and new game stay inside the game wind
   await expect(opening).toBeEnabled();
   await expect(
     page.getByRole('button', { name: 'Objekty', exact: true }),
-  ).toBeDisabled();
+  ).toHaveCount(0);
   await opening.click();
   await expect(page.locator('.dialogue-panel')).toHaveCount(0);
   await hudClick(page, page.getByRole('button', { name: 'Menu', exact: true }));
@@ -83,13 +83,7 @@ test('opening, epilogue, manual save/load and new game stay inside the game wind
   await page
     .getByRole('button', { name: 'Pokračovať v hre', exact: true })
     .click();
-  await hudClick(
-    page,
-    page.getByRole('button', { name: 'Objekty', exact: true }),
-  );
-  await page
-    .getByRole('button', { name: 'Zapojiť kábel ↗', exact: true })
-    .click();
+  await (await object(page, 'Zapojiť kábel')).press('Enter');
   const epilogue = page.getByRole('dialog', {
     name: 'Svetlo pre dedinu',
     exact: true,
@@ -118,13 +112,7 @@ test('opening, epilogue, manual save/load and new game stay inside the game wind
     .getByRole('button', { name: 'Pokračovať v hre', exact: true })
     .click();
   await expect(epilogue).toHaveCount(0);
-  await hudClick(
-    page,
-    page.getByRole('button', { name: 'Objekty', exact: true }),
-  );
-  await page
-    .getByRole('button', { name: 'Zapojiť kábel ↗', exact: true })
-    .click();
+  await (await object(page, 'Zapojiť kábel')).press('Enter');
   await expect(epilogue).toBeVisible();
   await epilogue.getByRole('button', { name: 'Nová hra', exact: true }).click();
   await expect(epilogue).toHaveCount(0);
@@ -234,8 +222,8 @@ test('Dev Mode previews another location without the opening while previewing th
   await expect(page.locator('.dialogue-panel')).toHaveCount(0);
   await expect(
     page.getByRole('button', { name: 'Objekty', exact: true }),
-  ).toBeEnabled();
-  await (await object(page, sign.label)).click();
+  ).toHaveCount(0);
+  await (await object(page, sign.label)).press('Enter');
   await expect(page.getByRole('status', { name: 'Reakcia' })).toHaveText(
     sign.onClick[0]!.message!,
   );
@@ -250,7 +238,7 @@ test('Dev Mode previews another location without the opening while previewing th
   );
   await expect(
     page.getByRole('button', { name: 'Objekty', exact: true }),
-  ).toBeDisabled();
+  ).toHaveCount(0);
   expect(await readFile(workspace.source, 'utf8')).toBe(source);
 });
 
@@ -363,7 +351,7 @@ test('interrupting a one-shot sound releases its source and listeners without wa
     .getByRole('button', { name: 'Dokončiť repliku', exact: true })
     .click();
   for (const [index, interrupt] of ['menu', 'visibility'].entries()) {
-    await (await object(page, `Vziať mincu ${index + 1}`)).click();
+    await (await object(page, `Vziať mincu ${index + 1}`)).press('Enter');
     const sound = await page.evaluateHandle(() =>
       (window as unknown as { playedSounds: HTMLMediaElement[] }).playedSounds
         .filter((audio) => audio.src.includes('pickup.wav'))
