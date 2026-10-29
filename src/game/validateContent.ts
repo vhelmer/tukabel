@@ -37,6 +37,10 @@ export function validateContent(content: GameContent): string[] {
     content.dialogues.map((entry) => entry.id),
     'dialogues',
   );
+  const minigames = collect(
+    (content.minigames ?? []).map((entry) => entry.id),
+    'minigames',
+  );
   const animations = collect(
     (content.animations ?? []).map((animation) => animation.id),
     'animations',
@@ -63,7 +67,9 @@ export function validateContent(content: GameContent): string[] {
               ? dialogues
               : effect.type === 'startTask' || effect.type === 'completeTask'
                 ? tasks
-                : items,
+                : effect.type === 'minigame'
+                  ? minigames
+                  : items,
         effect.id,
         path,
       );
@@ -78,6 +84,8 @@ export function validateContent(content: GameContent): string[] {
       effects(rule.effects, path);
     });
   };
+  for (const game of content.minigames ?? [])
+    reference(flags, game.winFlag, `minigames/${game.id}.winFlag`);
   reference(scenes, content.startScene, 'startScene');
   if (content.startDialogue !== undefined)
     reference(dialogues, content.startDialogue, 'startDialogue');

@@ -1046,6 +1046,8 @@ Původní technická hádanka a staré zastávkové dialogy zůstávají pouze v
   otevřeného zápisníku a cedulek; měnitelné bez externí služby.
 - `src/ui/` — herní stav/UI, životní cyklus canvasu, dialogové překryvy a pointer capture;
   `HudAccessibility.tsx` přidává pouze sémantiku a klávesnici k Pixi ovládání.
+- `src/minigames/` — samostatné minihry (React overlay + vlastní Pixi canvas);
+  `src/assets/minigames/` jejich grafika. Viz [Minihry](#minihry).
 - `src/editor/` — pouze vývojový editor, SVG autorování oblastí, formuláře a graf.
   `SceneImage.tsx` používá stejnou geometrii jako Pixi; `transformTools.ts` počítá
   proporcionální tahy a limity scény. Zoom, pomůcky a rozpracovaný tah jsou jen UI stav.
@@ -1201,6 +1203,25 @@ Otevření mapy ani focus nepatří do save. Reducer kontroluje odemčení i zá
 mapové cesty nezávisle na UI. Aktuální mapa obsahuje osm venkovních lokací;
 postupně je odemyká přijetí případu a informace o zberni a kravínu. Herňa,
 cintorín, kaplnka a krypta zůstávají dostupné pouze autorskými přechody.
+
+## Minihry
+
+Efekt `{ "type": "minigame", "id": "suter-k-ciare" }` spustí minihru přes celé
+herní okno včetně HUD. Definice v `project.json` (`minigames`) určuje příznak,
+který výhra trvale nastaví (`winFlag`), a volitelné reakce `winMessage` /
+`loseMessage` zobrazené po návratu do lokace. Pozdější prohra příznak nesmaže.
+Běžící minihra blokuje akce světa i cestování stejně jako dialog; do save se
+neukládá a po načtení se hráč vrátí do lokace. Validátor zná pouze minihry
+implementované v `MINIGAME_IDS` (`types.ts`) a kontroluje registrovaný příznak.
+
+**Šuter k čiare** (`src/minigames/suter-k-ciare/`) se spouští hotspotem
+„Čiara v hline“ (`stone-line`) na vyrytém kruhu v Detskom ihrisku. Hráč a
+Špľuch hází po třech kamenech co nejblíž k čáře bez přehození; ovládání tahem
+dozadu jako prak (myš i dotyk), deterministická fyzika, partie asi 45 s.
+Výhra nastaví `stone-game-won`. Postavy nejsou kreslené, Nika a Béla jen
+komentují v reakčním lístku. Hostitelský element nese `data-phase`
+(`aim | busy | done`) pro testy. Pravidla a fyziku ověřuje
+`tests/minigame-rules.spec.ts`, celý průchod `tests/minigame.spec.ts`.
 
 ## Deník úkolů a tvorba obsahu
 

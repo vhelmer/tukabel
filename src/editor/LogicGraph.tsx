@@ -28,7 +28,7 @@ function describe(condition?: Condition): string[] {
 function effectText(effect: Effect) {
   return effect.type === 'flag'
     ? `${effect.id} ← ${effect.value}`
-    : `${{ addItem: '+ předmět', removeItem: '− předmět', scene: '→ lokace', unlockScene: 'odemknout lokaci', dialogue: '→ dialog', startTask: '+ úkol', completeTask: '✓ úkol' }[effect.type]}: ${effect.id}`;
+    : `${{ addItem: '+ předmět', removeItem: '− předmět', scene: '→ lokace', unlockScene: 'odemknout lokaci', dialogue: '→ dialog', startTask: '+ úkol', completeTask: '✓ úkol', minigame: '▶ minihra' }[effect.type]}: ${effect.id}`;
 }
 function graphRows(content: GameContent): Row[] {
   const rows: Row[] = [];

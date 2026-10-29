@@ -200,7 +200,8 @@
     "pub-deal-known",
     "priest-distraction-known",
     "swing-plan-known",
-    "funeral-rules-known"
+    "funeral-rules-known",
+    "stone-game-won"
   ],
   "tasks": [
     {
@@ -1575,6 +1576,15 @@
       "height": 941,
       "background": "scene-art/4033f8aa-84dd-4395-ab06-5582a3742ca3/image.png",
       "hotspots": [
+        {
+          "id": "stone-line",
+          "label": "Čiara v hline",
+          "bounds": { "x": 680, "y": 735, "width": 210, "height": 75 },
+          "cursor": "interact",
+          "onClick": [
+            { "effects": [{ "type": "minigame", "id": "suter-k-ciare" }] }
+          ]
+        },
         {
           "id": "swing-boy",
           "label": "Špľuch",
@@ -6650,6 +6660,14 @@
       "title": "Večný jackpot",
       "text": "Namiesto záchrany osady si sa rozhodol skúsiť šťastie na automate.\nPodarilo sa ti odpáliť automat, ukradnutý kábel aj poslednú fungujúcu baterku v osade.\nMajstrovstvá boli definitívne zrušené a Fero ti vystavil faktúru za škodu vo výške 38 000 eur.\nAle na chvíľu tam boli tri sedmičky, takže sa to oplatilo.",
       "ambient": "ambience/ending.wav"
+    }
+  ],
+  "minigames": [
+    {
+      "id": "suter-k-ciare",
+      "winFlag": "stone-game-won",
+      "winMessage": "Špľuch prehral. Tvári sa, že to bol len tréning pre tehlu.",
+      "loseMessage": "Prehral som s chlapcom, čo sa rozpráva s tehlou. Nižšie sa už klesnúť nedá."
     }
   ]
 }

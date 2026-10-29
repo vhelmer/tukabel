@@ -1,4 +1,4 @@
-import type { GameContent } from './types.ts';
+import { MINIGAME_IDS, type GameContent } from './types.ts';
 import { voiceIssue, mouthShapes } from './speech.ts';
 import { validateContent } from './validateContent.ts';
 import { subtitleTrackIssue } from './subtitles.ts';
@@ -90,6 +90,7 @@ export function validateProject(
           'dialogue',
           'startTask',
           'completeTask',
+          'minigame',
         ].includes(String(entry.type))
       )
         errors.push(`${key}: unknown effect`);
@@ -135,6 +136,7 @@ export function validateProject(
       'combinations',
       'animations',
       'tasks',
+      'minigames',
       'worldMap',
     ])
   )
@@ -241,6 +243,17 @@ export function validateProject(
         errors.push(path + ': task text must contain 1–500 characters');
       condition(task.startWhen, path + '.startWhen');
       condition(task.completeWhen, path + '.completeWhen');
+    });
+  if (value.minigames !== undefined)
+    list(value.minigames, 'minigames', (game, path) => {
+      if (!object(game, path, ['id', 'winFlag', 'winMessage', 'loseMessage']))
+        return;
+      string(game.id, path + '.id');
+      if (!(MINIGAME_IDS as readonly unknown[]).includes(game.id))
+        errors.push(`${path}.id: unknown minigame`);
+      string(game.winFlag, path + '.winFlag');
+      optionalString(game, 'winMessage', path);
+      optionalString(game, 'loseMessage', path);
     });
   list(value.scenes, 'scenes', (scene, path) => {
     if (

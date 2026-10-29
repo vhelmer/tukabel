@@ -92,6 +92,8 @@ export function decodeSave(
                   id: state.dialogue.id as string,
                   nodeId: state.dialogue.nodeId as string,
                 },
+          // A minigame restarts from its hotspot; it is never resumed mid-match.
+          minigame: null,
           message: state.message,
         }),
       ),

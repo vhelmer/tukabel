@@ -292,7 +292,9 @@ export function EffectsField({
           ? (content.dialogues[0]?.id ?? '')
           : type === 'startTask' || type === 'completeTask'
             ? (content.tasks?.[0]?.id ?? '')
-            : (content.items[0]?.id ?? '');
+            : type === 'minigame'
+              ? (content.minigames?.[0]?.id ?? '')
+              : (content.items[0]?.id ?? '');
   return (
     <fieldset className="effects-field">
       <legend>Efekty (v pořadí)</legend>
@@ -312,7 +314,11 @@ export function EffectsField({
                       id: task.id,
                       label: task.text,
                     }))
-                  : content.items;
+                  : effect.type === 'minigame'
+                    ? (content.minigames ?? []).map((game) => ({
+                        id: game.id,
+                      }))
+                    : content.items;
         return (
           <div className="effect-row" key={index}>
             <div className="field-row">
@@ -346,6 +352,12 @@ export function EffectsField({
                     disabled={!content.tasks?.length}
                   >
                     Dokončit úkol
+                  </option>
+                  <option
+                    value="minigame"
+                    disabled={!content.minigames?.length}
+                  >
+                    Spustit minihru
                   </option>
                 </select>
               </Field>
