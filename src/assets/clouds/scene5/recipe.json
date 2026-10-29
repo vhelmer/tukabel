@@ -1,0 +1,35 @@
+{
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "low",
+  "endpoint": "images/edits",
+  "background": "transparent",
+  "size": "1536x1024",
+  "reference": {
+    "source": "scene-art/ae538529-cee9-45d0-b12c-50ccf4bc7f2d/image.png",
+    "crop": [380, 20, 1440, 270],
+    "sha256": "ffc353cc176f09232f49e3e9bb882f95151557bfb0f94ad70e3dfc5297b3747b"
+  },
+  "clouds": [
+    {
+      "file": "cloud-1.png",
+      "prompt": "Image 1 is a reference crop of the sky from a hand-painted cartoon point-and-click adventure game background. Paint ONE new cloud in exactly the same style as the two small clouds in image 1: creamy off-white puffs, soft pale grey-blue shading on the underside, subtle warm highlights, gentle painterly edges, no hard black outline. Return only the single cloud, complete and uncropped, centered with generous empty margin, on a genuinely transparent background. No blue sky, no other objects, no trees, no birds, no text, no checkerboard, no shadow on the ground. Cloud shape: a small, wide, flat-bottomed fair-weather cumulus cloud with three soft rounded puffs, about three times wider than tall.",
+      "crop": [131, 332, 1404, 665],
+      "size": [450, 118],
+      "sha256": "e04971f8e66d53212bc77decf364da91442143cb718a32f44dc79d7bbfbc53b9"
+    },
+    {
+      "file": "cloud-2.png",
+      "prompt": "Image 1 is a reference crop of the sky from a hand-painted cartoon point-and-click adventure game background. Paint ONE new cloud in exactly the same style as the two small clouds in image 1: creamy off-white puffs, soft pale grey-blue shading on the underside, subtle warm highlights, gentle painterly edges, no hard black outline. Return only the single cloud, complete and uncropped, centered with generous empty margin, on a genuinely transparent background. No blue sky, no other objects, no trees, no birds, no text, no checkerboard, no shadow on the ground. Cloud shape: a long, low, stretched cloud bank with several small puffs along its top and a flat base, about five times wider than tall.",
+      "crop": [84, 346, 1452, 648],
+      "size": [540, 119],
+      "sha256": "3f89d98a84a2a3030dba9720d8dde26d4c3e344e1ea8bc796767aaf65c11ab24"
+    },
+    {
+      "file": "cloud-3.png",
+      "prompt": "Image 1 is a reference crop of the sky from a hand-painted cartoon point-and-click adventure game background. Paint ONE new cloud in exactly the same style as the two small clouds in image 1: creamy off-white puffs, soft pale grey-blue shading on the underside, subtle warm highlights, gentle painterly edges, no hard black outline. Return only the single cloud, complete and uncropped, centered with generous empty margin, on a genuinely transparent background. No blue sky, no other objects, no trees, no birds, no text, no checkerboard, no shadow on the ground. Cloud shape: a compact little puffy cloud with two rounded lobes and a flat base, about twice as wide as tall.",
+      "crop": [246, 339, 1290, 654],
+      "size": [345, 104],
+      "sha256": "5663c059aac7b57ef16a62187694f450d4b9f306abc2e07e5d5c961177a3a4e0"
+    }
+  ]
+}
