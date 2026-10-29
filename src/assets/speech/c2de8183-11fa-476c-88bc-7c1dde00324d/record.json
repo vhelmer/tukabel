@@ -1,0 +1,18 @@
+{
+  "text": "Vratná fľaša, ty nádhera, ešte nás úplne neodpísali! Ber magnet a fľašu si nechaj; na rozdiel od teba sa vie vrátiť tam, kam patrí.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "hK1QkZqr6jNBJ8sJlEuc",
+    "designRegistration": "speech/3e8208b6-b0b3-4340-b834-33458c4b61fa/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 10,
+  "audioSha256": "c10528b937efa05f99944b1294eb06289430a06bed1b8ee10df039427cca956c"
+}

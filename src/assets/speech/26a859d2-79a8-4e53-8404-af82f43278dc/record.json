@@ -1,0 +1,18 @@
+{
+  "text": "Ľubova truhla bola prázdna, zato z nej tiekla horčica. Odvtedy mi mŕtvi šepkajú, že majú hlad; takého kokota tu už pochovávať nebudem zadarmo.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "zWHgsvbNzrffMNY5MMeW",
+    "designRegistration": "speech/0ee076d4-99b6-4b01-9523-452a2a74d51d/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 12.08,
+  "audioSha256": "3e111e936d5970f57e08d757abc7f3de7857006042c2081dde79bb5f587d09b1"
+}

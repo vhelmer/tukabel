@@ -1,0 +1,18 @@
+{
+  "text": "Tu máš mletú, zmiešaj ju s mliekom na studenú kávu. Dingov klystír ju berie aj bez cukru; cukor by mu mohol zalepiť dušu.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "WeQhSWWkQZEA8DAKeg1r",
+    "designRegistration": "speech/ee6bf383-8f32-402b-a655-27de2fdc1b74/registration.json",
+    "slot": "rotating"
+  },
+  "languageCode": "sk",
+  "duration": 9.2,
+  "audioSha256": "5351363979bbbeacc29bda5e862ae4c1806fe5bc6f2824a9effe7dcee608981d"
+}

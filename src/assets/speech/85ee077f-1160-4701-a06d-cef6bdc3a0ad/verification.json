@@ -1,0 +1,126 @@
+{
+  "version": 1,
+  "operation": "voice-retirement-verification",
+  "provider": "elevenlabs",
+  "verifiedAt": "2026-10-29T12:20:09.391Z",
+  "projectId": "tukabel-grotesque-2",
+  "actor": { "sceneId": "scene6", "hotspotId": "innkeeper" },
+  "voiceId": "WeQhSWWkQZEA8DAKeg1r",
+  "designRegistration": "speech/ee6bf383-8f32-402b-a655-27de2fdc1b74/registration.json",
+  "registrationSha256": "f304ad77f3aee0c9f4a5c12cd96a6e2cd377305a8a022c0483b0c8ab7b30a1c5",
+  "registration": {
+    "version": 1,
+    "operation": "voice-registration",
+    "provider": "elevenlabs",
+    "designManifest": "speech/7a179a5d-aabc-4cb8-84b4-a055362e98d4/design.json",
+    "designSha256": "cfc3ccf95d9ca55cf72052383ced593ba226baa4c44d7db5e7db7c683f0ab0b3",
+    "generatedVoiceId": "WeQhSWWkQZEA8DAKeg1r",
+    "previewIndex": 0,
+    "voiceId": "WeQhSWWkQZEA8DAKeg1r",
+    "name": "TUKABEL · Karol Odmerka",
+    "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Male, late forties. A beer-soaked publican with an upper-middle register shredded by a lifetime of shouting across a pub. Harsh hoarse sandpaper rasp, scratchy wheeze, coarse forward nasal resonance and strained buzzy vowels. Loud argumentative rhythmic jabs, sarcastic upward scoops, rough breath at the end of clauses and sudden indignant bursts. He is audibly half-cut but every word remains understandable; no long mumbling or random hiccup noises. A damaged loud tenor, quite unlike a booming deep bass. Colloquial Slovak. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts."
+  },
+  "lines": [
+    {
+      "dialogueId": "innkeeper-chat",
+      "nodeId": "grounds",
+      "actor": { "sceneId": "scene6", "hotspotId": "innkeeper" },
+      "text": "Tu máš mletú, zmiešaj ju s mliekom na studenú kávu. Dingov klystír ju berie aj bez cukru; cukor by mu mohol zalepiť dušu.",
+      "textSha256": "623457116f1014227396c7b0eed7c3a1190cb211cf3ae41d8031236845a385cf",
+      "audio": "speech/13a8dfce-c922-4111-abe4-6b305c112dc7/audio.wav",
+      "audioSha256": "5351363979bbbeacc29bda5e862ae4c1806fe5bc6f2824a9effe7dcee608981d",
+      "duration": 9.2,
+      "rms": 3343.550964942231,
+      "peak": 21249,
+      "lipSync": "speech/545dbee4-091c-4f11-9e62-c0ae4ef6cc91/track.lipsync.json",
+      "lipSyncSha256": "d3690bf3f464bd75f2ecd5c6b09b3a147f11be368b8bd37665019704d2a9c089",
+      "subtitles": {
+        "text": "Tu máš mletú, zmiešaj ju s mliekom na studenú kávu. Dingov klystír ju berie aj bez cukru; cukor by mu mohol zalepiť dušu.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 3.9099999999999997,
+            "text": "Tu máš mletú, zmiešaj ju s mliekom na studenú kávu."
+          },
+          {
+            "start": 3.9099999999999997,
+            "end": 9.2,
+            "text": "Dingov klystír ju berie aj bez cukru; cukor by mu mohol zalepiť dušu."
+          }
+        ]
+      },
+      "record": "speech/13a8dfce-c922-4111-abe4-6b305c112dc7/record.json",
+      "recordSha256": "fcfbbae311a84a84a9c8d90613c216ad889ec2b39784a10adca2a2a1a9fe0301"
+    },
+    {
+      "dialogueId": "innkeeper-chat",
+      "nodeId": "gaming",
+      "actor": { "sceneId": "scene6", "hotspotId": "innkeeper" },
+      "text": "Kľúčom dotiahni maticu pípy a potom otvor kohútik pri krígľoch, nech vytečie stará pena. Až potom odomknem herňu; v tom žľabe pod pípou už kvôli smradu leží aj alobal.",
+      "textSha256": "f8cd12f0646b681bc7d158a0fdec920e65c3accbcae9463af2d695a4d1434c8c",
+      "audio": "speech/045d748a-f245-46b8-ac0c-03691242227b/audio.wav",
+      "audioSha256": "1053d1d742f537052487d16d896fe6a738f7f0c17f80969e1435e6610685eca1",
+      "duration": 13.6,
+      "rms": 3150.2652886731526,
+      "peak": 19821,
+      "lipSync": "speech/f22282d5-11b4-4cf2-9705-3521f50e7699/track.lipsync.json",
+      "lipSyncSha256": "67b78b642f5e60143bc3a06ff5e0a2dd7726814cf93366d3e2ccc02f2c12c83e",
+      "subtitles": {
+        "text": "Kľúčom dotiahni maticu pípy a potom otvor kohútik pri krígľoch, nech vytečie stará pena. Až potom odomknem herňu; v tom žľabe pod pípou už kvôli smradu leží aj alobal.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 5.192727272727272,
+            "text": "Kľúčom dotiahni maticu pípy a potom otvor kohútik pri krígľoch,"
+          },
+          {
+            "start": 5.192727272727272,
+            "end": 7.17090909090909,
+            "text": "nech vytečie stará pena."
+          },
+          {
+            "start": 7.17090909090909,
+            "end": 13.599999999999998,
+            "text": "Až potom odomknem herňu; v tom žľabe pod pípou už kvôli smradu leží aj alobal."
+          }
+        ]
+      },
+      "record": "speech/045d748a-f245-46b8-ac0c-03691242227b/record.json",
+      "recordSha256": "825a6b4e04c589722c27fceb77c00e7d7c9515c2b13a9bebe8ea333255ab6623"
+    },
+    {
+      "dialogueId": "innkeeper-chat",
+      "nodeId": "lubo",
+      "actor": { "sceneId": "scene6", "hotspotId": "innkeeper" },
+      "text": "Ľubo po pohrebe prišiel reklamovať automat a podpísal servisný denník. Prst mal teplý, takže buď žije, alebo má peklo výborné kúrenie.",
+      "textSha256": "9217f962a06ee71c095a130dc1102eb62e731568313cd3c87930995c9f5dab04",
+      "audio": "speech/290b86a7-964a-47c2-9fbe-55fbc1cf81f3/audio.wav",
+      "audioSha256": "67caac7abc11bf4016fa3a7a89234cb16b860b0193f306fe13bac1101cfe68bf",
+      "duration": 10.72,
+      "rms": 3131.9802442283876,
+      "peak": 19184,
+      "lipSync": "speech/865a8322-2640-48e1-b5d5-b30d649af1e5/track.lipsync.json",
+      "lipSyncSha256": "3df7200ef6fbc96e390d932787cab2f75339e7fa5fb9963d5c1562be65074e9a",
+      "subtitles": {
+        "text": "Ľubo po pohrebe prišiel reklamovať automat a podpísal servisný denník. Prst mal teplý, takže buď žije, alebo má peklo výborné kúrenie.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 5.642105263157895,
+            "text": "Ľubo po pohrebe prišiel reklamovať automat a podpísal servisný denník."
+          },
+          {
+            "start": 5.642105263157895,
+            "end": 10.72,
+            "text": "Prst mal teplý, takže buď žije, alebo má peklo výborné kúrenie."
+          }
+        ]
+      },
+      "record": "speech/290b86a7-964a-47c2-9fbe-55fbc1cf81f3/record.json",
+      "recordSha256": "90ad076442a562e5fffd93600fdbc5b1a147c55c3814ab977e597dbf7e13740f"
+    }
+  ]
+}

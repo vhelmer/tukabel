@@ -1,0 +1,18 @@
+{
+  "text": "Ľubo si požičal autobatériu na cintorín a sám dovliekol kábel z osady. Pri svorke najprv povoľ maticu kľúčom, potom ber kábel v rukaviciach; nech mi z teba ostane aspoň vratná záloha.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "OAHw71DTm0tFvJJU4HGL",
+    "designRegistration": "speech/06c88758-c6d1-4d4b-aecd-6bbf0f668e0d/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 13.2,
+  "audioSha256": "d64397581707d088c4884689f3aae588a21ad15d217d6619548d7eb288925d26"
+}

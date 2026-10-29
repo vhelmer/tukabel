@@ -1,0 +1,18 @@
+{
+  "text": "Rudo, niekto vytrhol hlavný kábel: osada potme a majstrovstvá v automatoch v piči! Nájdi ho, máš štartovné zadarmo; nevyšetruj zásuvku jazykom, minule nám tri dni koktal rozhlas.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "T4iGZQue94RIBivJIuhN",
+    "designRegistration": "speech/5f2733be-0b82-4f59-beb3-a96abae946fe/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 13.6,
+  "audioSha256": "5b1449ba00f9eb961a9763a887823424eb2540585449c03561c560338b1783e0"
+}

@@ -1,0 +1,18 @@
+{
+  "text": "Najprv kľúčom odpoj batériu, až potom rukavicami ber kábel, ty chodiaci skrat. Keď ho vezmeš, moja herňa skončila; keď ho necháš a batériu znovu pripojíš, ešte môžeš prehrať aj za osadu.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "Cs0q9bNTpnXhVCnLNXGI",
+    "designRegistration": "speech/21f9abba-7505-4707-a9f6-afdfaf7fc065/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 13.6,
+  "audioSha256": "ec93a1e42c8c99665d25e83c6358ef7d5d035591071e594b99c4aa5bd650bd31"
+}

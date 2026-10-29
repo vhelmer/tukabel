@@ -1,0 +1,18 @@
+{
+  "text": "Ľubo po pohrebe prišiel reklamovať automat a podpísal servisný denník. Prst mal teplý, takže buď žije, alebo má peklo výborné kúrenie.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "WeQhSWWkQZEA8DAKeg1r",
+    "designRegistration": "speech/ee6bf383-8f32-402b-a655-27de2fdc1b74/registration.json",
+    "slot": "rotating"
+  },
+  "languageCode": "sk",
+  "duration": 10.72,
+  "audioSha256": "67caac7abc11bf4016fa3a7a89234cb16b860b0193f306fe13bac1101cfe68bf"
+}

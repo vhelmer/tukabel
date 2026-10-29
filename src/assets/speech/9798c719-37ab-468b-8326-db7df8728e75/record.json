@@ -1,0 +1,18 @@
+{
+  "text": "Kľúč od krypty mi spadol pod mrežu v kaplnke. Spusť magnet na špagáte; rukou tam nelez, niečo zdola mi ju včera pohladilo.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "zWHgsvbNzrffMNY5MMeW",
+    "designRegistration": "speech/0ee076d4-99b6-4b01-9523-452a2a74d51d/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 9.28,
+  "audioSha256": "ee5f4d367ecdfc7009a5adf75364c4ce08159d3e9f3ba9cbfa0becb72f6c9c56"
+}

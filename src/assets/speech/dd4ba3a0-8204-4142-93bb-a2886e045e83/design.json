@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "operation": "voice-design",
+  "provider": "elevenlabs",
+  "model": "eleven_ttv_v3",
+  "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Female, about fifty. A ferocious, commanding woman: low-mid chest voice with a metallic saw-toothed buzz, extremely coarse raspy edges and pinched nasal bite. Sharp barking starts, brutally clipped endings and sudden theatrical rises of annoyance. The unmistakable delivery of a household commander shouting over an argument, hilarious and impatient, NEVER smooth or soothing. Strong middle register, no breathy softness. Standard colloquial Slovak, aggressive staccato emphasis. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts.",
+  "text": "Choď do piče, Rudo. A zavri za sebou, nech sa mi nevrátiš prievanom. Ty nemáš v hlave seno. To by aspoň niekto zožral. Ešte raz do mňa pichni a Milan dostane zákazku na mieru. Bez metra. Nalámeme ťa. Fero, vezmi si toho kokota. Zase sa mi tu pokúša existovať! Vypadni. Aj chrípka sa ma raz opýtala, či môže zostať.",
+  "textSha256": "ff8c2a72966eeedb5e9b947dd6b74ce46cf95dfdfff163eb9afa7acce51d0184",
+  "seed": 1374724886,
+  "guidanceScale": 5,
+  "outputFormat": "mp3_44100_128",
+  "previews": [
+    {
+      "audio": "preview-1.mp3",
+      "generatedVoiceId": "ub0M3tCem0pkpU4yJ48D",
+      "duration": 21.7105,
+      "audioSha256": "fe24d2000780035e2d394b78e91231ce28cace6834078dcf401acbc20d328dc4"
+    },
+    {
+      "audio": "preview-2.mp3",
+      "generatedVoiceId": "fpTaDs7mUFBQd8k5n7Ol",
+      "duration": 24.9235625,
+      "audioSha256": "0a5f70cc1049672fc6e471f620df522a2426fee8f3d2b787ec7cf4dd7526e700"
+    },
+    {
+      "audio": "preview-3.mp3",
+      "generatedVoiceId": "OiWCepyXP7yRlt7vdrim",
+      "duration": 21.0051875,
+      "audioSha256": "84a33fd59ac38af2654f64a57d65f2958df05f1e2e9247807d03c4d040a4d1a9"
+    }
+  ]
+}

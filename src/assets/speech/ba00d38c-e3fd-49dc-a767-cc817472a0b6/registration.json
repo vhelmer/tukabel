@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "operation": "voice-registration",
+  "provider": "elevenlabs",
+  "designManifest": "speech/dd4ba3a0-8204-4142-93bb-a2886e045e83/design.json",
+  "designSha256": "cb1ae2955db04e128beb94825198011817e36adb0aa8ea08422e251f6afe33cd",
+  "generatedVoiceId": "ub0M3tCem0pkpU4yJ48D",
+  "previewIndex": 0,
+  "voiceId": "ub0M3tCem0pkpU4yJ48D",
+  "name": "TUKABEL · Eržika",
+  "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Female, about fifty. A ferocious, commanding woman: low-mid chest voice with a metallic saw-toothed buzz, extremely coarse raspy edges and pinched nasal bite. Sharp barking starts, brutally clipped endings and sudden theatrical rises of annoyance. The unmistakable delivery of a household commander shouting over an argument, hilarious and impatient, NEVER smooth or soothing. Strong middle register, no breathy softness. Standard colloquial Slovak, aggressive staccato emphasis. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts."
+}

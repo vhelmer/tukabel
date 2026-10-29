@@ -1,0 +1,18 @@
+{
+  "text": "Prázdny úmrtný list visí na nástenke, pečiatku má Etela. Čítaj ho nahlas a zaspí aj dobytok; ja som pri kolónke trvalý pobyt prišiel o dvoch miništrantov.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "Dm506FEP6AkprXTsWzmW",
+    "designRegistration": "speech/2f047eb2-01cd-4bc9-99ad-daf933cb9dd4/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 11.6,
+  "audioSha256": "ce848d7e9e9ced527324de00dd309958f0d9d468d6f0c6804268c417a7f29628"
+}

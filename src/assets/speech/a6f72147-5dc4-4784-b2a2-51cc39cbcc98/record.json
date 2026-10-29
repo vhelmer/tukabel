@@ -1,0 +1,18 @@
+{
+  "text": "Pohreb som fingoval, lebo živému mi už nikto nepožičal ani na vlastnú truhlu. Hlavný kábel som šlohol pre súkromný turnaj; mŕtveho šampióna nemajú kam poslať do piče.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "Cs0q9bNTpnXhVCnLNXGI",
+    "designRegistration": "speech/21f9abba-7505-4707-a9f6-afdfaf7fc065/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 11.28,
+  "audioSha256": "38f74eeea5090627a5d1dfdf9fa288f54bb00dc1a1f02242d3d2e3b3ba842c2d"
+}

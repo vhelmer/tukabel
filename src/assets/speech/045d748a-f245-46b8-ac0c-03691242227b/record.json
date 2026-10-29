@@ -1,0 +1,18 @@
+{
+  "text": "Kľúčom dotiahni maticu pípy a potom otvor kohútik pri krígľoch, nech vytečie stará pena. Až potom odomknem herňu; v tom žľabe pod pípou už kvôli smradu leží aj alobal.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "WeQhSWWkQZEA8DAKeg1r",
+    "designRegistration": "speech/ee6bf383-8f32-402b-a655-27de2fdc1b74/registration.json",
+    "slot": "rotating"
+  },
+  "languageCode": "sk",
+  "duration": 13.6,
+  "audioSha256": "1053d1d742f537052487d16d896fe6a738f7f0c17f80969e1435e6610685eca1"
+}

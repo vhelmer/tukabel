@@ -1,0 +1,18 @@
+{
+  "text": "Ukáž vratnú fľašu a magnet ti dám, fľašu si nechaj. Potrebujem len vidieť niečo, za čo ešte niekto ručí.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "hK1QkZqr6jNBJ8sJlEuc",
+    "designRegistration": "speech/3e8208b6-b0b3-4340-b834-33458c4b61fa/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 7.84,
+  "audioSha256": "581ada6ab213fd9697a8a35c6d44d29cb08b80cc33b643c700ad2c6bd03e0f4d"
+}

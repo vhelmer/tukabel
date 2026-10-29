@@ -1,0 +1,18 @@
+{
+  "text": "JACKPOT, svätá Mária, tri zvony a ja bez drobných! Bránu na cintorín som odomkol, uhni, idem tej mašine osobne rozhrešiť vnútornosti.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "Dm506FEP6AkprXTsWzmW",
+    "designRegistration": "speech/2f047eb2-01cd-4bc9-99ad-daf933cb9dd4/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 10.24,
+  "audioSha256": "38bed28e9fba8e92f27da40a6c2359b5fcd829e330706e3f10192c15798645c9"
+}

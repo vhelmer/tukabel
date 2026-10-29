@@ -1,0 +1,18 @@
+{
+  "text": "To je náš veľkňaz poistnej udalosti. Zožral zmluvu, klienta aj výluky; kým negrgne, nikomu neuznáme nič.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "Jfvw40qotTOck51vIvrm",
+    "designRegistration": "speech/1a89f747-49e0-424b-9c61-6e4fc151c0c1/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 9.6,
+  "audioSha256": "08a6dd0984d4f5918c80e7788d46556679dd76b4c129819dcd9addc66c31cd99"
+}

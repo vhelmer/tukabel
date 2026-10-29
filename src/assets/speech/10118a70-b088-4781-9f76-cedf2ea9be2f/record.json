@@ -1,0 +1,18 @@
+{
+  "text": "Choď do piče, Rudo. A zavri za sebou, nech sa mi nevrátiš prievanom.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "ub0M3tCem0pkpU4yJ48D",
+    "designRegistration": "speech/ba00d38c-e3fd-49dc-a767-cc817472a0b6/registration.json",
+    "slot": "rotating"
+  },
+  "languageCode": "sk",
+  "duration": 4.48,
+  "audioSha256": "6fd9f0aacbe78e219d9dc9a5b9da8663f32143af1ee9a9f9f2a6a9ad6728a2b3"
+}

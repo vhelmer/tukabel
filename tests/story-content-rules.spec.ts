@@ -352,19 +352,14 @@ test('new puzzle props are visible placeholders contained in their authored loca
     }
   }
 });
-test('the rewrite preserves registered actor voices and the eight static slots', async () => {
+test('static actor voices stay fixed while rotating voices retain registration and retirement evidence', async () => {
   const content = await read();
   const expected = {
     'scene1/layer2': 'hK1QkZqr6jNBJ8sJlEuc',
     'scene1/layer1': 'xKlQrC6RzWnhQhiCFKBS',
-    'scene4/layer2': 'H4DieoTMxMYl6lx1prWW',
     'scene4/layer1': 'T4iGZQue94RIBivJIuhN',
     'scene3/priest': 'Dm506FEP6AkprXTsWzmW',
     'scene5/layer1': 'zWHgsvbNzrffMNY5MMeW',
-    'scene6/innkeeper': 'GMq1ucyG2a8EKFsKRbDQ',
-    'scene7/swing-boy': 'iiDZOH9TArCghKD6MfNt',
-    'scene7/sand-girl': 'wk5NuWmufYkSfjl2kJr1',
-    'scene7/climbing-boy': 'GTTXoS7HeTELz6svNEnz',
     'scene9/layer1': 'OAHw71DTm0tFvJJU4HGL',
     'scene10/layer1': 'Jfvw40qotTOck51vIvrm',
     'scene12/layer1': 'Cs0q9bNTpnXhVCnLNXGI',
@@ -377,12 +372,32 @@ test('the rewrite preserves registered actor voices and the eight static slots',
     ),
   );
   expect(
-    Object.fromEntries(voices.map(([id, voice]) => [id, voice.voiceId])),
+    Object.fromEntries(
+      voices
+        .filter(([, voice]) => voice.slot === 'static')
+        .map(([id, voice]) => [id, voice.voiceId]),
+    ),
   ).toEqual(expected);
+  expect(voices).toHaveLength(13);
   expect(voices.filter(([, voice]) => voice.slot === 'static')).toHaveLength(8);
   expect(
     voices.filter(([, voice]) => voice.slot === 'rotating' && voice.retired),
   ).toHaveLength(5);
+  for (const [id, voice] of voices.filter(
+    ([, voice]) => voice.slot === 'rotating',
+  )) {
+    expect(voice.voiceId, id).not.toBe('');
+    const registration = JSON.parse(
+      await readFile(`src/assets/${voice.designRegistration}`, 'utf8'),
+    );
+    const retirement = JSON.parse(
+      await readFile(`src/assets/${voice.retirementManifest}`, 'utf8'),
+    );
+    expect(registration.voiceId, id).toBe(voice.voiceId);
+    expect(retirement.voiceId, id).toBe(voice.voiceId);
+    expect(retirement.designRegistration, id).toBe(voice.designRegistration);
+    expect(retirement.verifiedLines, id).toBeGreaterThan(0);
+  }
 });
 test('starting a Dev Mode preview elsewhere can still accept Fero’s case', async () => {
   const content = await read();

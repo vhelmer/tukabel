@@ -1,0 +1,18 @@
+{
+  "text": "Pumpa naľavo dáva svätenú vodu, naber si do fľaše. Dal som požehnať celý vodovod; v spovednici odvtedy necítiť hriech, iba chlór.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "Dm506FEP6AkprXTsWzmW",
+    "designRegistration": "speech/2f047eb2-01cd-4bc9-99ad-daf933cb9dd4/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 9.44,
+  "audioSha256": "34f1007fae9491245ca14071b448889cad2d83c29569a789bb1df00b67083752"
+}

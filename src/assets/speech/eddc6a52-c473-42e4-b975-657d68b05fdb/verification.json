@@ -1,0 +1,170 @@
+{
+  "version": 1,
+  "operation": "voice-retirement-verification",
+  "provider": "elevenlabs",
+  "verifiedAt": "2026-10-29T12:19:29.089Z",
+  "projectId": "tukabel-grotesque-2",
+  "actor": { "sceneId": "scene4", "hotspotId": "layer2" },
+  "voiceId": "ub0M3tCem0pkpU4yJ48D",
+  "designRegistration": "speech/ba00d38c-e3fd-49dc-a767-cc817472a0b6/registration.json",
+  "registrationSha256": "9fe886653cff5510c48ccbf2c9b786dbf02e679ec1b2cc9b59f2e760b36f5984",
+  "registration": {
+    "version": 1,
+    "operation": "voice-registration",
+    "provider": "elevenlabs",
+    "designManifest": "speech/dd4ba3a0-8204-4142-93bb-a2886e045e83/design.json",
+    "designSha256": "cb1ae2955db04e128beb94825198011817e36adb0aa8ea08422e251f6afe33cd",
+    "generatedVoiceId": "ub0M3tCem0pkpU4yJ48D",
+    "previewIndex": 0,
+    "voiceId": "ub0M3tCem0pkpU4yJ48D",
+    "name": "TUKABEL · Eržika",
+    "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Female, about fifty. A ferocious, commanding woman: low-mid chest voice with a metallic saw-toothed buzz, extremely coarse raspy edges and pinched nasal bite. Sharp barking starts, brutally clipped endings and sudden theatrical rises of annoyance. The unmistakable delivery of a household commander shouting over an argument, hilarious and impatient, NEVER smooth or soothing. Strong middle register, no breathy softness. Standard colloquial Slovak, aggressive staccato emphasis. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts."
+  },
+  "lines": [
+    {
+      "dialogueId": "erzika-bark-1",
+      "nodeId": "line",
+      "actor": { "sceneId": "scene4", "hotspotId": "layer2" },
+      "text": "Choď do piče, Rudo. A zavri za sebou, nech sa mi nevrátiš prievanom.",
+      "textSha256": "500e92284d6ed53463c517ede70e8ba2f7b8f8ec56a248c191096ff61db2ffe2",
+      "audio": "speech/10118a70-b088-4781-9f76-cedf2ea9be2f/audio.wav",
+      "audioSha256": "6fd9f0aacbe78e219d9dc9a5b9da8663f32143af1ee9a9f9f2a6a9ad6728a2b3",
+      "duration": 4.48,
+      "rms": 3450.392383102836,
+      "peak": 24710,
+      "lipSync": "speech/36377bf9-3467-4e09-accf-f714fe7f136f/track.lipsync.json",
+      "lipSyncSha256": "71eb988d5da7bb536006e93b3bf98115ed61947821d4d138c62efa932581950e",
+      "subtitles": {
+        "text": "Choď do piče, Rudo. A zavri za sebou, nech sa mi nevrátiš prievanom.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 4.48,
+            "text": "Choď do piče, Rudo. A zavri za sebou, nech sa mi nevrátiš prievanom."
+          }
+        ]
+      },
+      "record": "speech/10118a70-b088-4781-9f76-cedf2ea9be2f/record.json",
+      "recordSha256": "9c6959c6ad2cbb206a843027bc4cc00ab01453614d3fef0935126e81630be6c1"
+    },
+    {
+      "dialogueId": "erzika-bark-2",
+      "nodeId": "line",
+      "actor": { "sceneId": "scene4", "hotspotId": "layer2" },
+      "text": "Ty nemáš v hlave seno. To by aspoň niekto zožral.",
+      "textSha256": "e2a777ae94c3bdd78746236ce19443b11876525a935a26d378b8561d47702d9e",
+      "audio": "speech/7e3bf1d0-e045-4f86-8d0f-339b8ca4a6e0/audio.wav",
+      "audioSha256": "19325a423a843c666fb1e6624026bd91756dc74733d2a32e695e01fe9e013c54",
+      "duration": 3.52,
+      "rms": 3957.6935873673133,
+      "peak": 23544,
+      "lipSync": "speech/dc7965b9-773c-424b-b222-51cbc12d9b60/track.lipsync.json",
+      "lipSyncSha256": "5ba1cecfedabc2962b02fee0f6057748205fa4e49a333b0acf4ad44ee79b9a4c",
+      "subtitles": {
+        "text": "Ty nemáš v hlave seno. To by aspoň niekto zožral.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 3.5199999999999996,
+            "text": "Ty nemáš v hlave seno. To by aspoň niekto zožral."
+          }
+        ]
+      },
+      "record": "speech/7e3bf1d0-e045-4f86-8d0f-339b8ca4a6e0/record.json",
+      "recordSha256": "4d43113e5cfac6bd2206e8fb919660b2bc5fb685853b08c4191a4650399128b1"
+    },
+    {
+      "dialogueId": "erzika-bark-3",
+      "nodeId": "line",
+      "actor": { "sceneId": "scene4", "hotspotId": "layer2" },
+      "text": "Ešte raz do mňa pichni a Milan dostane zákazku na mieru. Bez metra. Nalámeme ťa.",
+      "textSha256": "75e94f7b2110f5ec5a5447837ebe3e00a521c15f4c095175b43135ab0e948186",
+      "audio": "speech/3f32679e-a2f3-42b3-abaf-1fa965cacdbb/audio.wav",
+      "audioSha256": "9e0d1d60a8f345bfd0f230196e78358cb089dde8112e88123b9276a37bb81de8",
+      "duration": 6,
+      "rms": 3882.7843345788724,
+      "peak": 26359,
+      "lipSync": "speech/566799fe-9e7a-4b11-be48-fedc10767bf5/track.lipsync.json",
+      "lipSyncSha256": "35c9d3ff454769ceeb9f9bc8b9d3451e5abefd73befc91d9fbd1200192324243",
+      "subtitles": {
+        "text": "Ešte raz do mňa pichni a Milan dostane zákazku na mieru. Bez metra. Nalámeme ťa.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 4.253164556962025,
+            "text": "Ešte raz do mňa pichni a Milan dostane zákazku na mieru."
+          },
+          {
+            "start": 4.253164556962025,
+            "end": 6,
+            "text": "Bez metra. Nalámeme ťa."
+          }
+        ]
+      },
+      "record": "speech/3f32679e-a2f3-42b3-abaf-1fa965cacdbb/record.json",
+      "recordSha256": "ce4801820045cbfbce4dfe6af0d9abe3f8debd656ee82c37d29ffb9b2ea0e0e5"
+    },
+    {
+      "dialogueId": "erzika-bark-4",
+      "nodeId": "line",
+      "actor": { "sceneId": "scene4", "hotspotId": "layer2" },
+      "text": "Fero, vezmi si toho kokota. Zase sa mi tu pokúša existovať!",
+      "textSha256": "c88aa128087d03748c7db9104163b67294e9bc5ddbf24ae4e764c548334b72b9",
+      "audio": "speech/31329a6d-f7d3-457b-a0f0-cc08fd54d5d0/audio.wav",
+      "audioSha256": "20a4e8585a3f498e9a27dbaf73de853b19652bed6dde8780ef6c7336e04edc0a",
+      "duration": 4.32,
+      "rms": 3309.8225934115,
+      "peak": 25018,
+      "lipSync": "speech/1ee7f82f-13bb-43e3-8546-b1dd8fea4365/track.lipsync.json",
+      "lipSyncSha256": "40d41cba2db7c6948452e8e00abba090d608ee94b56b0ec5dc39761a3d27ba4f",
+      "subtitles": {
+        "text": "Fero, vezmi si toho kokota. Zase sa mi tu pokúša existovať!",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 2.011034482758621,
+            "text": "Fero, vezmi si toho kokota."
+          },
+          {
+            "start": 2.011034482758621,
+            "end": 4.32,
+            "text": "Zase sa mi tu pokúša existovať!"
+          }
+        ]
+      },
+      "record": "speech/31329a6d-f7d3-457b-a0f0-cc08fd54d5d0/record.json",
+      "recordSha256": "a7b98a28004f0bfac61b273e2de2620b43ed6a7c002fd7d2b771b56179fd5781"
+    },
+    {
+      "dialogueId": "erzika-bark-5",
+      "nodeId": "line",
+      "actor": { "sceneId": "scene4", "hotspotId": "layer2" },
+      "text": "Vypadni. Aj chrípka sa ma raz opýtala, či môže zostať.",
+      "textSha256": "d16c33fe4cdd8979221fa43c198200c28abb19faac6595cf8a86925659decfcf",
+      "audio": "speech/203ce561-9916-496f-86e1-f00153dc165f/audio.wav",
+      "audioSha256": "d0a9158a2c659c576a4bfa62265443a54153f3a9fe5f9143b76ff6ac09116bfd",
+      "duration": 3.92,
+      "rms": 3284.228129287236,
+      "peak": 25099,
+      "lipSync": "speech/48523bde-f5b1-4830-a56a-355bc65e1eb8/track.lipsync.json",
+      "lipSyncSha256": "3c454cc1d5ccc40a6687da7b1d1bb35c080a789e089f9ede528298a8612b9d20",
+      "subtitles": {
+        "text": "Vypadni. Aj chrípka sa ma raz opýtala, či môže zostať.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 3.92,
+            "text": "Vypadni. Aj chrípka sa ma raz opýtala, či môže zostať."
+          }
+        ]
+      },
+      "record": "speech/203ce561-9916-496f-86e1-f00153dc165f/record.json",
+      "recordSha256": "926c682f58ad555ff5702dc71a875745f42914c9437681cf98a80c6c07152399"
+    }
+  ]
+}

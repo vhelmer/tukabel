@@ -1,0 +1,18 @@
+{
+  "text": "Ľubov úmrtný list mám v troch kópiách a ani jednu mu nezruším zadarmo. Ak žije, nech príde osobne podať námietku proti nebožtíkovi.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "xKlQrC6RzWnhQhiCFKBS",
+    "designRegistration": "speech/df34f616-45c6-4744-810b-48fbf2184228/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 10.64,
+  "audioSha256": "dd4550f22599120004279762155b8fb215c2c2213d935a994f08e9828002b382"
+}

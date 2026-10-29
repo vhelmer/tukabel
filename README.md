@@ -910,24 +910,29 @@ protože obrázek má při vykreslení přednost. Pro výřezy použij transpare
 
 ### Dabing tohoto scénáře
 
-**V tomto přepisu se ElevenLabs ani jiné placené generování nespouštělo.**
-Všech 13 hlasových přiřazení zůstalo zachovaných, stejně jako osm chráněných
-stálých slotů a dva rotační sloty. Název Margita se změnil na Eržika pouze
-v autorském obsahu; archivní nahrávky a registrace se nepřepisují.
+Schválená dávka 29. 10. 2026 nově namluvila **40 ze 47 hraných replik** přes
+ElevenLabs a přepočítala jejich Rhubarb lip-sync i titulky. Osm stálých hlasů
+zůstalo zachovaných. Rotační hlasy Eržiky (pět reakcí) a Karola (tři repliky)
+se obnovily přes Voice Design a uvolnily až po ověření a uložení všech dat.
+Původní generace a registrace se nepřepisují.
 
-Před spuštěním dávky scénář připravil **47 hraných replik**: 42 má zachovanou starší nahrávku s odlišným
-`speech.text` a pět nových Eržičiných štěků zatím audio nemá. Runtime
-zastaralé audio ani jeho lip-sync nepřehraje; ukáže aktuální slovenské titulky.
-Kliknutí/tapnutí na titulkovou plochu nebo Enter/mezerník repliku potvrdí.
+**Zbývá sedm dětských replik**: Špľuch tři, Nika dvě a Béla dvě. ElevenLabs
+odmítlo první nový dětský Voice Design chybou HTTP 403; dávka se zastavila bez
+opakování požadavku a bez změny dětských hlasů. Příčina 403 není potvrzená;
+návrhy Eržiky a Karola ve stejném běhu prošly. Zadání pro přirozené věkové hlasy
+jsou uložená v `voice.designPrompt`: Špľuch přibližně 9–10 let, Nika 8–9 let
+a Béla 7–8 let. Runtime jejich zastaralé audio ani lip-sync nepřehraje; nabídne
+aktuální slovenské titulky. Kliknutí/tapnutí nebo Enter/mezerník je potvrdí.
 Mrkání, ostatní animace i Ferovo škrábání zůstávají funkční.
 
-Při pozdějším schváleném dabingu používej stávající hlasy; u rotačních postav
-nejprve obnov jejich Voice Design a po ověření všech WAV/titulků/Rhubarb dat
-uvolni slot. Eržika má nyní pět samostatných reakcí, Karol tři, Špľuch tři,
-Nika dvě a Béla dvě. U dětí je třeba **nový přirozený věkový projev**, nikoliv
-starý dospělý falzet: Špľuch přibližně 9–10 let, zbrklý a chraptivější;
-Nika 8–9 let, jasná sebejistá dikce; Béla 7–8 let, mladší měkčí hlas s nejistými
-záchvěvy. Jde o zadání pro příští schválenou generaci, dosud se nic negenerovalo.
+Po vyřešení zamítnutí pokračuj v uložené dávce; hotových 40 TTS se znovu neplatí:
+
+```bash
+npm run speech:regenerate -- --resume 1d9625be-7818-473f-adef-48c1c8b6b80a --retry-failed --confirm
+```
+
+Tento příkaz použij až po kontrole důvodu zamítnutí v ElevenLabs. Deník dávky
+je lokální a necommituje se; aktuální přiřazení a hotové nahrávky jsou v projektu.
 
 [Archiv předchozího castingu](src/assets/speech/2b9d5934-d303-40ef-b875-59c2c46dbc00/casting.json)
 a [historická poslechová stránka](src/assets/speech/2b9d5934-d303-40ef-b875-59c2c46dbc00/listen.html)

@@ -1,0 +1,18 @@
+{
+  "text": "Biely pohrebák. Šofér žral bagetu cez smútočný veniec. Zakričal som mu sústrasť a poslal ma do piče. Tak asi rodina.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "hK1QkZqr6jNBJ8sJlEuc",
+    "designRegistration": "speech/3e8208b6-b0b3-4340-b834-33458c4b61fa/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 9.12,
+  "audioSha256": "f969edfdb397e1ca886dcf5c5f8e8d08afb0cf07bf8780b5d9219c4beaa9128d"
+}

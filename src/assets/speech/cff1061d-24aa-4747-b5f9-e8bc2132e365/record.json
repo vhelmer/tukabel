@@ -1,0 +1,18 @@
+{
+  "text": "Krava je pokrstená, prázdnu fľašu si nechaj a prestaň mi tu stáť ako svätý kokot. Prečítaj jej úmrtný list, nech zaspí; potom zober zvonec a mlieko naber fľašou z vedra.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "Jfvw40qotTOck51vIvrm",
+    "designRegistration": "speech/1a89f747-49e0-424b-9c61-6e4fc151c0c1/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 13.28,
+  "audioSha256": "9f9a419ef9107c305ee94b447eb0d974b7ba440f96011b81d3a42ab345b45fb1"
+}

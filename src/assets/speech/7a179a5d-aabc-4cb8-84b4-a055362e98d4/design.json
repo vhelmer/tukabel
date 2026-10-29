@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "operation": "voice-design",
+  "provider": "elevenlabs",
+  "model": "eleven_ttv_v3",
+  "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Male, late forties. A beer-soaked publican with an upper-middle register shredded by a lifetime of shouting across a pub. Harsh hoarse sandpaper rasp, scratchy wheeze, coarse forward nasal resonance and strained buzzy vowels. Loud argumentative rhythmic jabs, sarcastic upward scoops, rough breath at the end of clauses and sudden indignant bursts. He is audibly half-cut but every word remains understandable; no long mumbling or random hiccup noises. A damaged loud tenor, quite unlike a booming deep bass. Colloquial Slovak. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts.",
+  "text": "Tu máš mletú, zmiešaj ju s mliekom na studenú kávu. Dingov klystír ju berie aj bez cukru; cukor by mu mohol zalepiť dušu. Kľúčom dotiahni maticu pípy a potom otvor kohútik pri krígľoch, nech vytečie stará pena. Až potom odomknem herňu; v tom žľabe pod pípou už kvôli smradu leží aj alobal. Ľubo po pohrebe prišiel reklamovať automat a podpísal servisný denník. Prst mal teplý, takže buď žije, alebo má peklo výborné kúrenie.",
+  "textSha256": "22e8bd5563ef0508c97f98dcd4acff0d29173d5907310cbb576e22b57a6256fb",
+  "seed": 21169634,
+  "guidanceScale": 5,
+  "outputFormat": "mp3_44100_128",
+  "previews": [
+    {
+      "audio": "preview-1.mp3",
+      "generatedVoiceId": "WeQhSWWkQZEA8DAKeg1r",
+      "duration": 37.1488125,
+      "audioSha256": "c704f3218bcf57b88487c2039262e2d7d1ec1c979b3b206c6baae66ed4aefed5"
+    },
+    {
+      "audio": "preview-2.mp3",
+      "generatedVoiceId": "4O4D9BmNzP6WooHbn2sU",
+      "duration": 36.757,
+      "audioSha256": "2bf7960d02d00450d1204a7f146a8e941f9bbf7d52626cb531587d0783c0ae53"
+    },
+    {
+      "audio": "preview-3.mp3",
+      "generatedVoiceId": "fe6W0z876vmassqqpkYn",
+      "duration": 33.7268125,
+      "audioSha256": "8a525f24d9cb109d82212d9f624f028fa8dd5e70fb6dca3192d5d26c87202d4d"
+    }
+  ]
+}

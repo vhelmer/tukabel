@@ -1,0 +1,18 @@
+{
+  "text": "Meď nie je magnetická, ty Einstein z kontajnera! Skús zberňu: Dingo tam chrčí pod vrakmi a predáva súčiastky vrátane vlastných.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "hK1QkZqr6jNBJ8sJlEuc",
+    "designRegistration": "speech/3e8208b6-b0b3-4340-b834-33458c4b61fa/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 9.52,
+  "audioSha256": "cd02ed492fcd0422e9e940be6090473ad261e41a831903d79bb0aaa460dc3505"
+}
