@@ -1149,6 +1149,33 @@
       "background": "scene-art/ae538529-cee9-45d0-b12c-50ccf4bc7f2d/image.png",
       "hotspots": [
         {
+          "id": "cloud-drift-1",
+          "label": "Mrak 1",
+          "bounds": { "x": 540, "y": 52, "width": 250, "height": 66 },
+          "image": "clouds/scene5/cloud-1.png",
+          "onClick": [],
+          "decorative": true,
+          "animation": { "motion": "drift" }
+        },
+        {
+          "id": "cloud-drift-2",
+          "label": "Mrak 2",
+          "bounds": { "x": 900, "y": 18, "width": 320, "height": 70 },
+          "image": "clouds/scene5/cloud-2.png",
+          "onClick": [],
+          "decorative": true,
+          "animation": { "motion": "drift" }
+        },
+        {
+          "id": "cloud-drift-3",
+          "label": "Mrak 3",
+          "bounds": { "x": 700, "y": 8, "width": 180, "height": 54 },
+          "image": "clouds/scene5/cloud-3.png",
+          "onClick": [],
+          "decorative": true,
+          "animation": { "motion": "drift" }
+        },
+        {
           "id": "layer1",
           "label": "Milan Jamka",
           "bounds": { "x": 534, "y": 338, "width": 343, "height": 523 },

@@ -58,7 +58,8 @@ export interface CharacterAnimation {
   readonly gestureIntervalMs?: readonly [number, number];
   readonly talk?: string;
   readonly dialogueId?: string;
-  readonly motion?: 'breath' | 'sway';
+  // drift slowly wanders a decorative layer, e.g. clouds, back and forth.
+  readonly motion?: 'breath' | 'sway' | 'drift';
   readonly onClick?: string;
   readonly onUse?: string;
 }

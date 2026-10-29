@@ -13,7 +13,11 @@ import type {
 } from './types';
 import { createCharacterVisual, characterClips } from './characterVisual';
 import { matches } from './state';
-import { createAnimationPlayer, isCharacterSpeaking } from './animation';
+import {
+  createAnimationPlayer,
+  driftOffset,
+  isCharacterSpeaking,
+} from './animation';
 import { hitTestLocal, hotspotLocalPoint } from './hitTest';
 import type { AlphaMask } from './hitTest';
 import type { Point } from './transforms';
@@ -299,6 +303,13 @@ export function createScene(
         if (actor.hotspot.animation?.motion === 'sway')
           actor.visual.rotation =
             Math.sin((sample.elapsedMs * Math.PI * 2) / 4000) * 0.015;
+        if (actor.hotspot.animation?.motion === 'drift') {
+          const offset = driftOffset(actor.hotspot.id, sample.elapsedMs);
+          actor.visual.position.set(
+            actor.visual.pivot.x + offset.x,
+            actor.visual.pivot.y + offset.y,
+          );
+        }
       }
       syncHover();
     },
@@ -306,6 +317,7 @@ export function createScene(
       for (const actor of actors) {
         actor.visual.scale.set(1);
         actor.visual.rotation = 0;
+        actor.visual.position.copyFrom(actor.visual.pivot);
         apply(actor, preview?.sample ?? { elapsedMs: 0, priority: 'base' });
       }
       syncHover();

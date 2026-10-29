@@ -421,7 +421,7 @@ export function validateProject(
           errors.push(`${key}: idleLoop must be boolean`);
         if (
           binding.motion !== undefined &&
-          !['breath', 'sway'].includes(String(binding.motion))
+          !['breath', 'sway', 'drift'].includes(String(binding.motion))
         )
           errors.push(`${key}: invalid motion`);
         for (const field of ['blinkIntervalMs', 'gestureIntervalMs']) {

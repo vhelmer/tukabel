@@ -286,3 +286,24 @@ export function createAnimationPlayer(
     },
   };
 }
+
+// Smooth, seemingly random wandering for decorative layers such as clouds.
+// Incommensurate sine waves never repeat visibly and never jump; the hotspot
+// ID seeds the phases so neighbouring layers drift independently.
+export const DRIFT_RANGE = { x: 70, y: 6 };
+export function driftOffset(seed: string, elapsedMs: number) {
+  let hash = 2166136261;
+  for (const char of seed)
+    hash = Math.imul(hash ^ char.charCodeAt(0), 16777619);
+  const unit = (shift: number) => ((hash >>> shift) & 0xff) / 255;
+  const t = elapsedMs / 1000;
+  const wave = (period: number, phase: number) =>
+    Math.sin((t / period + phase) * Math.PI * 2);
+  return {
+    x:
+      DRIFT_RANGE.x *
+      (0.65 * wave(60 + unit(0) * 30, unit(8)) +
+        0.35 * wave(23 + unit(16) * 11, unit(24))),
+    y: DRIFT_RANGE.y * wave(17 + unit(4) * 9, unit(12)),
+  };
+}

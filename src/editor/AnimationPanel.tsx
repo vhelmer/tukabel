@@ -394,7 +394,7 @@ export function AnimationPanel({
                 animation: {
                   ...hotspot.animation,
                   motion: event.target.value
-                    ? (event.target.value as 'breath' | 'sway')
+                    ? (event.target.value as 'breath' | 'sway' | 'drift')
                     : undefined,
                 },
               })
@@ -403,6 +403,7 @@ export function AnimationPanel({
             <option value="">Žádný</option>
             <option value="breath">Jemné dýchání</option>
             <option value="sway">Jemné kývání</option>
+            <option value="drift">Plynulé putování (mraky)</option>
           </select>
         </Field>
         <VoicePanel

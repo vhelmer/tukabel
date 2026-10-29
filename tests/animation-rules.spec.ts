@@ -15,7 +15,11 @@ import {
   frameAt,
   clipDuration,
 } from '../src/game/animation';
-import { isCharacterSpeaking } from '../src/game/animation';
+import {
+  DRIFT_RANGE,
+  driftOffset,
+  isCharacterSpeaking,
+} from '../src/game/animation';
 import { validateProject } from '../src/game/validateProject';
 import {
   importAnimation,
@@ -761,4 +765,21 @@ test('prepared story characters keep native pixels, placement and independent fa
       }
     }
   }
+});
+
+test('drift wanders smoothly within its range and differs per layer', () => {
+  const samples = Array.from({ length: 1800 }, (_, i) =>
+    driftOffset('cloud-drift-1', i * 100),
+  );
+  for (const [i, offset] of samples.entries()) {
+    expect(Math.abs(offset.x)).toBeLessThanOrEqual(DRIFT_RANGE.x);
+    expect(Math.abs(offset.y)).toBeLessThanOrEqual(DRIFT_RANGE.y);
+    // 100 ms steps never jump: the layer glides instead of teleporting.
+    if (i) expect(Math.abs(offset.x - samples[i - 1]!.x)).toBeLessThan(1.5);
+  }
+  const xs = samples.map((offset) => offset.x);
+  expect(Math.max(...xs) - Math.min(...xs)).toBeGreaterThan(DRIFT_RANGE.x);
+  expect(driftOffset('cloud-drift-2', 30000)).not.toEqual(
+    driftOffset('cloud-drift-1', 30000),
+  );
 });

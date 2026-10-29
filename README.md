@@ -1379,7 +1379,7 @@ obdélník uvnitř zdroje; všechny snímky dál používají celé původní pl
 přiřazené lokální klipy se nesmějí překrývat. Opakované odkazy na stejný snímek
 jsou v pořádku. Klipy bez `region` zachovávají původní celopostavové přehrávání.
 Vazba `hotspot.animation` používá `blink`, `blinkIntervalMs: [min,max]`, `idle`,
-volitelné `idleLoop` přepsání smyčky, `talk`, `dialogueId`, `onClick: "clip-id"`, `onUse: "clip-id"` a volitelný `motion: "breath" | "sway"`. Zdroj každého přiřazeného
+volitelné `idleLoop` přepsání smyčky, `talk`, `dialogueId`, `onClick: "clip-id"`, `onUse: "clip-id"` a volitelný `motion: "breath" | "sway" | "drift"`. `drift` plynule a zdánlivě náhodně posouvá celou dekorativní vrstvu (±70 px vodorovně, ±6 px svisle, `driftOffset` v `animation.ts`); používají ho mraky na Cintoríne (`src/assets/clouds/scene5/`, vygenerované `gpt-image-2.5-sunburst` / `low`, recept v `recipe.json`). Zdroj každého přiřazeného
 klipu musí odpovídat `hotspot.image`. Rozměry všech snímků kontroluje import,
 uložení projektu a `npm run validate:content`; runtime navíc odmítne deformovat
 postavu při chybně změněném assetu. Zarovnání kresby uvnitř plátna je odpovědnost autora.
