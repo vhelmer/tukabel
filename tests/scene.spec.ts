@@ -1,3 +1,4 @@
+import { winStoneGame } from './stoneGameHelper';
 import { hudClick } from './helpers';
 import { expect } from '@playwright/test';
 import { readFile, writeFile } from 'node:fs/promises';
@@ -574,7 +575,6 @@ storyTest(
     async function interact(id: string, item?: string) {
       const scene = content.scenes.find((s) => s.id === sceneId)!;
       const propEffects: Record<string, { type: string; id: string }> = {
-        'bread-box': { type: 'addItem', id: 'bread' },
         'peg-basket': { type: 'addItem', id: 'clothespin' },
         'tape-roll': { type: 'addItem', id: 'tape' },
         'scrap-metal': { type: 'addItem', id: 'scrap-metal' },
@@ -683,13 +683,14 @@ storyTest(
     expect(thirdBark).not.toBe(firstBark);
     expect(thirdBark).not.toBe(secondBark);
     await finishSpeech();
-    for (const id of ['bread-box', 'peg-basket']) await interact(id);
+    await interact('peg-basket');
     await enter('alley-door', 'scene11');
     await interact('tape-roll');
     await interact('scrap-metal');
     await enter('yard-door', 'scene4');
     await travel('scene1');
     await interact('layer3');
+    await interact('stop-bin');
     await topic('layer2', 'dezo-chat', 'scrapyard');
     await interact('layer2');
     const price = content.dialogues
@@ -738,19 +739,18 @@ storyTest(
       'Karol Odmerka',
     );
     await finishSpeech();
-    await interact('foil-wrapper');
     await enter('gaming-door', 'scene8');
+    await interact('foil-wrapper');
     await use('service-hatch', 'wrench');
     await travel('scene1');
     await use('layer1', 'machine-log');
     await travel('scene7');
     await topic('swing-boy', 'boy-chat', 'trade');
-    await use('swing-axle', 'wrench');
-    await use('swing-seat', 'bread');
-    await interact('swing-seat');
+    await interact('stone-line');
+    await winStoneGame(page, isMobile);
+    await interact('swing-boy');
     await finishSpeech();
-    await interact('loose-string');
-    await interact('loose-washer');
+    await combine('scissors', 'potato-medal');
     await topic('sand-girl', 'girl-chat', 'token');
     await combine('magnet', 'string');
     await travel('scene3');
@@ -793,7 +793,7 @@ storyTest(
     sceneId = 'scene12';
     await ready(page);
     await expect(community).toHaveCount(0);
-    await combine('washer', 'foil');
+    await combine('potato', 'foil');
     await use('crypt-machine', 'fake-token');
     const jackpot = page.getByRole('dialog', {
       name: content.endings!.find((ending) => ending.id === 'jackpot')!.title,

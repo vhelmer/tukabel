@@ -853,10 +853,10 @@ Stejné herní okno používá i **Otestovat odsud** v Dev Mode.
   Načítá se až na požádání a obnovuje nabídku aktuálního dialogového uzlu. Nová hra slot nemaže.
   Poškozené, nekompatibilní či nedostupné úložiště nepřepíše aktuální postup.
 
-Aktuální příběh (`tukabel-grotesque-2`) začíná automatickým rozhovorem
+Aktuální příběh (`tukabel-potato-prize-3`) začíná automatickým rozhovorem
 s Ferem na **Ferovom dvore**. Rudo bere pátrání po ukradeném hlavním kabelu za
 štartovné zdarma na zrušeném mistrovství v automatech. Hra má 12 zachovaných
-lokací, 13 postav, 25 předmětů, jedenáct úkolů v deníku a dva fyzicky odlišné konce.
+lokací, 13 postav, 26 předmětů, jedenáct úkolů v deníku a dva fyzicky odlišné konce.
 Nová hra nejdřív přehraje cutscénu **výpadku proudu v celé osadě**
 (`openingCutscene: "blackout"`, `src/ui/BlackoutCutscene.tsx`): osvětlené a tmavé
 noční pozadí z `src/assets/cutscenes/blackout/`, čtvrti postupně zhasínají podle
@@ -876,10 +876,12 @@ Milan zkouší zákazníkům vlastní pohřby, Jolanda vede kult pojištěného 
 Rudo považuje odpojení mínusu za odstranění špatné elektřiny. **Eržika** nahradila
 Margitu. Nemá dialogový strom: pět samostatných krátkých nadávek se střídá při
 opakovaných kliknutích, bez volby odpovědi. Pořadí drží běžné uložené příznaky.
-Rožok a kolíček jsou samostatné předměty na dvoře; izolačka leží pod žebříkem
-v uličce. Vedle odpadků v uličce sebereš také hrdzavý šrot, který Dežo na zastávce
-vymění za magnet. Láhev, svätenú vodu ani podložku nebere. Prázdná láhev zůstává
-pro vodu, mléko a kávu; podložka pro druhý konec. Dežo se bez ostychu živí
+Kolíček je samostatný předmět na dvoře; izolačka leží pod žebříkem
+v uličce. Rohlík a hádanka s rozhýbáváním houpačky jsou odstraněné. Kliknutí na
+koš na zastávce jednou vydá nůžky s Rudovou hláškou; další kliknutí ani reload
+nepřidají druhý pár. Vedle odpadků v uličce sebereš také hrdzavý šrot, který Dežo na zastávce
+vymění za magnet. Láhev, svätenú vodu ani bramboru nebere. Prázdná láhev zůstává
+pro vodu, mléko a kávu. Dežo se bez ostychu živí
 kradením kovů a jejich odnášením Dingovi do zberne.
 
 Současná mapa má zachovaných **sedm polygonů**: Ferov dvor, Zastávka, Kostol,
@@ -891,15 +893,19 @@ bez zkratky M; během dialogu svět nereaguje. Ovládání myší, dotykem
 i klávesnicí zůstává zachované.
 
 Hádanky používají původní pravidla, inventář, kombinace, podmínky a efekty.
-Postup není nová minihra: hráč upravuje rekvizity, spouští je a vyzvedává výsledek.
+Hráč upravuje rekvizity, spouští je a vyzvedává výsledek; na hřišti vyhraje
+existující minihru Šuter k čiare. Po návratu klikne na Špľucha a jednou získá
+medaili **Brambora na špagátu**. Nůžky + medaile spotřebují medaili, přidají
+provázek a bramboru; nůžky zůstávají. Opakovaná výhra ani další rozhovor
+neobnoví již převzatou nebo rozstřiženou medaili.
 Původní pozadí, postavy, jejich transformace, animace a hlasová přiřazení zůstaly.
 Nové rekvizity vykresluje explicitní `hotspot.placeholder: true` jako popsaný
 obdélník. Po přiřazení obrázku obdélník automaticky zmizí; běžné neviditelné
 hotspoty žádné obrysy ani zástupnou grafiku nedostávají.
 
 Dialogy rozlišují získané informace od domněnek. Dežovo téma ceny magnetu se
-objeví až po odpovědi na otázku, čím zkouší železo. Niky se Rudo ptá na podložku
-až s podložkou v inventáři; Ľuba vyzve k sázce až s podvodným žetonem. Další
+objeví až po odpovědi na otázku, čím zkouší železo. Niky se Rudo ptá na využití brambory
+až s bramborou v inventáři; Ľuba vyzve k sázce až s podvodným žetonem. Další
 šetření začíná obecnými otázkami. Pohřebák s kabelem, podpis po pohřbu a půjčená
 baterie jsou stopy, nikoli předčasné potvrzení pachatele; živého Ľuba potvrdí
 teprve vstup do krypty. Deník zapisuje jen zjištěné dohody a pozorování.
@@ -920,12 +926,12 @@ předměty; francouzský klíč, pečiatka a magnetická udice zůstávají pou�
 
 | Hádanka              | Řešení a podmínka                                                                                                                                                                                                                                                                                                                                                                      |
 | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Přijetí případu      | Potvrď Ferovu repliku a přijmi případ. Na dvoře seber rožok z chlebníku a drevený kolíček. Přejdi do uličky, pod žebříkem seber izolačnú pásku, u odpadků hrdzavý šrot a vrať se na dvůr. Eržiku můžeš opakovaně provokovat, pro průchod to není nutné.                                                                                                                                |
-| Dežův magnet         | Zeptej se Deža, čím zkouší železo; ukáže magnet a zpřístupní otázku ceny. V uličce seber hrdzavý šrot a předej ho Dežovi: šrot spotřebuje, dostaneš magnet a odemkne se zberňa. Láhev ani svätenú vodu nebere; prázdnou fľašu ze zastávky použiješ na vodu a mléko. Dotaz na odbyt železa také odemkne zberňu; Etela prozradí kravín.                                                  |
+| Přijetí případu      | Potvrď Ferovu repliku a přijmi případ. Na dvoře seber dřevěný kolíček. Přejdi do uličky a seber izolační pásku a rezavý šrot. Rohlík už v obsahu není.                                                                                                                                                                                                                                 |
+| Dežův magnet         | Dežo mění magnet za rezavý šrot z uličky; výměna spotřebuje šrot a odemkne sběrnu. Láhev ze zastávky si nech na vodu a mléko. Klikni také na koš: jednou získáš nůžky. Etely se zeptej na další obecní záležitosti, čímž odemkne kravín.                                                                                                                                               |
 | Kraví bohoslužba     | Jolanda vysvětlí odměnu za krst a nutnost krávu uspat. U kostela seber prázdny úmrtný list a naplň láhev u pumpy. Svätenú vodu použij **na kravu**, ne na Jolandu: prázdná láhev se vrátí. Krávě přečti úmrtní list; úřední nuda ji uspí a papír zůstane. Pak seber zvonec z obojku a prázdnou lahví naber mléko z vedra. I zbytečný další křest vrátí láhev.                          |
 | Dingův vnitřní budík | Dingo nebo nápis na resuscitátoru vysvětlí náplň i pedál. Karol v krčmě dá mletou kávu. Mléko + káva vytvoří studené kravučíno. Nalij je do kávového klystíru v zberni; láhev se vrátí. **Klikni na jeho pedál.** Dingo ožije a ze samostatné truhlice můžeš vzít klíč a rukavice. Magnet lze získat i teprve nyní.                                                                    |
-| Zatuchlá herna       | Karol u schodů nebo v rozhovoru vysvětlí dohodu. Klíčem oprav pípu. Klikni na krígle a vypusť staré pivo. Tím se odemknou schody a v odkapávači se objeví zlatý obal; samostatně jej seber. V herně klíčem otevři servisný kryt. Deník dokládá Ľubovu reklamaci den po pohřbu a Bonifácovo tajné hraní.                                                                                |
-| Pro domácí tehlu     | Na hřišti klíčem povol zadretý čap houpačky. Rožok polož na sedadlo jako protiváhu. **Klikni na sedadlo**, aby se houpačka rozhýbala. Ze země zvlášť seber špagát i podložku; Nika pak vysvětlí padělání žetonu. Samotné přinesení rohlíku Špľuchovi nic nevymění.                                                                                                                     |
+| Zatuchlá herna       | Klíčem oprav pípu a kliknutím na pivní sklenice vypusť starou pěnu. Karol otevře hernu. Teprve uvnitř seber zlatý obal od čokolády ze země u automatu; v hospodě už neleží. Klíčem otevři servisní kryt a vyzvedni deník s reklamací po Ľubově pohřbu.                                                                                                                                 |
+| Brambora na špagátu  | Na hřišti promluv se Špľuchem o výhře a přes „Čiara v hline“ vyhraj Šuter k čiare. Po návratu klikni na Špľucha a převezmi medaili. Zkombinuj ji s nůžkami z koše: získáš provázek a plochou vysušenou bramboru. Medaile zmizí, nůžky zůstanou. Nika s bramborou v inventáři vysvětlí falešný žeton.                                                                                   |
 | Falešný jackpot      | Založ kravský zvonec do ručního automatu na odpustky vedle kostela. **Klikni na kliku**: mechanické cinkání odláká tajného gamblera Bonifáce a otevře bránu hřbitova. Žádný elektrický přístroj při tom neběží.                                                                                                                                                                        |
 | Vlastní pohřeb       | Milan nebo ceník rakve vysvětlí, proč do kaplnky smí jen klient po pohřbu. Servisní deník ukaž Etele a získanou pečiatku zkombinuj s úmrtním listem. Opečiatkovaný list připevni **na zkušební rakev** na hřbitově. Na rakev použij i kolíček, kterým si Rudo zaštipne nos. **Klikni na rakev**: Milan uzná pohřeb a otevře kaplnku. List a kolíček lze připevnit v libovolném pořadí. |
 | Klíč od krypty       | Magnet + špagát vytvoří magnet na špagáte. V kaplnce jím vylov klíč pod mříží. Klíčem odemkni kryptu a dokonči Ľubovu úvodní repliku.                                                                                                                                                                                                                                                  |
@@ -937,7 +943,7 @@ na což hra výslovně upozorní. Kábel + izolačka vytvoří opravený kabel.
 Vrať se k Ferovi a použij jej na rozvodnú skriňu. Rozsvítí se dvůr, objeví se
 turnajový transparent a proběhne epilog: živý Ľubo dostane účet za vlastní pohřeb.
 
-**Jackpot:** Podložku z hřiště obal zlatou fólií z výčepu. Podvodný žetón
+**Jackpot:** Bramboru odstřiženou z výherní medaile obal zlatou fólií z herny. Podvodný žetón
 použij v kryptě na automat, dokud je zapojená baterie a kabel jsi nevzal.
 Zkrat spálí automat i kabel, Ľubo uteče a vyvalí se bezcenné podložky.
 Osada zůstane potmě a následuje druhý epilog. Po pouhém odpojení baterie lze
@@ -948,27 +954,25 @@ z `endings[].text`; `title` slouží jako přístupný název dialogu.
 
 ### Chybějící grafika
 
-**8 scénických rekvizit a 1 inventární ikonka.** Všechny scénické zástupné
+**4 scénické rekvizity a 1 inventární ikonka.** Všechny scénické zástupné
 obdélníky už mají funkční pravidla, potřebnou viditelnost a správné cílení.
 Souřadnice níže jsou původní pixely lokace: `x, y · šířka×výška`, bez škálování
 na okno. V Dev Mode vyber uvedené ID a přiřaď mu lokální obrázek; ID, rám,
 pravidla a podmínky zachovej. Checkbox **Zástupná grafika** může zůstat zapnutý,
 protože obrázek má při vykreslení přednost. Pro výřezy použij transparentní PNG/WebP.
 
-| Lokace                    | Předmět / hotspot                           | Umístění                    | Účel                                                        | Doporučený vzhled                                                                                                       |
-| ------------------------- | ------------------------------------------- | --------------------------- | ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| Kravín (`scene10`)        | Vedro na posvätné mlieko (`milking-bucket`) | `1050, 660 · 180×120`       | Po uspání krávy dovolí nabrat mléko do láhve.               | Promáčklé plechové vědro pod vemenem, po dojení malé množství mléka; bez elektrického stroje.                           |
-| Kravín (`scene10`)        | Zvonec na obojku (`cow-bell-hook`)          | `1080, 350 · 120×95`        | Odpojení zvonce od spící krávy.                             | Velký odřený mosazný kravský zvonec na rozepínací kožené přezce.                                                        |
-| Zberňa (`scene9`)         | Kávový klystír na pedál (`resuscitator`)    | `880, 540 · 200×160`        | Lievik přijme kávu; klik na pedál probudí Dinga.            | Rezavá ruční nožní pumpa, trychtýř, gumová hadice za křeslo; směšná domácí resuscitace bez proudu.                      |
-| Zberňa (`scene9`)         | Dingova truhlica s náradím (`tool-chest`)   | `1110, 650 · 210×130`       | Po probuzení Dinga vydá klíč a rukavice.                    | Otevřená rezavá skříňka s francouzským klíčem a gumovými rukavicemi; druhá prázdná varianta volitelná.                  |
-| Detské ihrisko (`scene7`) | Zadretý čap hojdačky (`swing-axle`)         | `560, 350 · 130×85`         | Klíč povolí čep houpačky.                                   | Detail zrezivělého čepu s velkou maticí na kovové houpačce; zachovat původní konstrukci hřiště.                         |
-| Detské ihrisko (`scene7`) | Sedadlo pre domácu tehlu (`swing-seat`)     | `601.345, 520.672 · 185×85` | Rohlík vytvoří protiváhu; klik uvolní provázek a podložku.  | Nízké dřevěné sedadlo s tvrdým rohlíkem jako protiváhou a přivázaným provázkem/podložkou; žádné dítě v nebezpečné póze. |
-| Detské ihrisko (`scene7`) | Uvoľnený špagát (`loose-string`)            | `404.436, 739.381 · 125×65` | Samostatný pickup po rozhýbání houpačky; magnetická udice.  | Provázek stočený v prachu pod houpačkou.                                                                                |
-| Detské ihrisko (`scene7`) | Vypadnutá podložka (`loose-washer`)         | `1012.02, 657.605 · 125×65` | Samostatný pickup po rozhýbání houpačky; volitelný jackpot. | Velká rezavá ocelová podložka v prachu, rozměrem podobná žetonu.                                                        |
-| Inventář                  | Drevený kolíček (`clothespin`)              | —                           | Rozlišení nosního kolíčku v inventáři; zatím znak `II`.     | Jediný starý dřevěný kolíček, průhledné pozadí, stejná kresba jako scénická verze.                                      |
+| Lokace             | Předmět / hotspot                           | Umístění              | Účel                                                    | Doporučený vzhled                                                                                      |
+| ------------------ | ------------------------------------------- | --------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Kravín (`scene10`) | Vedro na posvätné mlieko (`milking-bucket`) | `1050, 660 · 180×120` | Po uspání krávy dovolí nabrat mléko do láhve.           | Promáčklé plechové vědro pod vemenem, po dojení malé množství mléka; bez elektrického stroje.          |
+| Kravín (`scene10`) | Zvonec na obojku (`cow-bell-hook`)          | `1080, 350 · 120×95`  | Odpojení zvonce od spící krávy.                         | Velký odřený mosazný kravský zvonec na rozepínací kožené přezce.                                       |
+| Zberňa (`scene9`)  | Kávový klystír na pedál (`resuscitator`)    | `880, 540 · 200×160`  | Lievik přijme kávu; klik na pedál probudí Dinga.        | Rezavá ruční nožní pumpa, trychtýř, gumová hadice za křeslo; směšná domácí resuscitace bez proudu.     |
+| Zberňa (`scene9`)  | Dingova truhlica s náradím (`tool-chest`)   | `1110, 650 · 210×130` | Po probuzení Dinga vydá klíč a rukavice.                | Otevřená rezavá skříňka s francouzským klíčem a gumovými rukavicemi; druhá prázdná varianta volitelná. |
+| Inventář           | Drevený kolíček (`clothespin`)              | —                     | Rozlišení nosního kolíčku v inventáři; zatím znak `II`. | Jediný starý dřevěný kolíček, průhledné pozadí, stejná kresba jako scénická verze.                     |
 
-Rožok, kolíček na dvoře, izolačka a šrot v uličce, zlatý obal, ruční automat
+Kolíček na dvoře, izolačka a šrot v uličce, zlatý obal v herně, ruční automat
 a zkušební rakev už v aktuálním návrhu používají vlastní obrázkové vrstvy.
+Nůžky, brambora na provázku, oddělená brambora a nový falešný žeton mají místní
+SVG ikony v `src/assets/story/`; hřiště zachovává původní pozadí a postavy.
 Jejich ID i umístění zůstávají podle návrhu v `project.json`; průchodové testy
 rekvizity dohledají podle herního efektu, takže jejich nahrazení grafikou
 nevyžaduje návrat ke starým testovacím názvům vrstev.
@@ -1218,7 +1222,13 @@ implementované v `MINIGAME_IDS` (`types.ts`) a kontroluje registrovaný přízn
 „Čiara v hline“ (`stone-line`) na vyrytém kruhu v Detskom ihrisku. Hráč a
 Špľuch hází po třech kamenech co nejblíž k čáře bez přehození; ovládání tahem
 dozadu jako prak (myš i dotyk), deterministická fyzika, partie asi 45 s.
-Výhra nastaví `stone-game-won`. Postavy nejsou kreslené, Nika a Béla jen
+Klávesnicí mění šipky nahoru/dolů úhel a vlevo/vpravo sílu; Shift zrychlí
+změnu, Enter nebo mezerník odhodí kámen. Opakovaný stisk držené klávesy
+neodhodí další kámen. Herní plocha dostane focus a Pixi kreslí stejné míření.
+Výhra nastaví `stone-game-won`; po návratu Špľuch při kliknutí jednou předá
+medaili „Brambora na špagátu“. Prohra ani opakování partie tuto odměnu
+nevydají znovu. Nůžkami z koše se medaile rozdělí na provázek a bramboru.
+Postavy nejsou kreslené, Nika a Béla jen
 komentují v reakčním lístku. Hostitelský element nese `data-phase`
 (`aim | busy | done`) pro testy. Pravidla a fyziku ověřuje
 `tests/minigame-rules.spec.ts`, celý průchod `tests/minigame.spec.ts`.
