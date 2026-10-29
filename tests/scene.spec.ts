@@ -572,10 +572,32 @@ storyTest(
       await button.press('Enter');
     }
     async function interact(id: string, item?: string) {
-      const hotspot = content.scenes
-        .find((s) => s.id === sceneId)!
-        .hotspots.find((h) => h.id === id)!;
-      expect(hotspot, id).toBeDefined();
+      const scene = content.scenes.find((s) => s.id === sceneId)!;
+      const propEffects: Record<string, { type: string; id: string }> = {
+        'bread-box': { type: 'addItem', id: 'bread' },
+        'peg-basket': { type: 'addItem', id: 'clothespin' },
+        'tape-roll': { type: 'addItem', id: 'tape' },
+        'scrap-metal': { type: 'addItem', id: 'scrap-metal' },
+        'foil-wrapper': { type: 'addItem', id: 'foil' },
+        'absolution-machine': { type: 'flag', id: 'bell-installed' },
+        coffin: { type: 'flag', id: 'coffin-certified' },
+      };
+      const wanted = propEffects[id];
+      const hotspot =
+        scene.hotspots.find((h) => h.id === id) ??
+        (wanted &&
+          scene.hotspots.find((h) =>
+            [h.onClick, ...Object.values(h.uses ?? {})]
+              .flat()
+              .some((rule) =>
+                rule.effects?.some(
+                  (effect) =>
+                    effect.type === wanted.type && effect.id === wanted.id,
+                ),
+              ),
+          ));
+      if (!hotspot)
+        throw new Error(`Missing authored hotspot ${sceneId}/${id}`);
       if (item) await inventory(item);
       await (await object(page, hotspot.label)).press('Enter');
     }
@@ -624,7 +646,15 @@ storyTest(
       page.evaluate(
         () => JSON.parse(localStorage.getItem('tukabel.save.v1')!).state,
       );
+    async function skipCutscene() {
+      if (!content.openingCutscene) return;
+      const intro = page.getByRole('dialog', { name: 'Úvod: výpadok prúdu' });
+      await expect(intro).toBeVisible();
+      await click(intro.getByRole('button', { name: 'Preskočiť ›' }));
+      await expect(intro).toHaveCount(0);
+    }
     await page.goto(workspace.url);
+    await skipCutscene();
     await ready(page);
     await expect(dialogue).toContainText('Fero');
     await finishSpeech();
@@ -642,6 +672,7 @@ storyTest(
     await finishSpeech();
     await menuAction(page, 'Uložiť hru');
     await page.reload();
+    await skipCutscene();
     await ready(page);
     await finishSpeech();
     await choose('fero-intro', 'accept');
@@ -660,6 +691,19 @@ storyTest(
     await travel('scene1');
     await interact('layer3');
     await topic('layer2', 'dezo-chat', 'scrapyard');
+    await interact('layer2');
+    const price = content.dialogues
+      .find((d) => d.id === 'dezo-chat')!
+      .nodes[0]!.choices.find((c) => c.id === 'deposit')!.text;
+    await expect(
+      dialogue.getByRole('button', { name: price, exact: true }),
+    ).toHaveCount(0);
+    await choose('dezo-chat', 'magnet');
+    await expect(dialogue.locator('#dialogue-text')).toContainText('magnet');
+    await finishLine(page, isMobile);
+    await choose('dezo-chat', 'deposit');
+    await finishLine(page, isMobile);
+    await choose('dezo-chat', 'leave');
     await use('layer2', 'empty-bottle');
     await expect(page.locator('[data-inventory-id="magnet"]')).toHaveCount(0);
     await use('layer2', 'scrap-metal');
@@ -668,6 +712,7 @@ storyTest(
     await interact('funeral-form');
     await use('holy-font', 'empty-bottle');
     await travel('scene10');
+    await topic('layer1', 'jolanda-chat', 'blessing');
     await use('cow', 'holy-water');
     await use('cow', 'funeral-form');
     await use('milking-bucket', 'empty-bottle');
@@ -676,32 +721,46 @@ storyTest(
     await topic('innkeeper', 'innkeeper-chat', 'grounds');
     await combine('milk', 'coffee-grounds');
     await travel('scene9');
+    await topic('layer1', 'dingo-chat', 'coffee');
     await use('resuscitator', 'cold-coffee');
     await interact('resuscitator');
     await finishSpeech();
     await interact('tool-chest');
     await travel('scene6');
+    await interact('gaming-door');
+    await expect(dialogue.locator('.dialogue-speaker')).toHaveText(
+      'Karol Odmerka',
+    );
+    await finishSpeech();
     await use('beer-tap', 'wrench');
     await interact('beer-mugs');
+    await expect(dialogue.locator('.dialogue-speaker')).toHaveText(
+      'Karol Odmerka',
+    );
+    await finishSpeech();
     await interact('foil-wrapper');
     await enter('gaming-door', 'scene8');
     await use('service-hatch', 'wrench');
     await travel('scene1');
     await use('layer1', 'machine-log');
     await travel('scene7');
+    await topic('swing-boy', 'boy-chat', 'trade');
     await use('swing-axle', 'wrench');
     await use('swing-seat', 'bread');
     await interact('swing-seat');
     await finishSpeech();
     await interact('loose-string');
     await interact('loose-washer');
+    await topic('sand-girl', 'girl-chat', 'token');
     await combine('magnet', 'string');
     await travel('scene3');
     await combine('funeral-form', 'rubber-stamp');
+    await topic('priest', 'priest-chat', 'cemetery');
     await use('absolution-machine', 'cow-bell');
     await interact('absolution-machine');
     await finishSpeech();
     await enter('cemetery-gate', 'scene5');
+    await topic('layer1', 'gravedigger-chat', 'chapel');
     await use('coffin', 'stamped-form');
     await use('coffin', 'clothespin');
     await interact('coffin');
@@ -746,6 +805,7 @@ storyTest(
     await click(menu.getByRole('button', { name: 'Uložiť hru', exact: true }));
     await click(menu.getByRole('button', { name: 'Späť na záver' }));
     await page.reload();
+    await skipCutscene();
     await ready(page);
     await finishSpeech();
     await choose('fero-intro', 'accept');

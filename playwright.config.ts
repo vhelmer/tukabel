@@ -6,6 +6,7 @@ export default defineConfig({
     'rules.spec.ts',
     'story-runtime-rules.spec.ts',
     'story-content-rules.spec.ts',
+    'story-continuity-rules.spec.ts',
     'world-map-rules.spec.ts',
     'animation-rules.spec.ts',
     'speech-rules.spec.ts',

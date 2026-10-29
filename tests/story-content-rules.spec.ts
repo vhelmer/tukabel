@@ -9,7 +9,13 @@ import {
   syncTasks,
 } from '../src/game/state';
 import { decodeSave } from '../src/game/storage';
-import type { GameAction, GameContent, GameState } from '../src/game/types';
+import type {
+  Effect,
+  GameAction,
+  GameContent,
+  GameState,
+  Hotspot,
+} from '../src/game/types';
 
 const read = async () =>
   JSON.parse(
@@ -23,6 +29,41 @@ const deserializeSave = (content: GameContent, raw: string) => {
   if (!result.ok) throw Error(result.message);
   return result.value;
 };
+// Visual layers are editable; follow the authored puzzle effect, not old sprite IDs.
+const propEffects: Record<string, Pick<Effect, 'type' | 'id'>> = {
+  'bread-box': { type: 'addItem', id: 'bread' },
+  'peg-basket': { type: 'addItem', id: 'clothespin' },
+  'tape-roll': { type: 'addItem', id: 'tape' },
+  'scrap-metal': { type: 'addItem', id: 'scrap-metal' },
+  'foil-wrapper': { type: 'addItem', id: 'foil' },
+  'absolution-machine': { type: 'flag', id: 'bell-installed' },
+  coffin: { type: 'flag', id: 'coffin-certified' },
+};
+function hasPropEffect(hotspot: Hotspot, alias: string) {
+  const wanted = propEffects[alias];
+  return (
+    wanted &&
+    [hotspot.onClick, ...Object.values(hotspot.uses ?? {})]
+      .flat()
+      .some((rule) =>
+        rule.effects?.some(
+          (effect) => effect.type === wanted.type && effect.id === wanted.id,
+        ),
+      )
+  );
+}
+function propId(content: GameContent, sceneId: string, alias: string) {
+  const scene = content.scenes.find((entry) => entry.id === sceneId)!;
+  if (scene.hotspots.some((entry) => entry.id === alias)) return alias;
+  const candidates = scene.hotspots.filter((entry) =>
+    hasPropEffect(entry, alias),
+  );
+  expect(
+    candidates.length,
+    `${sceneId}/${alias} effect must identify one prop`,
+  ).toBeLessThanOrEqual(1);
+  return candidates[0]?.id ?? alias;
+}
 function player(content: GameContent) {
   let state = initialState(content);
   return {
@@ -45,7 +86,7 @@ function player(content: GameContent) {
     use(hotspotId: string, itemId?: string) {
       state = reduceGame(content, state, {
         type: 'interact',
-        hotspotId,
+        hotspotId: propId(content, state.sceneId, hotspotId),
         itemId,
       });
     },
@@ -139,8 +180,11 @@ function solveToCrypt(content: GameContent, lateMagnet = false) {
   p.use('beer-tap', 'wrench');
   p.use('gaming-door');
   expect(p.state.sceneId).toBe('scene6');
+  p.close();
   expect(p.state.inventory).not.toContain('foil');
   p.use('beer-mugs');
+  expect(p.state.flags['beer-drained']).toBe(true);
+  p.close();
   p.use('foil-wrapper');
   p.use('gaming-door');
   expect(p.state.sceneId).toBe('scene8');
@@ -166,16 +210,19 @@ function solveToCrypt(content: GameContent, lateMagnet = false) {
   p.use('absolution-machine', 'cow-bell');
   p.use('cemetery-gate');
   expect(p.state.sceneId).toBe('scene3');
+  p.close();
   p.use('absolution-machine');
   p.close();
   p.use('cemetery-gate');
   expect(p.state.sceneId).toBe('scene5');
   p.use('coffin');
   expect(p.state.flags['chapel-open']).not.toBe(true);
+  p.close();
   expect(p.state.inventory).toContain('stamped-form');
   p.use('coffin', 'stamped-form');
   p.use('coffin');
   expect(p.state.flags['chapel-open']).not.toBe(true);
+  p.close();
   expect(p.state.inventory).toContain('clothespin');
   p.use('coffin', 'clothespin');
   p.use('coffin');
@@ -245,6 +292,7 @@ test('the cow keeps both the bottle cycle and funeral evidence through premature
     p = prepareFarm(content);
   p.use('cow', 'funeral-form');
   expect(p.state.flags['cow-asleep']).not.toBe(true);
+  p.close();
   expect(p.state.inventory).toContain('funeral-form');
   p.use('cow-bell-hook');
   expect(p.state.inventory).not.toContain('cow-bell');
@@ -340,13 +388,14 @@ test('the alley tape is a unique visible pickup that stays collected after save/
     p = player(content);
   const pickups = content.scenes.flatMap((scene) =>
     scene.hotspots
-      .filter((hotspot) => hotspot.id === 'tape-roll')
+      .filter((hotspot) => hasPropEffect(hotspot, 'tape-roll'))
       .map((hotspot) => ({ scene, hotspot })),
   );
   expect(pickups).toHaveLength(1);
   const { scene, hotspot } = pickups[0]!;
   expect(scene.id).toBe('scene11');
-  expect(hotspot.image).toBe('cursors/tape-icon.svg');
+  expect(hotspot.image).toBeTruthy();
+  expect(content.items.find((item) => item.id === 'tape')?.image).toBeTruthy();
   expect(hotspot.placeholder).not.toBe(true);
   expect(hotspot.hidden).not.toBe(true);
   expect(hotspot.bounds.x).toBeGreaterThanOrEqual(0);
@@ -381,7 +430,7 @@ test('the alley tape is a unique visible pickup that stays collected after save/
   p.use('tape-roll');
   expect(p.state.inventory.filter((id) => id === 'tape')).toHaveLength(1);
 });
-test('new puzzle props are visible placeholders contained in their authored locations', async () => {
+test('puzzle props retain visible artwork or authored targets in their locations', async () => {
   const content = await read();
   const props = {
     scene4: ['bread-box', 'peg-basket'],
@@ -395,9 +444,16 @@ test('new puzzle props are visible placeholders contained in their authored loca
   for (const [sceneId, ids] of Object.entries(props)) {
     const scene = content.scenes.find((entry) => entry.id === sceneId)!;
     for (const id of ids) {
-      const hotspot = scene.hotspots.find((entry) => entry.id === id)!;
+      const hotspot = scene.hotspots.find(
+        (entry) => entry.id === propId(content, sceneId, id),
+      )!;
       expect(hotspot, `${sceneId}/${id}`).toBeDefined();
-      expect(hotspot.placeholder, id).toBe(true);
+      expect(
+        Boolean(hotspot.image || hotspot.placeholder || hotspot.polygon),
+        id,
+      ).toBe(true);
+      expect(hotspot.decorative, id).not.toBe(true);
+      expect(hotspot.opacity ?? 1, id).toBeGreaterThan(0);
       expect(hotspot.hidden, id).not.toBe(true);
       expect(hotspot.bounds.x, id).toBeGreaterThanOrEqual(0);
       expect(hotspot.bounds.y, id).toBeGreaterThanOrEqual(0);
@@ -438,6 +494,19 @@ test('static actor voices stay fixed while rotating voices retain registration a
         .map(([id, voice]) => [id, voice.voiceId]),
     ),
   ).toEqual(expected);
+  expect(
+    Object.fromEntries(
+      voices
+        .filter(([, voice]) => voice.slot === 'rotating')
+        .map(([id, voice]) => [id, voice.voiceId]),
+    ),
+  ).toEqual({
+    'scene4/layer2': 'ub0M3tCem0pkpU4yJ48D',
+    'scene6/innkeeper': 'WeQhSWWkQZEA8DAKeg1r',
+    'scene7/swing-boy': 'iiDZOH9TArCghKD6MfNt',
+    'scene7/sand-girl': 'wk5NuWmufYkSfjl2kJr1',
+    'scene7/climbing-boy': 'GTTXoS7HeTELz6svNEnz',
+  });
   expect(voices).toHaveLength(13);
   expect(voices.filter(([, voice]) => voice.slot === 'static')).toHaveLength(8);
   expect(
@@ -475,7 +544,7 @@ test('starting a Dev Mode preview elsewhere can still accept Fero’s case', asy
   expect(canTravel(content, state, 'scene1')).toBe(true);
 });
 
-test('accepting the case opens one notebook task and later tasks follow their tools', async () => {
+test('accepting the case opens one notebook task and tools alone reveal no future errands', async () => {
   const content = await read();
   const state = reduceGame(content, initialState(content), {
     type: 'choose',
@@ -486,9 +555,13 @@ test('accepting the case opens one notebook task and later tasks follow their to
   const after = (flag: string) =>
     syncTasks(content, { ...state, flags: { ...state.flags, [flag]: true } })
       .tasks;
-  expect(after('tools-taken')['open-herna']).toBe('active');
-  expect(after('tap-fixed')['swing-contraption']).toBe('active');
-  expect(after('bell-taken').cemetery).toBe('active');
+  expect(after('tools-taken')['open-herna']).toBeUndefined();
+  expect(after('tap-fixed')['swing-contraption']).toBeUndefined();
+  expect(after('bell-taken').cemetery).toBeUndefined();
+  expect(after('pub-deal-known')['open-herna']).toBe('active');
+  expect(after('swing-plan-known')['swing-contraption']).toBe('active');
+  expect(after('axle-loose')['swing-contraption']).toBe('active');
+  expect(after('priest-distraction-known').cemetery).toBe('active');
 });
 
 test('Dežo barters one unique alley scrap pickup and refuses bottles, holy water and the jackpot washer', async () => {
@@ -496,16 +569,16 @@ test('Dežo barters one unique alley scrap pickup and refuses bottles, holy wate
     p = player(content);
   const pickups = content.scenes.flatMap((scene) =>
     scene.hotspots
-      .filter((hotspot) => hotspot.id === 'scrap-metal')
+      .filter((hotspot) => hasPropEffect(hotspot, 'scrap-metal'))
       .map((hotspot) => ({ scene, hotspot })),
   );
   expect(pickups).toHaveLength(1);
   const { scene, hotspot } = pickups[0]!;
   expect(scene.id).toBe('scene11');
-  expect(hotspot.image).toBe('story/scrap-metal.svg');
-  expect(content.items.find((item) => item.id === 'scrap-metal')?.image).toBe(
-    hotspot.image,
-  );
+  expect(hotspot.image).toBeTruthy();
+  expect(
+    content.items.find((item) => item.id === 'scrap-metal')?.image,
+  ).toBeTruthy();
   expect(hotspot.placeholder).not.toBe(true);
   // Placement is editable in Dev Mode; shared validation checks scene bounds.
   expect(
@@ -538,8 +611,13 @@ test('Dežo barters one unique alley scrap pickup and refuses bottles, holy wate
     p.use('layer2', itemId);
     expect(p.state.inventory, itemId).toEqual(before.inventory);
     expect(p.state.flags, itemId).toEqual(before.flags);
-    expect(p.state.dialogue, itemId).toBeNull();
-    expect(p.state.message, itemId).not.toBe('');
+    const reaction = getDialogueNode(content, p.state);
+    expect(reaction?.actor, itemId).toEqual({
+      sceneId: 'scene1',
+      hotspotId: 'layer2',
+    });
+    expect(reaction?.text, itemId).not.toBe('');
+    p.close();
     expect(p.state.inventory, itemId).not.toContain('magnet');
   }
   p.state = deserializeSave(content, serializeSave(content, base));
@@ -559,6 +637,7 @@ test('Dežo barters one unique alley scrap pickup and refuses bottles, holy wate
   p.use('layer2', 'scrap-metal');
   expect(p.state.inventory.filter((id) => id === 'magnet')).toHaveLength(1);
   expect(p.state.inventory).toContain('scrap-metal');
+  p.close();
   p.travel('scene4');
   p.use('alley-door');
   expect(matches(p.state, hotspot.visibleWhen)).toBe(false);

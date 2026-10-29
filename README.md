@@ -853,7 +853,7 @@ Stejné herní okno používá i **Otestovat odsud** v Dev Mode.
 Aktuální příběh (`tukabel-grotesque-2`) začíná automatickým rozhovorem
 s Ferem na **Ferovom dvore**. Rudo bere pátrání po ukradeném hlavním kabelu za
 štartovné zdarma na zrušeném mistrovství v automatech. Hra má 12 zachovaných
-lokací, 13 postav, 25 předmětů, devět úkolů v deníku a dva fyzicky odlišné konce.
+lokací, 13 postav, 25 předmětů, jedenáct úkolů v deníku a dva fyzicky odlišné konce.
 Nová hra nejdřív přehraje cutscénu **výpadku proudu v celé osadě**
 (`openingCutscene: "blackout"`, `src/ui/BlackoutCutscene.tsx`): osvětlené a tmavé
 noční pozadí z `src/assets/cutscenes/blackout/`, čtvrti postupně zhasínají podle
@@ -894,23 +894,39 @@ Nové rekvizity vykresluje explicitní `hotspot.placeholder: true` jako popsaný
 obdélník. Po přiřazení obrázku obdélník automaticky zmizí; běžné neviditelné
 hotspoty žádné obrysy ani zástupnou grafiku nedostávají.
 
+Dialogy rozlišují získané informace od domněnek. Dežovo téma ceny magnetu se
+objeví až po odpovědi na otázku, čím zkouší železo. Niky se Rudo ptá na podložku
+až s podložkou v inventáři; Ľuba vyzve k sázce až s podvodným žetonem. Další
+šetření začíná obecnými otázkami. Pohřebák s kabelem, podpis po pohřbu a půjčená
+baterie jsou stopy, nikoli předčasné potvrzení pachatele; živého Ľuba potvrdí
+teprve vstup do krypty. Deník zapisuje jen zjištěné dohody a pozorování.
+Znalostní příznaky se ukládají běžným save systémem. Intuitivní použití předmětu
+nevyžaduje předchozí vyslechnutí nápovědy, takže nové otázky nepřidávají záseky.
+
+Herní komentář obsahuje pouze Rudovy vlastní myšlenky a pozorování. Odmítnutí
+předmětů i připomínky u zamčených vstupů říkají NPC přes krátké `entry: "speech"`
+dialogy s přiřazeným `actor`; během titulku zůstává svět zablokovaný a potvrzení
+jej zase uvolní. Nové a přepracované repliky jsou **pouze s titulky**: staré
+vazby `speech` se od změněného textu odpojily, audio soubory i zvolené hlasy
+zůstaly zachované. Tato revize nevolá ElevenLabs ani jinou generaci dabingu.
+
 ### Kompletní průchod (spoilery)
 
 Větve lze řešit v jiném pořadí. Nesprávné kombinace neodebírají zásadní
 předměty; francouzský klíč, pečiatka a magnetická udice zůstávají použitelné.
 
-| Hádanka              | Řešení a podmínka                                                                                                                                                                                                                                                                                           |
-| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Přijetí případu      | Potvrď Ferovu repliku a přijmi případ. Na dvoře seber rožok z chlebníku a drevený kolíček. Přejdi do uličky, pod žebříkem seber izolačnú pásku, u odpadků hrdzavý šrot a vrať se na dvůr. Eržiku můžeš opakovaně provokovat, pro průchod to není nutné.                                                     |
-| Dežovo alibi         | V uličce seber hrdzavý šrot a předej ho Dežovi na zastávce: šrot spotřebuje, dostaneš magnet a odemkne se zberňa. Láhev ani svätenú vodu nebere; prázdnou fľašu ze zastávky použiješ na vodu a mléko. Dotaz na kradení kovů také odemkne zberňu; Etela prozradí kravín.                                     |
-| Kraví bohoslužba     | U kostela seber prázdny úmrtný list a naplň láhev u pumpy. Svätenú vodu použij **na kravu**, ne na Jolandu: prázdná láhev se vrátí. Krávě přečti úmrtní list; úřední nuda ji uspí a papír zůstane. Pak seber zvonec z obojku a prázdnou lahví naber mléko z vedra. I zbytečný další křest vrátí láhev.      |
-| Dingův vnitřní budík | Karol v krčmě dá mletou kávu. Mléko + káva vytvoří studené kravučíno. Nalij je do kávového klystíru v zberni; láhev se vrátí. **Klikni na jeho pedál.** Dingo ožije a ze samostatné truhlice můžeš vzít klíč a rukavice. Magnet lze získat i teprve nyní.                                                   |
-| Zatuchlá herna       | Klíčem oprav pípu. Klikni na krígle a vypusť staré pivo. Tím se odemknou schody a v odkapávači se objeví zlatý obal; samostatně jej seber. V herně klíčem otevři servisný kryt. Deník dokládá Ľubovu reklamaci den po pohřbu a Bonifácovo tajné hraní.                                                      |
-| Pro domácí tehlu     | Na hřišti klíčem povol zadretý čap houpačky. Rožok polož na sedadlo jako protiváhu. **Klikni na sedadlo**, aby se houpačka rozhýbala. Ze země zvlášť seber špagát i podložku. Samotné přinesení rohlíku Špľuchovi nic nevymění.                                                                             |
-| Falešný jackpot      | Založ kravský zvonec do ručního automatu na odpustky vedle kostela. **Klikni na kliku**: mechanické cinkání odláká tajného gamblera Bonifáce a otevře bránu hřbitova. Žádný elektrický přístroj při tom neběží.                                                                                             |
-| Vlastní pohřeb       | Servisní deník ukaž Etele a získanou pečiatku zkombinuj s úmrtním listem. Opečiatkovaný list připevni **na zkušební rakev** na hřbitově. Na rakev použij i kolíček, kterým si Rudo zaštipne nos. **Klikni na rakev**: Milan uzná pohřeb a otevře kaplnku. List a kolíček lze připevnit v libovolném pořadí. |
-| Klíč od krypty       | Magnet + špagát vytvoří magnet na špagáte. V kaplnce jím vylov klíč pod mříží. Klíčem odemkni kryptu a dokonči Ľubovu úvodní repliku.                                                                                                                                                                       |
-| Odhalení a volba     | Ľubo fingoval smrt kvůli dluhům a ukradl hlavní kabel pro soukromý automat na Dingově autobaterii. Před definitivní volbou ručně ulož hru, pokud chceš projít oba konce bez opakování pátrání.                                                                                                              |
+| Hádanka              | Řešení a podmínka                                                                                                                                                                                                                                                                                                                                                                      |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Přijetí případu      | Potvrď Ferovu repliku a přijmi případ. Na dvoře seber rožok z chlebníku a drevený kolíček. Přejdi do uličky, pod žebříkem seber izolačnú pásku, u odpadků hrdzavý šrot a vrať se na dvůr. Eržiku můžeš opakovaně provokovat, pro průchod to není nutné.                                                                                                                                |
+| Dežův magnet         | Zeptej se Deža, čím zkouší železo; ukáže magnet a zpřístupní otázku ceny. V uličce seber hrdzavý šrot a předej ho Dežovi: šrot spotřebuje, dostaneš magnet a odemkne se zberňa. Láhev ani svätenú vodu nebere; prázdnou fľašu ze zastávky použiješ na vodu a mléko. Dotaz na odbyt železa také odemkne zberňu; Etela prozradí kravín.                                                  |
+| Kraví bohoslužba     | Jolanda vysvětlí odměnu za krst a nutnost krávu uspat. U kostela seber prázdny úmrtný list a naplň láhev u pumpy. Svätenú vodu použij **na kravu**, ne na Jolandu: prázdná láhev se vrátí. Krávě přečti úmrtní list; úřední nuda ji uspí a papír zůstane. Pak seber zvonec z obojku a prázdnou lahví naber mléko z vedra. I zbytečný další křest vrátí láhev.                          |
+| Dingův vnitřní budík | Dingo nebo nápis na resuscitátoru vysvětlí náplň i pedál. Karol v krčmě dá mletou kávu. Mléko + káva vytvoří studené kravučíno. Nalij je do kávového klystíru v zberni; láhev se vrátí. **Klikni na jeho pedál.** Dingo ožije a ze samostatné truhlice můžeš vzít klíč a rukavice. Magnet lze získat i teprve nyní.                                                                    |
+| Zatuchlá herna       | Karol u schodů nebo v rozhovoru vysvětlí dohodu. Klíčem oprav pípu. Klikni na krígle a vypusť staré pivo. Tím se odemknou schody a v odkapávači se objeví zlatý obal; samostatně jej seber. V herně klíčem otevři servisný kryt. Deník dokládá Ľubovu reklamaci den po pohřbu a Bonifácovo tajné hraní.                                                                                |
+| Pro domácí tehlu     | Na hřišti klíčem povol zadretý čap houpačky. Rožok polož na sedadlo jako protiváhu. **Klikni na sedadlo**, aby se houpačka rozhýbala. Ze země zvlášť seber špagát i podložku; Nika pak vysvětlí padělání žetonu. Samotné přinesení rohlíku Špľuchovi nic nevymění.                                                                                                                     |
+| Falešný jackpot      | Založ kravský zvonec do ručního automatu na odpustky vedle kostela. **Klikni na kliku**: mechanické cinkání odláká tajného gamblera Bonifáce a otevře bránu hřbitova. Žádný elektrický přístroj při tom neběží.                                                                                                                                                                        |
+| Vlastní pohřeb       | Milan nebo ceník rakve vysvětlí, proč do kaplnky smí jen klient po pohřbu. Servisní deník ukaž Etele a získanou pečiatku zkombinuj s úmrtním listem. Opečiatkovaný list připevni **na zkušební rakev** na hřbitově. Na rakev použij i kolíček, kterým si Rudo zaštipne nos. **Klikni na rakev**: Milan uzná pohřeb a otevře kaplnku. List a kolíček lze připevnit v libovolném pořadí. |
+| Klíč od krypty       | Magnet + špagát vytvoří magnet na špagáte. V kaplnce jím vylov klíč pod mříží. Klíčem odemkni kryptu a dokonči Ľubovu úvodní repliku.                                                                                                                                                                                                                                                  |
+| Odhalení a volba     | Ľubo fingoval smrt kvůli dluhům a ukradl hlavní kabel pro soukromý automat na Dingově autobaterii. Před definitivní volbou ručně ulož hru, pokud chceš projít oba konce bez opakování pátrání.                                                                                                                                                                                         |
 
 **Obnovení proudu:** Klíčem odpoj autobatériu. Rukavicemi seber kabel; bez
 odpojení jej Rudo odmítne. Už sebrání kabelu znamená volbu návratu proudu,
@@ -929,35 +945,30 @@ z `endings[].text`; `title` slouží jako přístupný název dialogu.
 
 ### Chybějící grafika
 
-**13 scénických rekvizit a 1 inventární ikonka.** Všechny scénické zástupné
+**8 scénických rekvizit a 1 inventární ikonka.** Všechny scénické zástupné
 obdélníky už mají funkční pravidla, potřebnou viditelnost a správné cílení.
 Souřadnice níže jsou původní pixely lokace: `x, y · šířka×výška`, bez škálování
 na okno. V Dev Mode vyber uvedené ID a přiřaď mu lokální obrázek; ID, rám,
 pravidla a podmínky zachovej. Checkbox **Zástupná grafika** může zůstat zapnutý,
 protože obrázek má při vykreslení přednost. Pro výřezy použij transparentní PNG/WebP.
 
-| Lokace                    | Předmět / hotspot                                | Umístění              | Účel                                                        | Doporučený vzhled                                                                                                         |
-| ------------------------- | ------------------------------------------------ | --------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| Ferov dvor (`scene4`)     | Rožok zo včerajšieho storočia (`bread-box`)      | `80, 770 · 160×95`    | Závaží pro houpačku; samostatný pickup.                     | Otevřený plechový chlebník s jediným kamenně tvrdým rohlíkem; samostatný výřez.                                           |
-| Ferov dvor (`scene4`)     | Drevený kolíček (`peg-basket`)                   | `700, 220 · 135×95`   | Kolíček na Rudův nos při vlastním pohřbu.                   | Dřevěný kolíček zachycený na šňůře; samostatná inventární ikonka stejného kolíčku.                                        |
-| Kravín (`scene10`)        | Vedro na posvätné mlieko (`milking-bucket`)      | `1050, 660 · 180×120` | Po uspání krávy dovolí nabrat mléko do láhve.               | Promáčklé plechové vědro pod vemenem, po dojení malé množství mléka; bez elektrického stroje.                             |
-| Kravín (`scene10`)        | Zvonec na obojku (`cow-bell-hook`)               | `1080, 350 · 120×95`  | Odpojení zvonce od spící krávy.                             | Velký odřený mosazný kravský zvonec na rozepínací kožené přezce.                                                          |
-| Zberňa (`scene9`)         | Kávový klystír na pedál (`resuscitator`)         | `880, 540 · 200×160`  | Lievik přijme kávu; klik na pedál probudí Dinga.            | Rezavá ruční nožní pumpa, trychtýř, gumová hadice za křeslo; směšná domácí resuscitace bez proudu.                        |
-| Zberňa (`scene9`)         | Dingova truhlica s náradím (`tool-chest`)        | `1110, 650 · 210×130` | Po probuzení Dinga vydá klíč a rukavice.                    | Otevřená rezavá skříňka s francouzským klíčem a gumovými rukavicemi; druhá prázdná varianta volitelná.                    |
-| Krčma (`scene6`)          | Zlatý obal v odkvapkávači (`foil-wrapper`)       | `495, 485 · 145×85`   | Zlatý obal pro padělaný žeton; objeví se po vypuštění piva. | Zmačkaný zlatý alobal v mokrém odkapávači u výčepu.                                                                       |
-| Kostol (`scene3`)         | Ručný automat na odpustky (`absolution-machine`) | `235, 535 · 170×180`  | Zvoncem a ruční klikou simuluje jackpot, odláká Bonifáce.   | Dřevěná podomácku vyrobená bedna s klikou, třemi ručně malovanými sedmičkami a držákem zvonce; žádná svítící elektronika. |
-| Detské ihrisko (`scene7`) | Zadretý čap hojdačky (`swing-axle`)              | `560, 350 · 130×85`   | Klíč povolí čep houpačky.                                   | Detail zrezivělého čepu s velkou maticí na kovové houpačce; zachovat původní konstrukci hřiště.                           |
-| Detské ihrisko (`scene7`) | Sedadlo pre domácu tehlu (`swing-seat`)          | `545, 710 · 185×85`   | Rohlík vytvoří protiváhu; klik uvolní provázek a podložku.  | Nízké dřevěné sedadlo s tvrdým rohlíkem jako protiváhou a přivázaným provázkem/podložkou; žádné dítě v nebezpečné póze.   |
-| Detské ihrisko (`scene7`) | Uvoľnený špagát (`loose-string`)                 | `770, 775 · 125×65`   | Samostatný pickup po rozhýbání houpačky; magnetická udice.  | Provázek stočený v prachu pod houpačkou.                                                                                  |
-| Detské ihrisko (`scene7`) | Vypadnutá podložka (`loose-washer`)              | `930, 785 · 125×65`   | Samostatný pickup po rozhýbání houpačky; volitelný jackpot. | Velká rezavá ocelová podložka v prachu, rozměrem podobná žetonu.                                                          |
-| Cintorín (`scene5`)       | Skúšobná rakva (`coffin`)                        | `925, 430 · 255×165`  | Přijme úmrtní list a kolíček; klik absolvuje Rudův pohřeb.  | Otevřená prázdná dřevěná rakev na nízkých kozách u hrobníka; cedulka pro úmrtní list a dřevěný kolíček na okraji.         |
-| Inventář                  | Drevený kolíček (`clothespin`)                   | —                     | Rozlišení nosního kolíčku v inventáři; zatím znak `II`.     | Jediný starý dřevěný kolíček, průhledné pozadí, stejná kresba jako scénická verze.                                        |
+| Lokace                    | Předmět / hotspot                           | Umístění                    | Účel                                                        | Doporučený vzhled                                                                                                       |
+| ------------------------- | ------------------------------------------- | --------------------------- | ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Kravín (`scene10`)        | Vedro na posvätné mlieko (`milking-bucket`) | `1050, 660 · 180×120`       | Po uspání krávy dovolí nabrat mléko do láhve.               | Promáčklé plechové vědro pod vemenem, po dojení malé množství mléka; bez elektrického stroje.                           |
+| Kravín (`scene10`)        | Zvonec na obojku (`cow-bell-hook`)          | `1080, 350 · 120×95`        | Odpojení zvonce od spící krávy.                             | Velký odřený mosazný kravský zvonec na rozepínací kožené přezce.                                                        |
+| Zberňa (`scene9`)         | Kávový klystír na pedál (`resuscitator`)    | `880, 540 · 200×160`        | Lievik přijme kávu; klik na pedál probudí Dinga.            | Rezavá ruční nožní pumpa, trychtýř, gumová hadice za křeslo; směšná domácí resuscitace bez proudu.                      |
+| Zberňa (`scene9`)         | Dingova truhlica s náradím (`tool-chest`)   | `1110, 650 · 210×130`       | Po probuzení Dinga vydá klíč a rukavice.                    | Otevřená rezavá skříňka s francouzským klíčem a gumovými rukavicemi; druhá prázdná varianta volitelná.                  |
+| Detské ihrisko (`scene7`) | Zadretý čap hojdačky (`swing-axle`)         | `560, 350 · 130×85`         | Klíč povolí čep houpačky.                                   | Detail zrezivělého čepu s velkou maticí na kovové houpačce; zachovat původní konstrukci hřiště.                         |
+| Detské ihrisko (`scene7`) | Sedadlo pre domácu tehlu (`swing-seat`)     | `601.345, 520.672 · 185×85` | Rohlík vytvoří protiváhu; klik uvolní provázek a podložku.  | Nízké dřevěné sedadlo s tvrdým rohlíkem jako protiváhou a přivázaným provázkem/podložkou; žádné dítě v nebezpečné póze. |
+| Detské ihrisko (`scene7`) | Uvoľnený špagát (`loose-string`)            | `404.436, 739.381 · 125×65` | Samostatný pickup po rozhýbání houpačky; magnetická udice.  | Provázek stočený v prachu pod houpačkou.                                                                                |
+| Detské ihrisko (`scene7`) | Vypadnutá podložka (`loose-washer`)         | `1012.02, 657.605 · 125×65` | Samostatný pickup po rozhýbání houpačky; volitelný jackpot. | Velká rezavá ocelová podložka v prachu, rozměrem podobná žetonu.                                                        |
+| Inventář                  | Drevený kolíček (`clothespin`)              | —                           | Rozlišení nosního kolíčku v inventáři; zatím znak `II`.     | Jediný starý dřevěný kolíček, průhledné pozadí, stejná kresba jako scénická verze.                                      |
 
-Izolačka v uličce (`tape-roll`, `825, 651 · 90×72`) už má místní obrázek
-`cursors/tape-icon.svg`; do chybějící grafiky se nepočítá. Hrdzavý šrot
-(`scrap-metal`, `500, 655 · 120×80`) používá samostatný místní
-`story/scrap-metal.svg` ve scéně i inventáři a po sběru zmizí.
-Původní save s už získaným magnetem další šrot nenabízí; nové ID projektu není potřeba.
+Rožok, kolíček na dvoře, izolačka a šrot v uličce, zlatý obal, ruční automat
+a zkušební rakev už v aktuálním návrhu používají vlastní obrázkové vrstvy.
+Jejich ID i umístění zůstávají podle návrhu v `project.json`; průchodové testy
+rekvizity dohledají podle herního efektu, takže jejich nahrazení grafikou
+nevyžaduje návrat ke starým testovacím názvům vrstev.
 
 ### Dabing tohoto scénáře
 
