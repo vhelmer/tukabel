@@ -24,7 +24,7 @@
     "compare:matting": "node experiments/object-matting/compare.mjs",
     "setup:sam3": "node scripts/setup-sam3.mjs",
     "speech:regenerate": "node scripts/regenerate-speech.mjs",
-    "build:release": "npm run typecheck && node scripts/build-release.mjs"
+    "build:release": "npm run typecheck && node scripts/build-release.mjs --budget 5"
   },
   "dependencies": {
     "pixi.js": "^8.22.0",

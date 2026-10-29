@@ -104,8 +104,7 @@ function infoFrame(template, audio, frameCount, byteCount, padding) {
   return frame;
 }
 
-export function encodeMp3(wav, kbps) {
-  const { channels, sampleRate, samples, planes } = wav;
+function rawEncode({ channels, sampleRate, samples, planes }, kbps) {
   const encoder = new Mp3Encoder(channels, sampleRate, kbps);
   const chunks = [];
   for (let i = 0; i < samples; i += SAMPLES_PER_FRAME) {
@@ -117,10 +116,57 @@ export function encodeMp3(wav, kbps) {
     if (chunk.length) chunks.push(Buffer.from(chunk));
   }
   chunks.push(Buffer.from(encoder.flush()));
-  const audio = Buffer.concat(chunks);
+  return Buffer.concat(chunks);
+}
+
+function frameRate(mp3) {
+  const version = (mp3[1] >> 3) & 3; // 3 = MPEG1, 2 = MPEG2, 0 = MPEG2.5
+  return RATES[(mp3[2] >> 2) & 3] / (version === 3 ? 1 : version === 2 ? 2 : 4);
+}
+
+// Lanczos (a = 8) resampler. LAME silently resamples low bitrates; doing it
+// up front keeps input and output rates equal so delay/padding stay exact.
+function resample(wav, rate) {
+  const ratio = rate / wav.sampleRate;
+  const samples = Math.round(wav.samples * ratio);
+  const cutoff = Math.min(1, ratio);
+  const a = 8;
+  const radius = Math.ceil(a / cutoff);
+  const sinc = (x) => (x === 0 ? 1 : Math.sin(Math.PI * x) / (Math.PI * x));
+  const planes = wav.planes.map((input) => {
+    const output = new Int16Array(samples);
+    for (let i = 0; i < samples; i++) {
+      const center = i / ratio;
+      const first = Math.ceil(center - radius);
+      let sum = 0;
+      let weights = 0;
+      for (let j = first; j <= center + radius; j++) {
+        const t = (center - j) * cutoff;
+        if (Math.abs(t) >= a) continue;
+        const w = sinc(t) * sinc(t / a);
+        weights += w;
+        if (j >= 0 && j < input.length) sum += input[j] * w;
+      }
+      output[i] = Math.max(-32768, Math.min(32767, Math.round(sum / weights)));
+    }
+    return output;
+  });
+  return { ...wav, sampleRate: rate, samples, planes };
+}
+
+export function encodeMp3(source, kbps) {
+  const probe = rawEncode(
+    { ...source, samples: Math.min(source.samples, 4 * SAMPLES_PER_FRAME) },
+    kbps,
+  );
+  const rate = frameRate(probe);
+  const wav = rate === source.sampleRate ? source : resample(source, rate);
+  const audio = rawEncode(wav, kbps);
+  if (frameRate(audio) !== wav.sampleRate)
+    throw new Error('LAME changed the sample rate');
   const list = frames(audio);
   const perFrame = list[0].mpeg1 ? SAMPLES_PER_FRAME : SAMPLES_PER_FRAME / 2;
-  const padding = list.length * perFrame - ENCODER_DELAY - samples;
+  const padding = list.length * perFrame - ENCODER_DELAY - wav.samples;
   if (padding < 0 || padding > 4095)
     throw new Error(`Unexpected MP3 padding ${padding}`);
   const template =

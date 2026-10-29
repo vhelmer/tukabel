@@ -28,22 +28,31 @@ hostingu i v podadresáři. `file://` není podporované.
 ### Release build (`dist-release/`)
 
 Běžný `dist/` balí celé `src/assets` (všechny generace a archivy). `build:release`
-(`scripts/build-release.mjs` + `vite.release.config.ts`) vydá jen frontend hry:
+(`scripts/build-release.mjs` + `vite.release.config.ts`) vydá jen frontend hry
+a vybere nejkvalitnější preset, jehož zip se vejde do 5 MB (limit odevzdání).
+Jiný limit: `node scripts/build-release.mjs --budget 8`; konkrétní preset bez
+limitu: `--preset 0` (nejlepší) až `--preset 5` (nejmenší). Výpis ukazuje
+odhad velikosti zipu pro každý zkoušený preset.
 
 - Do buildu jdou jen soubory, na které odkazuje `project.json`, a statické importy
   kódu. Animace, na které nic neodkazuje, a portréty replik (hra je nezobrazuje)
   se z release kopie obsahu vynechají.
 - Obrázek se zmenší na největší velikost na obrazovce (rám hotspotu, lokace, mapa,
-  ikonka 128 jednotek, kurzor) × `--scale` (výchozí 1.5), nikdy nezvětší, a uloží
-  jako WebP (`--quality`, výchozí 82). Všechny snímky klipů jednoho `source` sdílí
-  stejné měřítko; `region` se přepočítá na nové pixely. SVG s vloženým rastrem se
-  rasterizuje, ostatní SVG zůstávají vektorová.
+  ikonka 128 jednotek, kurzor) × `scale` presetu, nikdy nezvětší, a uloží jako
+  AVIF. Všechny snímky klipů jednoho `source` sdílí stejné měřítko; `region` se
+  přepočítá na nové pixely. Snímky použité jen regionálními klipy (oči, ústa)
+  mají mimo region průhlednost, protože se jinde nekreslí ani netestují.
+  SVG s vloženým rastrem se rasterizuje, ostatní SVG zůstávají vektorová.
+  Staticky importované rastry (cutscéna, minihra) počítají v pixelech originálu,
+  proto se jen překódují ve stejném rozlišení.
 - WAV se převede na MP3 (`@breezystack/lamejs`, bez FFmpeg) s LAME Info tagem;
   prohlížeč podle něj ořízne encoder delay/padding, takže smyčky hudby zůstanou
-  bez mezery a lip-sync na `currentTime` sedí.
+  bez mezery a lip-sync na `currentTime` sedí. Když LAME pro nízký bitrate zvolí
+  nižší frekvenci, skript vstup převzorkuje předem, aby délka seděla na vzorek.
 - ID assetů v obsahu zůstávají původní; Vite plugin podstrčí vygenerovaný
   `.release/assetFiles.ts` a `.release/project.json`. Zdrojové soubory se nemění,
-  výstupy kódování se cachují v ignorované `.release/cache/`.
+  výstupy kódování se cachují v ignorované `.release/cache/` (první běh AVIF
+  trvá několik minut).
 
 ## Dev Mode: tvorba → test → Git
 
