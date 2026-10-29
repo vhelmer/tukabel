@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import path from 'node:path';
 import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
@@ -28,13 +29,15 @@ function releaseAssets(): Plugin {
       const file = resolved.id.split('?')[0]!;
       const swap = swaps[file];
       if (swap) return swap + resolved.id.slice(file.length);
-      // Statically imported WAV effects use their MP3 encodes.
-      if (file.startsWith(assets + path.sep) && file.endsWith('.wav'))
-        return (
-          path.join(release, 'assets', path.relative(assets, file)) +
-          '.mp3' +
-          resolved.id.slice(file.length)
-        );
+      // Statically imported assets use their release encodes.
+      if (file.startsWith(assets + path.sep))
+        for (const extension of ['.mp3', '.avif']) {
+          const encoded =
+            path.join(release, 'assets', path.relative(assets, file)) +
+            extension;
+          if (fs.existsSync(encoded))
+            return encoded + resolved.id.slice(file.length);
+        }
       return null;
     },
   };
