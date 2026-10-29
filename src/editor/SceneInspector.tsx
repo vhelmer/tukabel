@@ -175,6 +175,23 @@ export function SceneInspector({
               onHotspot({ ...hotspot, image: image || undefined })
             }
           />
+          <label className="checkbox-field">
+            <input
+              type="checkbox"
+              checked={hotspot.placeholder ?? false}
+              onChange={(event) =>
+                onHotspot({
+                  ...hotspot,
+                  placeholder: event.target.checked || undefined,
+                })
+              }
+            />
+            Zástupná grafika
+          </label>
+          <p className="muted">
+            Bez obrázku zobrazí obdélník s názvem objektu. Přiřazený obrázek jej
+            nahradí.
+          </p>
           <label>
             Klikatelná oblast
             <select

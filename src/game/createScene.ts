@@ -1,4 +1,4 @@
-import { Container, Graphics, Sprite } from 'pixi.js';
+import { Container, Graphics, Sprite, Text } from 'pixi.js';
 import type { Texture, FederatedPointerEvent } from 'pixi.js';
 import type {
   AnimationDefinition,
@@ -165,6 +165,41 @@ export function createScene(
           player: createAnimationPlayer(hotspot.animation, animations),
           hit,
         });
+    }
+    if (hotspot.placeholder === true && !hotspot.image) {
+      const art = new Container();
+      art.eventMode = 'none';
+      art.addChild(
+        new Graphics()
+          .rect(0, 0, width, height)
+          .fill(0x283b43)
+          .rect(1, 1, Math.max(0, width - 2), Math.max(0, height - 2))
+          .stroke({ width: 2, color: 0xdfb671 }),
+      );
+      const label = new Text({
+        text: hotspot.label,
+        style: {
+          fontFamily: 'Arial, sans-serif',
+          fontSize: 24,
+          fontWeight: 'bold',
+          fill: 0xf6edda,
+          align: 'center',
+          wordWrap: true,
+          wordWrapWidth: Math.max(1, width - 16),
+          breakWords: true,
+        },
+      });
+      label.anchor.set(0.5);
+      label.position.set(width / 2, height / 2);
+      label.scale.set(
+        Math.min(
+          1,
+          Math.max(1, width - 16) / label.width,
+          Math.max(1, height - 16) / label.height,
+        ),
+      );
+      art.addChild(label);
+      region.addChild(art);
     }
     if (hotspot.tintWhen) {
       const indicator = new Graphics()

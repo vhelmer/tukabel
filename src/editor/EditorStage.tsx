@@ -591,6 +591,43 @@ export function EditorStage({
                       fit={hotspot.imageFit}
                     />
                   )}
+                  {hotspot.placeholder === true && !hotspot.image && (
+                    <g pointerEvents="none">
+                      <rect {...b} fill="#283b43" />
+                      <rect
+                        x={b.x + 1}
+                        y={b.y + 1}
+                        width={Math.max(0, b.width - 2)}
+                        height={Math.max(0, b.height - 2)}
+                        fill="none"
+                        stroke="#dfb671"
+                        strokeWidth={2}
+                      />
+                      <text
+                        x={b.x + b.width / 2}
+                        y={b.y + b.height / 2}
+                        textAnchor="middle"
+                        dominantBaseline="central"
+                        style={{
+                          fontFamily: 'Arial, sans-serif',
+                          fontWeight: 'bold',
+                          fontSize: Math.max(
+                            1,
+                            Math.min(
+                              24,
+                              (b.width - 16) /
+                                Math.max(1, hotspot.label.length * 0.65),
+                              b.height - 16,
+                            ),
+                          ),
+                          fill: '#f6edda',
+                          stroke: 'none',
+                        }}
+                      >
+                        {hotspot.label}
+                      </text>
+                    </g>
+                  )}
                   {polygon ? (
                     <polygon
                       points={polygon.map((p) => `${p.x},${p.y}`).join(' ')}

@@ -524,6 +524,11 @@ storyTest(
       name: 'Rozhovor',
       exact: true,
     });
+    const providerRequests: string[] = [];
+    page.on('request', (request) => {
+      if (/api\.(elevenlabs\.io|openai\.com)/.test(request.url()))
+        providerRequests.push(request.url());
+    });
     const click = async (button: import('@playwright/test').Locator) => {
       await expect(button).toBeEnabled();
       if (isMobile) await button.tap();
@@ -539,8 +544,16 @@ storyTest(
         await expect(caption).toHaveCount(0);
       }
     };
-    const choose = async (text: string) =>
-      click(dialogue.getByRole('button', { name: new RegExp(text) }));
+    const choose = async (dialogueId: string, choiceId: string) => {
+      const choice = content.dialogues
+        .find((entry) => entry.id === dialogueId)!
+        .nodes.flatMap((node) => node.choices)
+        .find((entry) => entry.id === choiceId)!;
+      expect(choice, `${dialogueId}/${choiceId}`).toBeDefined();
+      await click(
+        dialogue.getByRole('button', { name: choice.text, exact: true }),
+      );
+    };
     async function inventory(id: string) {
       const button = page.locator(`[data-inventory-id="${id}"]`);
       const previousPage = page.locator('[data-hud-control="inventory-prev"]');
@@ -549,8 +562,7 @@ storyTest(
       for (let tries = 0; tries < 12 && !(await button.count()); tries++) {
         const next = page.locator('[data-hud-control="inventory-next"]');
         const prev = page.locator('[data-hud-control="inventory-prev"]');
-        const step = (await next.isEnabled()) ? next : prev;
-        await step.press('Enter');
+        await ((await next.isEnabled()) ? next : prev).press('Enter');
       }
       await expect(button).toHaveCount(1);
       await button.press('Enter');
@@ -567,7 +579,7 @@ storyTest(
       if (sceneId === 'scene12') await enter('chapel-return', 'scene2');
       if (sceneId === 'scene2') await enter('cemetery-return', 'scene5');
       if (sceneId === 'scene5') await enter('church-return', 'scene3');
-      if (sceneId === 'scene8') await enter('pub-return', 'scene6');
+      if (sceneId === 'scene8') await enter('object1', 'scene6');
       await interact('map-exit');
       const point = content.worldMap!.points.find((p) => p.sceneId === id)!;
       await page
@@ -589,84 +601,120 @@ storyTest(
       );
       await ready(page);
     }
-    async function topic(id: string, text: string) {
+    async function topic(id: string, dialogueId: string, choiceId: string) {
       await interact(id);
-      await choose(text);
-      await expect(dialogue).toHaveClass(/is-speaking/);
-      await finishSpeech();
-      await choose('Zatiaľ sa maj');
+      await choose(dialogueId, choiceId);
+      await finishLine(page, isMobile);
+      await choose(dialogueId, 'leave');
       await expect(dialogue).toHaveCount(0);
     }
     async function use(id: string, item: string) {
-      const hotspot = content.scenes
-        .find((s) => s.id === sceneId)!
-        .hotspots.find((h) => h.id === id)!;
-      const expectsSpeech = hotspot.uses?.[item]?.some((rule) =>
-        rule.effects?.some((effect) => effect.type === 'dialogue'),
-      );
       await interact(id, item);
-      if (expectsSpeech) await expect(dialogue).toHaveClass(/is-speaking/);
       await finishSpeech();
     }
     async function combine(a: string, b: string) {
       await inventory(a);
       await inventory(b);
     }
+    const readSaved = () =>
+      page.evaluate(
+        () => JSON.parse(localStorage.getItem('tukabel.save.v1')!).state,
+      );
     await page.goto(workspace.url);
     await ready(page);
     await expect(dialogue).toContainText('Fero');
     await finishSpeech();
-    await choose('Beriem');
+    await choose('fero-intro', 'accept');
     await expect(dialogue).toHaveCount(0);
-    await topic('layer2', 'Nemáte niečo na cestu');
+    await interact('layer2');
+    await expect(dialogue).toHaveClass(/is-speaking/);
+    const firstBark = await dialogue.locator('#dialogue-text').textContent();
+    await finishSpeech();
+    await expect(dialogue).toHaveCount(0);
+    await interact('layer2');
+    await expect(dialogue).toHaveClass(/is-speaking/);
+    const secondBark = await dialogue.locator('#dialogue-text').textContent();
+    expect(secondBark).not.toBe(firstBark);
+    await finishSpeech();
+    await menuAction(page, 'Uložiť hru');
+    await page.reload();
+    await ready(page);
+    await finishSpeech();
+    await choose('fero-intro', 'accept');
+    await menuAction(page, 'Načítať hru');
+    await interact('layer2');
+    await expect(dialogue).toHaveClass(/is-speaking/);
+    const thirdBark = await dialogue.locator('#dialogue-text').textContent();
+    expect(thirdBark).not.toBe(firstBark);
+    expect(thirdBark).not.toBe(secondBark);
+    await finishSpeech();
+    for (const id of ['bread-box', 'tape-roll', 'peg-basket'])
+      await interact(id);
     await travel('scene1');
     await interact('layer3');
-    await topic('layer2', 'Nevieš, kam zmizol kábel');
+    await topic('layer2', 'dezo-chat', 'scrapyard');
     await use('layer2', 'empty-bottle');
-    await topic('layer1', 'Kam by tu človek išiel po mlieko');
+    await topic('layer1', 'granny-chat', 'farm');
     await travel('scene3');
+    await interact('funeral-form');
     await use('holy-font', 'empty-bottle');
     await travel('scene10');
-    await use('layer1', 'holy-water');
+    await use('cow', 'holy-water');
+    await use('cow', 'funeral-form');
+    await use('milking-bucket', 'empty-bottle');
+    await interact('cow-bell-hook');
     await travel('scene6');
-    await topic('innkeeper', 'Nemáte kávu');
+    await topic('innkeeper', 'innkeeper-chat', 'grounds');
     await combine('milk', 'coffee-grounds');
     await travel('scene9');
-    await use('layer1', 'cold-coffee');
+    await use('resuscitator', 'cold-coffee');
+    await interact('resuscitator');
+    await finishSpeech();
+    await interact('tool-chest');
     await travel('scene6');
     await use('beer-tap', 'wrench');
+    await interact('beer-mugs');
+    await interact('foil-wrapper');
     await enter('gaming-door', 'scene8');
     await use('service-hatch', 'wrench');
     await travel('scene1');
     await use('layer1', 'machine-log');
     await travel('scene7');
-    await use('swing-boy', 'bread');
+    await use('swing-axle', 'wrench');
+    await use('swing-seat', 'bread');
+    await interact('swing-seat');
+    await finishSpeech();
+    await interact('loose-string');
+    await interact('loose-washer');
     await combine('magnet', 'string');
     await travel('scene3');
-    await interact('funeral-form');
     await combine('funeral-form', 'rubber-stamp');
-    await use('priest', 'cow-bell');
+    await use('absolution-machine', 'cow-bell');
+    await interact('absolution-machine');
+    await finishSpeech();
     await enter('cemetery-gate', 'scene5');
-    await use('layer1', 'stamped-form');
+    await use('coffin', 'stamped-form');
+    await use('coffin', 'clothespin');
+    await interact('coffin');
+    await finishSpeech();
     await enter('chapel-door', 'scene2');
     await use('key-grate', 'magnet-line');
     await enter('crypt-door', 'scene12', 'crypt-key');
     await finishSpeech();
-    await choose('Takže mŕtvy účtovník');
+    await choose('crypt-intro', 'investigate');
     await menuAction(page, 'Uložiť hru');
-    const before = await page.evaluate(
-      () => JSON.parse(localStorage.getItem('tukabel.save.v1')!).state,
-    );
-    expect(before.flags['crypt-open']).toBe(true);
+    expect((await readSaved()).flags['crypt-open']).toBe(true);
     await use('main-cable', 'rubber-gloves');
-    await expect(reaction(page)).toContainText('Najprv povoľ');
+    await use('battery', 'wrench');
+    await interact('battery-reconnect');
     await use('battery', 'wrench');
     await use('main-cable', 'rubber-gloves');
     await combine('stolen-cable', 'tape');
     await travel('scene4');
     await use('junction-box', 'fixed-cable');
     const community = page.getByRole('dialog', {
-      name: 'Koniec: Turnaj živých dlhov',
+      name: content.endings!.find((ending) => ending.id === 'community')!.title,
+      exact: true,
     });
     await expect(community).toBeVisible();
     await page.screenshot({ path: info.outputPath('community-ending.png') });
@@ -679,7 +727,10 @@ storyTest(
     await expect(community).toHaveCount(0);
     await combine('washer', 'foil');
     await use('crypt-machine', 'fake-token');
-    const jackpot = page.getByRole('dialog', { name: 'Koniec: Večný jackpot' });
+    const jackpot = page.getByRole('dialog', {
+      name: content.endings!.find((ending) => ending.id === 'jackpot')!.title,
+      exact: true,
+    });
     await expect(jackpot).toBeVisible();
     await page.screenshot({ path: info.outputPath('jackpot-ending.png') });
     await click(jackpot.getByRole('button', { name: 'Menu a uložené hry' }));
@@ -687,15 +738,16 @@ storyTest(
     await click(menu.getByRole('button', { name: 'Späť na záver' }));
     await page.reload();
     await ready(page);
+    await finishSpeech();
+    await choose('fero-intro', 'accept');
     await page.locator('[data-hud-control="menu"]').press('Enter');
     await click(menu.getByRole('button', { name: 'Načítať hru', exact: true }));
     await expect(jackpot).toBeVisible();
-    const saved = await page.evaluate(
-      () => JSON.parse(localStorage.getItem('tukabel.save.v1')!).state,
-    );
+    const saved = await readSaved();
     expect(saved.flags['ending-jackpot']).toBe(true);
     expect(saved.flags['machine-burnt']).toBe(true);
     expect(saved.flags['power-restored']).not.toBe(true);
+    expect(providerRequests).toEqual([]);
     await expect(page.locator('.canvas-host canvas')).toHaveCount(1);
   },
 );

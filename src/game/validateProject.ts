@@ -277,6 +277,7 @@ export function validateProject(
           'cursorOffset',
           'uses',
           'image',
+          'placeholder',
           'rotation',
           'imageFit',
           'hitTest',
@@ -288,7 +289,13 @@ export function validateProject(
         return;
       string(hotspot.id, `${key}.id`);
       string(hotspot.label, `${key}.label`);
-      for (const field of ['decorative', 'hidden', 'locked', 'openMap'])
+      for (const field of [
+        'decorative',
+        'hidden',
+        'locked',
+        'openMap',
+        'placeholder',
+      ])
         if (hotspot[field] !== undefined && typeof hotspot[field] !== 'boolean')
           errors.push(`${key}.${field}: expected boolean`);
       if (hotspot.opacity !== undefined) {

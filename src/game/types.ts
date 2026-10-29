@@ -186,6 +186,8 @@ export interface Hotspot {
   readonly cursorSize?: number;
   readonly cursorOffset?: readonly [number, number];
   readonly uses?: Readonly<Record<string, readonly Rule[]>>;
+  // Draw a labeled stand-in until a local image is assigned.
+  readonly placeholder?: boolean;
   // Optional local sprite, hidden together with the hotspot (e.g. a pickup).
   readonly image?: string;
   // Degrees clockwise about the centre of bounds, including the clickable area.

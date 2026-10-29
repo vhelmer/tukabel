@@ -23,9 +23,10 @@ test('production serves a static game without editor code or write endpoints', a
       'aria-label',
       /^Lokácia: .+/,
     );
-    // Exercise bundled audio through a voiced branch in the current story.
+    // Prefer current audio; edited scripts deliberately keep stale recordings
+    // archived while the game presents their new text without playing them.
     const project = JSON.parse(source) as GameContent;
-    const spoken = project.dialogues.flatMap((dialogue) => {
+    const branches = project.dialogues.flatMap((dialogue) => {
       const start = dialogue.nodes.find((node) => node.id === dialogue.start)!;
       return start.choices.flatMap((choice) => {
         const node = dialogue.nodes.find((node) => node.id === choice.next);
@@ -45,9 +46,13 @@ test('production serves a static game without editor code or write endpoints', a
           )
         )
           return [];
-        return [{ choice, scene, actor, dialogue }];
+        return [{ choice, scene, actor, dialogue, node }];
       });
-    })[0];
+    });
+    const spoken =
+      branches.find(
+        (branch) => branch.node.speech?.text === branch.node.text,
+      ) ?? branches[0];
     expect(spoken).toBeDefined();
     // Accept the authored opening: clearing dialogue alone leaves the case
     // unopened, so talking to Fero correctly repeats his initial briefing.
@@ -76,16 +81,43 @@ test('production serves a static game without editor code or write endpoints', a
       .getByRole('button', { name: spoken!.choice.text, exact: true })
       .click();
     const audio = page.locator('.dialogue-panel audio');
-    await expect(audio).toHaveCount(1);
-    await audio.evaluate(async (el) => {
-      await (el as HTMLAudioElement).play();
-    });
-    await expect
-      .poll(() => audio.evaluate((el) => (el as HTMLAudioElement).currentTime))
-      .toBeGreaterThan(0);
-    const responseAudio = await page.request.get(
-      new URL((await audio.getAttribute('src')) ?? '', url).href,
-    );
+    let audioUrl: string;
+    if (spoken!.node.speech!.text === spoken!.node.text) {
+      await expect(audio).toHaveCount(1);
+      await audio.evaluate(async (el) => {
+        await (el as HTMLAudioElement).play();
+      });
+      await expect
+        .poll(() =>
+          audio.evaluate((el) => (el as HTMLAudioElement).currentTime),
+        )
+        .toBeGreaterThan(0);
+      audioUrl = new URL((await audio.getAttribute('src')) ?? '', url).href;
+    } else {
+      await expect(audio).toHaveCount(0);
+      await expect(
+        page.getByRole('dialog', { name: 'Rozhovor' }),
+      ).toContainText(spoken!.node.subtitle ?? spoken!.node.text);
+      const reference = await readFile(
+        path.join('src/assets', spoken!.node.speech!.audio),
+      );
+      let archived: string | undefined;
+      for (const name of await readdir('dist/assets')) {
+        if (
+          name.endsWith('.wav') &&
+          (await readFile(path.join('dist/assets', name))).equals(reference)
+        ) {
+          archived = name;
+          break;
+        }
+      }
+      expect(
+        archived,
+        'The prior recording is still bundled locally',
+      ).toBeDefined();
+      audioUrl = new URL(`assets/${archived}`, url).href;
+    }
+    const responseAudio = await page.request.get(audioUrl);
     expect(responseAudio.ok()).toBe(true);
     expect((await responseAudio.body()).subarray(0, 4).toString()).toBe('RIFF');
     const endpoint = new URL('__tukabel/editor/project', url).href;

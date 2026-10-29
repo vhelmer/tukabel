@@ -1,7 +1,7 @@
 {
-  "id": "tukabel-complete-1",
+  "id": "tukabel-grotesque-2",
   "startScene": "scene4",
-  "initialMessage": "Osada je bez prúdu. Ty si Rudo. Zatiaľ si neprerobil iba preto, že automaty nejdú.",
+  "initialMessage": "Rudo: Kábel sa nestratil sám. Keby mal nohy, odišiel by odtiaľto už dávno.",
   "worldMap": {
     "image": "imported/O-arpan--osada-s-kostolom-a-vrakoviskom-41826d11.png",
     "width": 1448,
@@ -101,48 +101,47 @@
         "unlockWhen": { "flag": "scrapyard-known" }
       },
       {
-        "id": "pub",
-        "sceneId": "scene6",
-        "label": "Krčma",
-        "x": 905,
-        "y": 590,
-        "polygon": [
-          { "x": 790, "y": 500 },
-          { "x": 1020, "y": 500 },
-          { "x": 1020, "y": 680 },
-          { "x": 790, "y": 680 }
-        ],
-        "fastTravel": true,
-        "unlockWhen": { "flag": "case-open" }
-      },
-      {
-        "id": "barn",
-        "sceneId": "scene10",
+        "id": "place6",
         "label": "Kravín",
-        "x": 750,
-        "y": 150,
+        "sceneId": "scene10",
         "polygon": [
-          { "x": 645, "y": 60 },
-          { "x": 855, "y": 60 },
-          { "x": 855, "y": 240 },
-          { "x": 645, "y": 240 }
+          { "x": 537.69, "y": 133.712 },
+          { "x": 644.813, "y": 195.792 },
+          { "x": 932.796, "y": 244.924 },
+          { "x": 1091.185, "y": 155.179 },
+          { "x": 1090.332, "y": 87.88 },
+          { "x": 1007.54, "y": 82.016 },
+          { "x": 967.066, "y": 49.139 },
+          { "x": 763.587, "y": 13.759 },
+          { "x": 555.692, "y": 81.974 }
         ],
-        "fastTravel": true,
+        "x": 814.4375,
+        "y": 129.3415,
         "unlockWhen": { "flag": "farm-known" }
       },
       {
-        "id": "alley",
-        "sceneId": "scene11",
-        "label": "Ulička",
-        "x": 755,
-        "y": 790,
+        "id": "place7",
+        "label": "Krčma",
+        "sceneId": "scene6",
         "polygon": [
-          { "x": 665, "y": 720 },
-          { "x": 845, "y": 720 },
-          { "x": 845, "y": 860 },
-          { "x": 665, "y": 860 }
+          { "x": 716.756, "y": 548.843 },
+          { "x": 629.5, "y": 410.127 },
+          { "x": 646.525, "y": 386.448 },
+          { "x": 671.111, "y": 380.612 },
+          { "x": 706.504, "y": 392.901 },
+          { "x": 739.395, "y": 374.768 },
+          { "x": 809.953, "y": 333.629 },
+          { "x": 1010.334, "y": 294.222 },
+          { "x": 1074.556, "y": 364.135 },
+          { "x": 1059.57, "y": 381.617 },
+          { "x": 1062.183, "y": 411.409 },
+          { "x": 1275.29, "y": 519.1 },
+          { "x": 1024.142, "y": 596.693 },
+          { "x": 874.3, "y": 502.859 },
+          { "x": 829.812, "y": 488.018 }
         ],
-        "fastTravel": true,
+        "x": 952.395,
+        "y": 445.4575,
         "unlockWhen": { "flag": "case-open" }
       }
     ]
@@ -172,50 +171,87 @@
     "scrapyard-known",
     "stamp-given",
     "tap-fixed",
-    "wife-helped"
+    "wife-helped",
+    "tools-taken",
+    "cow-milked",
+    "bell-taken",
+    "string-taken",
+    "washer-taken",
+    "erzika-bark4",
+    "erzika-bark1",
+    "erzika-bark2",
+    "erzika-bark3",
+    "bread-taken",
+    "tape-taken",
+    "peg-taken",
+    "bell-installed",
+    "coffin-certified",
+    "coffin-clipped",
+    "beer-drained",
+    "foil-taken",
+    "axle-loose",
+    "bread-loaded",
+    "resuscitator-filled",
+    "cow-asleep"
   ],
   "tasks": [
     {
       "id": "find-cable",
-      "text": "Nájdi ukradnutý hlavný kábel. Odmena: štartovné zadarmo.",
+      "text": "Nájdi kábel a zachráň turnaj. Štartovné zadarmo je stále lepšie než výplata.",
       "startWhen": { "flag": "case-open" },
       "completeWhen": { "flag": "cable-recovered" }
     },
     {
       "id": "wake-dingo",
-      "text": "Zisti, čo vie Dingo. Karol má kávu, Jolanda mlieko.",
+      "text": "Zostroj Dingovi vnútorný budík: mlieko + káva do resuscitátora, potom pedál a truhlica.",
       "startWhen": { "flag": "scrapyard-known" },
-      "completeWhen": { "flag": "dingo-awake" }
+      "completeWhen": { "flag": "tools-taken" }
     },
     {
       "id": "open-herna",
-      "text": "Oprav Karolovu pípu a prezri servisný kryt v herni.",
+      "text": "Oprav pípu, vypusť staré pivo do krígľov a prezri kryt automatu v herni.",
       "startWhen": { "flag": "case-open" },
       "completeWhen": { "flag": "log-found" }
     },
     {
       "id": "cemetery",
-      "text": "Bonifác potrebuje zvonec bez elektriny. Skús kravín.",
+      "text": "Bonifác počuje jackpot aj v kravskom zvonci. Jeho automat má ručnú kľuku.",
       "startWhen": { "flag": "case-open" },
       "completeWhen": { "flag": "cemetery-open" }
     },
     {
       "id": "fake-death",
-      "text": "Dones Etele servisný denník a vybav vlastný úmrtný list.",
+      "text": "Ukáž Etele dôkaz Ľubovej reklamácie. Vybav vlastný list a absolvuj pohreb v skúšobnej rakve.",
       "startWhen": { "flag": "log-found" },
       "completeWhen": { "flag": "chapel-open" }
     },
     {
       "id": "crypt",
-      "text": "Získaj kľúč pod mrežou v kaplnke. Pomôže magnet na špagáte.",
+      "text": "Magnet na špagáte vyloví kľúč pod mrežou kaplnky. Mŕtvy Ľubo má stále čo vysvetľovať.",
       "startWhen": { "flag": "chapel-open" },
       "completeWhen": { "flag": "crypt-open" }
     },
     {
       "id": "restore-power",
-      "text": "Oprav koniec získaného kábla páskou a vráť ho do Ferovej skrine.",
+      "text": "Kábel je tvoj. Oblep ho izolačkou a vráť do Ferovej rozvodnej skrine.",
       "startWhen": { "flag": "cable-recovered" },
       "completeWhen": { "flag": "ending-community" }
+    },
+    {
+      "id": "cow-ritual",
+      "text": "Pokrsti kravu, uspi ju úradným čítaním a využi vedro aj zvonec.",
+      "startWhen": { "flag": "farm-known" },
+      "completeWhen": {
+        "all": [{ "flag": "cow-milked" }, { "flag": "bell-taken" }]
+      }
+    },
+    {
+      "id": "swing-contraption",
+      "text": "Povoľ čap, zaťaž sedadlo kamenným rožkom a rozhýb hojdačku. Špagát a podložku potom seber.",
+      "startWhen": { "flag": "case-open" },
+      "completeWhen": {
+        "all": [{ "flag": "string-taken" }, { "flag": "washer-taken" }]
+      }
     }
   ],
   "scenes": [
@@ -244,7 +280,7 @@
           ],
           "onClick": [
             {
-              "message": "Lavička má viac odslúžených rokov než starosta. A stále unesie zodpovednosť."
+              "message": "Na lavičke je vyryté TU SOM ČAKAL. Pod tým dátum úmrtia. Rudo: Konečne presný cestovný poriadok."
             }
           ]
         },
@@ -292,7 +328,7 @@
           ],
           "onClick": [
             {
-              "message": "V koši je zrušený plán obnovy. Zmestil sa na obrúsok."
+              "message": "V koši je leták POHREB NA SPLÁTKY. Posledná splátka sa platí osobne. To je tá pasca."
             }
           ]
         },
@@ -320,9 +356,7 @@
             { "x": 40, "y": 424 }
           ],
           "onClick": [
-            {
-              "message": "Pes sleduje prázdnu cestu. Aj on vie, že detektívka potrebuje svedka."
-            }
+            { "message": "Pes vrčí iba na ľudí s prácou. Na Ruda si ľahol." }
           ],
           "uses": {
             "bread": [
@@ -348,7 +382,11 @@
             { "x": 1133, "y": 416 },
             { "x": 1124, "y": 413 }
           ],
-          "onClick": [{ "message": "Sliepka má náhradné napájanie: dážďovku." }]
+          "onClick": [
+            {
+              "message": "Sliepka zniesla vajce bez elektriny. Fero to považuje za nelegálnu konkurenciu."
+            }
+          ]
         },
         {
           "id": "codex-711ffec6-5006-486e-9e8a-1fc7a69310f0-idle",
@@ -571,7 +609,11 @@
           },
           "imageFit": "stretch",
           "image": "scene-art/72587f27-97ba-4639-9a5b-b39f67efda03/image.png",
-          "onClick": [{ "message": "Toto aspoň vzniklo bez dotácie." }],
+          "onClick": [
+            {
+              "message": "Rudo: Psia nadielka. Konečne niečo, čo nemusím nosiť Etele na pečiatku."
+            }
+          ],
           "decorative": false
         },
         {
@@ -600,12 +642,48 @@
       "hotspots": [
         {
           "id": "layer2",
-          "label": "Margita",
+          "label": "Eržika",
           "bounds": { "x": 111, "y": 229, "width": 133, "height": 201 },
           "imageFit": "contain",
           "image": "scene-art/baa7c0dd-9cba-4436-a27c-71697c3c5619/image.png",
           "onClick": [
-            { "effects": [{ "type": "dialogue", "id": "wife-chat" }] }
+            {
+              "when": { "flag": "erzika-bark4" },
+              "effects": [
+                { "type": "flag", "id": "erzika-bark1", "value": false },
+                { "type": "flag", "id": "erzika-bark2", "value": false },
+                { "type": "flag", "id": "erzika-bark3", "value": false },
+                { "type": "flag", "id": "erzika-bark4", "value": false },
+                { "type": "dialogue", "id": "erzika-bark-5" }
+              ]
+            },
+            {
+              "when": { "flag": "erzika-bark3" },
+              "effects": [
+                { "type": "flag", "id": "erzika-bark4", "value": true },
+                { "type": "dialogue", "id": "erzika-bark-4" }
+              ]
+            },
+            {
+              "when": { "flag": "erzika-bark2" },
+              "effects": [
+                { "type": "flag", "id": "erzika-bark3", "value": true },
+                { "type": "dialogue", "id": "erzika-bark-3" }
+              ]
+            },
+            {
+              "when": { "flag": "erzika-bark1" },
+              "effects": [
+                { "type": "flag", "id": "erzika-bark2", "value": true },
+                { "type": "dialogue", "id": "erzika-bark-2" }
+              ]
+            },
+            {
+              "effects": [
+                { "type": "flag", "id": "erzika-bark1", "value": true },
+                { "type": "dialogue", "id": "erzika-bark-1" }
+              ]
+            }
           ],
           "decorative": false,
           "animation": {
@@ -635,10 +713,27 @@
               "G": 1,
               "H": 2,
               "X": 4
-            }
+            },
+            "dialogueId": "erzika-bark-1"
           },
           "cursor": "talk",
-          "uses": {}
+          "uses": {
+            "tape": [
+              {
+                "message": "Eržika: S tou páskou choď k rozvodu. Na tvoju hubu je jej škoda."
+              }
+            ],
+            "clothespin": [
+              {
+                "message": "Eržika: Na nos! Rudo: Fakt mi smrdí mozog? Kolíček si nechám."
+              }
+            ],
+            "bread": [
+              {
+                "message": "Eržika: Rožok mi nevracaj. V kuchyni mi ním podopierali sporák."
+              }
+            ]
+          }
         },
         {
           "id": "layer1",
@@ -692,7 +787,7 @@
           "bounds": { "x": 1220, "y": 360, "width": 195, "height": 270 },
           "onClick": [
             {
-              "message": "Chýba hlavný kábel. Opravený koniec patrí sem. Priateľstvo nevedie prúd."
+              "message": "Rudo: Chýba kábel. Skúsil by som tam strčiť prst, ale Fero hovoril, že už nie som v záruke."
             }
           ],
           "uses": {
@@ -704,6 +799,11 @@
                   { "type": "flag", "id": "power-restored", "value": true },
                   { "type": "flag", "id": "ending-community", "value": true }
                 ]
+              }
+            ],
+            "stolen-cable": [
+              {
+                "message": "Holý koniec? Najprv ho obaľ izolačkou. Dnes zachraňuješ elektrinu, nie vyrábaš vlastnú urnu."
               }
             ]
           }
@@ -727,7 +827,7 @@
           "bounds": { "x": 400, "y": 170, "width": 450, "height": 160 },
           "onClick": [
             {
-              "message": "Margita vešia bielizeň aj bez prúdu. Prvý fungujúci bezdrôtový systém v osade."
+              "message": "Eržika suší trenírky na šnúre a nádeje na Ferovi. Kolíčky zatiaľ vydržali viac."
             }
           ]
         },
@@ -766,6 +866,57 @@
             { "x": 637.12, "y": 999.12 },
             { "x": 810.8800000000001, "y": 999.12 },
             { "x": 868.8, "y": 1086 }
+          ]
+        },
+        {
+          "id": "bread-box",
+          "label": "Rožok zo včerajšieho storočia",
+          "bounds": { "x": 80, "y": 770, "width": 160, "height": 95 },
+          "placeholder": true,
+          "cursor": "interact",
+          "visibleWhen": { "not": { "flag": "bread-taken" } },
+          "onClick": [
+            {
+              "message": "Rudo: Rožok. Keď s ním niekoho trafím, je to ešte stále potravinová pomoc.",
+              "effects": [
+                { "type": "flag", "id": "bread-taken", "value": true },
+                { "type": "addItem", "id": "bread" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "tape-roll",
+          "label": "Izolačná páska",
+          "bounds": { "x": 1200, "y": 700, "width": 135, "height": 100 },
+          "placeholder": true,
+          "cursor": "interact",
+          "visibleWhen": { "not": { "flag": "tape-taken" } },
+          "onClick": [
+            {
+              "message": "Rudo: Izolačka. Jediná vec, ktorá u Fera drží rodinu aj napätie pokope.",
+              "effects": [
+                { "type": "flag", "id": "tape-taken", "value": true },
+                { "type": "addItem", "id": "tape" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "peg-basket",
+          "label": "Drevený kolíček",
+          "bounds": { "x": 700, "y": 220, "width": 135, "height": 95 },
+          "placeholder": true,
+          "cursor": "interact",
+          "visibleWhen": { "not": { "flag": "peg-taken" } },
+          "onClick": [
+            {
+              "message": "Rudo: Kolíček. Keby som si zaštipol nos, môžem konečne prestať cítiť vlastné rozhodnutia.",
+              "effects": [
+                { "type": "flag", "id": "peg-taken", "value": true },
+                { "type": "addItem", "id": "clothespin" }
+              ]
+            }
           ]
         }
       ],
@@ -832,14 +983,8 @@
           "uses": {
             "cow-bell": [
               {
-                "when": { "not": { "flag": "cemetery-open" } },
-                "effects": [
-                  { "type": "flag", "id": "cemetery-open", "value": true },
-                  { "type": "removeItem", "id": "cow-bell" },
-                  { "type": "dialogue", "id": "priest-bell" }
-                ]
-              },
-              { "message": "Už zvoníme. Vďaka Bohu a hovädziemu dobytku." }
+                "message": "Bonifác: Pekný zvuk. Môj ručný automat na odpustky má prázdny držiak a nulovú výhernosť. Aká náhoda, do riti."
+              }
             ]
           }
         },
@@ -890,7 +1035,7 @@
               "effects": [{ "type": "scene", "id": "scene5" }]
             },
             {
-              "message": "Brána je zamknutá. Bonifác potrebuje zvonenie bez elektriny."
+              "message": "Bonifác stráži bránu. Kým neuverí, že niekde padol jackpot, nezloží z teba oči."
             }
           ],
           "cursor": "exit"
@@ -923,6 +1068,44 @@
             { "x": 936.32, "y": 865.72 },
             { "x": 1003.1999999999999, "y": 941 }
           ]
+        },
+        {
+          "id": "absolution-machine",
+          "label": "Ručný automat na odpustky",
+          "bounds": { "x": 235, "y": 535, "width": 170, "height": 180 },
+          "placeholder": true,
+          "cursor": "interact",
+          "onClick": [
+            {
+              "when": { "flag": "cemetery-open" },
+              "message": "Bonifác prepočítava zvonce na drobné. Brána na cintorín ostala otvorená."
+            },
+            {
+              "when": { "flag": "bell-installed" },
+              "effects": [
+                { "type": "flag", "id": "cemetery-open", "value": true },
+                { "type": "dialogue", "id": "priest-bell" }
+              ]
+            },
+            {
+              "message": "Drevená bedňa s kľukou a tromi sedmičkami. Vnútri chýba zvonec. Elektrinu nenájdeš, iba pokus o zázrak."
+            }
+          ],
+          "uses": {
+            "cow-bell": [
+              {
+                "when": { "flag": "bell-installed" },
+                "message": "Zvonec už visí vnútri. Stačí zatočiť kľukou a nechať Bonifáca veriť."
+              },
+              {
+                "message": "Zvonec zapadol do prázdneho držiaka. Kľuka má teraz podozrivo bohatý zvuk.",
+                "effects": [
+                  { "type": "flag", "id": "bell-installed", "value": true },
+                  { "type": "removeItem", "id": "cow-bell" }
+                ]
+              }
+            ]
+          }
         }
       ],
       "ambient": "ambience/graveyard.wav"
@@ -975,14 +1158,8 @@
           "uses": {
             "stamped-form": [
               {
-                "when": { "not": { "flag": "chapel-open" } },
-                "effects": [
-                  { "type": "flag", "id": "chapel-open", "value": true },
-                  { "type": "removeItem", "id": "stamped-form" },
-                  { "type": "dialogue", "id": "gravedigger-paper" }
-                ]
-              },
-              { "message": "Tvoj pohreb už mám v systéme. Dvere sú otvorené." }
+                "message": "Milan: List na rakvu. Nie ku mne, ja už vlastný mám. A prestaň pri tom dýchať, kazíš mi remeslo."
+              }
             ]
           }
         },
@@ -1003,7 +1180,7 @@
               "effects": [{ "type": "scene", "id": "scene2" }]
             },
             {
-              "message": "Milan pustí dnu iba zosnulých. Potrebuješ opečiatkovaný úmrtný list."
+              "message": "Milan púšťa dnu iba klientov. Pripni list na skúšobnú rakvu, vyrieš živý nos a absolvuj vlastný pohreb."
             }
           ],
           "cursor": "exit"
@@ -1014,7 +1191,7 @@
           "bounds": { "x": 735, "y": 650, "width": 650, "height": 245 },
           "onClick": [
             {
-              "message": "Náhrobok: ĽUBO ŠŤASTNÝ. Hrob zíva prázdnotou. Dokonca aj smútok tu ide na splátky."
+              "message": "Ľubov prázdny hrob. V kúte obal od bagety a veniec ÚPRIMNÚ SPLÁTKA. Rudo: Že by sa zosnulý odišiel najesť?"
             }
           ]
         },
@@ -1027,6 +1204,70 @@
               "message": "Milanov služobný voz. Spotreba: jeden živý človek na sto metrov."
             }
           ]
+        },
+        {
+          "id": "coffin",
+          "label": "Skúšobná rakva",
+          "bounds": { "x": 925, "y": 430, "width": 255, "height": 165 },
+          "placeholder": true,
+          "cursor": "interact",
+          "onClick": [
+            {
+              "when": { "flag": "chapel-open" },
+              "message": "Milan: Pohreb uznaný. Do kaplnky už môžeš, ale ak sa ti páčilo, u nás sa to nedá reklamovať."
+            },
+            {
+              "when": {
+                "all": [
+                  { "flag": "coffin-certified" },
+                  { "flag": "coffin-clipped" }
+                ]
+              },
+              "effects": [
+                { "type": "flag", "id": "chapel-open", "value": true },
+                { "type": "dialogue", "id": "gravedigger-paper" }
+              ]
+            },
+            {
+              "when": { "flag": "coffin-certified" },
+              "message": "Rudo si ľahol, ale pri dýchaní sa mu hýbal nos. Milan: Reklamácia života. Zaštipni to."
+            },
+            {
+              "when": { "flag": "coffin-clipped" },
+              "message": "Kolíček je na nose, ale na rakve chýba opečiatkovaný úmrtný list. Rudo sa zatiaľ cíti neúradne."
+            },
+            {
+              "message": "Prázdna skúšobná rakva. Milan chce na veku úmrtný list a na Rudovi žiadne známky života. Rudo: Prvú polovicu už mám v životopise."
+            }
+          ],
+          "uses": {
+            "stamped-form": [
+              {
+                "when": { "flag": "coffin-certified" },
+                "message": "List už visí na veku. Druhá smrť sa účtuje zvlášť."
+              },
+              {
+                "message": "Úmrtný list si pripol na rakvu. V kolónke príčina smrti je zatiaľ uvedené RUDO.",
+                "effects": [
+                  { "type": "flag", "id": "coffin-certified", "value": true },
+                  { "type": "removeItem", "id": "stamped-form" }
+                ]
+              }
+            ],
+            "clothespin": [
+              {
+                "when": { "flag": "coffin-clipped" },
+                "message": "Nos je zaštipnutý. Skús už ten pohreb, kým si na to telo nezvykne."
+              },
+              {
+                "message": "Kolíčkom si zaštipol nos. Rudo: Takto má smrť skoro príjemnú vôňu.",
+                "effects": [
+                  { "type": "flag", "id": "coffin-clipped", "value": true },
+                  { "type": "removeItem", "id": "clothespin" }
+                ]
+              }
+            ]
+          }
         }
       ],
       "ambient": "ambience/graveyard.wav"
@@ -1091,14 +1332,13 @@
             "wrench": [
               {
                 "when": { "not": { "flag": "tap-fixed" } },
-                "message": "Dotiahol si maticu. Karol otvára herňu a dáva ti zlatý obal z poslednej čokolády.",
+                "message": "Matica drží. V potrubí ostalo pivo z doby, keď ešte žil Ľubov prvý sponzor. Vypusť ho cez krígle.",
                 "effects": [
-                  { "type": "flag", "id": "tap-fixed", "value": true },
-                  { "type": "addItem", "id": "foil" }
+                  { "type": "flag", "id": "tap-fixed", "value": true }
                 ]
               },
               {
-                "message": "Pípa už drží. Prekvapivo legálna technická kontrola."
+                "message": "Pípa je opravená. Rudo jej ešte pohrozil kľúčom, pre istotu."
               }
             ]
           }
@@ -1109,10 +1349,12 @@
           "bounds": { "x": 1330, "y": 180, "width": 300, "height": 520 },
           "onClick": [
             {
-              "when": { "flag": "tap-fixed" },
+              "when": { "flag": "beer-drained" },
               "effects": [{ "type": "scene", "id": "scene8" }]
             },
-            { "message": "Karol drží herňu zamknutú, kým neopravíš pípu." }
+            {
+              "message": "Karol: Najprv dotiahni pípu a vypusť ten hnus do krígľov. Potom ti otvorím herňu, nech si zavadziaš tam."
+            }
           ],
           "cursor": "exit"
         },
@@ -1122,7 +1364,7 @@
           "bounds": { "x": 1150, "y": 95, "width": 350, "height": 175 },
           "onClick": [
             {
-              "message": "Rádio je vypnuté. Konečne nevie ani ono, kto môže za všetko."
+              "message": "Rádio mlčí. Rudo mu poďakoval za konečne normálny program."
             }
           ]
         },
@@ -1132,7 +1374,18 @@
           "bounds": { "x": 1080, "y": 530, "width": 420, "height": 200 },
           "onClick": [
             {
-              "message": "Karol počíta pivá, nie volty. Toto zatiaľ funguje gravitačne."
+              "when": { "flag": "beer-drained" },
+              "message": "Krígle naplnila pena staršia než nájomná zmluva. V odkvapkávači ostal zlatý obal."
+            },
+            {
+              "when": { "flag": "tap-fixed" },
+              "message": "Vypustil si starú penu do krígľov. Karol odomkol herňu, nech si tú vôňu vyšetruješ inde.",
+              "effects": [
+                { "type": "flag", "id": "beer-drained", "value": true }
+              ]
+            },
+            {
+              "message": "Bez dotiahnutej matice tečie páka, nie pivo. Rudo: Takže nemám opravenú objednávku."
             }
           ]
         },
@@ -1153,6 +1406,28 @@
             { "x": 735.68, "y": 865.72 },
             { "x": 936.32, "y": 865.72 },
             { "x": 1003.1999999999999, "y": 941 }
+          ]
+        },
+        {
+          "id": "foil-wrapper",
+          "label": "Zlatý obal v odkvapkávači",
+          "bounds": { "x": 495, "y": 485, "width": 145, "height": 85 },
+          "placeholder": true,
+          "cursor": "interact",
+          "visibleWhen": {
+            "all": [
+              { "flag": "beer-drained" },
+              { "not": { "flag": "foil-taken" } }
+            ]
+          },
+          "onClick": [
+            {
+              "message": "Zlatý obal od čokolády. Rudo: Takto vyzerá bohatstvo pred zdanením.",
+              "effects": [
+                { "type": "flag", "id": "foil-taken", "value": true },
+                { "type": "addItem", "id": "foil" }
+              ]
+            }
           ]
         }
       ],
@@ -1208,16 +1483,8 @@
           "uses": {
             "bread": [
               {
-                "when": { "not": { "flag": "kids-helped" } },
-                "effects": [
-                  { "type": "flag", "id": "kids-helped", "value": true },
-                  { "type": "removeItem", "id": "bread" },
-                  { "type": "addItem", "id": "string" },
-                  { "type": "addItem", "id": "washer" },
-                  { "type": "dialogue", "id": "boy-bread" }
-                ]
-              },
-              { "message": "Už sme si vymenili. Tehla drží diétu." }
+                "message": "Špľuch: To nie je desiata, to je závažie. Daj to na sedadlo a skontroluj čap, nech sa to vôbec pohne."
+              }
             ]
           }
         },
@@ -1323,6 +1590,128 @@
             { "x": 936.32, "y": 865.72 },
             { "x": 1003.1999999999999, "y": 941 }
           ]
+        },
+        {
+          "id": "swing-axle",
+          "label": "Zadretý čap hojdačky",
+          "bounds": { "x": 560, "y": 350, "width": 130, "height": 85 },
+          "placeholder": true,
+          "cursor": "interact",
+          "onClick": [
+            {
+              "when": { "flag": "axle-loose" },
+              "message": "Matica je povolená. Rudo overil pevnosť rozumom; ten sa tiež kýve."
+            },
+            {
+              "message": "Zadretá matica. Hojdačka sa nehýbe, preto ju deti vyhlásili za pamätník priemyslu."
+            }
+          ],
+          "uses": {
+            "wrench": [
+              {
+                "when": { "flag": "axle-loose" },
+                "message": "Čap sa už hýbe. Kľúč si nechaj, toto ešte nebude posledná matica v tvojom živote."
+              },
+              {
+                "message": "Maticu si povolil. Rudo: Tak. Teraz je to odborne pokazené.",
+                "effects": [
+                  { "type": "flag", "id": "axle-loose", "value": true }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "swing-seat",
+          "label": "Sedadlo pre domácu tehlu",
+          "bounds": { "x": 545, "y": 710, "width": 185, "height": 85 },
+          "placeholder": true,
+          "cursor": "interact",
+          "onClick": [
+            {
+              "when": { "flag": "kids-helped" },
+              "message": "Hojdačka dokončila štátnu skúšku. Na zemi leží špagát a podložka, kým ich nepozbieraš."
+            },
+            {
+              "when": {
+                "all": [{ "flag": "axle-loose" }, { "flag": "bread-loaded" }]
+              },
+              "effects": [
+                { "type": "flag", "id": "kids-helped", "value": true },
+                { "type": "dialogue", "id": "boy-bread" }
+              ]
+            },
+            {
+              "when": { "flag": "bread-loaded" },
+              "message": "Rožok váži ako tehla, ale čap stále drží. Rudo do sedadla kopol a prehral."
+            },
+            {
+              "when": { "flag": "axle-loose" },
+              "message": "Kýve sa, ale chce to poriadne závažie. Eržikin rožok vyzeral starší a ťažší než budova."
+            },
+            {
+              "message": "Na sedadle visí podložka aj špagát. Rudo: Dám sem rožok, povolím čap a zatrasem. Buď to zlezie, alebo postúpim do večerných správ."
+            }
+          ],
+          "uses": {
+            "bread": [
+              {
+                "when": { "flag": "bread-loaded" },
+                "message": "Závažie už je na mieste. Pekár odmietol ďalšiu spoluprácu."
+              },
+              {
+                "message": "Rožok si založil ako závažie. Tehla sa urazila; konečne má v odbore konkurenciu.",
+                "effects": [
+                  { "type": "flag", "id": "bread-loaded", "value": true },
+                  { "type": "removeItem", "id": "bread" }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "loose-string",
+          "label": "Uvoľnený špagát",
+          "bounds": { "x": 770, "y": 775, "width": 125, "height": 65 },
+          "placeholder": true,
+          "cursor": "interact",
+          "visibleWhen": {
+            "all": [
+              { "flag": "kids-helped" },
+              { "not": { "flag": "string-taken" } }
+            ]
+          },
+          "onClick": [
+            {
+              "message": "Špagát je tvoj. Rudo: Na vlastný pohreb sa ešte nezavesím, mám tam rezervované sedenie.",
+              "effects": [
+                { "type": "flag", "id": "string-taken", "value": true },
+                { "type": "addItem", "id": "string" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "loose-washer",
+          "label": "Vypadnutá podložka",
+          "bounds": { "x": 930, "y": 785, "width": 125, "height": 65 },
+          "placeholder": true,
+          "cursor": "interact",
+          "visibleWhen": {
+            "all": [
+              { "flag": "kids-helped" },
+              { "not": { "flag": "washer-taken" } }
+            ]
+          },
+          "onClick": [
+            {
+              "message": "Oceľová podložka. Nika tvrdí, že so zlatým obalom je to už menová reforma.",
+              "effects": [
+                { "type": "flag", "id": "washer-taken", "value": true },
+                { "type": "addItem", "id": "washer" }
+              ]
+            }
+          ]
         }
       ],
       "ambient": "ambience/village.wav"
@@ -1354,7 +1743,7 @@
             "wrench": [
               {
                 "when": { "not": { "flag": "log-found" } },
-                "message": "Za krytom je servisný denník. Ľubo reklamoval automat deň po vlastnom pohrebe. Etela to musí vidieť.",
+                "message": "Servisný denník: BONIFÁC — vysvätenie výhernosti, výsledok 0 €. Pod tým Ľubova reklamácia, deň PO pohrebe. Rudo: Takže záruka prežila aj zákazníka. Toto ukážem Etele.",
                 "effects": [
                   { "type": "flag", "id": "log-found", "value": true },
                   { "type": "addItem", "id": "machine-log" }
@@ -1486,7 +1875,7 @@
           "bounds": { "x": 690, "y": 425, "width": 180, "height": 280 },
           "onClick": [
             {
-              "message": "Ani po smrti sa nevyhol nedeľnej dochádzke. Za trpezlivosť by si zaslúžil pečiatku."
+              "message": "Kostlivec drží poradové číslo. Rudo: Takže aj po smrti si tu ešte chvíľu počkám."
             }
           ]
         },
@@ -1496,7 +1885,7 @@
           "bounds": { "x": 1010, "y": 440, "width": 170, "height": 160 },
           "onClick": [
             {
-              "message": "Poctivý plameň, žiadna elektrina. Ešte aj vosk vie, kedy treba držať hubu a horieť."
+              "message": "Sviečky idú na vosk. Rudo: Konečne palivo, ktoré sa nedá prehrať v automate."
             }
           ]
         }
@@ -1551,17 +1940,8 @@
           "uses": {
             "cold-coffee": [
               {
-                "when": { "not": { "flag": "dingo-awake" } },
-                "effects": [
-                  { "type": "flag", "id": "dingo-awake", "value": true },
-                  { "type": "removeItem", "id": "cold-coffee" },
-                  { "type": "addItem", "id": "empty-bottle" },
-                  { "type": "addItem", "id": "wrench" },
-                  { "type": "addItem", "id": "rubber-gloves" },
-                  { "type": "dialogue", "id": "dingo-coffee" }
-                ]
-              },
-              { "message": "Náradie už máš. Ja už mám pulz." }
+                "message": "Dingo: Do resuscitátora, nie do huby! Ja už nemám trávenie, ja mám obehové čerpadlo."
+              }
             ]
           }
         },
@@ -1570,7 +1950,9 @@
           "label": "Váha na kov",
           "bounds": { "x": 1080, "y": 480, "width": 210, "height": 300 },
           "onClick": [
-            { "message": "Váha váži presne. Preto jej nikto neverí." }
+            {
+              "message": "Váha má taru ĽUBO BEZ TRUHLY. Rudo: Čiže naozaj rátali s tým, že mu bude treba vrátiť telo."
+            }
           ]
         },
         {
@@ -1579,7 +1961,7 @@
           "bounds": { "x": 1320, "y": 530, "width": 330, "height": 220 },
           "onClick": [
             {
-              "message": "Všetky sú vybité. Ľubo si požičal poslednú nabitú. Dingo ho ani po smrti neprestal úverovať."
+              "message": "Všetky batérie sú vybité. Poslednú nabitú požičal Dingo mužovi, čo sa podpísal krížikom a pripojil úmrtný list."
             }
           ]
         },
@@ -1600,6 +1982,74 @@
             { "x": 735.68, "y": 865.72 },
             { "x": 936.32, "y": 865.72 },
             { "x": 1003.1999999999999, "y": 941 }
+          ]
+        },
+        {
+          "id": "resuscitator",
+          "label": "Kávový klystír na pedál",
+          "bounds": { "x": 880, "y": 540, "width": 200, "height": 160 },
+          "placeholder": true,
+          "cursor": "interact",
+          "onClick": [
+            {
+              "when": { "flag": "dingo-awake" },
+              "message": "Dingo: Ďalšie espresso až po prepočítaní vnútorností. Rudo s úľavou pustil pedál."
+            },
+            {
+              "when": { "flag": "resuscitator-filled" },
+              "effects": [
+                { "type": "flag", "id": "dingo-awake", "value": true },
+                { "type": "dialogue", "id": "dingo-coffee" }
+              ]
+            },
+            {
+              "message": "Stará ručná pumpa s kávovým lievikom. Dingo na hadicu napísal VCHOD PRE PERSONÁL. Chýba studené kravučíno."
+            }
+          ],
+          "uses": {
+            "cold-coffee": [
+              {
+                "when": { "flag": "resuscitator-filled" },
+                "message": "Káva už je v lieviku. Šliapni na pedál, náš odborník čaká na vnútorný budíček."
+              },
+              {
+                "message": "Kravučíno nalial do lievika a fľašu odložil. Pedál sa ešte sám nestlačí, Rudo.",
+                "effects": [
+                  {
+                    "type": "flag",
+                    "id": "resuscitator-filled",
+                    "value": true
+                  },
+                  { "type": "removeItem", "id": "cold-coffee" },
+                  { "type": "addItem", "id": "empty-bottle" }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "tool-chest",
+          "label": "Dingova truhlica s náradím",
+          "bounds": { "x": 1110, "y": 650, "width": 210, "height": 130 },
+          "placeholder": true,
+          "cursor": "interact",
+          "onClick": [
+            {
+              "when": { "flag": "tools-taken" },
+              "message": "Truhlica je vyrabovaná. Kľúč aj rukavice už máš, zvyšok má vlastný hnis."
+            },
+            {
+              "when": { "flag": "dingo-awake" },
+              "message": "Z truhlice si vybral francúzsky kľúč a rukavice. Dingo ti zakázal siahať na náhradnú slezinu.",
+              "effects": [
+                { "type": "flag", "id": "tools-taken", "value": true },
+                { "type": "addItem", "id": "wrench" },
+                { "type": "addItem", "id": "rubber-gloves" }
+              ]
+            },
+            {
+              "message": "Dingo leží na popruhu od truhlice. Najprv ho oživ; odpíliť popruh aj s ním by zmenilo žáner hry."
+            }
           ]
         }
       ],
@@ -1653,17 +2103,7 @@
           "uses": {
             "holy-water": [
               {
-                "when": { "not": { "flag": "cow-blessed" } },
-                "effects": [
-                  { "type": "flag", "id": "cow-blessed", "value": true },
-                  { "type": "removeItem", "id": "holy-water" },
-                  { "type": "addItem", "id": "milk" },
-                  { "type": "addItem", "id": "cow-bell" },
-                  { "type": "dialogue", "id": "jolanda-water" }
-                ]
-              },
-              {
-                "message": "Krava je už poistená aj na potopu. Vodu si nechaj."
+                "message": "Jolanda: Na kravu to lej! Ja už som poistená proti všetkému okrem teba."
               }
             ]
           }
@@ -1673,8 +2113,86 @@
           "label": "Poistená krava",
           "bounds": { "x": 655, "y": 340, "width": 550, "height": 380 },
           "onClick": [
-            { "message": "Krava ťa súdi. Má na to oči aj poistnú zmluvu." }
-          ]
+            {
+              "when": { "flag": "cow-asleep" },
+              "message": "Krava zaspala pri rodnom čísle. Rudo: Konečne niekto, kto počúva moje čítanie."
+            },
+            {
+              "when": { "flag": "cow-blessed" },
+              "message": "Pokrstená krava žuje zmluvu. Jolanda tvrdí, že ju uspí iba poriadna úradná nuda."
+            },
+            {
+              "message": "Krava je bez krstu aj bez nálady. Jolanda ju vyhlásila za poistnú udalosť ešte pred raňajkami."
+            }
+          ],
+          "uses": {
+            "holy-water": [
+              {
+                "when": { "flag": "cow-blessed" },
+                "message": "Rudo: Krst zopakovaný. Krava dostala druhé meno: Prosím-Už-Dosť.",
+                "effects": [
+                  { "type": "removeItem", "id": "holy-water" },
+                  { "type": "addItem", "id": "empty-bottle" }
+                ]
+              },
+              {
+                "effects": [
+                  { "type": "flag", "id": "cow-blessed", "value": true },
+                  { "type": "removeItem", "id": "holy-water" },
+                  { "type": "addItem", "id": "empty-bottle" },
+                  { "type": "dialogue", "id": "jolanda-water" }
+                ]
+              }
+            ],
+            "funeral-form": [
+              {
+                "when": { "flag": "cow-asleep" },
+                "message": "Spí. Papier si nechaj, úrad vie oživiť aj vyrubiť daň."
+              },
+              {
+                "when": { "flag": "cow-blessed" },
+                "message": "Rudo prečítal trvalý pobyt aj poučenie pozostalých. Krava padla od nudy; list zostal celý.",
+                "effects": [
+                  { "type": "flag", "id": "cow-asleep", "value": true }
+                ]
+              },
+              {
+                "message": "Jolanda: Najprv ju pokrsti. Bez toho ti aj tú pečiatku vyvráti."
+              }
+            ],
+            "stamped-form": [
+              {
+                "when": { "flag": "cow-asleep" },
+                "message": "Spí. Papier si nechaj, úrad vie oživiť aj vyrubiť daň."
+              },
+              {
+                "when": { "flag": "cow-blessed" },
+                "message": "Rudo prečítal trvalý pobyt aj poučenie pozostalých. Krava padla od nudy; list zostal celý.",
+                "effects": [
+                  { "type": "flag", "id": "cow-asleep", "value": true }
+                ]
+              },
+              {
+                "message": "Jolanda: Najprv ju pokrsti. Bez toho ti aj tú pečiatku vyvráti."
+              }
+            ],
+            "machine-log": [
+              {
+                "when": { "flag": "cow-asleep" },
+                "message": "Spí. Papier si nechaj, úrad vie oživiť aj vyrubiť daň."
+              },
+              {
+                "when": { "flag": "cow-blessed" },
+                "message": "Rudo prečítal trvalý pobyt aj poučenie pozostalých. Krava padla od nudy; list zostal celý.",
+                "effects": [
+                  { "type": "flag", "id": "cow-asleep", "value": true }
+                ]
+              },
+              {
+                "message": "Jolanda: Najprv ju pokrsti. Bez toho ti aj tú pečiatku vyvráti."
+              }
+            ]
+          }
         },
         {
           "id": "pig",
@@ -1682,7 +2200,7 @@
           "bounds": { "x": 1160, "y": 560, "width": 270, "height": 240 },
           "onClick": [
             {
-              "message": "Finančná kontrola sleduje obrat v koryte. Dnes sú už aj audítori aspoň úprimní."
+              "message": "Prasa práve zožralo výluku z poistky. Jolanda mu už šije malé sako."
             }
           ]
         },
@@ -1704,6 +2222,67 @@
             { "x": 939.1200000000001, "y": 862.96 },
             { "x": 1006.1999999999999, "y": 938 }
           ]
+        },
+        {
+          "id": "milking-bucket",
+          "label": "Vedro na posvätné mlieko",
+          "bounds": { "x": 1050, "y": 660, "width": 180, "height": 120 },
+          "placeholder": true,
+          "cursor": "interact",
+          "onClick": [
+            {
+              "when": { "flag": "cow-milked" },
+              "message": "Vedro je prázdne. Posvätná krava už uzavrela dnešnú účtovnú závierku."
+            },
+            {
+              "when": { "flag": "cow-asleep" },
+              "message": "Mlieko je vo vedre. Rudo: Do vreciek mi už raz pretieklo; teraz potrebujem prázdnu fľašu."
+            },
+            {
+              "message": "Krava odmieta dojenie počas úradných hodín. Najprv krst, potom jej prečítaj niečo, pri čom zaspí."
+            }
+          ],
+          "uses": {
+            "empty-bottle": [
+              {
+                "when": { "flag": "cow-milked" },
+                "message": "Dennú dávku už máš. Krava vystavuje ďalšie až po konci hry."
+              },
+              {
+                "when": { "flag": "cow-asleep" },
+                "message": "Fľaša plná mlieka. Rudo sa pre istotu neprežehnal, nech sa to nezrazí.",
+                "effects": [
+                  { "type": "flag", "id": "cow-milked", "value": true },
+                  { "type": "removeItem", "id": "empty-bottle" },
+                  { "type": "addItem", "id": "milk" }
+                ]
+              },
+              {
+                "message": "Vedro je prázdne. Krava sa musí najprv prestať dívať, ako ju chceš okradnúť."
+              }
+            ]
+          }
+        },
+        {
+          "id": "cow-bell-hook",
+          "label": "Zvonec na obojku",
+          "bounds": { "x": 1080, "y": 350, "width": 120, "height": 95 },
+          "placeholder": true,
+          "cursor": "interact",
+          "onClick": [
+            {
+              "when": { "flag": "cow-asleep" },
+              "message": "Zvonec si odopol potichu. Posledný súd má odteraz príchuť pasienka.",
+              "effects": [
+                { "type": "flag", "id": "bell-taken", "value": true },
+                { "type": "addItem", "id": "cow-bell" }
+              ]
+            },
+            {
+              "message": "Zvonec drží na obojku. Krava ti pri pohľade na ruky názorne vysvetlila slovo dojebať. Uspi ju úradným čítaním."
+            }
+          ],
+          "visibleWhen": { "not": { "flag": "bell-taken" } }
         }
       ],
       "ambient": "ambience/barn.wav"
@@ -1728,7 +2307,7 @@
           "bounds": { "x": 830, "y": 210, "width": 210, "height": 470 },
           "onClick": [
             {
-              "message": "Rebrík je prikovaný k stene. Miestna definícia kariérneho rastu."
+              "message": "Rebrík je prikovaný. Rudo: Keby sa dalo liezť do dlhov, toto by už bolo výťah."
             }
           ]
         },
@@ -1748,7 +2327,7 @@
           "bounds": { "x": 1320, "y": 390, "width": 160, "height": 190 },
           "onClick": [
             {
-              "message": "Namaľované koleso. Prípad sa točí, ale auto z toho nebude."
+              "message": "Niekto nakreslil koleso a pod neho ZOMREL V POHYBE. Rudo si z úcty sadol."
             }
           ]
         },
@@ -1843,7 +2422,7 @@
             "wrench": [
               {
                 "when": { "not": { "flag": "battery-isolated" } },
-                "message": "Povolil si svorku. Automat zhasol a Ľubo práve prehral s hlavným vypínačom.",
+                "message": "Odpojil si mínus. Rudo: Zostala už iba dobrá elektrina. Automat zhasol; zatiaľ môžeš svorku vrátiť a skúsiť podvodný žetón, alebo zobrať kábel v rukaviciach.",
                 "effects": [
                   { "type": "flag", "id": "battery-isolated", "value": true }
                 ]
@@ -1923,7 +2502,7 @@
             "rubber-gloves": [
               {
                 "when": { "flag": "battery-isolated" },
-                "message": "Kábel je konečne tvoj. Oprav koniec páskou a vráť ho do rozvodnej skrine na Ferovom dvore.",
+                "message": "Kábel si zobral. Tým si sa rozhodol vrátiť prúd osade; automat už nepripojíš. Rudo: Dobre. Prehrám až na oficiálnom turnaji. Oblep koniec páskou a vráť ho do Ferovej skrine.",
                 "effects": [
                   { "type": "flag", "id": "cable-recovered", "value": true },
                   { "type": "addItem", "id": "stolen-cable" }
@@ -1947,7 +2526,12 @@
           "uses": {
             "fake-token": [
               {
-                "when": { "not": { "flag": "battery-isolated" } },
+                "when": {
+                  "all": [
+                    { "not": { "flag": "battery-isolated" } },
+                    { "not": { "flag": "cable-recovered" } }
+                  ]
+                },
                 "message": "Žetón spojil kontakty. Jackpot zazvonil naposledy.",
                 "effects": [
                   { "type": "removeItem", "id": "fake-token" },
@@ -2002,157 +2586,163 @@
     },
     {
       "id": "bread",
-      "label": "Včerajší rožok",
-      "description": "Margita vraví, že je čerstvý. Zrejme používa cirkevný kalendár.",
+      "label": "Kamenný rožok",
+      "description": "Rožok z Eržikinej kuchyne. Ako potrava je dôkazný materiál, ako závažie má budúcnosť na hojdačke.",
       "icon": "✦",
       "image": "story/bread.svg"
     },
     {
       "id": "tape",
       "label": "Izolačná páska",
-      "description": "Ferova posledná rodinná poistka. Poškodený kábel sa s ňou dá opraviť.",
+      "description": "Izolačka z Ferovho dvora. Poškodený koniec kábla opraví; tvoju povesť by už len zamaskovala.",
       "icon": "✦",
       "image": "story/tape.svg"
     },
     {
       "id": "magnet",
       "label": "Magnet",
-      "description": "Meď nepriťahuje. Zato kľúče áno. Dežo to volá dôkaz neviny.",
+      "description": "Meď nepriťahuje, zato železné kľúče áno. Dežo si týmto zabezpečil jediné slušné alibi v osade.",
       "icon": "✦",
       "image": "story/magnet.svg"
     },
     {
       "id": "string",
       "label": "Špagát",
-      "description": "Pevný motúz z detského zvončeka. S magnetom dosiahne do úzkej mreže.",
+      "description": "Špagát uvoľnený z hojdačky. Na magnet dosť pevný, na Milanovu dôveru už nie.",
       "icon": "✦",
       "image": "story/string.svg"
     },
     {
       "id": "washer",
       "label": "Podložka",
-      "description": "Oceľová podložka veľkosti žetónu. K zlatu má najbližšie cez obal.",
+      "description": "Podložka z hojdačky. So zlatým obalom je z nej žetón pre idiotov a lacnú elektroniku.",
       "icon": "✦",
       "image": "story/washer.svg"
     },
     {
       "id": "holy-water",
       "label": "Svätená voda",
-      "description": "Jedna vratná fľaša plná božskej záruky. Jolanda chce posvätiť kravu.",
+      "description": "Voda z Bonifácovej pumpy. Kravu pokrstí; prázdnu fľašu si po obrade vezmi späť.",
       "icon": "✦",
       "image": "story/holy-water.svg"
     },
     {
       "id": "milk",
       "label": "Čerstvé mlieko",
-      "description": "Mlieko z poistenej kravy v pôvodnej fľaši. Na kávu netreba elektrinu, iba nízke nároky.",
+      "description": "Posvätné mlieko z vedra. S mletou kávou vznikne náplň do Dingovho ručného resuscitátora.",
       "icon": "✦",
       "image": "story/milk.svg"
     },
     {
       "id": "coffee-grounds",
       "label": "Mletá káva",
-      "description": "V krčme sa bez elektriny používa aj ako dekorácia pohrebu.",
+      "description": "Káva od Karola. Dingo ju pije mletú aj s mliekom, len používa znepokojujúci vstup.",
       "icon": "✦",
       "image": "story/coffee-grounds.svg"
     },
     {
       "id": "cold-coffee",
       "label": "Studené kravučíno",
-      "description": "Mlieko a mletá káva. Dingo má rád aj omietku, toto zvládne.",
+      "description": "Studené kravučíno. Patrí do lievika resuscitátora v zberni; potom stlač pedál a dúfaj v návrat obličiek.",
       "icon": "✦",
       "image": "story/cold-coffee.svg"
     },
     {
       "id": "cow-bell",
       "label": "Kravský zvonec",
-      "description": "Kovový hlas kravy. Otec Bonifác zháňa zvonenie bez elektriny.",
+      "description": "Zvonec od spiacej kravy. V ručnom automate pri kostole dokáže Bonifácovi nasimulovať jackpot.",
       "icon": "✦",
       "image": "story/cow-bell.svg"
     },
     {
       "id": "wrench",
       "label": "Francúzsky kľúč",
-      "description": "Otvorí servisný kryt, opraví pípu a bezpečne odpojí svorku batérie.",
+      "description": "Francúzsky kľúč. Dotiahne pípu, povolí hojdačku aj servisný kryt a odpojí batériu; nikomu ho nedaruj.",
       "icon": "✦",
       "image": "story/wrench.svg"
     },
     {
       "id": "rubber-gloves",
       "label": "Gumené rukavice",
-      "description": "Na špinavý kábel aj čisté svedomie. Najprv však treba odpojiť zdroj.",
+      "description": "Dingove gumové rukavice. Kábel vezmi až po odpojení batérie; ani izolácia neuzná samovraždu ako záruku.",
       "icon": "✦",
       "image": "story/rubber-gloves.svg"
     },
     {
       "id": "foil",
       "label": "Zlatá fólia",
-      "description": "Obal poslednej čokolády od Karola. Z podložky spraví presvedčivý žetón.",
+      "description": "Zlatý obal z odkvapkávača. Po oprave pípy a vypustení peny ho Karol konečne prestal považovať za inventúru.",
       "icon": "✦",
       "image": "story/foil.svg"
     },
     {
       "id": "fake-token",
       "label": "Podvodný žetón",
-      "description": "Podložka v zlatej fólii. V živom automate to môže skončiť jackpotom. Alebo skratom.",
+      "description": "Oceľová podložka v zlatom obale. Do živého automatu môže priniesť jackpot, skrat a definitívne rozhodnutie.",
       "icon": "✦",
       "image": "story/fake-token.svg"
     },
     {
       "id": "funeral-form",
       "label": "Prázdny úmrtný list",
-      "description": "Tlačivo na vlastný pohreb. Chýba mu pečiatka, ktorá z klamstva spraví úradnú vec.",
+      "description": "Prázdny úmrtný list. Úradné čítanie uspí kravu; pečiatka z neho spraví vstupenku na vlastný skúšobný pohreb.",
       "icon": "✦",
       "image": "story/funeral-form.svg"
     },
     {
       "id": "rubber-stamp",
       "label": "Etelina pečiatka",
-      "description": "VYBAVENÉ. Používa sa na úmrtia, reklamácie a občas zemiaky.",
+      "description": "Etelino VYBAVENÉ. Pri živých zlyháva, pri mŕtvych sa zatiaľ nikto nesťažoval.",
       "icon": "✦",
       "image": "story/rubber-stamp.svg"
     },
     {
       "id": "stamped-form",
       "label": "Úmrtný list na Ruda",
-      "description": "Oficiálne si mŕtvy. Na parkovanie to nestačí, na vstup do kaplnky áno.",
+      "description": "Rudov úmrtný list. Pripni ho na skúšobnú rakvu na cintoríne a vyrieš ten trápne živý nos.",
       "icon": "✦",
       "image": "story/stamped-form.svg"
     },
     {
       "id": "machine-log",
       "label": "Servisný denník",
-      "description": "Posledný zákazník: Ľubo Šťastný. Dátum servisu je deň po jeho vlastnom pohrebe.",
+      "description": "Ľubo reklamoval automat deň po vlastnom pohrebe. Vedľa toho Bonifácov účet za vysvätenie výhernosti. Etela bude vrieskať.",
       "icon": "✦",
       "image": "story/machine-log.svg"
     },
     {
       "id": "magnet-line",
       "label": "Magnet na špagáte",
-      "description": "Malý žeriav pre ľudí, ktorí si nemôžu dovoliť ani vlastný hrob.",
+      "description": "Magnet na špagáte. Pod mrežu v kaplnke sa zmestí aj s Rudovou úrovňou vzdelania.",
       "icon": "✦",
       "image": "story/magnet-line.svg"
     },
     {
       "id": "crypt-key",
       "label": "Kľúč od krypty",
-      "description": "Chladný železný kľúč z kaplnky. Žiadna batéria, žiadna aktualizácia.",
+      "description": "Železný kľúč od krypty. Odomyká Ľubov posmrtný podnikateľský zámer.",
       "icon": "✦",
       "image": "story/crypt-key.svg"
     },
     {
       "id": "stolen-cable",
       "label": "Ukradnutý hlavný kábel",
-      "description": "Ferov kábel. Oškretý koniec potrebuje pásku pred návratom do rozvodnej skrine.",
+      "description": "Ukradnutý kábel je odpojený. Najprv zaizolovať páskou, potom do Ferovej skrine. Jackpot si týmto odmietol.",
       "icon": "✦",
       "image": "story/stolen-cable.svg"
     },
     {
       "id": "fixed-cable",
       "label": "Opravený hlavný kábel",
-      "description": "Páska drží, meď vedie. Patrí do rozvodnej skrine na Ferovom dvore.",
+      "description": "Kábel oblepený páskou. Patrí do rozvodnej skrine na Ferovom dvore; odtiaľ už osada môže opäť prehrávať.",
       "icon": "✦",
       "image": "story/fixed-cable.svg"
+    },
+    {
+      "id": "clothespin",
+      "label": "Drevený kolíček",
+      "description": "Eržikin kolíček. Na nose zastaví pohyb, ktorý Milan považuje za nežiaducu známku života.",
+      "icon": "II"
     }
   ],
   "dialogues": [
@@ -2165,13 +2755,13 @@
           "id": "briefing",
           "speaker": "Fero",
           "actor": { "sceneId": "scene4", "hotspotId": "layer1" },
-          "text": "[low, gravelly voice] [angry] Rudo! Niekto nám ukradol hlavný elektrický kábel. Celá osada je bez prúdu a majstrovstvá v automatoch v riti. Nájdi ho a máš štartovné zadarmo. Vyšetruj, len mi pri tom nezožer rodinu.",
+          "text": "Rudo, niekto vytrhol hlavný kábel: osada potme a majstrovstvá v automatoch v piči! Nájdi ho, máš štartovné zadarmo; nevyšetruj zásuvku jazykom, minule nám tri dni koktal rozhlas.",
           "choices": [
             {
               "id": "accept",
-              "text": "Beriem. Kde začnem?",
+              "text": "Prípad beriem, mozog nechám doma!",
               "effects": [{ "type": "flag", "id": "case-open", "value": true }],
-              "message": "Margita má zásoby. Dežo čaká na zastávke; krčma, kostol a ihrisko sú tiež otvorené. Mapa sa otvára pri spodnom okraji scény."
+              "message": "Rudo: Prípad beriem. Rožok je pri dverách, páska pri skrini a kolíčky na šnúre. Začnem tým jedlým, nech mi pri myslení neškrípe žalúdok."
             }
           ],
           "speech": {
@@ -2205,7 +2795,7 @@
             },
             "lipSync": "speech/7460ab15-38de-4c04-bb76-c0eb43ca02a6/track.lipsync.json"
           },
-          "subtitle": "Rudo! Niekto nám ukradol hlavný elektrický kábel. Celá osada je bez prúdu a majstrovstvá v automatoch v riti. Nájdi ho a máš štartovné zadarmo. Vyšetruj, len mi pri tom nezožer rodinu."
+          "subtitle": "Rudo, niekto vytrhol hlavný kábel: osada potme a majstrovstvá v automatoch v piči! Nájdi ho, máš štartovné zadarmo; nevyšetruj zásuvku jazykom, minule nám tri dni koktal rozhlas."
         }
       ]
     },
@@ -2217,40 +2807,49 @@
           "id": "root",
           "speaker": "Fero",
           "actor": { "sceneId": "scene4", "hotspotId": "layer1" },
-          "text": "No čo, detektív? Vrecká ešte bez medi?",
+          "text": "Už máš kábel, alebo si len vyšetroval vlastné vrecká? Tam nenájdeš ani alibi, ty chodiaci kontajner na smolu.",
           "choices": [
-            { "id": "case", "text": "Čo presne zmizlo?", "next": "case" },
+            {
+              "id": "case",
+              "text": "Ten kábel bol aj pred krádežou nezvestný?",
+              "next": "case"
+            },
             {
               "id": "suspects",
-              "text": "Kto tu posledne vyhral?",
+              "text": "Ktorý hajzel mal šťastie?",
               "next": "suspects"
             },
             {
               "id": "reward",
-              "text": "A fakt dostanem štartovné zadarmo?",
+              "text": "Zadarmo prehrám dvakrát toľko!",
               "next": "reward"
             },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
-          ]
+            { "id": "leave", "text": "Idem vyšetrovať cudzí majetok." }
+          ],
+          "subtitle": "Už máš kábel, alebo si len vyšetroval vlastné vrecká? Tam nenájdeš ani alibi, ty chodiaci kontajner na smolu."
         },
         {
           "id": "case",
           "speaker": "Fero",
           "actor": { "sceneId": "scene4", "hotspotId": "layer1" },
-          "text": "[low, gravelly voice] [angry] Hlavný kábel. Nie predlžovačka, čo ňou Margita vešia klobásy. Zvyšok rozvodu zostal celý. Keď ho nájdeš, oblep koniec a pichni do skrine napravo.",
+          "text": "Hlavný kábel je preč, skriňa napravo aj zvyšok rozvodu zostali celé. Keď ho nájdeš, zaizoluj páskou a vráť do skrine; do riti si strč až faktúru.",
           "choices": [
-            { "id": "case", "text": "Čo presne zmizlo?", "next": "case" },
+            {
+              "id": "case",
+              "text": "Ten kábel bol aj pred krádežou nezvestný?",
+              "next": "case"
+            },
             {
               "id": "suspects",
-              "text": "Kto tu posledne vyhral?",
+              "text": "Ktorý hajzel mal šťastie?",
               "next": "suspects"
             },
             {
               "id": "reward",
-              "text": "A fakt dostanem štartovné zadarmo?",
+              "text": "Zadarmo prehrám dvakrát toľko!",
               "next": "reward"
             },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            { "id": "leave", "text": "Idem vyšetrovať cudzí majetok." }
           ],
           "speech": {
             "audio": "speech/bdfc921f-b552-4049-9e53-cf687a86715c/audio.wav",
@@ -2278,26 +2877,30 @@
             },
             "lipSync": "speech/87bbfb46-46e3-4ed4-bcf5-af68f73b34a3/track.lipsync.json"
           },
-          "subtitle": "Hlavný kábel. Nie predlžovačka, čo ňou Margita vešia klobásy. Zvyšok rozvodu zostal celý. Keď ho nájdeš, oblep koniec a pichni do skrine napravo."
+          "subtitle": "Hlavný kábel je preč, skriňa napravo aj zvyšok rozvodu zostali celé. Keď ho nájdeš, zaizoluj páskou a vráť do skrine; do riti si strč až faktúru."
         },
         {
           "id": "suspects",
           "speaker": "Fero",
           "actor": { "sceneId": "scene4", "hotspotId": "layer1" },
-          "text": "[low, gravelly voice] [angry] Ľubo Šťastný. Potom vraj zomrel. Ideálne načasovanie: dlhy zdedila urna a výhru nikto nevrátil.",
+          "text": "Vyhral Ľubo Šťastný a hneď nato vraj zdochol. Tak poctivo zatvárame turnaj prvýkrát: víťaza v truhle, ostatných v exekúcii.",
           "choices": [
-            { "id": "case", "text": "Čo presne zmizlo?", "next": "case" },
+            {
+              "id": "case",
+              "text": "Ten kábel bol aj pred krádežou nezvestný?",
+              "next": "case"
+            },
             {
               "id": "suspects",
-              "text": "Kto tu posledne vyhral?",
+              "text": "Ktorý hajzel mal šťastie?",
               "next": "suspects"
             },
             {
               "id": "reward",
-              "text": "A fakt dostanem štartovné zadarmo?",
+              "text": "Zadarmo prehrám dvakrát toľko!",
               "next": "reward"
             },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            { "id": "leave", "text": "Idem vyšetrovať cudzí majetok." }
           ],
           "speech": {
             "audio": "speech/2e4f4a7d-2a3f-44c0-8aca-35ef4a5b935c/audio.wav",
@@ -2320,26 +2923,30 @@
             },
             "lipSync": "speech/5f052a36-a18a-4964-89f2-9d2b0c7f8c17/track.lipsync.json"
           },
-          "subtitle": "Ľubo Šťastný. Potom vraj zomrel. Ideálne načasovanie: dlhy zdedila urna a výhru nikto nevrátil."
+          "subtitle": "Vyhral Ľubo Šťastný a hneď nato vraj zdochol. Tak poctivo zatvárame turnaj prvýkrát: víťaza v truhle, ostatných v exekúcii."
         },
         {
           "id": "reward",
           "speaker": "Fero",
           "actor": { "sceneId": "scene4", "hotspotId": "layer1" },
-          "text": "[low, gravelly voice] [angry] Na moje živé deti. Teda na tie, čo sa ešte neodsťahovali. Všetky predĺžené záruky mám na teba.",
+          "text": "Zadarmo, prisahám na tú skriňu bez prúdu. Keď prehráš, môžeš si odniesť stoličku; aj tak má tri nohy a hrá lepšie než ty.",
           "choices": [
-            { "id": "case", "text": "Čo presne zmizlo?", "next": "case" },
+            {
+              "id": "case",
+              "text": "Ten kábel bol aj pred krádežou nezvestný?",
+              "next": "case"
+            },
             {
               "id": "suspects",
-              "text": "Kto tu posledne vyhral?",
+              "text": "Ktorý hajzel mal šťastie?",
               "next": "suspects"
             },
             {
               "id": "reward",
-              "text": "A fakt dostanem štartovné zadarmo?",
+              "text": "Zadarmo prehrám dvakrát toľko!",
               "next": "reward"
             },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            { "id": "leave", "text": "Idem vyšetrovať cudzí majetok." }
           ],
           "speech": {
             "audio": "speech/553b42db-0490-4be5-931b-9ef77dfa7ffc/audio.wav",
@@ -2362,200 +2969,7 @@
             },
             "lipSync": "speech/187da080-06b0-4803-9392-cfd349c1ff55/track.lipsync.json"
           },
-          "subtitle": "Na moje živé deti. Teda na tie, čo sa ešte neodsťahovali. Všetky predĺžené záruky mám na teba."
-        }
-      ]
-    },
-    {
-      "id": "wife-chat",
-      "start": "root",
-      "nodes": [
-        {
-          "id": "root",
-          "speaker": "Margita",
-          "actor": { "sceneId": "scene4", "hotspotId": "layer2" },
-          "text": "Nič nesľubuj na moje meno. Najmä nie splátky.",
-          "choices": [
-            {
-              "id": "supplies",
-              "text": "Nemáte niečo na cestu?",
-              "when": { "not": { "flag": "wife-helped" } },
-              "next": "supplies",
-              "effects": [
-                { "type": "flag", "id": "wife-helped", "value": true },
-                { "type": "addItem", "id": "bread" },
-                { "type": "addItem", "id": "tape" }
-              ]
-            },
-            {
-              "id": "gossip",
-              "text": "Videl niekto zlodeja?",
-              "next": "gossip"
-            },
-            {
-              "id": "fero",
-              "text": "Prečo si to Fero neopraví sám?",
-              "next": "fero"
-            },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
-          ]
-        },
-        {
-          "id": "supplies",
-          "speaker": "Margita",
-          "actor": { "sceneId": "scene4", "hotspotId": "layer2" },
-          "text": "[hoarse, cutting voice] [annoyed] Tu máš rožok a pásku. Rožok nedávaj do rozvodu. Je tvrdší než izolácia, ale priťahuje mravce.",
-          "choices": [
-            {
-              "id": "supplies",
-              "text": "Nemáte niečo na cestu?",
-              "when": { "not": { "flag": "wife-helped" } },
-              "next": "supplies",
-              "effects": [
-                { "type": "flag", "id": "wife-helped", "value": true },
-                { "type": "addItem", "id": "bread" },
-                { "type": "addItem", "id": "tape" }
-              ]
-            },
-            {
-              "id": "gossip",
-              "text": "Videl niekto zlodeja?",
-              "next": "gossip"
-            },
-            {
-              "id": "fero",
-              "text": "Prečo si to Fero neopraví sám?",
-              "next": "fero"
-            },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
-          ],
-          "speech": {
-            "audio": "speech/52b7111a-3ab1-46df-94a7-7cddee772719/audio.wav",
-            "text": "[hoarse, cutting voice] [annoyed] Tu máš rožok a pásku. Rožok nedávaj do rozvodu. Je tvrdší než izolácia, ale priťahuje mravce.",
-            "subtitles": {
-              "text": "Tu máš rožok a pásku. Rožok nedávaj do rozvodu. Je tvrdší než izolácia, ale priťahuje mravce.",
-              "timing": "estimated",
-              "cues": [
-                {
-                  "start": 0,
-                  "end": 3.5556521739130433,
-                  "text": "Tu máš rožok a pásku. Rožok nedávaj do rozvodu."
-                },
-                {
-                  "start": 3.5556521739130433,
-                  "end": 6.959999999999999,
-                  "text": "Je tvrdší než izolácia, ale priťahuje mravce."
-                }
-              ]
-            },
-            "lipSync": "speech/3da5d442-aae1-4008-9113-b16459f468d2/track.lipsync.json"
-          },
-          "subtitle": "Tu máš rožok a pásku. Rožok nedávaj do rozvodu. Je tvrdší než izolácia, ale priťahuje mravce."
-        },
-        {
-          "id": "gossip",
-          "speaker": "Margita",
-          "actor": { "sceneId": "scene4", "hotspotId": "layer2" },
-          "text": "[hoarse, cutting voice] [annoyed] V noci tu šiel biely pohrebák. Z kufra mu trčal kábel. Myslela som, že zasa niekto zakopáva nabíjačku.",
-          "choices": [
-            {
-              "id": "supplies",
-              "text": "Nemáte niečo na cestu?",
-              "when": { "not": { "flag": "wife-helped" } },
-              "next": "supplies",
-              "effects": [
-                { "type": "flag", "id": "wife-helped", "value": true },
-                { "type": "addItem", "id": "bread" },
-                { "type": "addItem", "id": "tape" }
-              ]
-            },
-            {
-              "id": "gossip",
-              "text": "Videl niekto zlodeja?",
-              "next": "gossip"
-            },
-            {
-              "id": "fero",
-              "text": "Prečo si to Fero neopraví sám?",
-              "next": "fero"
-            },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
-          ],
-          "speech": {
-            "audio": "speech/8a0d107b-eb8f-45be-bf28-cd1505f7d5ef/audio.wav",
-            "text": "[hoarse, cutting voice] [annoyed] V noci tu šiel biely pohrebák. Z kufra mu trčal kábel. Myslela som, že zasa niekto zakopáva nabíjačku.",
-            "subtitles": {
-              "text": "V noci tu šiel biely pohrebák. Z kufra mu trčal kábel. Myslela som, že zasa niekto zakopáva nabíjačku.",
-              "timing": "alignment",
-              "cues": [
-                {
-                  "start": 0.24,
-                  "end": 2.48,
-                  "text": "V noci tu šiel biely pohrebák."
-                },
-                {
-                  "start": 2.72,
-                  "end": 7.52,
-                  "text": "Z kufra mu trčal kábel. Myslela som, že zasa niekto zakopáva nabíjačku."
-                }
-              ]
-            },
-            "alignment": "speech/8a0d107b-eb8f-45be-bf28-cd1505f7d5ef/alignment.json",
-            "lipSync": "speech/ac60119d-fa49-4723-9740-12c5364a180a/track.lipsync.json"
-          },
-          "subtitle": "V noci tu šiel biely pohrebák. Z kufra mu trčal kábel. Myslela som, že zasa niekto zakopáva nabíjačku."
-        },
-        {
-          "id": "fero",
-          "speaker": "Margita",
-          "actor": { "sceneId": "scene4", "hotspotId": "layer2" },
-          "text": "[hoarse, cutting voice] [annoyed] Naposledy opravil zvonček tak, že som otvorila dvere a sused dostal výpoveď. Teraz už iba škriabe hlavu.",
-          "choices": [
-            {
-              "id": "supplies",
-              "text": "Nemáte niečo na cestu?",
-              "when": { "not": { "flag": "wife-helped" } },
-              "next": "supplies",
-              "effects": [
-                { "type": "flag", "id": "wife-helped", "value": true },
-                { "type": "addItem", "id": "bread" },
-                { "type": "addItem", "id": "tape" }
-              ]
-            },
-            {
-              "id": "gossip",
-              "text": "Videl niekto zlodeja?",
-              "next": "gossip"
-            },
-            {
-              "id": "fero",
-              "text": "Prečo si to Fero neopraví sám?",
-              "next": "fero"
-            },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
-          ],
-          "speech": {
-            "audio": "speech/e9e78fa1-7324-4a08-aaec-d82faa1d2bda/audio.wav",
-            "text": "[hoarse, cutting voice] [annoyed] Naposledy opravil zvonček tak, že som otvorila dvere a sused dostal výpoveď. Teraz už iba škriabe hlavu.",
-            "subtitles": {
-              "text": "Naposledy opravil zvonček tak, že som otvorila dvere a sused dostal výpoveď. Teraz už iba škriabe hlavu.",
-              "timing": "estimated",
-              "cues": [
-                {
-                  "start": 0,
-                  "end": 5.371650485436893,
-                  "text": "Naposledy opravil zvonček tak, že som otvorila dvere a sused dostal výpoveď."
-                },
-                {
-                  "start": 5.371650485436893,
-                  "end": 7.28,
-                  "text": "Teraz už iba škriabe hlavu."
-                }
-              ]
-            },
-            "lipSync": "speech/675c94f8-7944-4e14-ad2c-07625ed5f11e/track.lipsync.json"
-          },
-          "subtitle": "Naposledy opravil zvonček tak, že som otvorila dvere a sused dostal výpoveď. Teraz už iba škriabe hlavu."
+          "subtitle": "Zadarmo, prisahám na tú skriňu bez prúdu. Keď prehráš, môžeš si odniesť stoličku; aj tak má tri nohy a hrá lepšie než ty."
         }
       ]
     },
@@ -2567,11 +2981,11 @@
           "id": "root",
           "speaker": "Dežo Magnet",
           "actor": { "sceneId": "scene1", "hotspotId": "layer2" },
-          "text": "Ja nič. Tentoraz som to fyzikálne ani nemohol byť.",
+          "text": "More, magnet mám, ale meď neberie. Môžeš si to zapísať na čelo, nech to máš konečne v hlave.",
           "choices": [
             {
               "id": "scrapyard",
-              "text": "Nevieš, kam zmizol kábel?",
+              "text": "Priznaj sa, ten magnet má medené zuby!",
               "next": "scrapyard",
               "effects": [
                 { "type": "flag", "id": "scrapyard-known", "value": true }
@@ -2579,26 +2993,27 @@
             },
             {
               "id": "deposit",
-              "text": "Čo tu robíš bez autobusu?",
+              "text": "Na autobus čakáš alebo ho pasieš?",
               "next": "deposit"
             },
             {
               "id": "hearse",
-              "text": "Videl si biely pohrebák?",
+              "text": "Videl si mŕtvolu s vodičákom?",
               "next": "hearse"
             },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
-          ]
+            { "id": "leave", "text": "Si čistý, fyziku zatknem neskôr." }
+          ],
+          "subtitle": "More, magnet mám, ale meď neberie. Môžeš si to zapísať na čelo, nech to máš konečne v hlave."
         },
         {
           "id": "scrapyard",
           "speaker": "Dežo Magnet",
           "actor": { "sceneId": "scene1", "hotspotId": "layer2" },
-          "text": "[pinched nasal voice] [nervous] Všetci hneď na mňa, lebo mám magnet. Meď sa naň nechytá, génius. Skús Dinga v zberni. Zaspal pri vyhlasovaní vlastnej pracovnej doby.",
+          "text": "Meď nie je magnetická, ty Einstein z kontajnera! Skús zberňu: Dingo tam chrčí pod vrakmi a predáva súčiastky vrátane vlastných.",
           "choices": [
             {
               "id": "scrapyard",
-              "text": "Nevieš, kam zmizol kábel?",
+              "text": "Priznaj sa, ten magnet má medené zuby!",
               "next": "scrapyard",
               "effects": [
                 { "type": "flag", "id": "scrapyard-known", "value": true }
@@ -2606,15 +3021,15 @@
             },
             {
               "id": "deposit",
-              "text": "Čo tu robíš bez autobusu?",
+              "text": "Na autobus čakáš alebo ho pasieš?",
               "next": "deposit"
             },
             {
               "id": "hearse",
-              "text": "Videl si biely pohrebák?",
+              "text": "Videl si mŕtvolu s vodičákom?",
               "next": "hearse"
             },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            { "id": "leave", "text": "Si čistý, fyziku zatknem neskôr." }
           ],
           "speech": {
             "audio": "speech/fc55c0df-c3e6-45bc-a07c-87f88eaab271/audio.wav",
@@ -2643,17 +3058,17 @@
             "alignment": "speech/fc55c0df-c3e6-45bc-a07c-87f88eaab271/alignment.json",
             "lipSync": "speech/cd0c3e56-cd5f-4eec-9e49-c3e0472dd752/track.lipsync.json"
           },
-          "subtitle": "Všetci hneď na mňa, lebo mám magnet. Meď sa naň nechytá, génius. Skús Dinga v zberni. Zaspal pri vyhlasovaní vlastnej pracovnej doby."
+          "subtitle": "Meď nie je magnetická, ty Einstein z kontajnera! Skús zberňu: Dingo tam chrčí pod vrakmi a predáva súčiastky vrátane vlastných."
         },
         {
           "id": "deposit",
           "speaker": "Dežo Magnet",
           "actor": { "sceneId": "scene1", "hotspotId": "layer2" },
-          "text": "[pinched nasal voice] [nervous] Čakám na zálohu za fľašu. Autobus nepríde, ten už vyškrtli aj z cestovného poriadku. Ukáž mi fľašu a dostaneš môj magnet. Na meď mi je aj tak na hovno.",
+          "text": "Ukáž vratnú fľašu a magnet ti dám, fľašu si nechaj. Potrebujem len vidieť niečo, za čo ešte niekto ručí.",
           "choices": [
             {
               "id": "scrapyard",
-              "text": "Nevieš, kam zmizol kábel?",
+              "text": "Priznaj sa, ten magnet má medené zuby!",
               "next": "scrapyard",
               "effects": [
                 { "type": "flag", "id": "scrapyard-known", "value": true }
@@ -2661,15 +3076,15 @@
             },
             {
               "id": "deposit",
-              "text": "Čo tu robíš bez autobusu?",
+              "text": "Na autobus čakáš alebo ho pasieš?",
               "next": "deposit"
             },
             {
               "id": "hearse",
-              "text": "Videl si biely pohrebák?",
+              "text": "Videl si mŕtvolu s vodičákom?",
               "next": "hearse"
             },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            { "id": "leave", "text": "Si čistý, fyziku zatknem neskôr." }
           ],
           "speech": {
             "audio": "speech/654bc89b-7eaa-4cd4-9aef-c3e856f56552/audio.wav",
@@ -2702,17 +3117,17 @@
             },
             "lipSync": "speech/37b35811-34da-4207-9298-cec415c65520/track.lipsync.json"
           },
-          "subtitle": "Čakám na zálohu za fľašu. Autobus nepríde, ten už vyškrtli aj z cestovného poriadku. Ukáž mi fľašu a dostaneš môj magnet. Na meď mi je aj tak na hovno."
+          "subtitle": "Ukáž vratnú fľašu a magnet ti dám, fľašu si nechaj. Potrebujem len vidieť niečo, za čo ešte niekto ručí."
         },
         {
           "id": "hearse",
           "speaker": "Dežo Magnet",
           "actor": { "sceneId": "scene1", "hotspotId": "layer2" },
-          "text": "[pinched nasal voice] [nervous] Hej. Šofér si kupoval bagetu. Na mŕtvolu mal výborný apetít. Na smerovke mal veniec s nápisom ĽUBO, VRÁŤ DVE EURÁ.",
+          "text": "Biely pohrebák. Šofér žral bagetu cez smútočný veniec. Zakričal som mu sústrasť a poslal ma do piče. Tak asi rodina.",
           "choices": [
             {
               "id": "scrapyard",
-              "text": "Nevieš, kam zmizol kábel?",
+              "text": "Priznaj sa, ten magnet má medené zuby!",
               "next": "scrapyard",
               "effects": [
                 { "type": "flag", "id": "scrapyard-known", "value": true }
@@ -2720,15 +3135,15 @@
             },
             {
               "id": "deposit",
-              "text": "Čo tu robíš bez autobusu?",
+              "text": "Na autobus čakáš alebo ho pasieš?",
               "next": "deposit"
             },
             {
               "id": "hearse",
-              "text": "Videl si biely pohrebák?",
+              "text": "Videl si mŕtvolu s vodičákom?",
               "next": "hearse"
             },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            { "id": "leave", "text": "Si čistý, fyziku zatknem neskôr." }
           ],
           "speech": {
             "audio": "speech/8424702f-27e7-4e7a-a213-58c2eadf0983/audio.wav",
@@ -2757,7 +3172,7 @@
             "alignment": "speech/8424702f-27e7-4e7a-a213-58c2eadf0983/alignment.json",
             "lipSync": "speech/17289ce0-695d-4ace-8b57-e643f6b3a60a/track.lipsync.json"
           },
-          "subtitle": "Hej. Šofér si kupoval bagetu. Na mŕtvolu mal výborný apetít. Na smerovke mal veniec s nápisom ĽUBO, VRÁŤ DVE EURÁ."
+          "subtitle": "Biely pohrebák. Šofér žral bagetu cez smútočný veniec. Zakričal som mu sústrasť a poslal ma do piče. Tak asi rodina."
         }
       ]
     },
@@ -2770,7 +3185,7 @@
           "id": "line",
           "speaker": "Dežo Magnet",
           "actor": { "sceneId": "scene1", "hotspotId": "layer2" },
-          "text": "[pinched nasal voice] [nervous] Vratná fľaša! Aspoň niečo tu má budúcnosť. Magnet je tvoj, fľašu si nechaj. Ešte sa ti zíde na tekuté dôkazy.",
+          "text": "Vratná fľaša, ty nádhera, ešte nás úplne neodpísali! Ber magnet a fľašu si nechaj; na rozdiel od teba sa vie vrátiť tam, kam patrí.",
           "choices": [],
           "speech": {
             "audio": "speech/1d88947b-60fc-472b-b543-8faad4c95b00/audio.wav",
@@ -2798,7 +3213,7 @@
             },
             "lipSync": "speech/e37c04eb-029e-4ec7-8fa6-0b1003aa168c/track.lipsync.json"
           },
-          "subtitle": "Vratná fľaša! Aspoň niečo tu má budúcnosť. Magnet je tvoj, fľašu si nechaj. Ešte sa ti zíde na tekuté dôkazy."
+          "subtitle": "Vratná fľaša, ty nádhera, ešte nás úplne neodpísali! Ber magnet a fľašu si nechaj; na rozdiel od teba sa vie vrátiť tam, kam patrí."
         }
       ]
     },
@@ -2810,50 +3225,51 @@
           "id": "root",
           "speaker": "Etela Pečiatka",
           "actor": { "sceneId": "scene1", "hotspotId": "layer1" },
-          "text": "Úrad je otvorený. Ja čakám na spoj do minulého režimu.",
+          "text": "Dýchajte potichu, triedim úmrtia. Jeden mi tu minulý týždeň ožil a posral celý abecedný register.",
           "choices": [
             {
               "id": "farm",
-              "text": "Kam by tu človek išiel po mlieko?",
+              "text": "Vemeno sa vybavuje u vás?",
               "next": "farm",
               "effects": [{ "type": "flag", "id": "farm-known", "value": true }]
             },
             {
               "id": "stamp",
-              "text": "Nemáte úradnú pečiatku?",
+              "text": "Chcem zomrieť úradne, mám voľno.",
               "next": "stamp"
             },
             {
               "id": "hearse",
-              "text": "Poznáte Ľuba Šťastného?",
+              "text": "Máte Ľuba aj v šanóne na živých?",
               "next": "hearse"
             },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
-          ]
+            { "id": "leave", "text": "Odchádzam bez potvrdenia, dráma!" }
+          ],
+          "subtitle": "Dýchajte potichu, triedim úmrtia. Jeden mi tu minulý týždeň ožil a posral celý abecedný register."
         },
         {
           "id": "farm",
           "speaker": "Etela Pečiatka",
           "actor": { "sceneId": "scene1", "hotspotId": "layer1" },
-          "text": "[dry, squeaky, crackling voice] [sarcastic] Za Jolandou do kravína. Krava ju živí a prasa jej robí audítora. Vraj potrebuje svätenú vodu. Kostol ju dáva zadarmo, ešte nemajú terminál.",
+          "text": "Jolanda v kravíne poisťuje kravu proti peklu. Od pumpy pri kostole jej dones svätenú vodu; u mňa je aj tá spoplatnená ako výpis z večnosti.",
           "choices": [
             {
               "id": "farm",
-              "text": "Kam by tu človek išiel po mlieko?",
+              "text": "Vemeno sa vybavuje u vás?",
               "next": "farm",
               "effects": [{ "type": "flag", "id": "farm-known", "value": true }]
             },
             {
               "id": "stamp",
-              "text": "Nemáte úradnú pečiatku?",
+              "text": "Chcem zomrieť úradne, mám voľno.",
               "next": "stamp"
             },
             {
               "id": "hearse",
-              "text": "Poznáte Ľuba Šťastného?",
+              "text": "Máte Ľuba aj v šanóne na živých?",
               "next": "hearse"
             },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            { "id": "leave", "text": "Odchádzam bez potvrdenia, dráma!" }
           ],
           "speech": {
             "audio": "speech/d6fa17fe-dc87-4e8f-ac02-d4d99291c39f/audio.wav",
@@ -2881,31 +3297,31 @@
             },
             "lipSync": "speech/9cce64af-46ba-4d98-9bea-eaab7439acb8/track.lipsync.json"
           },
-          "subtitle": "Za Jolandou do kravína. Krava ju živí a prasa jej robí audítora. Vraj potrebuje svätenú vodu. Kostol ju dáva zadarmo, ešte nemajú terminál."
+          "subtitle": "Jolanda v kravíne poisťuje kravu proti peklu. Od pumpy pri kostole jej dones svätenú vodu; u mňa je aj tá spoplatnená ako výpis z večnosti."
         },
         {
           "id": "stamp",
           "speaker": "Etela Pečiatka",
           "actor": { "sceneId": "scene1", "hotspotId": "layer1" },
-          "text": "[dry, squeaky, crackling voice] [sarcastic] Mám. Ale nedávam ju hocikomu, kto chce byť mŕtvy. Dones dôkaz, že Ľubo po pohrebe ešte niečo reklamoval. Skús servisný denník z herne.",
+          "text": "Pečiatku nedám každému chujovi, čo by rád zomrel bez poradového čísla. Prines servisný denník z herne: chcem dôkaz, že Ľubo opravoval automat až po vlastnom pohrebe.",
           "choices": [
             {
               "id": "farm",
-              "text": "Kam by tu človek išiel po mlieko?",
+              "text": "Vemeno sa vybavuje u vás?",
               "next": "farm",
               "effects": [{ "type": "flag", "id": "farm-known", "value": true }]
             },
             {
               "id": "stamp",
-              "text": "Nemáte úradnú pečiatku?",
+              "text": "Chcem zomrieť úradne, mám voľno.",
               "next": "stamp"
             },
             {
               "id": "hearse",
-              "text": "Poznáte Ľuba Šťastného?",
+              "text": "Máte Ľuba aj v šanóne na živých?",
               "next": "hearse"
             },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            { "id": "leave", "text": "Odchádzam bez potvrdenia, dráma!" }
           ],
           "speech": {
             "audio": "speech/75667b14-bbb6-428f-a69d-30a55caad50d/audio.wav",
@@ -2934,31 +3350,31 @@
             "alignment": "speech/75667b14-bbb6-428f-a69d-30a55caad50d/alignment.json",
             "lipSync": "speech/0d3cc935-901d-4f9e-89d3-f2b5178b7a05/track.lipsync.json"
           },
-          "subtitle": "Mám. Ale nedávam ju hocikomu, kto chce byť mŕtvy. Dones dôkaz, že Ľubo po pohrebe ešte niečo reklamoval. Skús servisný denník z herne."
+          "subtitle": "Pečiatku nedám každému chujovi, čo by rád zomrel bez poradového čísla. Prines servisný denník z herne: chcem dôkaz, že Ľubo opravoval automat až po vlastnom pohrebe."
         },
         {
           "id": "hearse",
           "speaker": "Etela Pečiatka",
           "actor": { "sceneId": "scene1", "hotspotId": "layer1" },
-          "text": "[dry, squeaky, crackling voice] [sarcastic] Bývalý účtovník turnaja. Zomrel bez rozlúčky a s mojím hrncom. Ak vstane z mŕtvych bez neho, pochovám ho osobne.",
+          "text": "Ľubov úmrtný list mám v troch kópiách a ani jednu mu nezruším zadarmo. Ak žije, nech príde osobne podať námietku proti nebožtíkovi.",
           "choices": [
             {
               "id": "farm",
-              "text": "Kam by tu človek išiel po mlieko?",
+              "text": "Vemeno sa vybavuje u vás?",
               "next": "farm",
               "effects": [{ "type": "flag", "id": "farm-known", "value": true }]
             },
             {
               "id": "stamp",
-              "text": "Nemáte úradnú pečiatku?",
+              "text": "Chcem zomrieť úradne, mám voľno.",
               "next": "stamp"
             },
             {
               "id": "hearse",
-              "text": "Poznáte Ľuba Šťastného?",
+              "text": "Máte Ľuba aj v šanóne na živých?",
               "next": "hearse"
             },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            { "id": "leave", "text": "Odchádzam bez potvrdenia, dráma!" }
           ],
           "speech": {
             "audio": "speech/4168565c-ad65-4ac0-a9e0-52c1094a19e4/audio.wav",
@@ -2986,7 +3402,7 @@
             },
             "lipSync": "speech/f530071d-53dd-4527-b0ad-4b53da406255/track.lipsync.json"
           },
-          "subtitle": "Bývalý účtovník turnaja. Zomrel bez rozlúčky a s mojím hrncom. Ak vstane z mŕtvych bez neho, pochovám ho osobne."
+          "subtitle": "Ľubov úmrtný list mám v troch kópiách a ani jednu mu nezruším zadarmo. Ak žije, nech príde osobne podať námietku proti nebožtíkovi."
         }
       ]
     },
@@ -2999,7 +3415,7 @@
           "id": "line",
           "speaker": "Etela Pečiatka",
           "actor": { "sceneId": "scene1", "hotspotId": "layer1" },
-          "text": "[dry, squeaky, crackling voice] [sarcastic] Servis deň po pohrebe! Ten hajzel je živý aj podľa papierov. Tu máš pečiatku. Opečiatkuj prázdny úmrtný list z kostolnej nástenky; Milan púšťa do kaplnky iba zosnulých.",
+          "text": "Servis deň po pohrebe, ten zmrd mi falšuje cintorín! Ber pečiatku, buchni ju na prázdny úmrtný list z kostola a umri aspoň ty poriadne.",
           "choices": [],
           "speech": {
             "audio": "speech/c6b12ed2-5733-4fb7-9e19-01d12cb9efe4/audio.wav",
@@ -3027,7 +3443,7 @@
             },
             "lipSync": "speech/83d1566f-4aaa-45f4-9e95-12ef372c5b16/track.lipsync.json"
           },
-          "subtitle": "Servis deň po pohrebe! Ten hajzel je živý aj podľa papierov. Tu máš pečiatku. Opečiatkuj prázdny úmrtný list z kostolnej nástenky; Milan púšťa do kaplnky iba zosnulých."
+          "subtitle": "Servis deň po pohrebe, ten zmrd mi falšuje cintorín! Ber pečiatku, buchni ju na prázdny úmrtný list z kostola a umri aspoň ty poriadne."
         }
       ]
     },
@@ -3039,40 +3455,49 @@
           "id": "root",
           "speaker": "Otec Bonifác",
           "actor": { "sceneId": "scene3", "hotspotId": "priest" },
-          "text": "Syn môj, bez prúdu je aj večné svetlo len odporúčanie.",
+          "text": "Vitaj, synu, požehnávam automaty aj cez výpadok. Ovocie je dar Boží; tri čerešne za sebou sú jeho osobná správa mne.",
           "choices": [
             {
               "id": "water",
-              "text": "Kde vezmem svätenú vodu?",
+              "text": "Požehnajte mi fľašu, ja som už plný.",
               "next": "water"
             },
             {
               "id": "cemetery",
-              "text": "Pustíte ma na cintorín?",
+              "text": "Váš automat žerie hriechy aj drobné?",
               "next": "cemetery"
             },
-            { "id": "paper", "text": "Načo je tá nástenka?", "next": "paper" },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
-          ]
+            {
+              "id": "paper",
+              "text": "Môžem si úmrtný list vypísať predbežne?",
+              "next": "paper"
+            },
+            { "id": "leave", "text": "Amen, idem skúsiť inú prevádzku." }
+          ],
+          "subtitle": "Vitaj, synu, požehnávam automaty aj cez výpadok. Ovocie je dar Boží; tri čerešne za sebou sú jeho osobná správa mne."
         },
         {
           "id": "water",
           "speaker": "Otec Bonifác",
           "actor": { "sceneId": "scene3", "hotspotId": "priest" },
-          "text": "[trembling, nasal, theatrical voice] [dramatic] Pumpa naľavo. Naber do vlastnej fľaše. Posvätil som celý prívod, takže aj obecné WC má konečne duchovný rozmer.",
+          "text": "Pumpa naľavo dáva svätenú vodu, naber si do fľaše. Dal som požehnať celý vodovod; v spovednici odvtedy necítiť hriech, iba chlór.",
           "choices": [
             {
               "id": "water",
-              "text": "Kde vezmem svätenú vodu?",
+              "text": "Požehnajte mi fľašu, ja som už plný.",
               "next": "water"
             },
             {
               "id": "cemetery",
-              "text": "Pustíte ma na cintorín?",
+              "text": "Váš automat žerie hriechy aj drobné?",
               "next": "cemetery"
             },
-            { "id": "paper", "text": "Načo je tá nástenka?", "next": "paper" },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            {
+              "id": "paper",
+              "text": "Môžem si úmrtný list vypísať predbežne?",
+              "next": "paper"
+            },
+            { "id": "leave", "text": "Amen, idem skúsiť inú prevádzku." }
           ],
           "speech": {
             "audio": "speech/9f9b8388-293f-41d8-ac0b-654b84a9acad/audio.wav",
@@ -3096,26 +3521,30 @@
             "alignment": "speech/9f9b8388-293f-41d8-ac0b-654b84a9acad/alignment.json",
             "lipSync": "speech/84fa04b2-ea74-4b2b-a096-4b660aaa6d10/track.lipsync.json"
           },
-          "subtitle": "Pumpa naľavo. Naber do vlastnej fľaše. Posvätil som celý prívod, takže aj obecné WC má konečne duchovný rozmer."
+          "subtitle": "Pumpa naľavo dáva svätenú vodu, naber si do fľaše. Dal som požehnať celý vodovod; v spovednici odvtedy necítiť hriech, iba chlór."
         },
         {
           "id": "cemetery",
           "speaker": "Otec Bonifác",
           "actor": { "sceneId": "scene3", "hotspotId": "priest" },
-          "text": "[trembling, nasal, theatrical voice] [dramatic] Bránu otvorím, keď bude čím zvoniť. Elektrický zvon nehrá a mne po treťom ding-dongu krvácala dôstojnosť. Jolanda má na krave poriadny zvonec.",
+          "text": "Bránu strážim osobne. Odbehnem iba na jackpot. Alebo na zvonec, keď znie ako jackpot. Prečo si to zapisuješ, ty malý judáš?",
           "choices": [
             {
               "id": "water",
-              "text": "Kde vezmem svätenú vodu?",
+              "text": "Požehnajte mi fľašu, ja som už plný.",
               "next": "water"
             },
             {
               "id": "cemetery",
-              "text": "Pustíte ma na cintorín?",
+              "text": "Váš automat žerie hriechy aj drobné?",
               "next": "cemetery"
             },
-            { "id": "paper", "text": "Načo je tá nástenka?", "next": "paper" },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            {
+              "id": "paper",
+              "text": "Môžem si úmrtný list vypísať predbežne?",
+              "next": "paper"
+            },
+            { "id": "leave", "text": "Amen, idem skúsiť inú prevádzku." }
           ],
           "speech": {
             "audio": "speech/7a1ca127-8343-42ed-8773-7b923613f72a/audio.wav",
@@ -3144,26 +3573,30 @@
             "alignment": "speech/7a1ca127-8343-42ed-8773-7b923613f72a/alignment.json",
             "lipSync": "speech/521954f9-f620-4be0-8abb-7187f57aef36/track.lipsync.json"
           },
-          "subtitle": "Bránu otvorím, keď bude čím zvoniť. Elektrický zvon nehrá a mne po treťom ding-dongu krvácala dôstojnosť. Jolanda má na krave poriadny zvonec."
+          "subtitle": "Bránu strážim osobne. Odbehnem iba na jackpot. Alebo na zvonec, keď znie ako jackpot. Prečo si to zapisuješ, ty malý judáš?"
         },
         {
           "id": "paper",
           "speaker": "Otec Bonifác",
           "actor": { "sceneId": "scene3", "hotspotId": "priest" },
-          "text": "[trembling, nasal, theatrical voice] [dramatic] Úmrtné listy. Vyplníš sám, na pečiatku je obecná Etela. Konečne administratíva, pri ktorej nemusíš prísť osobne živý.",
+          "text": "Prázdny úmrtný list visí na nástenke, pečiatku má Etela. Čítaj ho nahlas a zaspí aj dobytok; ja som pri kolónke trvalý pobyt prišiel o dvoch miništrantov.",
           "choices": [
             {
               "id": "water",
-              "text": "Kde vezmem svätenú vodu?",
+              "text": "Požehnajte mi fľašu, ja som už plný.",
               "next": "water"
             },
             {
               "id": "cemetery",
-              "text": "Pustíte ma na cintorín?",
+              "text": "Váš automat žerie hriechy aj drobné?",
               "next": "cemetery"
             },
-            { "id": "paper", "text": "Načo je tá nástenka?", "next": "paper" },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            {
+              "id": "paper",
+              "text": "Môžem si úmrtný list vypísať predbežne?",
+              "next": "paper"
+            },
+            { "id": "leave", "text": "Amen, idem skúsiť inú prevádzku." }
           ],
           "speech": {
             "audio": "speech/0b9634e7-d4ed-4478-8fce-25be96bafc97/audio.wav",
@@ -3186,7 +3619,7 @@
             },
             "lipSync": "speech/30a6a125-daac-4d6c-abdd-80ed7bebeefb/track.lipsync.json"
           },
-          "subtitle": "Úmrtné listy. Vyplníš sám, na pečiatku je obecná Etela. Konečne administratíva, pri ktorej nemusíš prísť osobne živý."
+          "subtitle": "Prázdny úmrtný list visí na nástenke, pečiatku má Etela. Čítaj ho nahlas a zaspí aj dobytok; ja som pri kolónke trvalý pobyt prišiel o dvoch miništrantov."
         }
       ]
     },
@@ -3199,7 +3632,7 @@
           "id": "line",
           "speaker": "Otec Bonifác",
           "actor": { "sceneId": "scene3", "hotspotId": "priest" },
-          "text": "[trembling, nasal, theatrical voice] [dramatic] Krásny tón. Trochu pasienok, trochu posledný súd. Bránu som otvoril. Pri pohrebe Ľuba som pre istotu pochoval aj jeho záruku na automat.",
+          "text": "JACKPOT, svätá Mária, tri zvony a ja bez drobných! Bránu na cintorín som odomkol, uhni, idem tej mašine osobne rozhrešiť vnútornosti.",
           "choices": [],
           "speech": {
             "audio": "speech/cf1c8376-5768-4e3e-b874-8df59ab1117b/audio.wav",
@@ -3223,7 +3656,7 @@
             },
             "lipSync": "speech/8005f4d3-011f-4f53-8187-6ff94c081231/track.lipsync.json"
           },
-          "subtitle": "Krásny tón. Trochu pasienok, trochu posledný súd. Bránu som otvoril. Pri pohrebe Ľuba som pre istotu pochoval aj jeho záruku na automat."
+          "subtitle": "JACKPOT, svätá Mária, tri zvony a ja bez drobných! Bránu na cintorín som odomkol, uhni, idem tej mašine osobne rozhrešiť vnútornosti."
         }
       ]
     },
@@ -3235,40 +3668,49 @@
           "id": "root",
           "speaker": "Milan Jamka",
           "actor": { "sceneId": "scene5", "hotspotId": "layer1" },
-          "text": "Hrob si rezervuješ vopred. Reklamácie až po kremácii.",
+          "text": "Tichšie, klienti sa mi práve zverujú. Ty ešte dýchaš; hnusný zvyk, ale aj z toho ťa dostanem.",
           "choices": [
             {
               "id": "chapel",
-              "text": "Potrebujem do kaplnky.",
+              "text": "Pochovajte ma na skúšku, som zdravý!",
               "next": "chapel"
             },
             {
               "id": "lubo",
-              "text": "Naozaj ste pochovali Ľuba?",
+              "text": "Ľubo v truhle frflal alebo sa mu to páčilo?",
               "next": "lubo"
             },
-            { "id": "key", "text": "A kľúč od krypty?", "next": "key" },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
-          ]
+            {
+              "id": "key",
+              "text": "Kde tu skrývate kľúč od mŕtvych?",
+              "next": "key"
+            },
+            { "id": "leave", "text": "Dýcham vám tu zbytočne, idem." }
+          ],
+          "subtitle": "Tichšie, klienti sa mi práve zverujú. Ty ešte dýchaš; hnusný zvyk, ale aj z toho ťa dostanem."
         },
         {
           "id": "chapel",
           "speaker": "Milan Jamka",
           "actor": { "sceneId": "scene5", "hotspotId": "layer1" },
-          "text": "[unnaturally deep, hollow, creaking voice] [deadpan] Len s vlastným úmrtným listom. Živí mi tam nechávajú odtlačky a potom mám nadčasy. Papier pri kostole, pečiatku dáva Etela.",
+          "text": "Na rakvu patrí úmrtný list. Tebe pohreb kazí nos: pri dýchaní sa hýbe. Čo sa hýbe, dá sa zaštipnúť. Potom si ľahni, nech ti to môžem uznať.",
           "choices": [
             {
               "id": "chapel",
-              "text": "Potrebujem do kaplnky.",
+              "text": "Pochovajte ma na skúšku, som zdravý!",
               "next": "chapel"
             },
             {
               "id": "lubo",
-              "text": "Naozaj ste pochovali Ľuba?",
+              "text": "Ľubo v truhle frflal alebo sa mu to páčilo?",
               "next": "lubo"
             },
-            { "id": "key", "text": "A kľúč od krypty?", "next": "key" },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            {
+              "id": "key",
+              "text": "Kde tu skrývate kľúč od mŕtvych?",
+              "next": "key"
+            },
+            { "id": "leave", "text": "Dýcham vám tu zbytočne, idem." }
           ],
           "speech": {
             "audio": "speech/28fbedcb-c32b-4f71-9b0e-002895ce4299/audio.wav",
@@ -3296,26 +3738,30 @@
             },
             "lipSync": "speech/8736dd8f-0c76-45d9-88f8-f7832aec837e/track.lipsync.json"
           },
-          "subtitle": "Len s vlastným úmrtným listom. Živí mi tam nechávajú odtlačky a potom mám nadčasy. Papier pri kostole, pečiatku dáva Etela."
+          "subtitle": "Na rakvu patrí úmrtný list. Tebe pohreb kazí nos: pri dýchaní sa hýbe. Čo sa hýbe, dá sa zaštipnúť. Potom si ľahni, nech ti to môžem uznať."
         },
         {
           "id": "lubo",
           "speaker": "Milan Jamka",
           "actor": { "sceneId": "scene5", "hotspotId": "layer1" },
-          "text": "[unnaturally deep, hollow, creaking voice] [deadpan] Pochovali sme skrinku od televízora. Tvrdil, že chce ekologický pohreb. Potom mi z truhly zazvonil telefón a objednal si taxík.",
+          "text": "Ľubova truhla bola prázdna, zato z nej tiekla horčica. Odvtedy mi mŕtvi šepkajú, že majú hlad; takého kokota tu už pochovávať nebudem zadarmo.",
           "choices": [
             {
               "id": "chapel",
-              "text": "Potrebujem do kaplnky.",
+              "text": "Pochovajte ma na skúšku, som zdravý!",
               "next": "chapel"
             },
             {
               "id": "lubo",
-              "text": "Naozaj ste pochovali Ľuba?",
+              "text": "Ľubo v truhle frflal alebo sa mu to páčilo?",
               "next": "lubo"
             },
-            { "id": "key", "text": "A kľúč od krypty?", "next": "key" },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            {
+              "id": "key",
+              "text": "Kde tu skrývate kľúč od mŕtvych?",
+              "next": "key"
+            },
+            { "id": "leave", "text": "Dýcham vám tu zbytočne, idem." }
           ],
           "speech": {
             "audio": "speech/063a8396-cc7b-4193-91e0-a4a35422f239/audio.wav",
@@ -3343,26 +3789,30 @@
             },
             "lipSync": "speech/63ee70ed-6555-44e7-95d3-eeb025f8fd79/track.lipsync.json"
           },
-          "subtitle": "Pochovali sme skrinku od televízora. Tvrdil, že chce ekologický pohreb. Potom mi z truhly zazvonil telefón a objednal si taxík."
+          "subtitle": "Ľubova truhla bola prázdna, zato z nej tiekla horčica. Odvtedy mi mŕtvi šepkajú, že majú hlad; takého kokota tu už pochovávať nebudem zadarmo."
         },
         {
           "id": "key",
           "speaker": "Milan Jamka",
           "actor": { "sceneId": "scene5", "hotspotId": "layer1" },
-          "text": "[unnaturally deep, hollow, creaking voice] [deadpan] Spadol mi do mreže v kaplnke. Nie je hlboko. Niečo magnetické na špagáte ho vytiahne, rukou tam netlač. Tá mreža vyhrala tri rozvody.",
+          "text": "Kľúč od krypty mi spadol pod mrežu v kaplnke. Spusť magnet na špagáte; rukou tam nelez, niečo zdola mi ju včera pohladilo.",
           "choices": [
             {
               "id": "chapel",
-              "text": "Potrebujem do kaplnky.",
+              "text": "Pochovajte ma na skúšku, som zdravý!",
               "next": "chapel"
             },
             {
               "id": "lubo",
-              "text": "Naozaj ste pochovali Ľuba?",
+              "text": "Ľubo v truhle frflal alebo sa mu to páčilo?",
               "next": "lubo"
             },
-            { "id": "key", "text": "A kľúč od krypty?", "next": "key" },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            {
+              "id": "key",
+              "text": "Kde tu skrývate kľúč od mŕtvych?",
+              "next": "key"
+            },
+            { "id": "leave", "text": "Dýcham vám tu zbytočne, idem." }
           ],
           "speech": {
             "audio": "speech/fe7f3ee5-8047-4011-a5d3-0918b7e08ec4/audio.wav",
@@ -3390,7 +3840,7 @@
             },
             "lipSync": "speech/b43e9537-700b-4148-b65a-d753ca36cd82/track.lipsync.json"
           },
-          "subtitle": "Spadol mi do mreže v kaplnke. Nie je hlboko. Niečo magnetické na špagáte ho vytiahne, rukou tam netlač. Tá mreža vyhrala tri rozvody."
+          "subtitle": "Kľúč od krypty mi spadol pod mrežu v kaplnke. Spusť magnet na špagáte; rukou tam nelez, niečo zdola mi ju včera pohladilo."
         }
       ]
     },
@@ -3403,7 +3853,7 @@
           "id": "line",
           "speaker": "Milan Jamka",
           "actor": { "sceneId": "scene5", "hotspotId": "layer1" },
-          "text": "[unnaturally deep, hollow, creaking voice] [deadpan] Rudo, úradne mŕtvy. Konečne slušný klient. Kaplnka je tvoja. Ak tam nájdeš živého Ľuba, nech mi aspoň vráti dosky z truhly.",
+          "text": "Pohreb vybavený, Rudo: ani si nesmrdel, kolíček urobil svoje. Kaplnka je otvorená; keď zas ožiješ, nešliap mi po klientovi, čo býva pod prahom.",
           "choices": [],
           "speech": {
             "audio": "speech/d75713e1-45d2-4c53-9af0-cfc5e52e562b/audio.wav",
@@ -3428,7 +3878,7 @@
             "alignment": "speech/d75713e1-45d2-4c53-9af0-cfc5e52e562b/alignment.json",
             "lipSync": "speech/17b1329b-c87d-4f8c-ba42-87e356dbce83/track.lipsync.json"
           },
-          "subtitle": "Rudo, úradne mŕtvy. Konečne slušný klient. Kaplnka je tvoja. Ak tam nájdeš živého Ľuba, nech mi aspoň vráti dosky z truhly."
+          "subtitle": "Pohreb vybavený, Rudo: ani si nesmrdel, kolíček urobil svoje. Kaplnka je otvorená; keď zas ožiješ, nešliap mi po klientovi, čo býva pod prahom."
         }
       ]
     },
@@ -3440,11 +3890,11 @@
           "id": "root",
           "speaker": "Karol Odmerka",
           "actor": { "sceneId": "scene6", "hotspotId": "innkeeper" },
-          "text": "Pivo tečie, peniaze stoja. Takže zasa naopak.",
+          "text": "Pípa chrchle včerajšiu penu a herňa stojí. Ak si prišiel piť na sekeru, máš smolu: tú som už musel predať.",
           "choices": [
             {
               "id": "grounds",
-              "text": "Nemáte kávu?",
+              "text": "Máte kávu, čo sa dá aj prežúvať?",
               "when": { "not": { "flag": "grounds-given" } },
               "next": "grounds",
               "effects": [
@@ -3452,20 +3902,29 @@
                 { "type": "addItem", "id": "coffee-grounds" }
               ]
             },
-            { "id": "gaming", "text": "Otvoríte herňu?", "next": "gaming" },
-            { "id": "lubo", "text": "Kto naposledy hral?", "next": "lubo" },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
-          ]
+            {
+              "id": "gaming",
+              "text": "Pípu opravím, krígle vyšetrím zvnútra.",
+              "next": "gaming"
+            },
+            {
+              "id": "lubo",
+              "text": "Nalievali ste tomu mŕtvemu aj druhú?",
+              "next": "lubo"
+            },
+            { "id": "leave", "text": "Utekám, kým ma dáte na účet." }
+          ],
+          "subtitle": "Pípa chrchle včerajšiu penu a herňa stojí. Ak si prišiel piť na sekeru, máš smolu: tú som už musel predať."
         },
         {
           "id": "grounds",
           "speaker": "Karol Odmerka",
           "actor": { "sceneId": "scene6", "hotspotId": "innkeeper" },
-          "text": "[shredded, raspy tenor] [irritated] Mletú. Elektrina nejde, kanvica je teraz drahá váza. Zmiešaj ju s mliekom. Dingo to vypije studené, má žalúdok zo zberu.",
+          "text": "Tu máš mletú, zmiešaj ju s mliekom na studenú kávu. Dingov klystír ju berie aj bez cukru; cukor by mu mohol zalepiť dušu.",
           "choices": [
             {
               "id": "grounds",
-              "text": "Nemáte kávu?",
+              "text": "Máte kávu, čo sa dá aj prežúvať?",
               "when": { "not": { "flag": "grounds-given" } },
               "next": "grounds",
               "effects": [
@@ -3473,9 +3932,17 @@
                 { "type": "addItem", "id": "coffee-grounds" }
               ]
             },
-            { "id": "gaming", "text": "Otvoríte herňu?", "next": "gaming" },
-            { "id": "lubo", "text": "Kto naposledy hral?", "next": "lubo" },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            {
+              "id": "gaming",
+              "text": "Pípu opravím, krígle vyšetrím zvnútra.",
+              "next": "gaming"
+            },
+            {
+              "id": "lubo",
+              "text": "Nalievali ste tomu mŕtvemu aj druhú?",
+              "next": "lubo"
+            },
+            { "id": "leave", "text": "Utekám, kým ma dáte na účet." }
           ],
           "speech": {
             "audio": "speech/f93348e4-3ce8-4741-be90-cd743f533b47/audio.wav",
@@ -3498,17 +3965,17 @@
             },
             "lipSync": "speech/02fd8968-da70-4438-8a71-cdf5e0d3c076/track.lipsync.json"
           },
-          "subtitle": "Mletú. Elektrina nejde, kanvica je teraz drahá váza. Zmiešaj ju s mliekom. Dingo to vypije studené, má žalúdok zo zberu."
+          "subtitle": "Tu máš mletú, zmiešaj ju s mliekom na studenú kávu. Dingov klystír ju berie aj bez cukru; cukor by mu mohol zalepiť dušu."
         },
         {
           "id": "gaming",
           "speaker": "Karol Odmerka",
           "actor": { "sceneId": "scene6", "hotspotId": "innkeeper" },
-          "text": "[shredded, raspy tenor] [irritated] Keď mi niekto opraví pípu. Matica sa pretáča. Potrebujem francúzsky kľúč, nie ďalšiu modlitbu na páku.",
+          "text": "Kľúčom dotiahni maticu pípy a potom otvor kohútik pri krígľoch, nech vytečie stará pena. Až potom odomknem herňu; v tom žľabe pod pípou už kvôli smradu leží aj alobal.",
           "choices": [
             {
               "id": "grounds",
-              "text": "Nemáte kávu?",
+              "text": "Máte kávu, čo sa dá aj prežúvať?",
               "when": { "not": { "flag": "grounds-given" } },
               "next": "grounds",
               "effects": [
@@ -3516,9 +3983,17 @@
                 { "type": "addItem", "id": "coffee-grounds" }
               ]
             },
-            { "id": "gaming", "text": "Otvoríte herňu?", "next": "gaming" },
-            { "id": "lubo", "text": "Kto naposledy hral?", "next": "lubo" },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            {
+              "id": "gaming",
+              "text": "Pípu opravím, krígle vyšetrím zvnútra.",
+              "next": "gaming"
+            },
+            {
+              "id": "lubo",
+              "text": "Nalievali ste tomu mŕtvemu aj druhú?",
+              "next": "lubo"
+            },
+            { "id": "leave", "text": "Utekám, kým ma dáte na účet." }
           ],
           "speech": {
             "audio": "speech/008a0768-4b44-4c40-bf5c-e801f1b95475/audio.wav",
@@ -3541,17 +4016,17 @@
             },
             "lipSync": "speech/13932c03-5a2b-4da8-9d36-ccd9d6dc70da/track.lipsync.json"
           },
-          "subtitle": "Keď mi niekto opraví pípu. Matica sa pretáča. Potrebujem francúzsky kľúč, nie ďalšiu modlitbu na páku."
+          "subtitle": "Kľúčom dotiahni maticu pípy a potom otvor kohútik pri krígľoch, nech vytečie stará pena. Až potom odomknem herňu; v tom žľabe pod pípou už kvôli smradu leží aj alobal."
         },
         {
           "id": "lubo",
           "speaker": "Karol Odmerka",
           "actor": { "sceneId": "scene6", "hotspotId": "innkeeper" },
-          "text": "[shredded, raspy tenor] [irritated] Ľubo. Ráno pohreb, večer reklamácia jackpotu. Myslel som, že to robí jeho pozostalý. Mali rovnaké ponožky.",
+          "text": "Ľubo po pohrebe prišiel reklamovať automat a podpísal servisný denník. Prst mal teplý, takže buď žije, alebo má peklo výborné kúrenie.",
           "choices": [
             {
               "id": "grounds",
-              "text": "Nemáte kávu?",
+              "text": "Máte kávu, čo sa dá aj prežúvať?",
               "when": { "not": { "flag": "grounds-given" } },
               "next": "grounds",
               "effects": [
@@ -3559,9 +4034,17 @@
                 { "type": "addItem", "id": "coffee-grounds" }
               ]
             },
-            { "id": "gaming", "text": "Otvoríte herňu?", "next": "gaming" },
-            { "id": "lubo", "text": "Kto naposledy hral?", "next": "lubo" },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            {
+              "id": "gaming",
+              "text": "Pípu opravím, krígle vyšetrím zvnútra.",
+              "next": "gaming"
+            },
+            {
+              "id": "lubo",
+              "text": "Nalievali ste tomu mŕtvemu aj druhú?",
+              "next": "lubo"
+            },
+            { "id": "leave", "text": "Utekám, kým ma dáte na účet." }
           ],
           "speech": {
             "audio": "speech/57b0fe5e-aaac-4110-96ca-05eb1e411ff6/audio.wav",
@@ -3589,7 +4072,7 @@
             },
             "lipSync": "speech/6f4fa833-ed95-4f0b-846a-ac5f87922978/track.lipsync.json"
           },
-          "subtitle": "Ľubo. Ráno pohreb, večer reklamácia jackpotu. Myslel som, že to robí jeho pozostalý. Mali rovnaké ponožky."
+          "subtitle": "Ľubo po pohrebe prišiel reklamovať automat a podpísal servisný denník. Prst mal teplý, takže buď žije, alebo má peklo výborné kúrenie."
         }
       ]
     },
@@ -3601,22 +4084,39 @@
           "id": "root",
           "speaker": "Špľuch",
           "actor": { "sceneId": "scene7", "hotspotId": "swing-boy" },
-          "text": "Nedotýkaj sa tehly. Práve spí.",
+          "text": "Pšt, tehla drží rekord v nehybnosti. Včera porazila Dinga o tri hodiny a jedno grgnutie.",
           "choices": [
-            { "id": "trade", "text": "Čo máte na výmenu?", "next": "trade" },
-            { "id": "van", "text": "Videl si v noci pohrebák?", "next": "van" },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
-          ]
+            {
+              "id": "trade",
+              "text": "Rozhýbem vám tú hojdačku násilím!",
+              "next": "trade"
+            },
+            {
+              "id": "van",
+              "text": "Ten pohrebák mal pohon na mŕtvych?",
+              "next": "van"
+            },
+            { "id": "leave", "text": "Idem, pozdravuj tehlu odo mňa." }
+          ],
+          "subtitle": "Pšt, tehla drží rekord v nehybnosti. Včera porazila Dinga o tri hodiny a jedno grgnutie."
         },
         {
           "id": "trade",
           "speaker": "Špľuch",
           "actor": { "sceneId": "scene7", "hotspotId": "swing-boy" },
-          "text": "[cracking, raspy adult cartoon voice] [excited] Špagát a podložku. Za rožok. Kŕmime nimi domácu tehlu, je alergická na granule.",
+          "text": "Na osi hojdačky visí špagát a podložka, povoľ ju kľúčom. Na sedadlo polož ten skamenený chlieb ako protiváhu a rozhýb ho; tehlu ti nepožičiam, má dnes narodeniny.",
           "choices": [
-            { "id": "trade", "text": "Čo máte na výmenu?", "next": "trade" },
-            { "id": "van", "text": "Videl si v noci pohrebák?", "next": "van" },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            {
+              "id": "trade",
+              "text": "Rozhýbem vám tú hojdačku násilím!",
+              "next": "trade"
+            },
+            {
+              "id": "van",
+              "text": "Ten pohrebák mal pohon na mŕtvych?",
+              "next": "van"
+            },
+            { "id": "leave", "text": "Idem, pozdravuj tehlu odo mňa." }
           ],
           "speech": {
             "audio": "speech/369caabf-a633-47ba-8bcf-25e8f0f02c43/audio.wav",
@@ -3640,17 +4140,25 @@
             "alignment": "speech/369caabf-a633-47ba-8bcf-25e8f0f02c43/alignment.json",
             "lipSync": "speech/a3d5dad2-fc89-46f0-a715-a569647135e2/track.lipsync.json"
           },
-          "subtitle": "Špagát a podložku. Za rožok. Kŕmime nimi domácu tehlu, je alergická na granule."
+          "subtitle": "Na osi hojdačky visí špagát a podložka, povoľ ju kľúčom. Na sedadlo polož ten skamenený chlieb ako protiváhu a rozhýb ho; tehlu ti nepožičiam, má dnes narodeniny."
         },
         {
           "id": "van",
           "speaker": "Špľuch",
           "actor": { "sceneId": "scene7", "hotspotId": "swing-boy" },
-          "text": "[cracking, raspy adult cartoon voice] [excited] Hej, viezol toho pána, čo má byť pod zemou. Doviezol si aj automat. Asi nechce, aby ho deti otravovali pri práci.",
+          "text": "Ľubo šiel pohrebákom ku kostolu a vzadu mu mlátil automat. Keby bol naozaj mŕtvy, nemusel by naňho tak sprosto nadávať.",
           "choices": [
-            { "id": "trade", "text": "Čo máte na výmenu?", "next": "trade" },
-            { "id": "van", "text": "Videl si v noci pohrebák?", "next": "van" },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            {
+              "id": "trade",
+              "text": "Rozhýbem vám tú hojdačku násilím!",
+              "next": "trade"
+            },
+            {
+              "id": "van",
+              "text": "Ten pohrebák mal pohon na mŕtvych?",
+              "next": "van"
+            },
+            { "id": "leave", "text": "Idem, pozdravuj tehlu odo mňa." }
           ],
           "speech": {
             "audio": "speech/7e0c0bf9-9308-45ff-b8d5-44acbc6ca5fe/audio.wav",
@@ -3674,7 +4182,7 @@
             "alignment": "speech/7e0c0bf9-9308-45ff-b8d5-44acbc6ca5fe/alignment.json",
             "lipSync": "speech/b63518d5-efce-437c-8d62-c03784aac231/track.lipsync.json"
           },
-          "subtitle": "Hej, viezol toho pána, čo má byť pod zemou. Doviezol si aj automat. Asi nechce, aby ho deti otravovali pri práci."
+          "subtitle": "Ľubo šiel pohrebákom ku kostolu a vzadu mu mlátil automat. Keby bol naozaj mŕtvy, nemusel by naňho tak sprosto nadávať."
         }
       ]
     },
@@ -3687,7 +4195,7 @@
           "id": "line",
           "speaker": "Špľuch",
           "actor": { "sceneId": "scene7", "hotspotId": "swing-boy" },
-          "text": "[cracking, raspy adult cartoon voice] [excited] Toto je poctivý rožok. Tehla konečne niečo rozhryzie. Tu máš špagát a podložku. Keď ju zabalíš do zlatého, vyzerá presne ako žetón.",
+          "text": "Hojdačka pustila špagát aj podložku, pozbieraj si ich zo zeme! Ten chlieb je väčšia tehla než moja tehla; ešte mu musíme vyrobiť búdu.",
           "choices": [],
           "speech": {
             "audio": "speech/0b3ccab3-329b-40ea-8e6c-a3e491f9e2d6/audio.wav",
@@ -3715,7 +4223,7 @@
             },
             "lipSync": "speech/0117bd69-075a-4cb7-ac0e-48bda89e1c2e/track.lipsync.json"
           },
-          "subtitle": "Toto je poctivý rožok. Tehla konečne niečo rozhryzie. Tu máš špagát a podložku. Keď ju zabalíš do zlatého, vyzerá presne ako žetón."
+          "subtitle": "Hojdačka pustila špagát aj podložku, pozbieraj si ich zo zeme! Ten chlieb je väčšia tehla než moja tehla; ešte mu musíme vyrobiť búdu."
         }
       ]
     },
@@ -3727,22 +4235,39 @@
           "id": "root",
           "speaker": "Nika",
           "actor": { "sceneId": "scene7", "hotspotId": "sand-girl" },
-          "text": "Kreslím kriedou, čo som nenašla. Takže zatiaľ prachom.",
+          "text": "Kreslím kriedou tajnú jamu, aby do nej nikto nespadol. Zatiaľ do nej spadol iba Špľuch a ten to spraví aj bez jamy.",
           "choices": [
-            { "id": "tracks", "text": "Čo kreslíš?", "next": "tracks" },
-            { "id": "token", "text": "Ako oklamať automat?", "next": "token" },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
-          ]
+            {
+              "id": "tracks",
+              "text": "To sú stopy alebo plán pasce na mňa?",
+              "next": "tracks"
+            },
+            {
+              "id": "token",
+              "text": "Z podložky spravím peniaze, som banka!",
+              "next": "token"
+            },
+            { "id": "leave", "text": "Idem do tej namaľovanej jamy." }
+          ],
+          "subtitle": "Kreslím kriedou tajnú jamu, aby do nej nikto nespadol. Zatiaľ do nej spadol iba Špľuch a ten to spraví aj bez jamy."
         },
         {
           "id": "tracks",
           "speaker": "Nika",
           "actor": { "sceneId": "scene7", "hotspotId": "sand-girl" },
-          "text": "[piercing, theatrical adult soprano] [mischievously] Plán úniku. Z ihriska sa dá uniknúť len tak, že vyrastieš. Ten pohrebák šiel ku kostolu, ak riešiš dospelácke problémy.",
+          "text": "To sú kolesá pohrebáka, šiel ku kostolu. Namaľovala som im odbočku do žihľavy, ale ten chlap ju úplne odignoroval.",
           "choices": [
-            { "id": "tracks", "text": "Čo kreslíš?", "next": "tracks" },
-            { "id": "token", "text": "Ako oklamať automat?", "next": "token" },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            {
+              "id": "tracks",
+              "text": "To sú stopy alebo plán pasce na mňa?",
+              "next": "tracks"
+            },
+            {
+              "id": "token",
+              "text": "Z podložky spravím peniaze, som banka!",
+              "next": "token"
+            },
+            { "id": "leave", "text": "Idem do tej namaľovanej jamy." }
           ],
           "speech": {
             "audio": "speech/6fc4e09a-e888-4a77-a246-4f25f791e2c2/audio.wav",
@@ -3766,17 +4291,25 @@
             "alignment": "speech/6fc4e09a-e888-4a77-a246-4f25f791e2c2/alignment.json",
             "lipSync": "speech/e03f112a-4643-4ae4-b445-804c78a60128/track.lipsync.json"
           },
-          "subtitle": "Plán úniku. Z ihriska sa dá uniknúť len tak, že vyrastieš. Ten pohrebák šiel ku kostolu, ak riešiš dospelácke problémy."
+          "subtitle": "To sú kolesá pohrebáka, šiel ku kostolu. Namaľovala som im odbočku do žihľavy, ale ten chlap ju úplne odignoroval."
         },
         {
           "id": "token",
           "speaker": "Nika",
           "actor": { "sceneId": "scene7", "hotspotId": "sand-girl" },
-          "text": "[piercing, theatrical adult soprano] [mischievously] Podložka a zlatý obal. Ale otec hovorí, že skrat je tiež výhra. Ak si poistený.",
+          "text": "Podložku obaľ zlatým alobalom a máš žetón pre blbý automat. Ocko vraví, že to môže skratovať; on raz zapálil aj kalkulačku a tá nemala šnúru.",
           "choices": [
-            { "id": "tracks", "text": "Čo kreslíš?", "next": "tracks" },
-            { "id": "token", "text": "Ako oklamať automat?", "next": "token" },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            {
+              "id": "tracks",
+              "text": "To sú stopy alebo plán pasce na mňa?",
+              "next": "tracks"
+            },
+            {
+              "id": "token",
+              "text": "Z podložky spravím peniaze, som banka!",
+              "next": "token"
+            },
+            { "id": "leave", "text": "Idem do tej namaľovanej jamy." }
           ],
           "speech": {
             "audio": "speech/1a69b03e-f919-47d8-86ea-9ba99005a388/audio.wav",
@@ -3799,7 +4332,7 @@
             },
             "lipSync": "speech/4f1d216a-059a-4461-bdb2-a5c4db302490/track.lipsync.json"
           },
-          "subtitle": "Podložka a zlatý obal. Ale otec hovorí, že skrat je tiež výhra. Ak si poistený."
+          "subtitle": "Podložku obaľ zlatým alobalom a máš žetón pre blbý automat. Ocko vraví, že to môže skratovať; on raz zapálil aj kalkulačku a tá nemala šnúru."
         }
       ]
     },
@@ -3811,30 +4344,39 @@
           "id": "root",
           "speaker": "Béla",
           "actor": { "sceneId": "scene7", "hotspotId": "climbing-boy" },
-          "text": "Ak spadnem, povedz, že som bol na školení bezpečnosti.",
+          "text": "Zlez dole, vraveli, hore je nebezpečne. Dole je Špľuch s prakom, tak nech mi vysvetlia tú matematiku.",
           "choices": [
             {
               "id": "hearse",
-              "text": "Nevieš niečo o kábli?",
+              "text": "Zhora zlodeja uvidíš aj v rakve!",
               "next": "hearse"
             },
-            { "id": "map", "text": "Kam sa tu dá ísť?", "next": "map" },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
-          ]
+            {
+              "id": "map",
+              "text": "Kde má táto dedina tlačidlo von?",
+              "next": "map"
+            },
+            { "id": "leave", "text": "Keď spadneš, povedz, že si skočil." }
+          ],
+          "subtitle": "Zlez dole, vraveli, hore je nebezpečne. Dole je Špľuch s prakom, tak nech mi vysvetlia tú matematiku."
         },
         {
           "id": "hearse",
           "speaker": "Béla",
           "actor": { "sceneId": "scene7", "hotspotId": "climbing-boy" },
-          "text": "[strained, pinched adult male falsetto] [nervous] Z pohrebáku trčal ako chvost. Ten pán tvrdil, že je to nabíjačka na dušu. Ani u nás doma takú nemáme.",
+          "text": "Z pohrebáka trčal kábel. Ten chlap vravel, že je to chvost neviditeľného psa. Hodili sme mu piškótu. Hajzel ju zjedol sám.",
           "choices": [
             {
               "id": "hearse",
-              "text": "Nevieš niečo o kábli?",
+              "text": "Zhora zlodeja uvidíš aj v rakve!",
               "next": "hearse"
             },
-            { "id": "map", "text": "Kam sa tu dá ísť?", "next": "map" },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            {
+              "id": "map",
+              "text": "Kde má táto dedina tlačidlo von?",
+              "next": "map"
+            },
+            { "id": "leave", "text": "Keď spadneš, povedz, že si skočil." }
           ],
           "speech": {
             "audio": "speech/d64781df-b104-4cf4-9920-c2362f25f07b/audio.wav",
@@ -3862,21 +4404,25 @@
             },
             "lipSync": "speech/35a095f3-8fee-4c8c-97b1-69a2a0322dcb/track.lipsync.json"
           },
-          "subtitle": "Z pohrebáku trčal ako chvost. Ten pán tvrdil, že je to nabíjačka na dušu. Ani u nás doma takú nemáme."
+          "subtitle": "Z pohrebáka trčal kábel. Ten chlap vravel, že je to chvost neviditeľného psa. Hodili sme mu piškótu. Hajzel ju zjedol sám."
         },
         {
           "id": "map",
           "speaker": "Béla",
           "actor": { "sceneId": "scene7", "hotspotId": "climbing-boy" },
-          "text": "[strained, pinched adult male falsetto] [nervous] Spodok obrázka, veľký detektív. Tam je mapa. Do hrobu sa chodí cez bránu, nie cez menu.",
+          "text": "Mapu otvoríš pri spodnom okraji obrázka, ty obrí prst. Keď tam nájdeš rebrík, pošli ho sem, už som predbehol vlastné trenky.",
           "choices": [
             {
               "id": "hearse",
-              "text": "Nevieš niečo o kábli?",
+              "text": "Zhora zlodeja uvidíš aj v rakve!",
               "next": "hearse"
             },
-            { "id": "map", "text": "Kam sa tu dá ísť?", "next": "map" },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            {
+              "id": "map",
+              "text": "Kde má táto dedina tlačidlo von?",
+              "next": "map"
+            },
+            { "id": "leave", "text": "Keď spadneš, povedz, že si skočil." }
           ],
           "speech": {
             "audio": "speech/36553384-32f8-45e9-8ed6-62a735f3a42a/audio.wav",
@@ -3899,7 +4445,7 @@
             },
             "lipSync": "speech/3cc70494-0a40-4bec-8d6a-dc01f1408785/track.lipsync.json"
           },
-          "subtitle": "Spodok obrázka, veľký detektív. Tam je mapa. Do hrobu sa chodí cez bránu, nie cez menu."
+          "subtitle": "Mapu otvoríš pri spodnom okraji obrázka, ty obrí prst. Keď tam nájdeš rebrík, pošli ho sem, už som predbehol vlastné trenky."
         }
       ]
     },
@@ -3911,40 +4457,51 @@
           "id": "root",
           "speaker": "Dingo",
           "actor": { "sceneId": "scene9", "hotspotId": "layer1" },
-          "text": "Ak je to kontrola, zomrel som. Ak káva, iba som si ľahol.",
+          "text": "Šak nekrič, pečeň mi ešte búcha na dvere zvnútra. Kým neprejde káva klystírom, som len náhradný diel.",
           "choices": [
-            { "id": "coffee", "text": "Potrebujem náradie.", "next": "coffee" },
+            {
+              "id": "coffee",
+              "text": "Naštartujem vás ako záchod na pedále!",
+              "next": "coffee"
+            },
             {
               "id": "copper",
-              "text": "Neskončil tu hlavný kábel?",
-              "next": "copper"
+              "text": "Váš šrot je podozrivý, smrdí elektrinou.",
+              "next": "copper",
+              "when": { "flag": "dingo-awake" }
             },
             {
               "id": "work",
-              "text": "Čo tu robíte bez elektriny?",
+              "text": "To chrčíte vy alebo sa predáva motor?",
               "next": "work"
             },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
-          ]
+            { "id": "leave", "text": "Ležte, živého vás predám drahšie." }
+          ],
+          "subtitle": "Šak nekrič, pečeň mi ešte búcha na dvere zvnútra. Kým neprejde káva klystírom, som len náhradný diel."
         },
         {
           "id": "coffee",
           "speaker": "Dingo",
           "actor": { "sceneId": "scene9", "hotspotId": "layer1" },
-          "text": "[very hoarse, drowsy, slurred but intelligible voice] Potrebujem kávu. Studenú s mliekom, nech si nezobudím vredy. Karol má mletú, Jolanda kravu. Ja mám čas.",
+          "text": "Studenú kávu z mlieka a mletej nalej do resuscitátora a šliapni na pedál. Ručný klystír, môj jediný boh; potom sa dostaneš k truhlici s kľúčom a rukavicami.",
           "choices": [
-            { "id": "coffee", "text": "Potrebujem náradie.", "next": "coffee" },
+            {
+              "id": "coffee",
+              "text": "Naštartujem vás ako záchod na pedále!",
+              "next": "coffee"
+            },
             {
               "id": "copper",
-              "text": "Neskončil tu hlavný kábel?",
-              "next": "copper"
+              "text": "Váš šrot je podozrivý, smrdí elektrinou.",
+              "next": "copper",
+              "when": { "flag": "dingo-awake" }
             },
             {
               "id": "work",
-              "text": "Čo tu robíte bez elektriny?",
+              "text": "To chrčíte vy alebo sa predáva motor?",
               "next": "work"
             },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            { "id": "leave", "text": "Ležte, živého vás predám drahšie." }
           ],
           "speech": {
             "audio": "speech/12dda129-01c6-47c8-9824-2d5208df5e25/audio.wav",
@@ -3972,26 +4529,31 @@
             },
             "lipSync": "speech/152dc895-7bc2-4df4-931c-6473e21116e9/track.lipsync.json"
           },
-          "subtitle": "Potrebujem kávu. Studenú s mliekom, nech si nezobudím vredy. Karol má mletú, Jolanda kravu. Ja mám čas."
+          "subtitle": "Studenú kávu z mlieka a mletej nalej do resuscitátora a šliapni na pedál. Ručný klystír, môj jediný boh; potom sa dostaneš k truhlici s kľúčom a rukavicami."
         },
         {
           "id": "copper",
           "speaker": "Dingo",
           "actor": { "sceneId": "scene9", "hotspotId": "layer1" },
-          "text": "[very hoarse, drowsy, slurred but intelligible voice] Nie. Ľubo chcel požičať autobatériu. Na cintorín. Vraj mu tam chýba zážitková elektronika. Meď si doniesol vlastnú, furt zapojenú do celej osady.",
+          "text": "Ľubo si požičal autobatériu na cintorín a sám dovliekol kábel z osady. Pri svorke najprv povoľ maticu kľúčom, potom ber kábel v rukaviciach; nech mi z teba ostane aspoň vratná záloha.",
           "choices": [
-            { "id": "coffee", "text": "Potrebujem náradie.", "next": "coffee" },
+            {
+              "id": "coffee",
+              "text": "Naštartujem vás ako záchod na pedále!",
+              "next": "coffee"
+            },
             {
               "id": "copper",
-              "text": "Neskončil tu hlavný kábel?",
-              "next": "copper"
+              "text": "Váš šrot je podozrivý, smrdí elektrinou.",
+              "next": "copper",
+              "when": { "flag": "dingo-awake" }
             },
             {
               "id": "work",
-              "text": "Čo tu robíte bez elektriny?",
+              "text": "To chrčíte vy alebo sa predáva motor?",
               "next": "work"
             },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            { "id": "leave", "text": "Ležte, živého vás predám drahšie." }
           ],
           "speech": {
             "audio": "speech/763bcb26-2094-492f-b6fa-cc0c037fbceb/audio.wav",
@@ -4019,26 +4581,31 @@
             },
             "lipSync": "speech/82881c33-a019-490a-8d47-b7be7e321dce/track.lipsync.json"
           },
-          "subtitle": "Nie. Ľubo chcel požičať autobatériu. Na cintorín. Vraj mu tam chýba zážitková elektronika. Meď si doniesol vlastnú, furt zapojenú do celej osady."
+          "subtitle": "Ľubo si požičal autobatériu na cintorín a sám dovliekol kábel z osady. Pri svorke najprv povoľ maticu kľúčom, potom ber kábel v rukaviciach; nech mi z teba ostane aspoň vratná záloha."
         },
         {
           "id": "work",
           "speaker": "Dingo",
           "actor": { "sceneId": "scene9", "hotspotId": "layer1" },
-          "text": "[very hoarse, drowsy, slurred but intelligible voice] To isté čo s elektrinou, ale nikto nemôže dokázať, že som zaspal pri práci.",
+          "text": "Repasujem smrť na záložný motor. Ten pedálový klystír je posledná mašina, čo tu ešte dokáže niekomu vrátiť chuť do roboty.",
           "choices": [
-            { "id": "coffee", "text": "Potrebujem náradie.", "next": "coffee" },
+            {
+              "id": "coffee",
+              "text": "Naštartujem vás ako záchod na pedále!",
+              "next": "coffee"
+            },
             {
               "id": "copper",
-              "text": "Neskončil tu hlavný kábel?",
-              "next": "copper"
+              "text": "Váš šrot je podozrivý, smrdí elektrinou.",
+              "next": "copper",
+              "when": { "flag": "dingo-awake" }
             },
             {
               "id": "work",
-              "text": "Čo tu robíte bez elektriny?",
+              "text": "To chrčíte vy alebo sa predáva motor?",
               "next": "work"
             },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            { "id": "leave", "text": "Ležte, živého vás predám drahšie." }
           ],
           "speech": {
             "audio": "speech/2a57e5bd-ab93-44c9-b52b-a84c4678a542/audio.wav",
@@ -4062,7 +4629,7 @@
             "alignment": "speech/2a57e5bd-ab93-44c9-b52b-a84c4678a542/alignment.json",
             "lipSync": "speech/0347dabb-2109-4fec-8d6f-07f5eddd04f9/track.lipsync.json"
           },
-          "subtitle": "To isté čo s elektrinou, ale nikto nemôže dokázať, že som zaspal pri práci."
+          "subtitle": "Repasujem smrť na záložný motor. Ten pedálový klystír je posledná mašina, čo tu ešte dokáže niekomu vrátiť chuť do roboty."
         }
       ]
     },
@@ -4075,7 +4642,7 @@
           "id": "line",
           "speaker": "Dingo",
           "actor": { "sceneId": "scene9", "hotspotId": "layer1" },
-          "text": "[very hoarse, drowsy, slurred but intelligible voice] Výborné. Chutí to ako moja posledná šanca. Tu máš kľúč a gumené rukavice. A vraciam fľašu. Pri svorke batérie najprv povoľ maticu, až potom sa hraj na elektrikára.",
+          "text": "Do riti, espresso až za očami, sláva ručnému klystíru! Už sa postavím: kľúč a rukavice si vyber z truhlice, ja musím prepočítať, ktoré orgány sa vrátili.",
           "choices": [],
           "speech": {
             "audio": "speech/40571409-f44a-44f9-b424-c5dd30ac48e9/audio.wav",
@@ -4109,7 +4676,7 @@
             "alignment": "speech/40571409-f44a-44f9-b424-c5dd30ac48e9/alignment.json",
             "lipSync": "speech/9ffc2556-24a5-4e91-958d-eaed13103ba3/track.lipsync.json"
           },
-          "subtitle": "Výborné. Chutí to ako moja posledná šanca. Tu máš kľúč a gumené rukavice. A vraciam fľašu. Pri svorke batérie najprv povoľ maticu, až potom sa hraj na elektrikára."
+          "subtitle": "Do riti, espresso až za očami, sláva ručnému klystíru! Už sa postavím: kľúč a rukavice si vyber z truhlice, ja musím prepočítať, ktoré orgány sa vrátili."
         }
       ]
     },
@@ -4121,48 +4688,49 @@
           "id": "root",
           "speaker": "Jolanda",
           "actor": { "sceneId": "scene10", "hotspotId": "layer1" },
-          "text": "Tá krava dáva mlieko. Ja dávam iba posledné varovanie.",
+          "text": "Vitaj v Chráme večného vemena, poistné plať vopred! Krava je posvätná, prasa účtuje a ja mám na každého bezbožníka vidly.",
           "choices": [
             {
               "id": "blessing",
-              "text": "Potrebujete pomoc?",
+              "text": "Pokrstím kravu, vemeno je môj svedok!",
               "next": "blessing"
             },
             {
               "id": "battery",
-              "text": "A prečo sem chodil Ľubo?",
+              "text": "Ľubo vám tu tiež zomieral na dlh?",
               "next": "battery"
             },
             {
               "id": "pig",
-              "text": "To prasa naozaj kontroluje účty?",
+              "text": "Pred prasaťom sa kľačí alebo podpíšem?",
               "next": "pig"
             },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
-          ]
+            { "id": "leave", "text": "Sláva vemenu, unikám!" }
+          ],
+          "subtitle": "Vitaj v Chráme večného vemena, poistné plať vopred! Krava je posvätná, prasa účtuje a ja mám na každého bezbožníka vidly."
         },
         {
           "id": "blessing",
           "speaker": "Jolanda",
           "actor": { "sceneId": "scene10", "hotspotId": "layer1" },
-          "text": "[throaty, booming contralto] [outraged] Krava nemá krst a poisťovňa neuzná vyššiu moc. Dones svätenú vodu v nejakej fľaši. Mlieko aj zvonec dostaneš, len nech to je papierovo čisté.",
+          "text": "Vodu lej na kravu, mňa už vysvätil exekútor. Zvonec ani mlieko nevydá, kým nepadne od nudy. Prečítaj jej niečo úradné, je poverčivá.",
           "choices": [
             {
               "id": "blessing",
-              "text": "Potrebujete pomoc?",
+              "text": "Pokrstím kravu, vemeno je môj svedok!",
               "next": "blessing"
             },
             {
               "id": "battery",
-              "text": "A prečo sem chodil Ľubo?",
+              "text": "Ľubo vám tu tiež zomieral na dlh?",
               "next": "battery"
             },
             {
               "id": "pig",
-              "text": "To prasa naozaj kontroluje účty?",
+              "text": "Pred prasaťom sa kľačí alebo podpíšem?",
               "next": "pig"
             },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            { "id": "leave", "text": "Sláva vemenu, unikám!" }
           ],
           "speech": {
             "audio": "speech/60956628-5682-4d9e-91a5-eacde2e9c76c/audio.wav",
@@ -4190,30 +4758,30 @@
             },
             "lipSync": "speech/ffea1b8a-0e98-47de-b8a7-caed271e0bda/track.lipsync.json"
           },
-          "subtitle": "Krava nemá krst a poisťovňa neuzná vyššiu moc. Dones svätenú vodu v nejakej fľaši. Mlieko aj zvonec dostaneš, len nech to je papierovo čisté."
+          "subtitle": "Vodu lej na kravu, mňa už vysvätil exekútor. Zvonec ani mlieko nevydá, kým nepadne od nudy. Prečítaj jej niečo úradné, je poverčivá."
         },
         {
           "id": "battery",
           "speaker": "Jolanda",
           "actor": { "sceneId": "scene10", "hotspotId": "layer1" },
-          "text": "[throaty, booming contralto] [outraged] Pýtal hnoj na bioplyn. Poslala som ho za Dingom po batériu. Nech mi tu aspoň niekto nekradne aj výsledok trávenia.",
+          "text": "Ľubo chcel môj hnoj na pohon automatu, tak som ho poslala za Dingom po batériu. Hovno patrí na pole, ten idiot by mi prehral aj posledný bobek.",
           "choices": [
             {
               "id": "blessing",
-              "text": "Potrebujete pomoc?",
+              "text": "Pokrstím kravu, vemeno je môj svedok!",
               "next": "blessing"
             },
             {
               "id": "battery",
-              "text": "A prečo sem chodil Ľubo?",
+              "text": "Ľubo vám tu tiež zomieral na dlh?",
               "next": "battery"
             },
             {
               "id": "pig",
-              "text": "To prasa naozaj kontroluje účty?",
+              "text": "Pred prasaťom sa kľačí alebo podpíšem?",
               "next": "pig"
             },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            { "id": "leave", "text": "Sláva vemenu, unikám!" }
           ],
           "speech": {
             "audio": "speech/7f5b97af-81f9-48c9-878b-4b8760daad46/audio.wav",
@@ -4237,30 +4805,30 @@
             "alignment": "speech/7f5b97af-81f9-48c9-878b-4b8760daad46/alignment.json",
             "lipSync": "speech/32864825-d18b-4bd6-8378-8e33fd672565/track.lipsync.json"
           },
-          "subtitle": "Pýtal hnoj na bioplyn. Poslala som ho za Dingom po batériu. Nech mi tu aspoň niekto nekradne aj výsledok trávenia."
+          "subtitle": "Ľubo chcel môj hnoj na pohon automatu, tak som ho poslala za Dingom po batériu. Hovno patrí na pole, ten idiot by mi prehral aj posledný bobek."
         },
         {
           "id": "pig",
           "speaker": "Jolanda",
           "actor": { "sceneId": "scene10", "hotspotId": "layer1" },
-          "text": "[throaty, booming contralto] [outraged] Keď niečo nesedí, zje to. Robí to rovnako ako obec, iba bez pečiatky.",
+          "text": "To je náš veľkňaz poistnej udalosti. Zožral zmluvu, klienta aj výluky; kým negrgne, nikomu neuznáme nič.",
           "choices": [
             {
               "id": "blessing",
-              "text": "Potrebujete pomoc?",
+              "text": "Pokrstím kravu, vemeno je môj svedok!",
               "next": "blessing"
             },
             {
               "id": "battery",
-              "text": "A prečo sem chodil Ľubo?",
+              "text": "Ľubo vám tu tiež zomieral na dlh?",
               "next": "battery"
             },
             {
               "id": "pig",
-              "text": "To prasa naozaj kontroluje účty?",
+              "text": "Pred prasaťom sa kľačí alebo podpíšem?",
               "next": "pig"
             },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            { "id": "leave", "text": "Sláva vemenu, unikám!" }
           ],
           "speech": {
             "audio": "speech/eb6e3b0d-beb5-4a4a-bd44-7db767ca9678/audio.wav",
@@ -4283,7 +4851,7 @@
             },
             "lipSync": "speech/d3f24b91-c08a-4208-bfcc-b33e9600b20c/track.lipsync.json"
           },
-          "subtitle": "Keď niečo nesedí, zje to. Robí to rovnako ako obec, iba bez pečiatky."
+          "subtitle": "To je náš veľkňaz poistnej udalosti. Zožral zmluvu, klienta aj výluky; kým negrgne, nikomu neuznáme nič."
         }
       ]
     },
@@ -4296,7 +4864,7 @@
           "id": "line",
           "speaker": "Jolanda",
           "actor": { "sceneId": "scene10", "hotspotId": "layer1" },
-          "text": "[throaty, booming contralto] [outraged] V mene Otca, Syna a poistnej udalosti. Krava je vybavená. Do fľaše ti nalejem mlieko a zvonec ber tiež. Bez elektriny nás tu aj tak počuť až príliš.",
+          "text": "Krava je pokrstená, prázdnu fľašu si nechaj a prestaň mi tu stáť ako svätý kokot. Prečítaj jej úmrtný list, nech zaspí; potom zober zvonec a mlieko naber fľašou z vedra.",
           "choices": [],
           "speech": {
             "audio": "speech/2161186a-41e1-4f75-8395-3dcbcdccdf3b/audio.wav",
@@ -4324,7 +4892,7 @@
             },
             "lipSync": "speech/f3c3c035-89f4-4f8d-9000-d4744d4828be/track.lipsync.json"
           },
-          "subtitle": "V mene Otca, Syna a poistnej udalosti. Krava je vybavená. Do fľaše ti nalejem mlieko a zvonec ber tiež. Bez elektriny nás tu aj tak počuť až príliš."
+          "subtitle": "Krava je pokrstená, prázdnu fľašu si nechaj a prestaň mi tu stáť ako svätý kokot. Prečítaj jej úmrtný list, nech zaspí; potom zober zvonec a mlieko naber fľašou z vedra."
         }
       ]
     },
@@ -4336,40 +4904,49 @@
           "id": "root",
           "speaker": "Ľubo Šťastný",
           "actor": { "sceneId": "scene12", "hotspotId": "layer1" },
-          "text": "Vitaj v posmrtnom VIP. Hotovosť beriem aj od živých.",
+          "text": "Vitaj v krypte, Rudo, konečne návšteva bez veriteľa! Nedýchaj na automat, má radšej mŕtvych než chudobných.",
           "choices": [
-            { "id": "fraud", "text": "Ty si neumrel?", "next": "fraud" },
+            {
+              "id": "fraud",
+              "text": "Priznaj sa, žiješ načierno!",
+              "next": "fraud"
+            },
             {
               "id": "power",
-              "text": "Osada je kvôli tebe bez prúdu!",
+              "text": "Kábel vezmem, alebo ti vyhrám elektrinu!",
               "next": "power"
             },
             {
               "id": "bribe",
-              "text": "Čo ak si skúsim zahrať?",
+              "text": "Ojebem ten automat, som múdrejší plech!",
               "next": "bribe"
             },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
-          ]
+            { "id": "leave", "text": "Idem sa rozhodnúť bez mozgu." }
+          ],
+          "subtitle": "Vitaj v krypte, Rudo, konečne návšteva bez veriteľa! Nedýchaj na automat, má radšej mŕtvych než chudobných."
         },
         {
           "id": "fraud",
           "speaker": "Ľubo Šťastný",
           "actor": { "sceneId": "scene12", "hotspotId": "layer1" },
-          "text": "[brittle, manic falsetto] [excited] Umrel. Len splátky to neuznali. Zobral som hlavný kábel, pripojil autobatériu a mám súkromné majstrovstvá. Mŕtveho nemôžu diskvalifikovať.",
+          "text": "Pohreb som fingoval, lebo živému mi už nikto nepožičal ani na vlastnú truhlu. Hlavný kábel som šlohol pre súkromný turnaj; mŕtveho šampióna nemajú kam poslať do piče.",
           "choices": [
-            { "id": "fraud", "text": "Ty si neumrel?", "next": "fraud" },
+            {
+              "id": "fraud",
+              "text": "Priznaj sa, žiješ načierno!",
+              "next": "fraud"
+            },
             {
               "id": "power",
-              "text": "Osada je kvôli tebe bez prúdu!",
+              "text": "Kábel vezmem, alebo ti vyhrám elektrinu!",
               "next": "power"
             },
             {
               "id": "bribe",
-              "text": "Čo ak si skúsim zahrať?",
+              "text": "Ojebem ten automat, som múdrejší plech!",
               "next": "bribe"
             },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            { "id": "leave", "text": "Idem sa rozhodnúť bez mozgu." }
           ],
           "speech": {
             "audio": "speech/7fe79da8-634a-4fe6-828c-64b8ab555ee6/audio.wav",
@@ -4397,26 +4974,30 @@
             },
             "lipSync": "speech/6748fbbc-4add-4f2f-be78-2a4e7fc33036/track.lipsync.json"
           },
-          "subtitle": "Umrel. Len splátky to neuznali. Zobral som hlavný kábel, pripojil autobatériu a mám súkromné majstrovstvá. Mŕtveho nemôžu diskvalifikovať."
+          "subtitle": "Pohreb som fingoval, lebo živému mi už nikto nepožičal ani na vlastnú truhlu. Hlavný kábel som šlohol pre súkromný turnaj; mŕtveho šampióna nemajú kam poslať do piče."
         },
         {
           "id": "power",
           "speaker": "Ľubo Šťastný",
           "actor": { "sceneId": "scene12", "hotspotId": "layer1" },
-          "text": "[brittle, manic falsetto] [excited] Osada má kolektívne nešťastie. Ja mám individuálnu batériu. To je trh, Rudo. Neťahaj kábel pod napätím, nech mi tu nepribudne konkurencia v truhle.",
+          "text": "Najprv kľúčom odpoj batériu, až potom rukavicami ber kábel, ty chodiaci skrat. Keď ho vezmeš, moja herňa skončila; keď ho necháš a batériu znovu pripojíš, ešte môžeš prehrať aj za osadu.",
           "choices": [
-            { "id": "fraud", "text": "Ty si neumrel?", "next": "fraud" },
+            {
+              "id": "fraud",
+              "text": "Priznaj sa, žiješ načierno!",
+              "next": "fraud"
+            },
             {
               "id": "power",
-              "text": "Osada je kvôli tebe bez prúdu!",
+              "text": "Kábel vezmem, alebo ti vyhrám elektrinu!",
               "next": "power"
             },
             {
               "id": "bribe",
-              "text": "Čo ak si skúsim zahrať?",
+              "text": "Ojebem ten automat, som múdrejší plech!",
               "next": "bribe"
             },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            { "id": "leave", "text": "Idem sa rozhodnúť bez mozgu." }
           ],
           "speech": {
             "audio": "speech/1e3c8122-abcd-4d5b-a615-243a78c2e3b1/audio.wav",
@@ -4449,26 +5030,30 @@
             },
             "lipSync": "speech/072048a7-0e8f-4a7c-b13d-70d7e3a35798/track.lipsync.json"
           },
-          "subtitle": "Osada má kolektívne nešťastie. Ja mám individuálnu batériu. To je trh, Rudo. Neťahaj kábel pod napätím, nech mi tu nepribudne konkurencia v truhle."
+          "subtitle": "Najprv kľúčom odpoj batériu, až potom rukavicami ber kábel, ty chodiaci skrat. Keď ho vezmeš, moja herňa skončila; keď ho necháš a batériu znovu pripojíš, ešte môžeš prehrať aj za osadu."
         },
         {
           "id": "bribe",
           "speaker": "Ľubo Šťastný",
           "actor": { "sceneId": "scene12", "hotspotId": "layer1" },
-          "text": "[brittle, manic falsetto] [excited] Pravý žetón nemám. Všetky som prehral sám so sebou. Ale keď to cinkne, je jedno, z čoho to je. Čo by sa asi tak mohlo posrať?",
+          "text": "Podložka v alobale cinkne ako pravý žetón, len môže odpáliť batériu aj kábel. Automat musí byť zapojený; bez prúdu ti nezožerie ani tú poslednú mozgovú bunku.",
           "choices": [
-            { "id": "fraud", "text": "Ty si neumrel?", "next": "fraud" },
+            {
+              "id": "fraud",
+              "text": "Priznaj sa, žiješ načierno!",
+              "next": "fraud"
+            },
             {
               "id": "power",
-              "text": "Osada je kvôli tebe bez prúdu!",
+              "text": "Kábel vezmem, alebo ti vyhrám elektrinu!",
               "next": "power"
             },
             {
               "id": "bribe",
-              "text": "Čo ak si skúsim zahrať?",
+              "text": "Ojebem ten automat, som múdrejší plech!",
               "next": "bribe"
             },
-            { "id": "leave", "text": "Zatiaľ sa maj." }
+            { "id": "leave", "text": "Idem sa rozhodnúť bez mozgu." }
           ],
           "speech": {
             "audio": "speech/8c7c8390-6960-438f-8dde-1e2f60eef76d/audio.wav",
@@ -4496,7 +5081,7 @@
             },
             "lipSync": "speech/7ad243c4-9d06-47e5-ae7b-042ac6191627/track.lipsync.json"
           },
-          "subtitle": "Pravý žetón nemám. Všetky som prehral sám so sebou. Ale keď to cinkne, je jedno, z čoho to je. Čo by sa asi tak mohlo posrať?"
+          "subtitle": "Podložka v alobale cinkne ako pravý žetón, len môže odpáliť batériu aj kábel. Automat musí byť zapojený; bez prúdu ti nezožerie ani tú poslednú mozgovú bunku."
         }
       ]
     },
@@ -4509,11 +5094,11 @@
           "id": "reveal",
           "speaker": "Ľubo Šťastný",
           "actor": { "sceneId": "scene12", "hotspotId": "layer1" },
-          "text": "[brittle, manic falsetto] [excited] Prekvapenie, Rudo. Pohreb bol kvôli dlhom. Kábel som vzal kvôli jackpotu. Tento automat živí Dingova autobatéria. Vy môžete sedieť potme, ja mám konečne nulovú konkurenciu.",
+          "text": "Kuk, Rudo, pohreb som fingoval kvôli dlhom a hlavný kábel som šlohol pre tento automat na Dingovej batérii! Osada nech sedí potme, ja som majster živých aj zdochnutých.",
           "choices": [
             {
               "id": "investigate",
-              "text": "Takže mŕtvy účtovník. To sedí.",
+              "text": "Takže nežiješ, len podvádzaš smrť!",
               "message": "Kábel je pod napätím z autobatérie. Rozhodni sa: bezpečne ho získať späť, alebo skúsiť podvodný žetón."
             }
           ],
@@ -4548,7 +5133,77 @@
             },
             "lipSync": "speech/e39cc06c-d37c-4c4b-a33e-c444e077fee1/track.lipsync.json"
           },
-          "subtitle": "Prekvapenie, Rudo. Pohreb bol kvôli dlhom. Kábel som vzal kvôli jackpotu. Tento automat živí Dingova autobatéria. Vy môžete sedieť potme, ja mám konečne nulovú konkurenciu."
+          "subtitle": "Kuk, Rudo, pohreb som fingoval kvôli dlhom a hlavný kábel som šlohol pre tento automat na Dingovej batérii! Osada nech sedí potme, ja som majster živých aj zdochnutých."
+        }
+      ]
+    },
+    {
+      "id": "erzika-bark-1",
+      "entry": "speech",
+      "start": "line",
+      "nodes": [
+        {
+          "id": "line",
+          "speaker": "Eržika",
+          "actor": { "sceneId": "scene4", "hotspotId": "layer2" },
+          "text": "Choď do piče, Rudo. A zavri za sebou, nech sa mi nevrátiš prievanom.",
+          "choices": []
+        }
+      ]
+    },
+    {
+      "id": "erzika-bark-2",
+      "entry": "speech",
+      "start": "line",
+      "nodes": [
+        {
+          "id": "line",
+          "speaker": "Eržika",
+          "actor": { "sceneId": "scene4", "hotspotId": "layer2" },
+          "text": "Ty nemáš v hlave seno. To by aspoň niekto zožral.",
+          "choices": []
+        }
+      ]
+    },
+    {
+      "id": "erzika-bark-3",
+      "entry": "speech",
+      "start": "line",
+      "nodes": [
+        {
+          "id": "line",
+          "speaker": "Eržika",
+          "actor": { "sceneId": "scene4", "hotspotId": "layer2" },
+          "text": "Ešte raz do mňa pichni a Milan dostane zákazku na mieru. Bez metra. Nalámeme ťa.",
+          "choices": []
+        }
+      ]
+    },
+    {
+      "id": "erzika-bark-4",
+      "entry": "speech",
+      "start": "line",
+      "nodes": [
+        {
+          "id": "line",
+          "speaker": "Eržika",
+          "actor": { "sceneId": "scene4", "hotspotId": "layer2" },
+          "text": "Fero, vezmi si toho kokota. Zase sa mi tu pokúša existovať!",
+          "choices": []
+        }
+      ]
+    },
+    {
+      "id": "erzika-bark-5",
+      "entry": "speech",
+      "start": "line",
+      "nodes": [
+        {
+          "id": "line",
+          "speaker": "Eržika",
+          "actor": { "sceneId": "scene4", "hotspotId": "layer2" },
+          "text": "Vypadni. Aj chrípka sa ma raz opýtala, či môže zostať.",
+          "choices": []
         }
       ]
     }
@@ -4622,7 +5277,7 @@
       "items": ["bread", "tape"],
       "rules": [
         {
-          "message": "Oblepený rožok by sa síce dal dediť, ale deti aj rozvod potrebujú tieto veci zvlášť."
+          "message": "Oblepený rožok by sa síce dal dediť, ale hojdačka potrebuje závažie a rozvod izoláciu. Nechaj oboje celé."
         }
       ]
     },
@@ -4639,6 +5294,70 @@
       "rules": [
         {
           "message": "Bezpečnosť nie je nová zbraň. Kľúčom odpoj svorku, rukavicami zober kábel."
+        }
+      ]
+    },
+    {
+      "items": ["bread", "magnet"],
+      "rules": [
+        {
+          "message": "Rudo: Magnetický rožok. Mohol by priťahovať zuby. Zatiaľ potrebujem oboje celé."
+        }
+      ]
+    },
+    {
+      "items": ["clothespin", "tape"],
+      "rules": [
+        {
+          "message": "Kolíček už má pružinu. Rudo: Ja nie, ale zatiaľ sa nebudem lepiť."
+        }
+      ]
+    },
+    {
+      "items": ["rubber-stamp", "bread"],
+      "rules": [
+        {
+          "message": "Rudo: Pečivo úradne zosnulé. Pekár to vyhlásil už v utorok. Na pohreb potrebujem papier, nie omrvinky."
+        }
+      ]
+    },
+    {
+      "items": ["holy-water", "rubber-gloves"],
+      "rules": [
+        {
+          "message": "Posvätené rukavice by v reklamácii neprešli. Od napätia pomáha odpojená batéria."
+        }
+      ]
+    },
+    {
+      "items": ["wrench", "bread"],
+      "rules": [
+        {
+          "message": "Francúzsky kľúč s rožkom. Kontinentálne raňajky po exekúcii. Náradie ani závažie tým nenič."
+        }
+      ]
+    },
+    {
+      "items": ["cold-coffee", "clothespin"],
+      "rules": [
+        {
+          "message": "Rudo: Zaštipnem kávu, aby neutiekla? Nie. Tá má ísť do Dingovho lievika."
+        }
+      ]
+    },
+    {
+      "items": ["rubber-stamp", "magnet"],
+      "rules": [
+        {
+          "message": "Pečiatka na magnete by rušila obecné kompasové hospodárstvo. Takže presne nič."
+        }
+      ]
+    },
+    {
+      "items": ["stamped-form", "tape"],
+      "rules": [
+        {
+          "message": "Úmrtný list sa neopravuje izolačkou. Rudo: Škoda, mal som konečne plán na dôchodok."
         }
       ]
     }
@@ -5374,15 +6093,15 @@
     {
       "id": "community",
       "when": { "flag": "ending-community" },
-      "title": "Koniec: Turnaj živých dlhov",
-      "text": "Osada znovu svieti. Ľubo musí poctivo splatiť vlastný pohreb a Milan mu účtuje pobyt v kaplnke. Fero dodržal slovo: štartovné máš zadarmo. Turnaj vyhrala Etela — pečiatkou označila automat za vybavený a odmietla ďalej rokovať. Tvoja prvá detektívna odmena je kupón na ďalšiu prehru. Aspoň už vidíš, kde podpisuješ.",
+      "title": "Koniec: Kábel pre každého kokota",
+      "text": "Osada svieti a majstrovstvá sa začali. Ľubo dostal účet za fingovaný pohreb aj obnovené členstvo medzi živými; Milan mu k tomu pribalil lopatu a veľmi osobné odporúčanie.\n\nFero dodržal slovo: hráš zadarmo. Eržika ti spoza plota poradila, kam si máš výhru strčiť, a Bonifác už požehnáva prvý prehratý dôchodok. Zachránil si kábel, osadu aj turnaj; na ten pocit sa radšej nepozeraj v dennom svetle.",
       "ambient": "ambience/ending.wav"
     },
     {
       "id": "jackpot",
       "when": { "flag": "ending-jackpot" },
-      "title": "Koniec: Večný jackpot",
-      "text": "Podvodný žetón skratoval kontakty, batéria vysyčala a hlavný kábel sa zatavil do automatu. Ľubo utiekol cez vlastný prázdny hrob. Vyhral si vedro podložiek a úradný účet za poškodenie nebohého. Osada zostala bez prúdu. Fero založil majstrovstvá v ručnom cinkaní; prvým sponzorom je Etelina pohrebná poisťovňa. Ty máš konečne titul. Majster okresu v strate elektriny.",
+      "title": "Koniec: Jackpot, ty kokot",
+      "text": "Podložka v alobale spojila kontakty, batéria sa vysyčala a ukradnutý kábel sa pripiekol k automatu. Ľubo zdrhol cez vlastný prázdny hrob; tentoraz mu ešte chvíľu stúpal dym z vlasov.\n\nOsada zostala potme a majstrovstvá v automatoch nahradilo majstrovstvo v nadávaní na Ruda. Eržika vedie o tri urážky, Bonifác berie stávky a Fero ti slávnostne odovzdal vedro podložiek. Konečne si vyhral všetko, čo tam bolo.",
       "ambient": "ambience/ending.wav"
     }
   ]

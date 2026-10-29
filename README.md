@@ -821,94 +821,127 @@ Stejné herní okno používá i **Otestovat odsud** v Dev Mode.
   Načítá se až na požádání a obnovuje nabídku aktuálního dialogového uzlu. Nová hra slot nemaže.
   Poškozené, nekompatibilní či nedostupné úložiště nepřepíše aktuální postup.
 
-Aktuální příběh (`tukabel-complete-1`) začíná automatickým rozhovorem s Ferem
-na **Ferovom dvore**. Rudo pátrá po hlavním kabelu osady za štartovné na turnaj
-zdarma. Obsahuje 12 lokací, 13 animovaných mluvících postav, 23 předmětů,
-propojené hádanky, deník a dvě odlišná zakončení. Staré uložené technické ukázky
-mají jiné ID obsahu a nepřepisují novou hru.
+Aktuální příběh (`tukabel-grotesque-2`) začíná automatickým rozhovorem
+s Ferem na **Ferovom dvore**. Rudo bere pátrání po ukradeném hlavním kabelu za
+štartovné zdarma na zrušeném mistrovství v automatech. Hra má 12 zachovaných
+lokací, 13 postav, 24 předmětů, devět úkolů v deníku a dva fyzicky odlišné konce.
+Nové ID obsahu odmítne starší uložené pozice s nekompatibilním stavem hádanek;
+ruční slot samo nemaže ani nepřepisuje.
 
-Z mapy jsou přímo dostupné pouze **Kostol, Zastávka, Ulička, Ferov dvor,
-Krčma, Detské ihrisko, Zberňa a Kravín**. Po přijetí případu má hráč několik
-otevřených stop; zberňu prozradí Dežo a kravín Etela. Zbývající cesty jsou
-**Kostol → Cintorín → Kaplnka → Krypta**, **Krčma → Herňa** a
-**Ferov dvor → Ulička**; všechny mají také cestu zpět. Mapa se otevírá
-hoverem/kliknutím na spodní polygonový východ venkovní scény, bez zkratky M.
-Stejné východy i objekty jsou přístupné seznamem **Objekty** a klávesnicí.
+Scénář je dospělá morbidní groteska: Bonifác vysvěcuje výhernost automatů,
+Milan zkouší zákazníkům vlastní pohřby, Jolanda vede kult pojištěného vemena a
+Rudo považuje odpojení mínusu za odstranění špatné elektřiny. **Eržika** nahradila
+Margitu. Nemá dialogový strom: pět samostatných krátkých nadávek se střídá při
+opakovaných kliknutích, bez volby odpovědi. Pořadí drží běžné uložené příznaky.
+Rožok, páska i kolíček jsou samostatné předměty na dvoře, nejsou odměnou za rozhovor.
 
-Všech 45 skutečně hraných replik má místní ElevenLabs WAV a skutečný Rhubarb
-lip-sync. Všech **13 postav a 45 replik** má nový dabing přes vlastní
-ElevenLabs Voice Design (`eleven_ttv_v3` → TTS `eleven_v4`, vynucená slovenština).
-Každá postava má vlastní hlasové zadání a herecké tagy; původní viditelné slovenské
-texty i mapy úst zůstávají zachované. V účtu je ověřených **osm stálých hlasů**;
-pět vedlejších bylo po ověření všech nahrávek uvolněno, takže **oba rotační sloty
-jsou volné**. Původní dva nahrazené hlasy byly uvolněny až po kontrole náhrad.
-[Evidence hlasů a všech dialogů](src/assets/speech/2b9d5934-d303-40ef-b875-59c2c46dbc00/casting.json)
-obsahuje prompty, přiřazení slotů, vybrané návrhy, WAV/lip-sync, otisky a stav.
-[Poslechová stránka](src/assets/speech/2b9d5934-d303-40ef-b875-59c2c46dbc00/listen.html)
-nabízí 39 návrhových ukázek i všech 45 hotových replik; lokálně ji otevři pod
-`/src/assets/speech/2b9d5934-d303-40ef-b875-59c2c46dbc00/listen.html` na běžícím Vite.
-Výběr návrhů vychází z měření výšky hlasu a kontroly dekódovaného signálu;
-subjektivní poslechové hodnocení není vydáváno za provedené.
-Nabídky témat nejsou zbytečně dabované.
-Kliknutí/tapnutí na titulek nebo Enter/mezerník dokončí repliku a okamžitě
-zastaví ústa. Třináct replik má přesné provider alignment, 32 má výslovně
-odhadované časování titulků; pohyb úst vždy čte skutečné audio. Celková délka
-nahrávek je 7:21. Hra při přehrávání nepotřebuje žádný token ani síťovou službu.
-Stávající mrkání, lokální obličejové oblasti a Ferova smyčka škrábání zůstávají.
+Současná mapa má zachovaných **sedm polygonů**: Ferov dvor, Zastávka, Kostol,
+Detské ihrisko, Krčma, Zberňa a Kravín. Krčma se odemkne přijetím případu,
+zberňu prozradí Dežo a kravín Etela. **Ulička** zůstává přístupná přechodem z
+Ferova dvora. Další propojení jsou **Kostol → Cintorín → Kaplnka → Krypta**
+a **Krčma → Herňa**, vždy i s návratem. Mapa používá původní spodní hotspoty,
+bez zkratky M; během dialogu svět nereaguje. Ovládání myší, dotykem, seznamem
+**Objekty** i klávesnicí zůstává zachované.
 
-Pozadí zberny a kravína mají zhasnuté žárovky. V kryptě svítí pouze automat
-napájený samostatnou autobaterií; její odpojení zastaví neón. Kahan v herně
-a svíčky fungují bez proudu. Místní smyčky větru, ptáků, vrzání a kapání a
-krátké efekty sebrání/kombinace/cesty se aktivují až po gestu hráče. V menu je
-**Zvuk prostredia**; menu, skrytí stránky a odmount audio uklidí/pozastaví.
-Smyčky lze reprodukovat bez API příkazem `python3 scripts/generate-ambience.py`.
+Hádanky používají původní pravidla, inventář, kombinace, podmínky a efekty.
+Postup není nová minihra: hráč upravuje rekvizity, spouští je a vyzvedává výsledek.
+Původní pozadí, postavy, jejich transformace, animace a hlasová přiřazení zůstaly.
+Nové rekvizity vykresluje explicitní `hotspot.placeholder: true` jako popsaný
+obdélník. Po přiřazení obrázku obdélník automaticky zmizí; běžné neviditelné
+hotspoty žádné obrysy ani zástupnou grafiku nedostávají.
 
 ### Kompletní průchod (spoilery)
 
-Pořadí několika větví lze prohodit. Následující postup ukazuje obě zakončení;
-hra po nevhodném použití zásadní předměty nespotřebuje.
+Větve lze řešit v jiném pořadí. Nesprávné kombinace neodebírají zásadní
+předměty; francouzský klíč, pečiatka a magnetická udice zůstávají použitelné.
 
-| Hádanka            | Řešení a podmínka                                                                                                                                                                                         |
-| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Zahájení pátrání   | Dokonči Ferovu úvodní repliku a přijmi případ. Margitu požádej o zásoby: dá rožok a izolačnú pásku.                                                                                                       |
-| Dežův magnet       | Na zastávce seber prázdnou fľašu a ukaž ji Dežovi. Dostaneš magnet a láhev si necháš. Zeptej se ho na kabel: odemkne zberňu.                                                                              |
-| Jolanda a zvonění  | Etely se zeptej na mléko, tím odemkne kravín. U kostela použij láhev na pumpu so svätenou vodou. Dej vodu Jolandě: získáš mlieko a kravský zvonec.                                                        |
-| Probuzení Dinga    | V krčmě požádej Karola o mletou kávu. Zkombinuj ji s mlékem na studené kravučíno a dej Dingovi v zberni. Vydá francúzsky kľúč, gumené rukavice a vrátí prázdnou láhev. Proto lze magnet získat i později. |
-| Zavřená herna      | Použij kľúč na pokazenú pípu v krčmě. Karol odemkne schody a vydá zlatou fóliu. Vejdi do herne a klíčem otevři servisný kryt: najdeš denník s Ľubovým servisem po datu jeho pohřbu.                       |
-| Úředně mrtvý       | Dones denník Etele. Dostaneš pečiatku. Z kostelní nástěnky seber prázdny úmrtný list a zkombinuj s pečiatkou. Razítko zůstává použitelné.                                                                 |
-| Cintorín a kaplnka | Dej Bonifácovi kravský zvonec: otevře bránu cintorína. Milanovi ukaž svůj opečiatkovaný úmrtný list: pustí tě do kaplnky.                                                                                 |
-| Klíč od krypty     | Na ihrisku dej Špľuchovi rožok. Dostaneš špagát a podložku. Magnet + špagát vytvoří magnet na špagáte. Použij jej na kľúč pod mrežou v kaplnce; získaný kľúč odemkne kryptu.                              |
-| Odhalení           | Ľubo fingoval smrt před věřiteli a ukradl hlavní kabel pro vlastní automat na Dingově autobaterii. Dokonči jeho repliku. **Teď ručně ulož hru**, pokud chceš vidět oba konce bez nového průchodu.         |
+| Hádanka              | Řešení a podmínka                                                                                                                                                                                                                                                                                           |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Přijetí případu      | Potvrď Ferovu repliku a přijmi případ. Na dvoře seber rožok z chlebníku, izolačnú pásku a drevený kolíček. Eržiku můžeš opakovaně provokovat, pro průchod to není nutné.                                                                                                                                    |
+| Dežovo alibi         | Na zastávce seber prázdnou fľašu a ukaž ji Dežovi. Dá magnet, láhev zůstane. Dotaz na kabel odemkne zberňu; měď magnet nepřitahuje. Etelin dotaz na mléko odemkne kravín.                                                                                                                                   |
+| Kraví bohoslužba     | U kostela seber prázdny úmrtný list a naplň láhev u pumpy. Svätenú vodu použij **na kravu**, ne na Jolandu: prázdná láhev se vrátí. Krávě přečti úmrtní list; úřední nuda ji uspí a papír zůstane. Pak seber zvonec z obojku a prázdnou lahví naber mléko z vedra. I zbytečný další křest vrátí láhev.      |
+| Dingův vnitřní budík | Karol v krčmě dá mletou kávu. Mléko + káva vytvoří studené kravučíno. Nalij je do kávového klystíru v zberni; láhev se vrátí. **Klikni na jeho pedál.** Dingo ožije a ze samostatné truhlice můžeš vzít klíč a rukavice. Magnet lze získat i teprve nyní.                                                   |
+| Zatuchlá herna       | Klíčem oprav pípu. Klikni na krígle a vypusť staré pivo. Tím se odemknou schody a v odkapávači se objeví zlatý obal; samostatně jej seber. V herně klíčem otevři servisný kryt. Deník dokládá Ľubovu reklamaci den po pohřbu a Bonifácovo tajné hraní.                                                      |
+| Pro domácí tehlu     | Na hřišti klíčem povol zadretý čap houpačky. Rožok polož na sedadlo jako protiváhu. **Klikni na sedadlo**, aby se houpačka rozhýbala. Ze země zvlášť seber špagát i podložku. Samotné přinesení rohlíku Špľuchovi nic nevymění.                                                                             |
+| Falešný jackpot      | Založ kravský zvonec do ručního automatu na odpustky vedle kostela. **Klikni na kliku**: mechanické cinkání odláká tajného gamblera Bonifáce a otevře bránu hřbitova. Žádný elektrický přístroj při tom neběží.                                                                                             |
+| Vlastní pohřeb       | Servisní deník ukaž Etele a získanou pečiatku zkombinuj s úmrtním listem. Opečiatkovaný list připevni **na zkušební rakev** na hřbitově. Na rakev použij i kolíček, kterým si Rudo zaštipne nos. **Klikni na rakev**: Milan uzná pohřeb a otevře kaplnku. List a kolíček lze připevnit v libovolném pořadí. |
+| Klíč od krypty       | Magnet + špagát vytvoří magnet na špagáte. V kaplnce jím vylov klíč pod mříží. Klíčem odemkni kryptu a dokonči Ľubovu úvodní repliku.                                                                                                                                                                       |
+| Odhalení a volba     | Ľubo fingoval smrt kvůli dluhům a ukradl hlavní kabel pro soukromý automat na Dingově autobaterii. Před definitivní volbou ručně ulož hru, pokud chceš projít oba konce bez opakování pátrání.                                                                                                              |
 
-**Konec „Turnaj živých dlhov“:** Klíčem odpoj autobatériu. Rukavicemi seber
-ukradnutý hlavný kábel; bez odpojení ho hrdina odmítne vzít. Kábel + páska
-vytvoří opravený hlavný kábel. Vrať se přes kaplnku, cintorín a kostol na mapu,
-navštiv Ferov dvor a použij kabel na rozvodnú skriňu. Elektřina se skutečně
-obnoví, na dvoře se rozsvítí a objeví turnajový transparent. Následuje epilog.
+**Obnovení proudu:** Klíčem odpoj autobatériu. Rukavicemi seber kabel; bez
+odpojení jej Rudo odmítne. Už sebrání kabelu znamená volbu návratu proudu,
+na což hra výslovně upozorní. Kábel + izolačka vytvoří opravený kabel.
+Vrať se k Ferovi a použij jej na rozvodnú skriňu. Rozsvítí se dvůr, objeví se
+turnajový transparent a proběhne epilog: živý Ľubo dostane účet za vlastní pohřeb.
 
-**Konec „Večný jackpot“:** Zkombinuj podložku se zlatou fólií. Podvodný žetón
-použij v kryptě na **živý** automat, dokud je připojená baterie. Nastane zkrat,
-automat i kabel zčernají, Ľubo uteče, vypadnou bezcenné podložky a osada zůstane
-bez proudu. Pokud jsi jen odpojil baterii a kabel ještě nevzal, volná svorka
-umožňuje baterii znovu připojit. Získáním kabelu se zavážeš k obnově; starší save
-před finále umožní změnit rozhodnutí. Druhý konec není jen jiná replika.
+**Jackpot:** Podložku z hřiště obal zlatou fólií z výčepu. Podvodný žetón
+použij v kryptě na automat, dokud je zapojená baterie a kabel jsi nevzal.
+Zkrat spálí automat i kabel, Ľubo uteče a vyvalí se bezcenné podložky.
+Osada zůstane potmě a následuje druhý epilog. Po pouhém odpojení baterie lze
+svorku znovu připojit; žeton se při použití na vypnutý automat nespotřebuje.
+Uloženou pozici před volbou lze načíst i po konci; nová hra ruční slot nemaže.
 
-V obou epilozích zůstává dostupné **Menu a uložené hry** a **Nová hra**.
-Uložení po konci zachová jeho stav; načtení před finále umožní dohrát jinak.
-Ruční slot se novou hrou nemaže. Vlastní generace zůstávají archivované v UUID
-adresářích, žádné původní obrazové/animované podklady se nepřepisují. Nové
-předměty a stavové rekvizity jsou ve `src/assets/story/` a jdou snadno nahradit
-lokálními obrázky přes Dev Mode při zachování jejich pravidel a ID.
+### Chybějící grafika
 
-**Praktická omezení:** dvě vypnutá pozadí používají lokální maskované krytí
-žárovky a světelného halo; automatická kontrola zamítla externí obrazový upload,
-takže se nic neodeslalo. Realistické ruchy nejsou nahrané: jde o jemné původní
-syntetické atmosféry. Čas titulků 44 replik lze ručně zpřesnit v editoru;
-žádná z těchto částí nebrání dokončení hry.
+**14 scénických rekvizit a 1 inventární ikonka.** Všechny scénické zástupné
+obdélníky už mají funkční pravidla, potřebnou viditelnost a správné cílení.
+Souřadnice níže jsou původní pixely lokace: `x, y · šířka×výška`, bez škálování
+na okno. V Dev Mode vyber uvedené ID a přiřaď mu lokální obrázek; ID, rám,
+pravidla a podmínky zachovej. Checkbox **Zástupná grafika** může zůstat zapnutý,
+protože obrázek má při vykreslení přednost. Pro výřezy použij transparentní PNG/WebP.
 
-Původní technická hádanka a staré zastávkové dialogy zůstávají jen v izolovaných
-`tests/fixtures/demo-project.json` a `tests/fixtures/stop-demo-project.json`;
-nepatří do příběhové hry ani jejího buildu.
+| Lokace                    | Předmět / hotspot                                | Umístění              | Účel                                                        | Doporučený vzhled                                                                                                         |
+| ------------------------- | ------------------------------------------------ | --------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Ferov dvor (`scene4`)     | Rožok zo včerajšieho storočia (`bread-box`)      | `80, 770 · 160×95`    | Závaží pro houpačku; samostatný pickup.                     | Otevřený plechový chlebník s jediným kamenně tvrdým rohlíkem; samostatný výřez.                                           |
+| Ferov dvor (`scene4`)     | Izolačná páska (`tape-roll`)                     | `1200, 700 · 135×100` | Oprava hlavního kabelu pro obnovení proudu.                 | Odřená černá role izolační pásky na bedýnce pod rozvaděčem.                                                               |
+| Ferov dvor (`scene4`)     | Drevený kolíček (`peg-basket`)                   | `700, 220 · 135×95`   | Kolíček na Rudův nos při vlastním pohřbu.                   | Dřevěný kolíček zachycený na šňůře; samostatná inventární ikonka stejného kolíčku.                                        |
+| Kravín (`scene10`)        | Vedro na posvätné mlieko (`milking-bucket`)      | `1050, 660 · 180×120` | Po uspání krávy dovolí nabrat mléko do láhve.               | Promáčklé plechové vědro pod vemenem, po dojení malé množství mléka; bez elektrického stroje.                             |
+| Kravín (`scene10`)        | Zvonec na obojku (`cow-bell-hook`)               | `1080, 350 · 120×95`  | Odpojení zvonce od spící krávy.                             | Velký odřený mosazný kravský zvonec na rozepínací kožené přezce.                                                          |
+| Zberňa (`scene9`)         | Kávový klystír na pedál (`resuscitator`)         | `880, 540 · 200×160`  | Lievik přijme kávu; klik na pedál probudí Dinga.            | Rezavá ruční nožní pumpa, trychtýř, gumová hadice za křeslo; směšná domácí resuscitace bez proudu.                        |
+| Zberňa (`scene9`)         | Dingova truhlica s náradím (`tool-chest`)        | `1110, 650 · 210×130` | Po probuzení Dinga vydá klíč a rukavice.                    | Otevřená rezavá skříňka s francouzským klíčem a gumovými rukavicemi; druhá prázdná varianta volitelná.                    |
+| Krčma (`scene6`)          | Zlatý obal v odkvapkávači (`foil-wrapper`)       | `495, 485 · 145×85`   | Zlatý obal pro padělaný žeton; objeví se po vypuštění piva. | Zmačkaný zlatý alobal v mokrém odkapávači u výčepu.                                                                       |
+| Kostol (`scene3`)         | Ručný automat na odpustky (`absolution-machine`) | `235, 535 · 170×180`  | Zvoncem a ruční klikou simuluje jackpot, odláká Bonifáce.   | Dřevěná podomácku vyrobená bedna s klikou, třemi ručně malovanými sedmičkami a držákem zvonce; žádná svítící elektronika. |
+| Detské ihrisko (`scene7`) | Zadretý čap hojdačky (`swing-axle`)              | `560, 350 · 130×85`   | Klíč povolí čep houpačky.                                   | Detail zrezivělého čepu s velkou maticí na kovové houpačce; zachovat původní konstrukci hřiště.                           |
+| Detské ihrisko (`scene7`) | Sedadlo pre domácu tehlu (`swing-seat`)          | `545, 710 · 185×85`   | Rohlík vytvoří protiváhu; klik uvolní provázek a podložku.  | Nízké dřevěné sedadlo s tvrdým rohlíkem jako protiváhou a přivázaným provázkem/podložkou; žádné dítě v nebezpečné póze.   |
+| Detské ihrisko (`scene7`) | Uvoľnený špagát (`loose-string`)                 | `770, 775 · 125×65`   | Samostatný pickup po rozhýbání houpačky; magnetická udice.  | Provázek stočený v prachu pod houpačkou.                                                                                  |
+| Detské ihrisko (`scene7`) | Vypadnutá podložka (`loose-washer`)              | `930, 785 · 125×65`   | Samostatný pickup po rozhýbání houpačky; volitelný jackpot. | Velká rezavá ocelová podložka v prachu, rozměrem podobná žetonu.                                                          |
+| Cintorín (`scene5`)       | Skúšobná rakva (`coffin`)                        | `925, 430 · 255×165`  | Přijme úmrtní list a kolíček; klik absolvuje Rudův pohřeb.  | Otevřená prázdná dřevěná rakev na nízkých kozách u hrobníka; cedulka pro úmrtní list a dřevěný kolíček na okraji.         |
+| Inventář                  | Drevený kolíček (`clothespin`)                   | —                     | Rozlišení nosního kolíčku v inventáři; zatím znak `II`.     | Jediný starý dřevěný kolíček, průhledné pozadí, stejná kresba jako scénická verze.                                        |
+
+### Dabing tohoto scénáře
+
+**V tomto přepisu se ElevenLabs ani jiné placené generování nespouštělo.**
+Všech 13 hlasových přiřazení zůstalo zachovaných, stejně jako osm chráněných
+stálých slotů a dva rotační sloty. Název Margita se změnil na Eržika pouze
+v autorském obsahu; archivní nahrávky a registrace se nepřepisují.
+
+Nově čeká **47 hraných replik**: 42 má zachovanou starší nahrávku s odlišným
+`speech.text` a pět nových Eržičiných štěků zatím audio nemá. Runtime
+zastaralé audio ani jeho lip-sync nepřehraje; ukáže aktuální slovenské titulky.
+Kliknutí/tapnutí na titulkovou plochu nebo Enter/mezerník repliku potvrdí.
+Mrkání, ostatní animace i Ferovo škrábání zůstávají funkční.
+
+Při pozdějším schváleném dabingu používej stávající hlasy; u rotačních postav
+nejprve obnov jejich Voice Design a po ověření všech WAV/titulků/Rhubarb dat
+uvolni slot. Eržika má nyní pět samostatných reakcí, Karol tři, Špľuch tři,
+Nika dvě a Béla dvě. U dětí je třeba **nový přirozený věkový projev**, nikoliv
+starý dospělý falzet: Špľuch přibližně 9–10 let, zbrklý a chraptivější;
+Nika 8–9 let, jasná sebejistá dikce; Béla 7–8 let, mladší měkčí hlas s nejistými
+záchvěvy. Jde o zadání pro příští schválenou generaci, dosud se nic negenerovalo.
+
+[Archiv předchozího castingu](src/assets/speech/2b9d5934-d303-40ef-b875-59c2c46dbc00/casting.json)
+a [historická poslechová stránka](src/assets/speech/2b9d5934-d303-40ef-b875-59c2c46dbc00/listen.html)
+uchovávají původní prompty, 39 návrhů a 45 starších nahrávek; nejsou seznamem
+aktuálně namluvených replik tohoto nového scénáře. Hraní nepotřebuje API token.
+
+Pozadí a atmosféry zůstaly lokální. Zberňa a kravín mají zhasnuté žárovky;
+ruční klystír, odpustkový automat, pípa a houpačka nepotřebují proud.
+V kryptě napájí světelný automat jediná autobaterie, jejíž odpojení neón zastaví.
+Svíčky a petrolejka fungují bez sítě. Místní ruchy se zapnou až po gestu hráče,
+menu i skrytá stránka je pozastaví.
+
+Původní technická hádanka a staré zastávkové dialogy zůstávají pouze v
+`tests/fixtures/demo-project.json` a `tests/fixtures/stop-demo-project.json`.
 
 ## Obsah a architektura
 

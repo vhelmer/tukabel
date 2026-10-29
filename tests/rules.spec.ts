@@ -1052,3 +1052,27 @@ test('journal definitions and effect/condition references validate at the JSON b
     'unknown reference',
   );
 });
+
+test('JSON accepts explicit placeholder art and rejects nonboolean flags', () => {
+  const project = JSON.parse(
+    readFileSync('tests/fixtures/demo-project.json', 'utf8'),
+  ) as GameContent;
+  const withPlaceholder = (placeholder: unknown) => ({
+    ...project,
+    scenes: project.scenes.map((scene, index) =>
+      index
+        ? scene
+        : {
+            ...scene,
+            hotspots: scene.hotspots.map((hotspot, index) =>
+              index ? hotspot : { ...hotspot, placeholder },
+            ),
+          },
+    ),
+  });
+  expect(validateProject(withPlaceholder(true))).toEqual([]);
+  expect(validateProject(withPlaceholder(false))).toEqual([]);
+  expect(validateProject(withPlaceholder('true')).join(' ')).toContain(
+    'placeholder: expected boolean',
+  );
+});
