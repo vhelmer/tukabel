@@ -1153,6 +1153,7 @@
           "label": "Mrak 1",
           "bounds": { "x": 540, "y": 52, "width": 250, "height": 66 },
           "image": "clouds/scene5/cloud-1.png",
+          "clipMask": "clouds/scene5/sky-mask.png",
           "onClick": [],
           "decorative": true,
           "animation": { "motion": "drift" }
@@ -1162,6 +1163,7 @@
           "label": "Mrak 2",
           "bounds": { "x": 900, "y": 18, "width": 320, "height": 70 },
           "image": "clouds/scene5/cloud-2.png",
+          "clipMask": "clouds/scene5/sky-mask.png",
           "onClick": [],
           "decorative": true,
           "animation": { "motion": "drift" }
@@ -1171,6 +1173,7 @@
           "label": "Mrak 3",
           "bounds": { "x": 700, "y": 8, "width": 180, "height": 54 },
           "image": "clouds/scene5/cloud-3.png",
+          "clipMask": "clouds/scene5/sky-mask.png",
           "onClick": [],
           "decorative": true,
           "animation": { "motion": "drift" }

@@ -179,6 +179,9 @@ function MountedCanvas({
             ...scene.hotspots.flatMap((hotspot) =>
               hotspot.image ? [hotspot.image] : [],
             ),
+            ...scene.hotspots.flatMap((hotspot) =>
+              hotspot.clipMask ? [hotspot.clipMask] : [],
+            ),
           ]),
         ];
         const maskUrls = new Set(

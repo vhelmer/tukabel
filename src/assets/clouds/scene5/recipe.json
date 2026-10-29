@@ -31,5 +31,13 @@
       "size": [345, 104],
       "sha256": "5663c059aac7b57ef16a62187694f450d4b9f306abc2e07e5d5c961177a3a4e0"
     }
-  ]
+  ],
+  "skyMask": {
+    "file": "sky-mask.png",
+    "method": "4-connected flood fill from the top edge through sky-blue (b>=150, b-r>=60, b-g>=30) and pale cloud pixels (min>=165, max-min<=50); enclosed specks up to 200 px filled; alpha blurred sigma 0.6",
+    "source": "scene-art/ae538529-cee9-45d0-b12c-50ccf4bc7f2d/image.png",
+    "sourceSha256": "d9ba6ca90704872bd4d3fc347b3cbecb386df75cb583f9e2471d28fd123fb1cc",
+    "size": [1672, 941],
+    "script": "scripts/sky-mask.mjs"
+  }
 }

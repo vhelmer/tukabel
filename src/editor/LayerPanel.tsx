@@ -187,6 +187,16 @@ export function LayerPanel({
               })
             }
           />
+          <AssetField
+            label="Maska ořezu (PNG ve velikosti lokace)"
+            value={selected.clipMask ?? ''}
+            assets={assets}
+            onAssets={onAssets}
+            optional
+            onChange={(clipMask) =>
+              update({ ...selected, clipMask: clipMask || undefined })
+            }
+          />
           <button
             className="danger-button"
             onClick={() => {

@@ -685,12 +685,45 @@ export function EditorStage({
                   }
                   transform={`rotate(${angle} ${pivot.x} ${pivot.y})`}
                 >
+                  {hotspot.image && hotspot.clipMask && (
+                    // The clip mask stays in location coordinates, so undo the
+                    // layer rotation inside it, exactly like the Pixi mask.
+                    <mask
+                      id={`clip-${hotspot.id}`}
+                      maskUnits="userSpaceOnUse"
+                      x={0}
+                      y={0}
+                      width={scene.width}
+                      height={scene.height}
+                    >
+                      <g transform={`rotate(${-angle} ${pivot.x} ${pivot.y})`}>
+                        <SceneImage
+                          asset={hotspot.clipMask}
+                          bounds={{
+                            x: 0,
+                            y: 0,
+                            width: scene.width,
+                            height: scene.height,
+                          }}
+                          fit="stretch"
+                        />
+                      </g>
+                    </mask>
+                  )}
                   {hotspot.image && (
-                    <SceneImage
-                      asset={hotspot.image}
-                      bounds={b}
-                      fit={hotspot.imageFit}
-                    />
+                    <g
+                      mask={
+                        hotspot.clipMask
+                          ? `url(#clip-${hotspot.id})`
+                          : undefined
+                      }
+                    >
+                      <SceneImage
+                        asset={hotspot.image}
+                        bounds={b}
+                        fit={hotspot.imageFit}
+                      />
+                    </g>
                   )}
                   {hotspot.placeholder === true && !hotspot.image && (
                     <g pointerEvents="none">

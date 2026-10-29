@@ -169,6 +169,8 @@ export interface Rule {
 export interface Hotspot {
   // Array order is paint order. Decorative layers never capture game input.
   readonly decorative?: boolean;
+  // Location-sized PNG whose alpha clips this layer, e.g. clouds behind trees.
+  readonly clipMask?: string;
   readonly hidden?: boolean;
   readonly locked?: boolean;
   readonly opacity?: number;

@@ -273,6 +273,7 @@ export function validateProject(
           'id',
           'label',
           'decorative',
+          'clipMask',
           'hidden',
           'locked',
           'opacity',
@@ -316,6 +317,7 @@ export function validateProject(
       }
       if (hotspot.decorative && !hotspot.image)
         errors.push(`${key}: decorative layer needs an image`);
+      asset(hotspot.clipMask, `${key}.clipMask`, true);
       if (hotspot.polygon !== undefined)
         list(hotspot.polygon, `${key}.polygon`, (point, path) => {
           if (object(point, path, ['x', 'y'])) {

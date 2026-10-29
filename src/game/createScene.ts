@@ -243,6 +243,15 @@ export function createScene(
     });
     regions.set(hotspot.id, region);
     root.addChild(region);
+    if (hotspot.clipMask) {
+      // The mask lives in location coordinates, so a drifting or rotated
+      // layer is clipped against the fixed background (e.g. only the sky).
+      const clip = root.addChild(new Sprite(textures.get(hotspot.clipMask)!));
+      clip.width = definition.width;
+      clip.height = definition.height;
+      clip.eventMode = 'none';
+      region.mask = clip;
+    }
   }
 
   function apply(actor: (typeof actors)[number], sample: AnimationSample) {

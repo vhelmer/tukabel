@@ -39,6 +39,7 @@ export function resolveAssets(content: GameContent): GameContent {
       hotspots: scene.hotspots.map((hotspot) => ({
         ...hotspot,
         image: hotspot.image ? assetUrl(hotspot.image) : undefined,
+        clipMask: hotspot.clipMask ? assetUrl(hotspot.clipMask) : undefined,
         cursorImage: hotspot.cursorImage
           ? assetUrl(hotspot.cursorImage)
           : undefined,
