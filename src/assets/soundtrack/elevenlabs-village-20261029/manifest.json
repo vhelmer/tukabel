@@ -1,0 +1,143 @@
+{
+  "version": 1,
+  "provider": "ElevenLabs",
+  "creditsEstimate": "7 x 24s music + 8 short effects; one generation per asset, no automatic retries",
+  "assets": [
+    {
+      "id": "music-village",
+      "kind": "music",
+      "audio": "soundtrack/elevenlabs-village-20261029/music-village.wav",
+      "source": "soundtrack/elevenlabs-village-20261029/provider/music-village.mp3",
+      "record": "soundtrack/elevenlabs-village-20261029/music-village.json",
+      "sha256": "8b0fdbb09b123d3e4e6aca1963195d661a364463a774067fb339cd43e4ca9b28",
+      "seconds": 16
+    },
+    {
+      "id": "music-sacred",
+      "kind": "music",
+      "audio": "soundtrack/elevenlabs-village-20261029/music-sacred.wav",
+      "source": "soundtrack/elevenlabs-village-20261029/provider/music-sacred.mp3",
+      "record": "soundtrack/elevenlabs-village-20261029/music-sacred.json",
+      "sha256": "1d4c4303225f43915a687adcfd4f0cd629dc529869ea4c7dc207c8ad915c5d95",
+      "seconds": 16
+    },
+    {
+      "id": "music-tavern",
+      "kind": "music",
+      "audio": "soundtrack/elevenlabs-village-20261029/music-tavern.wav",
+      "source": "soundtrack/elevenlabs-village-20261029/provider/music-tavern.mp3",
+      "record": "soundtrack/elevenlabs-village-20261029/music-tavern.json",
+      "sha256": "fef60ef4b72a10c5972738d0ae21aff6ef87ccbc07b0e33c0a649aa0e0b6a50d",
+      "seconds": 16
+    },
+    {
+      "id": "music-playground",
+      "kind": "music",
+      "audio": "soundtrack/elevenlabs-village-20261029/music-playground.wav",
+      "source": "soundtrack/elevenlabs-village-20261029/provider/music-playground.mp3",
+      "record": "soundtrack/elevenlabs-village-20261029/music-playground.json",
+      "sha256": "443f79010bb77488ec086cdcd48978b9e3ccd378542803a527cffddebf4f97e4",
+      "seconds": 16
+    },
+    {
+      "id": "music-scrapyard",
+      "kind": "music",
+      "audio": "soundtrack/elevenlabs-village-20261029/music-scrapyard.wav",
+      "source": "soundtrack/elevenlabs-village-20261029/provider/music-scrapyard.mp3",
+      "record": "soundtrack/elevenlabs-village-20261029/music-scrapyard.json",
+      "sha256": "eba2eb6ea7057afcd83b7a17a1418fb97d5cb5528abd90c20cb46b0bbd510030",
+      "seconds": 16
+    },
+    {
+      "id": "music-barn",
+      "kind": "music",
+      "audio": "soundtrack/elevenlabs-village-20261029/music-barn.wav",
+      "source": "soundtrack/elevenlabs-village-20261029/provider/music-barn.mp3",
+      "record": "soundtrack/elevenlabs-village-20261029/music-barn.json",
+      "sha256": "d2a5bfb48074bfb6f0b5c691cdc702c03da4d61fedbb0a736836952bcb3c8cb5",
+      "seconds": 16
+    },
+    {
+      "id": "music-crypt",
+      "kind": "music",
+      "audio": "soundtrack/elevenlabs-village-20261029/music-crypt.wav",
+      "source": "soundtrack/elevenlabs-village-20261029/provider/music-crypt.mp3",
+      "record": "soundtrack/elevenlabs-village-20261029/music-crypt.json",
+      "sha256": "8f9d6b1d9c789dc1af9eb7ef8efdded65aefe940a02ea3ab19e6c81b3cf7adad",
+      "seconds": 16
+    },
+    {
+      "id": "sfx-tools",
+      "kind": "sfx",
+      "audio": "soundtrack/elevenlabs-village-20261029/sfx-tools.wav",
+      "source": "soundtrack/elevenlabs-village-20261029/provider/sfx-tools.mp3",
+      "record": "soundtrack/elevenlabs-village-20261029/sfx-tools.json",
+      "sha256": "eb4de141618224104fefd2b7a9913b068e351d908591b873bf769d6b363df914",
+      "seconds": 1
+    },
+    {
+      "id": "sfx-door",
+      "kind": "sfx",
+      "audio": "soundtrack/elevenlabs-village-20261029/sfx-door.wav",
+      "source": "soundtrack/elevenlabs-village-20261029/provider/sfx-door.mp3",
+      "record": "soundtrack/elevenlabs-village-20261029/sfx-door.json",
+      "sha256": "41c6bef6efcf7c3d57a709bd7bdc5d585980c525accfd451f4e1c58cbe421bbf",
+      "seconds": 1.36
+    },
+    {
+      "id": "sfx-water",
+      "kind": "sfx",
+      "audio": "soundtrack/elevenlabs-village-20261029/sfx-water.wav",
+      "source": "soundtrack/elevenlabs-village-20261029/provider/sfx-water.mp3",
+      "record": "soundtrack/elevenlabs-village-20261029/sfx-water.json",
+      "sha256": "a0001cfa13e440f6a13426ceb2f08ccf9a057a22c763c6af1c71a2536297ce4e",
+      "seconds": 1.109092970521542
+    },
+    {
+      "id": "sfx-pump",
+      "kind": "sfx",
+      "audio": "soundtrack/elevenlabs-village-20261029/sfx-pump.wav",
+      "source": "soundtrack/elevenlabs-village-20261029/provider/sfx-pump.mp3",
+      "record": "soundtrack/elevenlabs-village-20261029/sfx-pump.json",
+      "sha256": "27c4277b87915ee2b445fe36df98a3651e5ca6b01179e0fd65e6d7edd12cfd5b",
+      "seconds": 1.6
+    },
+    {
+      "id": "sfx-bell",
+      "kind": "sfx",
+      "audio": "soundtrack/elevenlabs-village-20261029/sfx-bell.wav",
+      "source": "soundtrack/elevenlabs-village-20261029/provider/sfx-bell.mp3",
+      "record": "soundtrack/elevenlabs-village-20261029/sfx-bell.json",
+      "sha256": "97b3bc8339033e994732268dabf91b1477cc1b5d5396992ca20311c90ba73928",
+      "seconds": 1.76
+    },
+    {
+      "id": "sfx-swing",
+      "kind": "sfx",
+      "audio": "soundtrack/elevenlabs-village-20261029/sfx-swing.wav",
+      "source": "soundtrack/elevenlabs-village-20261029/provider/sfx-swing.mp3",
+      "record": "soundtrack/elevenlabs-village-20261029/sfx-swing.json",
+      "sha256": "d40ce9ad28e01bff45ba1f2c3467af36d88cc7e80db725e2f2b16e3477c5293b",
+      "seconds": 1.2207936507936508
+    },
+    {
+      "id": "sfx-stamp",
+      "kind": "sfx",
+      "audio": "soundtrack/elevenlabs-village-20261029/sfx-stamp.wav",
+      "source": "soundtrack/elevenlabs-village-20261029/provider/sfx-stamp.mp3",
+      "record": "soundtrack/elevenlabs-village-20261029/sfx-stamp.json",
+      "sha256": "0484c9ef733acfaa2769d632c62d6ec2b348760abe374e7917e63f3455604f8f",
+      "seconds": 0.8
+    },
+    {
+      "id": "sfx-jackpot",
+      "kind": "sfx",
+      "audio": "soundtrack/elevenlabs-village-20261029/sfx-jackpot.wav",
+      "source": "soundtrack/elevenlabs-village-20261029/provider/sfx-jackpot.mp3",
+      "record": "soundtrack/elevenlabs-village-20261029/sfx-jackpot.json",
+      "sha256": "7ae7523030ac19ed56ba2f5ee291f72c4d06ba94d009b213b949e89a32ef7b25",
+      "seconds": 2.76
+    }
+  ],
+  "complete": true
+}

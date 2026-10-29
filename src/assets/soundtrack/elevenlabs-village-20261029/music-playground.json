@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "id": "music-playground",
+  "kind": "music",
+  "provider": "ElevenLabs",
+  "model": "music_v2_5",
+  "prompt": "Original instrumental dark-comedy adventure underscore, same cohesive fictional Eastern Slovak village band throughout. D minor, 120 BPM, 4/4. Original catchy five-note D-F-E-A-G folk motif, syncopated acoustic guitar, accordion, upright bass, playful Balkan hand percussion and subtle dusty vintage hip-hop breakbeat groove. Occasional short theatrical old-fashioned village brass-fanfare answers. Warm mostly acoustic recording, understated arrangement leaving space for dialogue. Full repeating groove from first through last beat, no intro, no ending, no fade, no crescendo. Exactly twelve bars, 24 seconds. Absolutely instrumental only: no voice, no vocals, no singing, no rap, no spoken words or chants. No quotation of existing compositions. An eccentric village playground full of mischievous children, with no voices: pizzicato violin tricks and short quick fiddle runs, woodblock and hand-clap-like percussion but no human claps, jaunty acoustic guitar, dry accordion and a bouncing upright bass. Clever little pauses, toy-like musical timing, cheeky but not nursery music.",
+  "request": {
+    "prompt": "Original instrumental dark-comedy adventure underscore, same cohesive fictional Eastern Slovak village band throughout. D minor, 120 BPM, 4/4. Original catchy five-note D-F-E-A-G folk motif, syncopated acoustic guitar, accordion, upright bass, playful Balkan hand percussion and subtle dusty vintage hip-hop breakbeat groove. Occasional short theatrical old-fashioned village brass-fanfare answers. Warm mostly acoustic recording, understated arrangement leaving space for dialogue. Full repeating groove from first through last beat, no intro, no ending, no fade, no crescendo. Exactly twelve bars, 24 seconds. Absolutely instrumental only: no voice, no vocals, no singing, no rap, no spoken words or chants. No quotation of existing compositions. An eccentric village playground full of mischievous children, with no voices: pizzicato violin tricks and short quick fiddle runs, woodblock and hand-clap-like percussion but no human claps, jaunty acoustic guitar, dry accordion and a bouncing upright bass. Clever little pauses, toy-like musical timing, cheeky but not nursery music.",
+    "music_length_ms": 24000,
+    "model_id": "music_v2_5",
+    "force_instrumental": true
+  },
+  "songId": "I4EmQQLqbNTpFAGdLWB1",
+  "creditCost": null,
+  "source": "soundtrack/elevenlabs-village-20261029/provider/music-playground.mp3",
+  "providerSha256": "8403fe6516ce788a759f6dbe8dcf231c7bb1595d1177298d0f5c6aff8c3ab181",
+  "providerSeconds": 24.03265306122449,
+  "audio": "soundtrack/elevenlabs-village-20261029/music-playground.wav",
+  "sha256": "443f79010bb77488ec086cdcd48978b9e3ccd378542803a527cffddebf4f97e4",
+  "sampleRate": 44100,
+  "channels": 2,
+  "seconds": 16,
+  "processing": {
+    "startSeconds": 4,
+    "loopOverlapSeconds": 0.18,
+    "loopBars": 8,
+    "nominalBpm": 120,
+    "gain": 0.7411780030212244,
+    "peakDb": -4.192000710419425,
+    "rmsDb": -18,
+    "seamDelta": 0.00026227719525615163,
+    "clippedSamples": 0
+  }
+}

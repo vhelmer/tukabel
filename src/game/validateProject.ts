@@ -104,8 +104,9 @@ export function validateProject(
   }
   function rules(input: unknown, path: string) {
     list(input, path, (entry, key) => {
-      if (!object(entry, key, ['when', 'message', 'effects'])) return;
+      if (!object(entry, key, ['when', 'message', 'effects', 'sound'])) return;
       optionalString(entry, 'message', key);
+      audioAsset(entry.sound, `${key}.sound`);
       condition(entry.when, `${key}.when`);
       effects(entry.effects, `${key}.effects`);
     });
@@ -154,7 +155,7 @@ export function validateProject(
     value.startDialogue === undefined
   )
     errors.push('project.openingCutscene: requires startDialogue');
-  function ambient(input: unknown, path: string) {
+  function audioAsset(input: unknown, path: string) {
     if (input === undefined) return;
     if (
       typeof input !== 'string' ||
@@ -166,7 +167,16 @@ export function validateProject(
   }
   if (value.endings !== undefined)
     list(value.endings, 'endings', (ending, path) => {
-      if (!object(ending, path, ['id', 'when', 'title', 'text', 'ambient']))
+      if (
+        !object(ending, path, [
+          'id',
+          'when',
+          'title',
+          'text',
+          'ambient',
+          'music',
+        ])
+      )
         return;
       for (const key of ['id', 'title', 'text']) {
         string(ending[key], `${path}.${key}`);
@@ -179,7 +189,8 @@ export function validateProject(
       if (ending.when === undefined)
         errors.push(`${path}.when: expected condition`);
       condition(ending.when, `${path}.when`);
-      ambient(ending.ambient, `${path}.ambient`);
+      audioAsset(ending.ambient, `${path}.ambient`);
+      audioAsset(ending.music, `${path}.music`);
     });
   list(value.flags, 'flags', string);
   if (
@@ -265,6 +276,7 @@ export function validateProject(
         'background',
         'backgroundHidden',
         'ambient',
+        'music',
         'hotspots',
       ])
     )
@@ -274,7 +286,8 @@ export function validateProject(
     number(scene.width, `${path}.width`);
     number(scene.height, `${path}.height`);
     asset(scene.background, `${path}.background`);
-    ambient(scene.ambient, `${path}.ambient`);
+    audioAsset(scene.ambient, `${path}.ambient`);
+    audioAsset(scene.music, `${path}.music`);
     if (
       scene.backgroundHidden !== undefined &&
       typeof scene.backgroundHidden !== 'boolean'

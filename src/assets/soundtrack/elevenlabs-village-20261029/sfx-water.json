@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "id": "sfx-water",
+  "kind": "sfx",
+  "provider": "ElevenLabs",
+  "model": "eleven_text_to_sound_v2",
+  "prompt": "A short gentle pour of liquid from a glass bottle into a small metal vessel: small splash, two soft glugs and a last drip. Dry intimate comic adventure foley, no running machine, no music and no voices. Isolated clean action.",
+  "request": {
+    "text": "A short gentle pour of liquid from a glass bottle into a small metal vessel: small splash, two soft glugs and a last drip. Dry intimate comic adventure foley, no running machine, no music and no voices. Isolated clean action.",
+    "duration_seconds": 1.5,
+    "model_id": "eleven_text_to_sound_v2",
+    "loop": false,
+    "prompt_influence": 0.5
+  },
+  "songId": null,
+  "creditCost": "15",
+  "source": "soundtrack/elevenlabs-village-20261029/provider/sfx-water.mp3",
+  "providerSha256": "c3f2ec25e6e337e746cbb84cda1c48315da64eea5a3f9f13d24fea391fdfeb5e",
+  "providerSeconds": 1.48,
+  "audio": "soundtrack/elevenlabs-village-20261029/sfx-water.wav",
+  "sha256": "a0001cfa13e440f6a13426ceb2f08ccf9a057a22c763c6af1c71a2536297ce4e",
+  "sampleRate": 44100,
+  "channels": 2,
+  "seconds": 1.109092970521542,
+  "processing": {
+    "startSeconds": 0,
+    "loopOverlapSeconds": 0,
+    "gain": 14.649014163355844,
+    "peakDb": -3,
+    "rmsDb": -24.92333224984626,
+    "seamDelta": 0,
+    "clippedSamples": 0
+  }
+}

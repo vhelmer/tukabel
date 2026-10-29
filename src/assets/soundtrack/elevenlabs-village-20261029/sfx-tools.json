@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "id": "sfx-tools",
+  "kind": "sfx",
+  "provider": "ElevenLabs",
+  "model": "eleven_text_to_sound_v2",
+  "prompt": "Close dry foley: one short manual ratchet turn on a rusty bolt, two light metallic clicks and a restrained final clunk. Hand tool only, no powered drill, no motor, no music and no voices. Slightly cartoonish but believable, isolated clean sound with a short natural decay.",
+  "request": {
+    "text": "Close dry foley: one short manual ratchet turn on a rusty bolt, two light metallic clicks and a restrained final clunk. Hand tool only, no powered drill, no motor, no music and no voices. Slightly cartoonish but believable, isolated clean sound with a short natural decay.",
+    "duration_seconds": 1,
+    "model_id": "eleven_text_to_sound_v2",
+    "loop": false,
+    "prompt_influence": 0.5
+  },
+  "songId": null,
+  "creditCost": "10",
+  "source": "soundtrack/elevenlabs-village-20261029/provider/sfx-tools.mp3",
+  "providerSha256": "2a4f3d5d6d9617fdcd8c1c7aa1955c306bf67f3f443ed838a69daf74c544bef0",
+  "providerSeconds": 1,
+  "audio": "soundtrack/elevenlabs-village-20261029/sfx-tools.wav",
+  "sha256": "eb4de141618224104fefd2b7a9913b068e351d908591b873bf769d6b363df914",
+  "sampleRate": 44100,
+  "channels": 2,
+  "seconds": 1,
+  "processing": {
+    "startSeconds": 0,
+    "loopOverlapSeconds": 0,
+    "gain": 0.9137193569325952,
+    "peakDb": -3,
+    "rmsDb": -25.97401969266043,
+    "seamDelta": 0,
+    "clippedSamples": 0
+  }
+}

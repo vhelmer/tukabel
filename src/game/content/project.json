@@ -670,7 +670,8 @@
           ]
         }
       ],
-      "ambient": "ambience/village.wav"
+      "ambient": "ambience/village.wav",
+      "music": "soundtrack/elevenlabs-village-20261029/music-village.wav"
     },
     {
       "id": "scene4",
@@ -946,7 +947,8 @@
           "cursor": "interact"
         }
       ],
-      "ambient": "ambience/village.wav"
+      "ambient": "ambience/village.wav",
+      "music": "soundtrack/elevenlabs-village-20261029/music-village.wav"
     },
     {
       "id": "scene3",
@@ -1024,7 +1026,8 @@
                 "effects": [
                   { "type": "removeItem", "id": "empty-bottle" },
                   { "type": "addItem", "id": "holy-water" }
-                ]
+                ],
+                "sound": "soundtrack/elevenlabs-village-20261029/sfx-water.wav"
               }
             ]
           }
@@ -1057,7 +1060,8 @@
           "onClick": [
             {
               "when": { "flag": "cemetery-open" },
-              "effects": [{ "type": "scene", "id": "scene5" }]
+              "effects": [{ "type": "scene", "id": "scene5" }],
+              "sound": "soundtrack/elevenlabs-village-20261029/sfx-door.wav"
             },
             { "effects": [{ "type": "dialogue", "id": "priest-guards-gate" }] }
           ],
@@ -1103,7 +1107,8 @@
               "effects": [
                 { "type": "flag", "id": "cemetery-open", "value": true },
                 { "type": "dialogue", "id": "priest-bell" }
-              ]
+              ],
+              "sound": "soundtrack/elevenlabs-village-20261029/sfx-bell.wav"
             },
             {
               "message": "Drevená bedňa s kľukou a tromi sedmičkami. Vnútri chýba zvonec. Elektrinu nenájdeš, iba pokus o zázrak."
@@ -1127,7 +1132,8 @@
           "cursor": "interact"
         }
       ],
-      "ambient": "ambience/graveyard.wav"
+      "ambient": "ambience/graveyard.wav",
+      "music": "soundtrack/elevenlabs-village-20261029/music-sacred.wav"
     },
     {
       "id": "scene5",
@@ -1223,7 +1229,12 @@
           "id": "church-return",
           "label": "Späť ku kostolu",
           "bounds": { "x": 0, "y": 786.955, "width": 1672, "height": 154.045 },
-          "onClick": [{ "effects": [{ "type": "scene", "id": "scene3" }] }],
+          "onClick": [
+            {
+              "effects": [{ "type": "scene", "id": "scene3" }],
+              "sound": "soundtrack/elevenlabs-village-20261029/sfx-door.wav"
+            }
+          ],
           "cursor": "exit",
           "polygon": [
             { "x": 125.626, "y": 788.99 },
@@ -1247,7 +1258,8 @@
           "onClick": [
             {
               "when": { "flag": "chapel-open" },
-              "effects": [{ "type": "scene", "id": "scene2" }]
+              "effects": [{ "type": "scene", "id": "scene2" }],
+              "sound": "soundtrack/elevenlabs-village-20261029/sfx-door.wav"
             },
             {
               "effects": [
@@ -1334,7 +1346,8 @@
               "effects": [
                 { "type": "flag", "id": "chapel-open", "value": true },
                 { "type": "dialogue", "id": "gravedigger-paper" }
-              ]
+              ],
+              "sound": "soundtrack/elevenlabs-village-20261029/sfx-door.wav"
             },
             {
               "when": { "flag": "coffin-certified" },
@@ -1382,7 +1395,8 @@
           "cursor": "interact"
         }
       ],
-      "ambient": "ambience/graveyard.wav"
+      "ambient": "ambience/graveyard.wav",
+      "music": "soundtrack/elevenlabs-village-20261029/music-sacred.wav"
     },
     {
       "id": "scene6",
@@ -1442,7 +1456,8 @@
                 "message": "Matica drží. Teraz môžem cez kohútik pri krígľoch vypustiť tú starú penu.",
                 "effects": [
                   { "type": "flag", "id": "tap-fixed", "value": true }
-                ]
+                ],
+                "sound": "soundtrack/elevenlabs-village-20261029/sfx-tools.wav"
               },
               {
                 "message": "Pípa je opravená. Pre istotu jej ešte pohrozím kľúčom."
@@ -1517,7 +1532,8 @@
                 { "type": "flag", "id": "beer-drained", "value": true },
                 { "type": "flag", "id": "pub-deal-known", "value": true },
                 { "type": "dialogue", "id": "karol-opens-gaming" }
-              ]
+              ],
+              "sound": "soundtrack/elevenlabs-village-20261029/sfx-water.wav"
             },
             {
               "message": "Bez dotiahnutej matice tečie páka, nie pivo. Pokaziť objednávku viem aj bez náradia."
@@ -1567,7 +1583,8 @@
           "cursor": "interact"
         }
       ],
-      "ambient": "ambience/tavern.wav"
+      "ambient": "ambience/tavern.wav",
+      "music": "soundtrack/elevenlabs-village-20261029/music-tavern.wav"
     },
     {
       "id": "scene7",
@@ -1729,7 +1746,8 @@
                 "message": "Maticu si povolil. Tak. Teraz je to odborne pokazené.",
                 "effects": [
                   { "type": "flag", "id": "axle-loose", "value": true }
-                ]
+                ],
+                "sound": "soundtrack/elevenlabs-village-20261029/sfx-tools.wav"
               }
             ]
           }
@@ -1758,7 +1776,8 @@
               "effects": [
                 { "type": "flag", "id": "kids-helped", "value": true },
                 { "type": "dialogue", "id": "boy-bread" }
-              ]
+              ],
+              "sound": "soundtrack/elevenlabs-village-20261029/sfx-swing.wav"
             },
             {
               "when": { "flag": "bread-loaded" },
@@ -1836,7 +1855,8 @@
           ]
         }
       ],
-      "ambient": "ambience/village.wav"
+      "ambient": "ambience/village.wav",
+      "music": "soundtrack/elevenlabs-village-20261029/music-playground.wav"
     },
     {
       "id": "scene8",
@@ -1867,7 +1887,8 @@
                 "effects": [
                   { "type": "flag", "id": "log-found", "value": true },
                   { "type": "addItem", "id": "machine-log" }
-                ]
+                ],
+                "sound": "soundtrack/elevenlabs-village-20261029/sfx-tools.wav"
               },
               {
                 "message": "Zo servisu som už vybral jedinú vec, ktorá má dôkaznú hodnotu."
@@ -1956,7 +1977,8 @@
           ]
         }
       ],
-      "ambient": "ambience/tavern.wav"
+      "ambient": "ambience/tavern.wav",
+      "music": "soundtrack/elevenlabs-village-20261029/music-tavern.wav"
     },
     {
       "id": "scene2",
@@ -1974,7 +1996,12 @@
             "width": 1641.133,
             "height": 132.993
           },
-          "onClick": [{ "effects": [{ "type": "scene", "id": "scene5" }] }],
+          "onClick": [
+            {
+              "effects": [{ "type": "scene", "id": "scene5" }],
+              "sound": "soundtrack/elevenlabs-village-20261029/sfx-door.wav"
+            }
+          ],
           "cursor": "exit"
         },
         {
@@ -2092,7 +2119,8 @@
           ]
         }
       ],
-      "ambient": "ambience/graveyard.wav"
+      "ambient": "ambience/graveyard.wav",
+      "music": "soundtrack/elevenlabs-village-20261029/music-sacred.wav"
     },
     {
       "id": "scene9",
@@ -2205,7 +2233,8 @@
               "effects": [
                 { "type": "flag", "id": "dingo-awake", "value": true },
                 { "type": "dialogue", "id": "dingo-coffee" }
-              ]
+              ],
+              "sound": "soundtrack/elevenlabs-village-20261029/sfx-pump.wav"
             },
             {
               "message": "Na lieviku je KÁVA + MLIEKO, pod tým ŠLIAPNUŤ. Dingo si návod napísal aj na hadicu. Dúfam, že konce nezamenil.",
@@ -2262,7 +2291,8 @@
           ]
         }
       ],
-      "ambient": "ambience/village.wav"
+      "ambient": "ambience/village.wav",
+      "music": "soundtrack/elevenlabs-village-20261029/music-scrapyard.wav"
     },
     {
       "id": "scene10",
@@ -2359,7 +2389,8 @@
                   { "type": "removeItem", "id": "holy-water" },
                   { "type": "addItem", "id": "empty-bottle" },
                   { "type": "dialogue", "id": "jolanda-water" }
-                ]
+                ],
+                "sound": "soundtrack/elevenlabs-village-20261029/sfx-water.wav"
               }
             ],
             "funeral-form": [
@@ -2491,7 +2522,8 @@
                   { "type": "flag", "id": "cow-milked", "value": true },
                   { "type": "removeItem", "id": "empty-bottle" },
                   { "type": "addItem", "id": "milk" }
-                ]
+                ],
+                "sound": "soundtrack/elevenlabs-village-20261029/sfx-water.wav"
               },
               {
                 "message": "Vedro je prázdne. Krava sa musí najprv prestať dívať, ako ju chceš okradnúť."
@@ -2521,7 +2553,8 @@
           "visibleWhen": { "not": { "flag": "bell-taken" } }
         }
       ],
-      "ambient": "ambience/barn.wav"
+      "ambient": "ambience/barn.wav",
+      "music": "soundtrack/elevenlabs-village-20261029/music-barn.wav"
     },
     {
       "id": "scene11",
@@ -2614,7 +2647,8 @@
           "cursor": "interact"
         }
       ],
-      "ambient": "ambience/village.wav"
+      "ambient": "ambience/village.wav",
+      "music": "soundtrack/elevenlabs-village-20261029/music-village.wav"
     },
     {
       "id": "scene12",
@@ -2696,7 +2730,8 @@
                 "message": "Mínusová svorka je odpojená a automat zhasol. Zostala iba dobrá elektrina. Kábel môžem zobrať v rukaviciach; kým ho nevezmem, viem svorku ešte vrátiť.",
                 "effects": [
                   { "type": "flag", "id": "battery-isolated", "value": true }
-                ]
+                ],
+                "sound": "soundtrack/elevenlabs-village-20261029/sfx-tools.wav"
               },
               {
                 "message": "Batéria je odpojená. Teraz môžem kábel bezpečne zobrať v rukaviciach."
@@ -2824,7 +2859,8 @@
                   { "type": "removeItem", "id": "fake-token" },
                   { "type": "flag", "id": "machine-burnt", "value": true },
                   { "type": "flag", "id": "ending-jackpot", "value": true }
-                ]
+                ],
+                "sound": "soundtrack/elevenlabs-village-20261029/sfx-jackpot.wav"
               },
               {
                 "message": "Automat je odpojený. Kým je kábel na mieste, môžem vrátiť svorku. Alebo ho konečne bezpečne odniesť."
@@ -2860,7 +2896,8 @@
           "visibleWhen": { "flag": "machine-burnt" }
         }
       ],
-      "ambient": "ambience/crypt.wav"
+      "ambient": "ambience/crypt.wav",
+      "music": "soundtrack/elevenlabs-village-20261029/music-crypt.wav"
     }
   ],
   "items": [
@@ -5639,7 +5676,8 @@
           "effects": [
             { "type": "removeItem", "id": "funeral-form" },
             { "type": "addItem", "id": "stamped-form" }
-          ]
+          ],
+          "sound": "soundtrack/elevenlabs-village-20261029/sfx-stamp.wav"
         }
       ]
     },
@@ -6652,14 +6690,16 @@
       "when": { "flag": "ending-community" },
       "title": "Zachránil si kábel",
       "text": "Podarilo sa ti nájsť ukradnutý kábel a zachrániť elektrinu v celej osade.\nMajstrovstvá sveta vo výherných automatoch sa konečne uskutočnili a Fero dodržal slovo. Štartovné si mal zadarmo.\nZa necelých päť minút si prehral všetky peniaze, hodinky aj vlastné topánky.\nAle aspoň si ušetril 20 eur na štartovnom.",
-      "ambient": "ambience/ending.wav"
+      "ambient": "ambience/ending.wav",
+      "music": "soundtrack/elevenlabs-village-20261029/music-village.wav"
     },
     {
       "id": "jackpot",
       "when": { "flag": "ending-jackpot" },
       "title": "Večný jackpot",
       "text": "Namiesto záchrany osady si sa rozhodol skúsiť šťastie na automate.\nPodarilo sa ti odpáliť automat, ukradnutý kábel aj poslednú fungujúcu baterku v osade.\nMajstrovstvá boli definitívne zrušené a Fero ti vystavil faktúru za škodu vo výške 38 000 eur.\nAle na chvíľu tam boli tri sedmičky, takže sa to oplatilo.",
-      "ambient": "ambience/ending.wav"
+      "ambient": "ambience/ending.wav",
+      "music": "soundtrack/elevenlabs-village-20261029/music-crypt.wav"
     }
   ],
   "minigames": [

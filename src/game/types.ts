@@ -173,6 +173,7 @@ export interface WorldMapDefinition {
 }
 
 export interface Rule {
+  readonly sound?: string;
   readonly when?: Condition;
   readonly message?: string;
   readonly effects?: readonly Effect[];
@@ -224,6 +225,7 @@ export interface SceneDefinition {
   readonly background: string;
   readonly backgroundHidden?: boolean;
   readonly ambient?: string;
+  readonly music?: string;
   readonly hotspots: readonly Hotspot[];
 }
 
@@ -267,6 +269,7 @@ export interface EndingDefinition {
   readonly title: string;
   readonly text: string;
   readonly ambient?: string;
+  readonly music?: string;
 }
 
 export interface GameContent {

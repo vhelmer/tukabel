@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "id": "sfx-door",
+  "kind": "sfx",
+  "provider": "ElevenLabs",
+  "model": "eleven_text_to_sound_v2",
+  "prompt": "One old wooden door or coffin lid creaks open slowly on a rusty hinge, ending with a tiny comic wood knock. Close quiet foley, warm dry sound, no slam, no footsteps, no music and no voices. Isolated single action, short natural decay.",
+  "request": {
+    "text": "One old wooden door or coffin lid creaks open slowly on a rusty hinge, ending with a tiny comic wood knock. Close quiet foley, warm dry sound, no slam, no footsteps, no music and no voices. Isolated single action, short natural decay.",
+    "duration_seconds": 1.4,
+    "model_id": "eleven_text_to_sound_v2",
+    "loop": false,
+    "prompt_influence": 0.5
+  },
+  "songId": null,
+  "creditCost": "14",
+  "source": "soundtrack/elevenlabs-village-20261029/provider/sfx-door.mp3",
+  "providerSha256": "915eb34a1449aa7a51a28c5331cd0c92fd6c430c0a05d7e2419b6130010a2d95",
+  "providerSeconds": 1.36,
+  "audio": "soundtrack/elevenlabs-village-20261029/sfx-door.wav",
+  "sha256": "41c6bef6efcf7c3d57a709bd7bdc5d585980c525accfd451f4e1c58cbe421bbf",
+  "sampleRate": 44100,
+  "channels": 2,
+  "seconds": 1.36,
+  "processing": {
+    "startSeconds": 0,
+    "loopOverlapSeconds": 0,
+    "gain": 1.0583922513543713,
+    "peakDb": -3,
+    "rmsDb": -30.043067802649706,
+    "seamDelta": 0,
+    "clippedSamples": 0
+  }
+}

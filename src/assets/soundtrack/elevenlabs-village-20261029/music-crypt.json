@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "id": "music-crypt",
+  "kind": "music",
+  "provider": "ElevenLabs",
+  "model": "music_v2_5",
+  "prompt": "Original instrumental dark-comedy adventure underscore, same cohesive fictional Eastern Slovak village band throughout. D minor, 120 BPM, 4/4. Original catchy five-note D-F-E-A-G folk motif, syncopated acoustic guitar, accordion, upright bass, playful Balkan hand percussion and subtle dusty vintage hip-hop breakbeat groove. Occasional short theatrical old-fashioned village brass-fanfare answers. Warm mostly acoustic recording, understated arrangement leaving space for dialogue. Full repeating groove from first through last beat, no intro, no ending, no fade, no crescendo. Exactly twelve bars, 24 seconds. Absolutely instrumental only: no voice, no vocals, no singing, no rap, no spoken words or chants. No quotation of existing compositions. The comic final showdown in a crypt, one mad gambler and a stolen cable: same village-band folk theme played by low accordion, bowed upright bass, short wiry violin flourishes and quiet ominous tuba stabs over a tight hand-played hip-hop pulse. Grotesque, bouncy, slightly sinister and theatrical. Low dynamic tension, no horror stingers, no big drum hits and no electrical effects.",
+  "request": {
+    "prompt": "Original instrumental dark-comedy adventure underscore, same cohesive fictional Eastern Slovak village band throughout. D minor, 120 BPM, 4/4. Original catchy five-note D-F-E-A-G folk motif, syncopated acoustic guitar, accordion, upright bass, playful Balkan hand percussion and subtle dusty vintage hip-hop breakbeat groove. Occasional short theatrical old-fashioned village brass-fanfare answers. Warm mostly acoustic recording, understated arrangement leaving space for dialogue. Full repeating groove from first through last beat, no intro, no ending, no fade, no crescendo. Exactly twelve bars, 24 seconds. Absolutely instrumental only: no voice, no vocals, no singing, no rap, no spoken words or chants. No quotation of existing compositions. The comic final showdown in a crypt, one mad gambler and a stolen cable: same village-band folk theme played by low accordion, bowed upright bass, short wiry violin flourishes and quiet ominous tuba stabs over a tight hand-played hip-hop pulse. Grotesque, bouncy, slightly sinister and theatrical. Low dynamic tension, no horror stingers, no big drum hits and no electrical effects.",
+    "music_length_ms": 24000,
+    "model_id": "music_v2_5",
+    "force_instrumental": true
+  },
+  "songId": "ZzTfGo9DcqVv9Ws8vjF1",
+  "creditCost": null,
+  "source": "soundtrack/elevenlabs-village-20261029/provider/music-crypt.mp3",
+  "providerSha256": "708d4d4bb1f61ec9a12d0a02911f0a1989dbfd50a03ecbac060a67c34a9ace26",
+  "providerSeconds": 24.03265306122449,
+  "audio": "soundtrack/elevenlabs-village-20261029/music-crypt.wav",
+  "sha256": "8f9d6b1d9c789dc1af9eb7ef8efdded65aefe940a02ea3ab19e6c81b3cf7adad",
+  "sampleRate": 44100,
+  "channels": 2,
+  "seconds": 16,
+  "processing": {
+    "startSeconds": 4,
+    "loopOverlapSeconds": 0.18,
+    "loopBars": 8,
+    "nominalBpm": 120,
+    "gain": 0.7931484081486277,
+    "peakDb": -3,
+    "rmsDb": -18.121513485469293,
+    "seamDelta": 0.002371415456609789,
+    "clippedSamples": 0
+  }
+}

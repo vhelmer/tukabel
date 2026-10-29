@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "id": "sfx-jackpot",
+  "kind": "sfx",
+  "provider": "ElevenLabs",
+  "model": "eleven_text_to_sound_v2",
+  "prompt": "One battered battery-powered slot machine gives a brief tinny three-note mechanical jackpot bell, immediately followed by a small comic electrical sputter, restrained short circuit pop and a shower of loose metal washers. Abruptly dies. No explosions, no voice, no cheering, no music. Small dark-comedy finale, clear isolated sound.",
+  "request": {
+    "text": "One battered battery-powered slot machine gives a brief tinny three-note mechanical jackpot bell, immediately followed by a small comic electrical sputter, restrained short circuit pop and a shower of loose metal washers. Abruptly dies. No explosions, no voice, no cheering, no music. Small dark-comedy finale, clear isolated sound.",
+    "duration_seconds": 2.8,
+    "model_id": "eleven_text_to_sound_v2",
+    "loop": false,
+    "prompt_influence": 0.5
+  },
+  "songId": null,
+  "creditCost": "28",
+  "source": "soundtrack/elevenlabs-village-20261029/provider/sfx-jackpot.mp3",
+  "providerSha256": "1b1eb8a36bbffce8974fb7e2312af8a6b3f6b79af825ed1bae7c71d548be7e73",
+  "providerSeconds": 2.76,
+  "audio": "soundtrack/elevenlabs-village-20261029/sfx-jackpot.wav",
+  "sha256": "7ae7523030ac19ed56ba2f5ee291f72c4d06ba94d009b213b949e89a32ef7b25",
+  "sampleRate": 44100,
+  "channels": 2,
+  "seconds": 2.76,
+  "processing": {
+    "startSeconds": 0,
+    "loopOverlapSeconds": 0,
+    "gain": 0.7079457843841379,
+    "peakDb": -3,
+    "rmsDb": -19.835997423375375,
+    "seamDelta": 0,
+    "clippedSamples": 0
+  }
+}

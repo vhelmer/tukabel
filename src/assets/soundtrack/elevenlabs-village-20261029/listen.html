@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="cs">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TUKABEL · poslech hudby a efektů</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font:
+        16px/1.5 system-ui,
+        sans-serif;
+      background: #19251f;
+      color: #f6edd5;
+    }
+    body {
+      max-width: 850px;
+      margin: 32px auto;
+      padding: 0 20px;
+    }
+    h1 {
+      color: #edc16c;
+    }
+    a {
+      color: #edc16c;
+    }
+    section {
+      border: 1px solid #eed59c40;
+      border-radius: 12px;
+      background: #26382c;
+      padding: 20px;
+      margin: 20px 0;
+    }
+    label {
+      display: block;
+      margin: 12px 0;
+    }
+    select,
+    button {
+      font: inherit;
+      color: inherit;
+      background: #17271e;
+      border: 1px solid #d8b46e80;
+      border-radius: 7px;
+      padding: 10px;
+    }
+    select {
+      width: 100%;
+    }
+    button {
+      cursor: pointer;
+    }
+    button:hover {
+      background: #40553b;
+    }
+    audio {
+      width: 100%;
+      margin: 12px 0;
+    }
+    .cues {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    small {
+      color: #c4c5af;
+    }
+    input[type='range'] {
+      vertical-align: middle;
+      width: 200px;
+    }
+  </style>
+  <h1>TUKABEL · poslech hudby a efektů</h1>
+  <p>
+    Sedm původních instrumentálních motivů pro dvanáct lokací. Všechny skladby a
+    efekty vznikly přes ElevenLabs. Smyčky mají 16 sekund a navazují přes
+    upravený spoj.
+  </p>
+  <p>
+    <a href="/">Otevřít hru</a> ·
+    <a href="manifest.json">Archiv a kontrolní součty</a>
+  </p>
+  <section>
+    <h2>Hudba</h2>
+    <label
+      >Motiv
+      <select id="track">
+        <option value="village">
+          Ferov dvor / Zastávka / Ulička · vesnický folk-hip-hop
+        </option>
+        <option value="sacred">
+          Kostol / Cintorín / Kaplnka · groteskní pohřební pochod
+        </option>
+        <option value="tavern">
+          Krčma / Herňa · přiopilé akustické šourání
+        </option>
+        <option value="playground">
+          Detské ihrisko · smyčcové škodolibosti
+        </option>
+        <option value="scrapyard">Zberňa · rezavý rytmus a kocovina</option>
+        <option value="barn">Kravín · tanec posvátného vemene</option>
+        <option value="crypt">Krypta · podzemní hráčská groteska</option>
+      </select></label
+    >
+    <audio
+      id="music"
+      controls
+      loop
+      preload="metadata"
+      src="music-village.wav"
+    ></audio>
+    <label
+      >Hlasitost hudby
+      <input
+        id="music-volume"
+        type="range"
+        min="0"
+        max="0.5"
+        step="0.01"
+        value="0.2"
+    /></label>
+    <label
+      ><input id="duck" type="checkbox" /> Ukázat ztlumení hudby během
+      dialogu</label
+    >
+    <small
+      >Ve hře se stejný motiv při přechodu do sousední lokace nerestartuje.
+      Odlišné motivy se prolínají; dabing zůstává samostatný.</small
+    >
+  </section>
+  <section>
+    <h2>Zvukové efekty</h2>
+    <label
+      >Hlasitost efektů
+      <input
+        id="effect-volume"
+        type="range"
+        min="0"
+        max="1"
+        step="0.01"
+        value="0.35"
+    /></label>
+    <div class="cues">
+      <button data-cue="tools">Ruční klíč a matice</button
+      ><button data-cue="door">Dveře / rakev</button>
+      <button data-cue="water">Nalévání</button
+      ><button data-cue="pump">Dingova pumpa</button>
+      <button data-cue="bell">Mechanický jackpot</button
+      ><button data-cue="swing">Houpačka a podložka</button>
+      <button data-cue="stamp">Úřední razítko</button
+      ><button data-cue="jackpot">Jackpot a zkrat v kryptě</button>
+    </div>
+    <audio id="effect" controls preload="none"></audio>
+    <small
+      >Ve hře zazní jen u osmnácti konkrétních úspěšných větví, žádný zkrat ani
+      elektrický automat před finále.</small
+    >
+  </section>
+  <script>
+    const music = document.querySelector('#music');
+    const effect = document.querySelector('#effect');
+    const volume = document.querySelector('#music-volume');
+    const duck = document.querySelector('#duck');
+    function mix() {
+      music.volume = Number(volume.value) * (duck.checked ? 0.25 : 1);
+    }
+    volume.addEventListener('input', mix);
+    duck.addEventListener('change', mix);
+    mix();
+    document.querySelector('#track').addEventListener('change', (event) => {
+      const playing = !music.paused;
+      music.src = `music-${event.target.value}.wav`;
+      if (playing) music.play().catch(() => {});
+    });
+    document
+      .querySelector('#effect-volume')
+      .addEventListener(
+        'input',
+        (event) => (effect.volume = Number(event.target.value)),
+      );
+    effect.volume = 0.35;
+    document.querySelectorAll('[data-cue]').forEach((button) =>
+      button.addEventListener('click', () => {
+        effect.pause();
+        effect.src = `sfx-${button.dataset.cue}.wav`;
+        effect.play().catch(() => {});
+      }),
+    );
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        music.pause();
+        effect.pause();
+      }
+    });
+  </script>
+</html>

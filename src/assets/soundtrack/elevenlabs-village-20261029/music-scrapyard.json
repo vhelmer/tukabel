@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "id": "music-scrapyard",
+  "kind": "music",
+  "provider": "ElevenLabs",
+  "model": "music_v2_5",
+  "prompt": "Original instrumental dark-comedy adventure underscore, same cohesive fictional Eastern Slovak village band throughout. D minor, 120 BPM, 4/4. Original catchy five-note D-F-E-A-G folk motif, syncopated acoustic guitar, accordion, upright bass, playful Balkan hand percussion and subtle dusty vintage hip-hop breakbeat groove. Occasional short theatrical old-fashioned village brass-fanfare answers. Warm mostly acoustic recording, understated arrangement leaving space for dialogue. Full repeating groove from first through last beat, no intro, no ending, no fade, no crescendo. Exactly twelve bars, 24 seconds. Absolutely instrumental only: no voice, no vocals, no singing, no rap, no spoken words or chants. No quotation of existing compositions. A scrap-metal yard with a very hungover mechanic: dry scraped-string rhythm, muted violin riff, low accordion wheeze, upright bass, very light metallic junk percussion and rattling hand drums forming a vintage hip-hop pocket. Lazy half-time swagger while keeping the 120 BPM pulse. Rusty comic machinery played acoustically, no powered tools or engines.",
+  "request": {
+    "prompt": "Original instrumental dark-comedy adventure underscore, same cohesive fictional Eastern Slovak village band throughout. D minor, 120 BPM, 4/4. Original catchy five-note D-F-E-A-G folk motif, syncopated acoustic guitar, accordion, upright bass, playful Balkan hand percussion and subtle dusty vintage hip-hop breakbeat groove. Occasional short theatrical old-fashioned village brass-fanfare answers. Warm mostly acoustic recording, understated arrangement leaving space for dialogue. Full repeating groove from first through last beat, no intro, no ending, no fade, no crescendo. Exactly twelve bars, 24 seconds. Absolutely instrumental only: no voice, no vocals, no singing, no rap, no spoken words or chants. No quotation of existing compositions. A scrap-metal yard with a very hungover mechanic: dry scraped-string rhythm, muted violin riff, low accordion wheeze, upright bass, very light metallic junk percussion and rattling hand drums forming a vintage hip-hop pocket. Lazy half-time swagger while keeping the 120 BPM pulse. Rusty comic machinery played acoustically, no powered tools or engines.",
+    "music_length_ms": 24000,
+    "model_id": "music_v2_5",
+    "force_instrumental": true
+  },
+  "songId": "bJluPcWTPKxK0Xg0ZFC4",
+  "creditCost": null,
+  "source": "soundtrack/elevenlabs-village-20261029/provider/music-scrapyard.mp3",
+  "providerSha256": "b2fac66c6f36be9f679b19900c93fc524eff938122ba88941338986f2b251a59",
+  "providerSeconds": 24.03265306122449,
+  "audio": "soundtrack/elevenlabs-village-20261029/music-scrapyard.wav",
+  "sha256": "eba2eb6ea7057afcd83b7a17a1418fb97d5cb5528abd90c20cb46b0bbd510030",
+  "sampleRate": 44100,
+  "channels": 2,
+  "seconds": 16,
+  "processing": {
+    "startSeconds": 4,
+    "loopOverlapSeconds": 0.18,
+    "loopBars": 8,
+    "nominalBpm": 120,
+    "gain": 0.8390075598038538,
+    "peakDb": -3,
+    "rmsDb": -18.938333707940327,
+    "seamDelta": 0.0018604754356970055,
+    "clippedSamples": 0
+  }
+}

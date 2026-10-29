@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "id": "sfx-stamp",
+  "kind": "sfx",
+  "provider": "ElevenLabs",
+  "model": "eleven_text_to_sound_v2",
+  "prompt": "A pompous bureaucratic rubber stamp lands once firmly on paper: a satisfying dry thump, tiny wooden creak and short paper rustle. Slightly exaggerated dark-comedy foley, no desk bell, no voice and no music. Isolated sound.",
+  "request": {
+    "text": "A pompous bureaucratic rubber stamp lands once firmly on paper: a satisfying dry thump, tiny wooden creak and short paper rustle. Slightly exaggerated dark-comedy foley, no desk bell, no voice and no music. Isolated sound.",
+    "duration_seconds": 0.8,
+    "model_id": "eleven_text_to_sound_v2",
+    "loop": false,
+    "prompt_influence": 0.5
+  },
+  "songId": null,
+  "creditCost": "8",
+  "source": "soundtrack/elevenlabs-village-20261029/provider/sfx-stamp.mp3",
+  "providerSha256": "e67f6478f1c258d9153f0d85fe53372d4eeb986e1d38a5a7f6ad8fe15823037f",
+  "providerSeconds": 0.8,
+  "audio": "soundtrack/elevenlabs-village-20261029/sfx-stamp.wav",
+  "sha256": "0484c9ef733acfaa2769d632c62d6ec2b348760abe374e7917e63f3455604f8f",
+  "sampleRate": 44100,
+  "channels": 2,
+  "seconds": 0.8,
+  "processing": {
+    "startSeconds": 0,
+    "loopOverlapSeconds": 0,
+    "gain": 0.7762565450526013,
+    "peakDb": -3,
+    "rmsDb": -31.268917265978793,
+    "seamDelta": 0,
+    "clippedSamples": 0
+  }
+}

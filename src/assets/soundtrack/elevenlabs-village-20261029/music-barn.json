@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "id": "music-barn",
+  "kind": "music",
+  "provider": "ElevenLabs",
+  "model": "music_v2_5",
+  "prompt": "Original instrumental dark-comedy adventure underscore, same cohesive fictional Eastern Slovak village band throughout. D minor, 120 BPM, 4/4. Original catchy five-note D-F-E-A-G folk motif, syncopated acoustic guitar, accordion, upright bass, playful Balkan hand percussion and subtle dusty vintage hip-hop breakbeat groove. Occasional short theatrical old-fashioned village brass-fanfare answers. Warm mostly acoustic recording, understated arrangement leaving space for dialogue. Full repeating groove from first through last beat, no intro, no ending, no fade, no crescendo. Exactly twelve bars, 24 seconds. Absolutely instrumental only: no voice, no vocals, no singing, no rap, no spoken words or chants. No quotation of existing compositions. A village barn and the absurd church of the sacred cow: accordion ostinato, crooked low tuba punctuation, rustic acoustic guitar strums, small hand drums and upright bass; fiddle trills answer the melody. A lopsided rural dance with a mischievous grin and affectionate oddness. No animal sounds, no environmental foley.",
+  "request": {
+    "prompt": "Original instrumental dark-comedy adventure underscore, same cohesive fictional Eastern Slovak village band throughout. D minor, 120 BPM, 4/4. Original catchy five-note D-F-E-A-G folk motif, syncopated acoustic guitar, accordion, upright bass, playful Balkan hand percussion and subtle dusty vintage hip-hop breakbeat groove. Occasional short theatrical old-fashioned village brass-fanfare answers. Warm mostly acoustic recording, understated arrangement leaving space for dialogue. Full repeating groove from first through last beat, no intro, no ending, no fade, no crescendo. Exactly twelve bars, 24 seconds. Absolutely instrumental only: no voice, no vocals, no singing, no rap, no spoken words or chants. No quotation of existing compositions. A village barn and the absurd church of the sacred cow: accordion ostinato, crooked low tuba punctuation, rustic acoustic guitar strums, small hand drums and upright bass; fiddle trills answer the melody. A lopsided rural dance with a mischievous grin and affectionate oddness. No animal sounds, no environmental foley.",
+    "music_length_ms": 24000,
+    "model_id": "music_v2_5",
+    "force_instrumental": true
+  },
+  "songId": "43rRvDTQL4VUe8LvtQXH",
+  "creditCost": null,
+  "source": "soundtrack/elevenlabs-village-20261029/provider/music-barn.mp3",
+  "providerSha256": "635bf2f2e9b6dd0cb06b350e3f8d1e14559927ab22151477d6aa04e56f936c51",
+  "providerSeconds": 24.03265306122449,
+  "audio": "soundtrack/elevenlabs-village-20261029/music-barn.wav",
+  "sha256": "d2a5bfb48074bfb6f0b5c691cdc702c03da4d61fedbb0a736836952bcb3c8cb5",
+  "sampleRate": 44100,
+  "channels": 2,
+  "seconds": 16,
+  "processing": {
+    "startSeconds": 4,
+    "loopOverlapSeconds": 0.18,
+    "loopBars": 8,
+    "nominalBpm": 120,
+    "gain": 0.6376721900561773,
+    "peakDb": -4.411663077253599,
+    "rmsDb": -18,
+    "seamDelta": 0.0007566831716278546,
+    "clippedSamples": 0
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "id": "sfx-bell",
+  "kind": "sfx",
+  "provider": "ElevenLabs",
+  "model": "eleven_text_to_sound_v2",
+  "prompt": "A rickety hand-cranked wooden contraption gives three cheerful little cowbell dings, with quiet wooden ratchet clicks underneath. A fake jackpot on an entirely mechanical village machine. Funny and small, not church bells, no electricity, no music, no voice.",
+  "request": {
+    "text": "A rickety hand-cranked wooden contraption gives three cheerful little cowbell dings, with quiet wooden ratchet clicks underneath. A fake jackpot on an entirely mechanical village machine. Funny and small, not church bells, no electricity, no music, no voice.",
+    "duration_seconds": 1.8,
+    "model_id": "eleven_text_to_sound_v2",
+    "loop": false,
+    "prompt_influence": 0.5
+  },
+  "songId": null,
+  "creditCost": "18",
+  "source": "soundtrack/elevenlabs-village-20261029/provider/sfx-bell.mp3",
+  "providerSha256": "51b754b48d282d9f56155b485f651513d90d33ebcb200d60020213e38dbefa6e",
+  "providerSeconds": 1.76,
+  "audio": "soundtrack/elevenlabs-village-20261029/sfx-bell.wav",
+  "sha256": "97b3bc8339033e994732268dabf91b1477cc1b5d5396992ca20311c90ba73928",
+  "sampleRate": 44100,
+  "channels": 2,
+  "seconds": 1.76,
+  "processing": {
+    "startSeconds": 0,
+    "loopOverlapSeconds": 0,
+    "gain": 0.7079457843841379,
+    "peakDb": -3,
+    "rmsDb": -23.895205133168837,
+    "seamDelta": 0,
+    "clippedSamples": 0
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "id": "sfx-pump",
+  "kind": "sfx",
+  "provider": "ElevenLabs",
+  "model": "eleven_text_to_sound_v2",
+  "prompt": "A ridiculous homemade foot-operated rubber pump: two short rubber squeaks with a small wet gurgle and a silly final air pop. Manual mechanism, cartoon comedy but not loud or gross. No human vocal noises, no music, no electrical motor. Isolated short action.",
+  "request": {
+    "text": "A ridiculous homemade foot-operated rubber pump: two short rubber squeaks with a small wet gurgle and a silly final air pop. Manual mechanism, cartoon comedy but not loud or gross. No human vocal noises, no music, no electrical motor. Isolated short action.",
+    "duration_seconds": 1.6,
+    "model_id": "eleven_text_to_sound_v2",
+    "loop": false,
+    "prompt_influence": 0.5
+  },
+  "songId": null,
+  "creditCost": "16",
+  "source": "soundtrack/elevenlabs-village-20261029/provider/sfx-pump.mp3",
+  "providerSha256": "2f1e67c7ea4b7eceac4fbd1682e06346f8f47280fc9650a7e0d0f944f13c5848",
+  "providerSeconds": 1.6,
+  "audio": "soundtrack/elevenlabs-village-20261029/sfx-pump.wav",
+  "sha256": "27c4277b87915ee2b445fe36df98a3651e5ca6b01179e0fd65e6d7edd12cfd5b",
+  "sampleRate": 44100,
+  "channels": 2,
+  "seconds": 1.6,
+  "processing": {
+    "startSeconds": 0,
+    "loopOverlapSeconds": 0,
+    "gain": 0.9169276019592421,
+    "peakDb": -3,
+    "rmsDb": -25.36110993893231,
+    "seamDelta": 0,
+    "clippedSamples": 0
+  }
+}

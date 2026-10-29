@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "id": "music-sacred",
+  "kind": "music",
+  "provider": "ElevenLabs",
+  "model": "music_v2_5",
+  "prompt": "Original instrumental dark-comedy adventure underscore, same cohesive fictional Eastern Slovak village band throughout. D minor, 120 BPM, 4/4. Original catchy five-note D-F-E-A-G folk motif, syncopated acoustic guitar, accordion, upright bass, playful Balkan hand percussion and subtle dusty vintage hip-hop breakbeat groove. Occasional short theatrical old-fashioned village brass-fanfare answers. Warm mostly acoustic recording, understated arrangement leaving space for dialogue. Full repeating groove from first through last beat, no intro, no ending, no fade, no crescendo. Exactly twelve bars, 24 seconds. Absolutely instrumental only: no voice, no vocals, no singing, no rap, no spoken words or chants. No quotation of existing compositions. A mischievous cemetery and small village church: plucked low strings, muted accordion, distant small tuba and bass clarinet, sparse dry pizzicato violin answers, crooked little funeral-procession swagger. Playful half-time feel over the same 120 BPM pulse. Grotesque and slightly spooky, never bleak or frightening. The brass makes pompous little bureaucratic mistakes, not loud fanfares.",
+  "request": {
+    "prompt": "Original instrumental dark-comedy adventure underscore, same cohesive fictional Eastern Slovak village band throughout. D minor, 120 BPM, 4/4. Original catchy five-note D-F-E-A-G folk motif, syncopated acoustic guitar, accordion, upright bass, playful Balkan hand percussion and subtle dusty vintage hip-hop breakbeat groove. Occasional short theatrical old-fashioned village brass-fanfare answers. Warm mostly acoustic recording, understated arrangement leaving space for dialogue. Full repeating groove from first through last beat, no intro, no ending, no fade, no crescendo. Exactly twelve bars, 24 seconds. Absolutely instrumental only: no voice, no vocals, no singing, no rap, no spoken words or chants. No quotation of existing compositions. A mischievous cemetery and small village church: plucked low strings, muted accordion, distant small tuba and bass clarinet, sparse dry pizzicato violin answers, crooked little funeral-procession swagger. Playful half-time feel over the same 120 BPM pulse. Grotesque and slightly spooky, never bleak or frightening. The brass makes pompous little bureaucratic mistakes, not loud fanfares.",
+    "music_length_ms": 24000,
+    "model_id": "music_v2_5",
+    "force_instrumental": true
+  },
+  "songId": "eO50xh6slEfmt5wBdsqD",
+  "creditCost": null,
+  "source": "soundtrack/elevenlabs-village-20261029/provider/music-sacred.mp3",
+  "providerSha256": "d228d1fed2cef11a99cb6f41724fef0bdb5552a7608323dd0446bd32b21e8a82",
+  "providerSeconds": 24.03265306122449,
+  "audio": "soundtrack/elevenlabs-village-20261029/music-sacred.wav",
+  "sha256": "1d4c4303225f43915a687adcfd4f0cd629dc529869ea4c7dc207c8ad915c5d95",
+  "sampleRate": 44100,
+  "channels": 2,
+  "seconds": 16,
+  "processing": {
+    "startSeconds": 4,
+    "loopOverlapSeconds": 0.18,
+    "loopBars": 8,
+    "nominalBpm": 120,
+    "gain": 0.8398053205202591,
+    "peakDb": -4.226808635368593,
+    "rmsDb": -18,
+    "seamDelta": 0.0006159177164042907,
+    "clippedSamples": 0
+  }
+}

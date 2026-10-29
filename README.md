@@ -1015,6 +1015,57 @@ menu i skrytá stránka je pozastaví.
 Původní technická hádanka a staré zastávkové dialogy zůstávají pouze v
 `tests/fixtures/demo-project.json` a `tests/fixtures/stop-demo-project.json`.
 
+## Hudba a zvukové efekty
+
+Soundtrack v `src/assets/soundtrack/elevenlabs-village-20261029/` obsahuje
+**7 instrumentálních motivů a 8 krátkých efektů**, každý z jediné generace
+ElevenLabs. Hudba kombinuje housle, akustickou kytaru, akordeon a kontrabas,
+balkánské perkuse, jemný hip-hopový groove a malé přehnané dechové odpovědi.
+Společná tónina a motiv propojují lokace; nejde o hudbu z rádia ani o důkaz
+obnoveného proudu. Tiché elektrické přístroje v osadě zůstávají vypnuté.
+
+| Motiv              | Lokace                       | Charakter                                                     |
+| ------------------ | ---------------------------- | ------------------------------------------------------------- |
+| `music-village`    | Ferov dvor, Zastávka, Ulička | Hravý vesnický folk-hip-hop, housle a akordeon.               |
+| `music-sacred`     | Kostol, Cintorín, Kaplnka    | Groteskní pohřební pochod, pizzicato a tiché dechy.           |
+| `music-tavern`     | Krčma, Herňa                 | Přiopilé akustické šourání a krátké houslové odpovědi.        |
+| `music-playground` | Detské ihrisko               | Škodolibé smyčce, dřevěné perkuse a přestávky.                |
+| `music-scrapyard`  | Zberňa                       | Rezavé kovové perkuse a pomalejší pocit nad společným pulsem. |
+| `music-barn`       | Kravín                       | Rustikální akordeonový tanec s malou tubou.                   |
+| `music-crypt`      | Krypta                       | Nižší akordeon, smyčcové napětí a podzemní hráčská groteska.  |
+
+Zdrojové generace mají 24 sekund. Finální PCM WAV smyčky obsahují 16 sekund
+(osm taktů při nominálních 120 BPM), výřez ze stabilní části a 180ms překryv
+na spoji. Zůstávají stereo, 44,1 kHz / 16 bitů; hlasitost hudby je přibližně
+−18 dB RMS a špičky nejvýše −3 dBFS. Efekty mají 0,8–2,8 s, krátký náběh/dozvuk
+a omezené špičky. `provider/` uchovává původní MP3, jednotlivé JSON záznamy
+prompty, modely, úpravy a SHA-256; `manifest.json` spojuje všechny výsledky.
+Přímý poslechový přehrávač je v `listen.html` ve stejném adresáři
+(při Vite například `/src/assets/soundtrack/elevenlabs-village-20261029/listen.html`).
+
+Hudbu určuje `scene.music` / `ending.music`, ruchy prostředí dále `ambient`.
+`MusicLoop` používá WebAudio bufferové smyčky bez dekódovací mezery, sekundový
+crossfade a nejvýše dva hudební zdroje. Sdílená skladba při změně scény pokračuje
+ze stejného místa; mapa hudbu nepřeruší. Hudba má gain 0,20, prostředí 0,12,
+během dialogu obě vrstvy klesnou na čtvrtinu. Dabing zůstává samostatný.
+Menu, deník, skrytí stránky a vypnutí zvuku přehrávání pozastaví. Ovládání
+**Zvuk prostredia** zahrnuje hudbu, prostředí i efekty; dabing nemění.
+
+Osm efektů pokrývá ruční nářadí, dveře/rakev, nalévání, Dingovu pumpu,
+mechanický zvonek, houpačku, razítko a závěrečný jackpot se zkratem.
+Jsou přiřazené osmnácti konkrétním úspěšným větvím jako `Rule.sound`.
+`getActionSound` čte první platné pravidlo dané akce; nevytváří žádný
+zvukový stav v save a při načtení nic neopakuje. Autorský efekt nahrazuje
+obecný pickup/combine/travel. Gain efektů je 0,35, současně hrají nejvýše dva;
+250ms cooldown stejného zvuku tlumí opakované vstupy. Před kryptou se používají
+výhradně ruční mechanismy, žádný elektrický jackpot.
+
+Generace použily [Eleven Music API](https://elevenlabs.io/docs/api-reference/music/compose)
+(`music_v2_5`, `force_instrumental`) a [Sound Effects API](https://elevenlabs.io/docs/api-reference/text-to-sound-effects/convert)
+(`eleven_text_to_sound_v2`). Hra potřebuje jen místní soubory; žádný API klíč
+ani generování neběží v klientovi. Stávající dialogy, hlasy a jejich audio soubory
+zůstaly zachované.
+
 ## Obsah a architektura
 
 - `src/game/content/project.json` — **jediný zdroj autorského obsahu**: lokace,
@@ -1030,8 +1081,10 @@ Původní technická hádanka a staré zastávkové dialogy zůstávají pouze v
 - Volitelné `startDialogue` spouští autorský úvod, `openingCutscene: "blackout"` mu
   předřadí vestavěnou cutscénu (validace vyžaduje `startDialogue`); `endings` odvozuje epilogy přes
   stejné podmínky z uložených flags. Žádný druhý ending/progress stav.
-- `SceneDefinition.ambient`, `src/ui/useSceneAudio.ts` a `EndingPanel.tsx` — lokální
-  zvukové prostředí, lifecycle a finální modal. API ani dabingové kredity se za hry nevolají.
+- `SceneDefinition.ambient` / `music`, `Rule.sound`, `src/game/actionSound.ts`,
+  `src/ui/useSceneAudio.ts` a `musicLoop.ts` — místní prostředí, hudba s crossfadem,
+  mix a efekty vybraných pravidel. `EndingPanel.tsx` zobrazuje finální modal.
+  API ani dabingové kredity se za hry nevolají.
 - `src/game/createScene.ts` — Pixi pozadí, sprity, hotspoty a stavové indikátory.
 - `src/game/characterVisual.ts` — skládání lokálních animačních oblastí bez změny
   zarovnání nebo násobení průhlednosti; `animation.ts` řídí nezávislé hodiny.

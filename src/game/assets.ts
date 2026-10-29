@@ -28,6 +28,7 @@ export function resolveAssets(content: GameContent): GameContent {
     endings: content.endings?.map((ending) => ({
       ...ending,
       ambient: ending.ambient ? assetUrl(ending.ambient) : undefined,
+      music: ending.music ? assetUrl(ending.music) : undefined,
     })),
     worldMap: content.worldMap
       ? { ...content.worldMap, image: assetUrl(content.worldMap.image) }
@@ -36,6 +37,7 @@ export function resolveAssets(content: GameContent): GameContent {
       ...scene,
       background: assetUrl(scene.background),
       ambient: scene.ambient ? assetUrl(scene.ambient) : undefined,
+      music: scene.music ? assetUrl(scene.music) : undefined,
       hotspots: scene.hotspots.map((hotspot) => ({
         ...hotspot,
         image: hotspot.image ? assetUrl(hotspot.image) : undefined,

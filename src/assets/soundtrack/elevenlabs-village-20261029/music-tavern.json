@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "id": "music-tavern",
+  "kind": "music",
+  "provider": "ElevenLabs",
+  "model": "music_v2_5",
+  "prompt": "Original instrumental dark-comedy adventure underscore, same cohesive fictional Eastern Slovak village band throughout. D minor, 120 BPM, 4/4. Original catchy five-note D-F-E-A-G folk motif, syncopated acoustic guitar, accordion, upright bass, playful Balkan hand percussion and subtle dusty vintage hip-hop breakbeat groove. Occasional short theatrical old-fashioned village brass-fanfare answers. Warm mostly acoustic recording, understated arrangement leaving space for dialogue. Full repeating groove from first through last beat, no intro, no ending, no fade, no crescendo. Exactly twelve bars, 24 seconds. Absolutely instrumental only: no voice, no vocals, no singing, no rap, no spoken words or chants. No quotation of existing compositions. A shabby powerless pub and its silent gambling backroom: shuffling acoustic guitar scratches, cheeky accordion hook, upright bass walking offbeats, brushed hand drums, agile soft violin ornaments and one tiny tipsy muted trumpet answer. Busy gossip and crooked little dance steps, restrained dynamics, no electronic slot sounds.",
+  "request": {
+    "prompt": "Original instrumental dark-comedy adventure underscore, same cohesive fictional Eastern Slovak village band throughout. D minor, 120 BPM, 4/4. Original catchy five-note D-F-E-A-G folk motif, syncopated acoustic guitar, accordion, upright bass, playful Balkan hand percussion and subtle dusty vintage hip-hop breakbeat groove. Occasional short theatrical old-fashioned village brass-fanfare answers. Warm mostly acoustic recording, understated arrangement leaving space for dialogue. Full repeating groove from first through last beat, no intro, no ending, no fade, no crescendo. Exactly twelve bars, 24 seconds. Absolutely instrumental only: no voice, no vocals, no singing, no rap, no spoken words or chants. No quotation of existing compositions. A shabby powerless pub and its silent gambling backroom: shuffling acoustic guitar scratches, cheeky accordion hook, upright bass walking offbeats, brushed hand drums, agile soft violin ornaments and one tiny tipsy muted trumpet answer. Busy gossip and crooked little dance steps, restrained dynamics, no electronic slot sounds.",
+    "music_length_ms": 24000,
+    "model_id": "music_v2_5",
+    "force_instrumental": true
+  },
+  "songId": "IKnhaOop6eJiAORPrlTs",
+  "creditCost": null,
+  "source": "soundtrack/elevenlabs-village-20261029/provider/music-tavern.mp3",
+  "providerSha256": "baf63f2ef09cae1c33e589e3eafcb1c0ea96adff72ccac615090596094757f70",
+  "providerSeconds": 24.03265306122449,
+  "audio": "soundtrack/elevenlabs-village-20261029/music-tavern.wav",
+  "sha256": "fef60ef4b72a10c5972738d0ae21aff6ef87ccbc07b0e33c0a649aa0e0b6a50d",
+  "sampleRate": 44100,
+  "channels": 2,
+  "seconds": 16,
+  "processing": {
+    "startSeconds": 4,
+    "loopOverlapSeconds": 0.18,
+    "loopBars": 8,
+    "nominalBpm": 120,
+    "gain": 0.6998472461750896,
+    "peakDb": -4.39186737064712,
+    "rmsDb": -18,
+    "seamDelta": 0.0012927839714190537,
+    "clippedSamples": 0
+  }
+}

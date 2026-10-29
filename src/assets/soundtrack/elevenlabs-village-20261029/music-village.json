@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "id": "music-village",
+  "kind": "music",
+  "provider": "ElevenLabs",
+  "model": "music_v2_5",
+  "prompt": "Original seamless looping instrumental underscore for a darkly comic Slovak village adventure game. Eastern European Romani folk fusion, playful minor-key violin melody, acoustic rhythm guitar, accordion, upright bass and lively hand-played Balkan percussion with a subtle dusty vintage hip-hop breakbeat feel. A recurring original five-note D minor motif D-F-E-A-G, syncopated offbeat accents; tiny overblown old-fashioned socialist village brass fanfare answers, mischievous village-band theatricality. 120 BPM, 4/4, exactly twelve bars of a steady repeating groove, 24 seconds. Warm acoustic chamber-band sound, light arrangement with room for dialogue. Full groove from the first beat through the last beat, no introduction, no ending, no fade, no big crescendo. Absolutely instrumental: no singing, no voices, no rap, no chants or spoken words. Original melody only, no quotation of existing music.",
+  "request": {
+    "prompt": "Original seamless looping instrumental underscore for a darkly comic Slovak village adventure game. Eastern European Romani folk fusion, playful minor-key violin melody, acoustic rhythm guitar, accordion, upright bass and lively hand-played Balkan percussion with a subtle dusty vintage hip-hop breakbeat feel. A recurring original five-note D minor motif D-F-E-A-G, syncopated offbeat accents; tiny overblown old-fashioned socialist village brass fanfare answers, mischievous village-band theatricality. 120 BPM, 4/4, exactly twelve bars of a steady repeating groove, 24 seconds. Warm acoustic chamber-band sound, light arrangement with room for dialogue. Full groove from the first beat through the last beat, no introduction, no ending, no fade, no big crescendo. Absolutely instrumental: no singing, no voices, no rap, no chants or spoken words. Original melody only, no quotation of existing music.",
+    "music_length_ms": 24000,
+    "model_id": "music_v2_5",
+    "force_instrumental": true
+  },
+  "songId": "DE0WH7snccX7RYjdd1XY",
+  "creditCost": null,
+  "source": "soundtrack/elevenlabs-village-20261029/provider/music-village.mp3",
+  "providerSha256": "cd73003b533964760d67d51b869ac8649ecf6eb4d4eb86eb670991e4b825d0db",
+  "providerSeconds": 24.03265306122449,
+  "audio": "soundtrack/elevenlabs-village-20261029/music-village.wav",
+  "sha256": "8b0fdbb09b123d3e4e6aca1963195d661a364463a774067fb339cd43e4ca9b28",
+  "sampleRate": 44100,
+  "channels": 2,
+  "seconds": 16,
+  "processing": {
+    "startSeconds": 4,
+    "loopOverlapSeconds": 0.18,
+    "loopBars": 8,
+    "nominalBpm": 120,
+    "gain": 0.6776184188025297,
+    "peakDb": -3,
+    "rmsDb": -18.512023825963,
+    "seamDelta": 0.007570373385465904,
+    "clippedSamples": 0
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "id": "sfx-swing",
+  "kind": "sfx",
+  "provider": "ElevenLabs",
+  "model": "eleven_text_to_sound_v2",
+  "prompt": "A rusty playground swing moves once: brief squeaky hinge, a little metal washer drops and rattles on the ground, then a soft rope flop. Light cartoon adventure foley, no children or voices, no music, no motor. One isolated action with a short decay.",
+  "request": {
+    "text": "A rusty playground swing moves once: brief squeaky hinge, a little metal washer drops and rattles on the ground, then a soft rope flop. Light cartoon adventure foley, no children or voices, no music, no motor. One isolated action with a short decay.",
+    "duration_seconds": 1.5,
+    "model_id": "eleven_text_to_sound_v2",
+    "loop": false,
+    "prompt_influence": 0.5
+  },
+  "songId": null,
+  "creditCost": "15",
+  "source": "soundtrack/elevenlabs-village-20261029/provider/sfx-swing.mp3",
+  "providerSha256": "d53737ee4daef80c55d90360c72d2a88590d651f5d0f633cf39ec0ee8675ca8e",
+  "providerSeconds": 1.48,
+  "audio": "soundtrack/elevenlabs-village-20261029/sfx-swing.wav",
+  "sha256": "d40ce9ad28e01bff45ba1f2c3467af36d88cc7e80db725e2f2b16e3477c5293b",
+  "sampleRate": 44100,
+  "channels": 2,
+  "seconds": 1.2207936507936508,
+  "processing": {
+    "startSeconds": 0,
+    "loopOverlapSeconds": 0,
+    "gain": 0.9118917731456734,
+    "peakDb": -3,
+    "rmsDb": -28.383629799409775,
+    "seamDelta": 0,
+    "clippedSamples": 0
+  }
+}

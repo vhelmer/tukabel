@@ -25,6 +25,7 @@ import { EndingPanel } from './EndingPanel';
 import { BlackoutCutscene } from './BlackoutCutscene';
 import { SuterKCiare } from '../minigames/suter-k-ciare';
 import { useSceneAudio } from './useSceneAudio';
+import { getActionSound } from '../game/actionSound';
 
 type Target = { type: 'item'; id: string } | { type: 'hotspot'; id: string };
 interface Drag {
@@ -190,7 +191,11 @@ export function GameWindow({
     playEffect,
   } = useSceneAudio(
     ending ? ending.ambient : scene.ambient,
-    openingPending || menu || journal || mapOpen,
+    openingPending || menu || journal,
+    {
+      music: ending ? ending.music : scene.music,
+      ducked: Boolean(state.dialogue),
+    },
   );
   const dialogueNode = getDialogueNode(content, state);
   const voiceActor = dialogueNode?.actor
@@ -250,7 +255,9 @@ export function GameWindow({
       const added = next.inventory.filter(
         (id) => !state.inventory.includes(id),
       );
-      if (next.sceneId !== state.sceneId) playEffect('travel');
+      const cue = getActionSound(content, state, action, next);
+      if (cue) playEffect(cue);
+      else if (next.sceneId !== state.sceneId) playEffect('travel');
       else if (added.length)
         playEffect(action.type === 'combine' ? 'combine' : 'pickup');
       const rootBox = viewport.current?.getBoundingClientRect();
