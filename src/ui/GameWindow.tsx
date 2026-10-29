@@ -34,6 +34,11 @@ interface Drag {
   target: Target | null;
 }
 
+// Long enough to read comfortably, short enough not to cover the scene for good.
+function reactionDuration(message: string) {
+  return Math.min(10000, 3000 + message.length * 60);
+}
+
 export function GameWindow({
   content,
   state,
@@ -87,6 +92,25 @@ export function GameWindow({
   const mapTravelLock = useRef(false);
   const ending = getEnding(content, state);
   const modalOpen = menu || journal || mapOpen || Boolean(ending);
+  // Each dispatch restarts the reaction, so repeating the same click shows it again.
+  const [reactionSerial, setReactionSerial] = useState(0);
+  const [expiredReaction, setExpiredReaction] = useState<string | null>(null);
+  const reactionKey = `${reactionSerial}:${state.message}`;
+  const showReaction =
+    !openingPending &&
+    !ending &&
+    !state.dialogue &&
+    !mapOpen &&
+    Boolean(state.message) &&
+    expiredReaction !== reactionKey;
+  useEffect(() => {
+    if (!showReaction || menu || journal) return;
+    const timer = window.setTimeout(
+      () => setExpiredReaction(reactionKey),
+      reactionDuration(state.message),
+    );
+    return () => window.clearTimeout(timer);
+  }, [showReaction, menu, journal, reactionKey, state.message]);
   const hudController = useRef<HudController | null>(null);
   const registerHud = useCallback((controller: HudController | null) => {
     hudController.current = controller;
@@ -259,6 +283,7 @@ export function GameWindow({
           });
         }
       }
+      setReactionSerial((serial) => serial + 1);
       dispatchGame(action);
     },
     [dispatchGame, content, state, ending, openingPending, playEffect],
@@ -634,21 +659,17 @@ export function GameWindow({
             {currentHover.label}
           </div>
         )}
-        {!openingPending &&
-          !ending &&
-          !state.dialogue &&
-          !mapOpen &&
-          Boolean(state.message) && (
-            <div
-              className="reaction"
-              role="status"
-              aria-label="Reakcia"
-              aria-live="polite"
-              aria-atomic="true"
-            >
-              <p key={state.message}>{state.message}</p>
-            </div>
-          )}
+        {showReaction && (
+          <div
+            className="reaction"
+            role="status"
+            aria-label="Reakcia"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            <p key={reactionKey}>{state.message}</p>
+          </div>
+        )}
         {!openingPending && !ending && state.dialogue && (
           <DialoguePanel
             conversation={conversation}

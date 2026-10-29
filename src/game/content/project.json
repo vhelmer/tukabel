@@ -211,13 +211,13 @@
     {
       "id": "open-herna",
       "text": "Oprav pípu, vypusť staré pivo do krígľov a prezri kryt automatu v herni.",
-      "startWhen": { "flag": "case-open" },
+      "startWhen": { "flag": "tools-taken" },
       "completeWhen": { "flag": "log-found" }
     },
     {
       "id": "cemetery",
       "text": "Bonifác počuje jackpot aj v kravskom zvonci. Jeho automat má ručnú kľuku.",
-      "startWhen": { "flag": "case-open" },
+      "startWhen": { "flag": "bell-taken" },
       "completeWhen": { "flag": "cemetery-open" }
     },
     {
@@ -249,7 +249,7 @@
     {
       "id": "swing-contraption",
       "text": "Povoľ čap, zaťaž sedadlo kamenným rožkom a rozhýb hojdačku. Špagát a podložku potom seber.",
-      "startWhen": { "flag": "case-open" },
+      "startWhen": { "flag": "tap-fixed" },
       "completeWhen": {
         "all": [{ "flag": "string-taken" }, { "flag": "washer-taken" }]
       }
@@ -2800,8 +2800,7 @@
             {
               "id": "accept",
               "text": "Prípad beriem, mozog nechám doma!",
-              "effects": [{ "type": "flag", "id": "case-open", "value": true }],
-              "message": "Rudo: Prípad beriem. Rožok je pri dverách, páska pri skrini a kolíčky na šnúre. Začnem tým jedlým, nech mi pri myslení neškrípe žalúdok."
+              "effects": [{ "type": "flag", "id": "case-open", "value": true }]
             }
           ],
           "speech": {

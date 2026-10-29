@@ -146,3 +146,25 @@ test('editor saves silent click rules, custom cursor animation and inventory ico
   ).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath('conversation.png') });
 });
+
+test('reactions fade after a reading delay and the same click shows them again', async ({
+  page,
+  workspace,
+}) => {
+  await page.clock.install({ time: new Date('2026-10-29T00:00:00Z') });
+  await page.goto(workspace.url);
+  await ready(page);
+  const reaction = page.getByRole('status', { name: 'Reakcia' });
+  await expect(reaction).toContainText('Oživ router');
+  await page.clock.runFor(10000);
+  await expect(reaction).toHaveCount(0);
+  const mug = await object(page, 'Hrnček');
+  await mug.press('Enter');
+  await expect(reaction).toContainText('Káva už vychladla.');
+  await page.clock.runFor(3000);
+  await expect(reaction).toContainText('Káva už vychladla.');
+  await page.clock.runFor(3000);
+  await expect(reaction).toHaveCount(0);
+  await mug.press('Enter');
+  await expect(reaction).toContainText('Káva už vychladla.');
+});

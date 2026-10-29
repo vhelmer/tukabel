@@ -6,6 +6,7 @@ import {
   canTravel,
   getDialogueNode,
   matches,
+  syncTasks,
 } from '../src/game/state';
 import { decodeSave } from '../src/game/storage';
 import type { GameAction, GameContent, GameState } from '../src/game/types';
@@ -472,6 +473,22 @@ test('starting a Dev Mode preview elsewhere can still accept Fero’s case', asy
   state = reduceGame(content, state, { type: 'choose', choiceId: 'accept' });
   expect(state.flags['case-open']).toBe(true);
   expect(canTravel(content, state, 'scene1')).toBe(true);
+});
+
+test('accepting the case opens one notebook task and later tasks follow their tools', async () => {
+  const content = await read();
+  const state = reduceGame(content, initialState(content), {
+    type: 'choose',
+    choiceId: 'accept',
+  });
+  expect(state.tasks).toEqual({ 'find-cable': 'active' });
+  expect(state.message).not.toContain('Rožok je pri dverách');
+  const after = (flag: string) =>
+    syncTasks(content, { ...state, flags: { ...state.flags, [flag]: true } })
+      .tasks;
+  expect(after('tools-taken')['open-herna']).toBe('active');
+  expect(after('tap-fixed')['swing-contraption']).toBe('active');
+  expect(after('bell-taken').cemetery).toBe('active');
 });
 
 test('Dežo barters one unique alley scrap pickup and refuses bottles, holy water and the jackpot washer', async () => {
