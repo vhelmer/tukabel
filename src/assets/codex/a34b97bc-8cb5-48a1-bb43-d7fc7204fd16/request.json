@@ -1,0 +1,26 @@
+{
+  "context": {
+    "mode": "character",
+    "sceneId": "scene6",
+    "targetId": "innkeeper",
+    "source": "scene-art/4bcdf3eb-0f64-4c48-9fde-9c1ce4ad62a3/image.png",
+    "label": "Karol Odmerka",
+    "fingerprint": "[1672,941,{\"id\":\"innkeeper\",\"label\":\"Karol Odmerka\",\"bounds\":{\"x\":202,\"y\":300,\"width\":249,\"height\":235},\"imageFit\":\"contain\",\"image\":\"scene-art/4bcdf3eb-0f64-4c48-9fde-9c1ce4ad62a3/image.png\",\"onClick\":[{\"effects\":[{\"type\":\"dialogue\",\"id\":\"innkeeper-chat\"}]}],\"decorative\":false,\"animation\":{\"blink\":\"codex-66f5f7d2-54dc-47c2-aa25-03bc125cff77-blink\",\"talk\":\"codex-66f5f7d2-54dc-47c2-aa25-03bc125cff77-talk\",\"blinkIntervalMs\":[2800,6500],\"voice\":{\"modelId\":\"eleven_v4\",\"stability\":0.25,\"similarityBoost\":0.72,\"style\":0.8,\"speed\":1,\"useSpeakerBoost\":true,\"voiceId\":\"WeQhSWWkQZEA8DAKeg1r\",\"designRegistration\":\"speech/ee6bf383-8f32-402b-a655-27de2fdc1b74/registration.json\",\"slot\":\"rotating\",\"retired\":true,\"retirementManifest\":\"speech/85ee077f-1160-4701-a06d-cef6bdc3a0ad/retirement.json\"}},\"cursor\":\"talk\",\"uses\":{}}]",
+    "placement": {
+      "bounds": {
+        "x": 202,
+        "y": 300,
+        "width": 249,
+        "height": 235
+      },
+      "imageFit": "contain"
+    },
+    "instruction": "Připrav přirozené mrknutí a odlišné tvary úst pro mluvení. Zachovej původní kresbu, obrysy a všechny pixely mimo oči a ústa."
+  },
+  "prompt": "Připrav přirozené mrknutí a odlišné tvary úst pro mluvení. Zachovej původní kresbu, obrysy a všechny pixely mimo oči a ústa.",
+  "task": "blink-talk",
+  "count": 5,
+  "fps": 12,
+  "width": 249,
+  "height": 235
+}

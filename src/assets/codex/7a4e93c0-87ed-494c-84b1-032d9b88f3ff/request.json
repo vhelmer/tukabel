@@ -1,0 +1,26 @@
+{
+  "context": {
+    "mode": "character",
+    "sceneId": "scene7",
+    "targetId": "swing-boy",
+    "source": "scene-art/f0d7db85-3ef1-4989-9860-fbd71b808e38/image.png",
+    "label": "Špľuch",
+    "fingerprint": "[1672,941,{\"id\":\"swing-boy\",\"label\":\"Špľuch\",\"bounds\":{\"x\":402,\"y\":343,\"width\":133,\"height\":353},\"imageFit\":\"contain\",\"image\":\"scene-art/f0d7db85-3ef1-4989-9860-fbd71b808e38/image.png\",\"onClick\":[{\"effects\":[{\"type\":\"dialogue\",\"id\":\"boy-chat\"}]}],\"decorative\":false,\"animation\":{\"blink\":\"animation-e0ad4935-dfa1-4868-8c9b-489e34236036\",\"talk\":\"animation-bdfdd278-4a13-4e56-a7bc-02a206eb8046\",\"blinkIntervalMs\":[2800,6500],\"voice\":{\"modelId\":\"eleven_v4\",\"stability\":0.25,\"similarityBoost\":0.72,\"style\":0.8,\"speed\":1,\"useSpeakerBoost\":true,\"voiceId\":\"iiDZOH9TArCghKD6MfNt\",\"designRegistration\":\"speech/9d24dc00-0a83-4c1e-9355-581e887151dc/registration.json\",\"slot\":\"rotating\",\"retired\":true,\"retirementManifest\":\"speech/bbefdfff-203d-40a0-b602-5f5e847ca02b/retirement.json\",\"designPrompt\":\"Native Slovak child voice, a fictional boy aged nine to ten. Natural growing-child vocal anatomy, a slightly scratchy youthful middle-high register and energetic breath, never an adult baritone or digitally raised adult voice. Impatient, mischievously confident playground speech with sudden bursts of excitement, tiny hesitations and believable child rhythm. Light eastern Slovak cadence, clearly articulated Slovak consonants. Ordinary natural child pitch, no mosquito falsetto, no cartoon pitch effect. Keep every word understandable. Clean dry studio recording without background or music.\"},\"mouthShapes\":{\"A\":4,\"B\":2,\"C\":1,\"D\":1,\"E\":3,\"F\":3,\"G\":2,\"H\":1,\"X\":4}},\"cursor\":\"talk\",\"uses\":{\"bread\":[{\"message\":\"Špľuch: To nie je desiata, to je závažie. Daj to na sedadlo a skontroluj čap, nech sa to vôbec pohne.\"}]}}]",
+    "placement": {
+      "bounds": {
+        "x": 402,
+        "y": 343,
+        "width": 133,
+        "height": 353
+      },
+      "imageFit": "contain"
+    },
+    "instruction": "Připrav přirozené mrknutí a odlišné tvary úst pro mluvení. Zachovej původní kresbu, obrysy a všechny pixely mimo oči a ústa."
+  },
+  "prompt": "Připrav přirozené mrknutí a odlišné tvary úst pro mluvení. Zachovej původní kresbu, obrysy a všechny pixely mimo oči a ústa.",
+  "task": "blink-talk",
+  "count": 5,
+  "fps": 12,
+  "width": 133,
+  "height": 353
+}

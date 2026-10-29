@@ -1,0 +1,58 @@
+{
+  "version": 3,
+  "assetScale": 1,
+  "alphaCutoff": 1,
+  "assetPlacement": {
+    "target": {
+      "x": 297,
+      "y": 558,
+      "width": 177,
+      "height": 182
+    },
+    "fit": "contain",
+    "anchor": "bottom-center",
+    "background": "unchanged",
+    "guide": "placement-guide.png",
+    "provider": "provider-returned.png"
+  },
+  "preview": "preview.png",
+  "cutoutFrame": {
+    "x": 323,
+    "y": 558,
+    "width": 124,
+    "height": 182,
+    "sourceWidth": 1672,
+    "sourceHeight": 941
+  },
+  "cutoutFull": "cutout-full.png",
+  "source": "scene-art/b1cd0ba5-ef22-407a-8c62-e8a0b0db202f/image.png",
+  "sourceSha256": "642cde309399ec8d2b1f2c79c0ed70a7481edea44eb996b6602194e51a3402e1",
+  "operation": "asset",
+  "selection": [
+    {
+      "x": 306.03600000000006,
+      "y": 691.587
+    },
+    {
+      "x": 318.60799999999995,
+      "y": 558.507
+    },
+    {
+      "x": 473.885,
+      "y": 559.454
+    },
+    {
+      "x": 463.571,
+      "y": 739.795
+    },
+    {
+      "x": 297.60300000000007,
+      "y": 720.905
+    }
+  ],
+  "repairPadding": 0,
+  "repairFeather": 0,
+  "prompt": "Bizarní ruční automat na odpustky, kombinace kostelní kasičky, starého mechanického automatu a podomácku vyrobeného stroje. Dřevěná konstrukce, rezavé kovové části, klika na ruční točení, páka, číselníky, otvor na mince a výdej lístku s odpuštěním.. Zachovej kresleny styl",
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "medium"
+}

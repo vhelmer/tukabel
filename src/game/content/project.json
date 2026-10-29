@@ -955,19 +955,6 @@
       "background": "scene-art/b1cd0ba5-ef22-407a-8c62-e8a0b0db202f/image.png",
       "hotspots": [
         {
-          "id": "codex-aac4133c-0eba-4f67-9723-0b2536371e91-idle",
-          "label": "Nový výřez",
-          "bounds": { "x": 0, "y": 0, "width": 1672, "height": 941 },
-          "imageFit": "stretch",
-          "image": "codex/aac4133c-0eba-4f67-9723-0b2536371e91/image.png",
-          "onClick": [],
-          "decorative": true,
-          "animation": {
-            "idle": "codex-aac4133c-0eba-4f67-9723-0b2536371e91-idle",
-            "idleLoop": true
-          }
-        },
-        {
           "id": "priest",
           "label": "Otec Bonifác",
           "bounds": { "x": 448, "y": 476, "width": 157, "height": 322 },
@@ -1146,7 +1133,7 @@
       "title": "Cintorín",
       "width": 1672,
       "height": 941,
-      "background": "scene-art/ae538529-cee9-45d0-b12c-50ccf4bc7f2d/image.png",
+      "background": "scene-art/5aae224a-7067-4869-8999-bc7363c822d6/image.png",
       "hotspots": [
         {
           "id": "cloud-drift-1",

@@ -1,0 +1,53 @@
+{
+  "version": 3,
+  "assetScale": 1,
+  "assetPlacement": {
+    "target": {
+      "x": 654,
+      "y": 661,
+      "width": 83,
+      "height": 66
+    },
+    "fit": "contain",
+    "anchor": "bottom-center",
+    "background": "unchanged",
+    "guide": "placement-guide.png",
+    "provider": "provider-returned.png"
+  },
+  "preview": "preview.png",
+  "cutoutFrame": {
+    "x": 660,
+    "y": 661,
+    "width": 71,
+    "height": 66,
+    "sourceWidth": 1672,
+    "sourceHeight": 941
+  },
+  "cutoutFull": "cutout-full.png",
+  "source": "imported/Zanedban--uli-ka-s-rebr-kom-a-neporiadkom-c0e13b57.png",
+  "sourceSha256": "3cdffccf1c6d3ae7d5dfee85a4a9cf001268ff17342256f701b1f542ab74fa1e",
+  "operation": "asset",
+  "selection": [
+    {
+      "x": 654,
+      "y": 661
+    },
+    {
+      "x": 737,
+      "y": 661
+    },
+    {
+      "x": 737,
+      "y": 727
+    },
+    {
+      "x": 654,
+      "y": 727
+    }
+  ],
+  "repairPadding": 0,
+  "repairFeather": 0,
+  "prompt": "Přidejme na zem izolační pásku. Zachovej kreslený styl",
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "low"
+}

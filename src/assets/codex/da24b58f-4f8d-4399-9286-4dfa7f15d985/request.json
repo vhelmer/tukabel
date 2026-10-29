@@ -1,0 +1,26 @@
+{
+  "context": {
+    "mode": "character",
+    "sceneId": "scene7",
+    "targetId": "sand-girl",
+    "source": "scene-art/005f7aa7-4599-4f92-adbd-93f3762765be/image.png",
+    "label": "Nika",
+    "fingerprint": "[1672,941,{\"id\":\"sand-girl\",\"label\":\"Nika\",\"bounds\":{\"x\":762,\"y\":526,\"width\":177,\"height\":243},\"imageFit\":\"contain\",\"image\":\"scene-art/005f7aa7-4599-4f92-adbd-93f3762765be/image.png\",\"onClick\":[{\"effects\":[{\"type\":\"dialogue\",\"id\":\"girl-chat\"}]}],\"decorative\":false,\"animation\":{\"blink\":\"animation-78de4edb-eca9-4eb8-b801-3c07a0197bf9\",\"talk\":\"animation-a2a56f09-2976-4a56-b930-5fd5e31e14da\",\"blinkIntervalMs\":[2800,6500],\"voice\":{\"modelId\":\"eleven_v4\",\"stability\":0.25,\"similarityBoost\":0.72,\"style\":0.8,\"speed\":1,\"useSpeakerBoost\":true,\"voiceId\":\"wk5NuWmufYkSfjl2kJr1\",\"designRegistration\":\"speech/ec91583d-d4de-4ffa-b468-ed16f52dc72d/registration.json\",\"slot\":\"rotating\",\"retired\":true,\"retirementManifest\":\"speech/a01466f7-2d2f-4dd6-90d5-662df165422e/retirement.json\",\"designPrompt\":\"Native Slovak child voice, a fictional girl aged eight to nine. Bright clear natural child resonance, precise youthful articulation and quick confident matter-of-fact delivery. Clever and slightly cheeky, with small expressive rises and genuine child phrasing rather than an adult actress performing a stage soprano. Light natural breath and lively but understandable pace. Distinct from a rough boy and from a shy younger boy. No shrill whistle, no falsetto, no electronic pitch shifting. Clean close dry recording without ambience or music.\"},\"mouthShapes\":{\"A\":4,\"B\":1,\"C\":2,\"D\":2,\"E\":3,\"F\":3,\"G\":1,\"H\":2,\"X\":4}},\"cursor\":\"talk\",\"uses\":{}}]",
+    "placement": {
+      "bounds": {
+        "x": 762,
+        "y": 526,
+        "width": 177,
+        "height": 243
+      },
+      "imageFit": "contain"
+    },
+    "instruction": "Připrav přirozené mrknutí a odlišné tvary úst pro mluvení. Zachovej původní kresbu, obrysy a všechny pixely mimo oči a ústa."
+  },
+  "prompt": "Připrav přirozené mrknutí a odlišné tvary úst pro mluvení. Zachovej původní kresbu, obrysy a všechny pixely mimo oči a ústa.",
+  "task": "blink-talk",
+  "count": 5,
+  "fps": 12,
+  "width": 177,
+  "height": 243
+}

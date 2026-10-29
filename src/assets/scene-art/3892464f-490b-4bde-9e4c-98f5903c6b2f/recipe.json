@@ -1,0 +1,53 @@
+{
+  "version": 3,
+  "assetScale": 1,
+  "assetPlacement": {
+    "target": {
+      "x": 700,
+      "y": 774,
+      "width": 72,
+      "height": 47
+    },
+    "fit": "contain",
+    "anchor": "bottom-center",
+    "background": "unchanged",
+    "guide": "placement-guide.png",
+    "provider": "provider-returned.png"
+  },
+  "preview": "preview.png",
+  "cutoutFrame": {
+    "x": 700,
+    "y": 778,
+    "width": 72,
+    "height": 43,
+    "sourceWidth": 1448,
+    "sourceHeight": 1086
+  },
+  "cutoutFull": "cutout-full.png",
+  "source": "scene-art/bdd21a1f-23ff-4add-9d1f-52a349be2a66/image.png",
+  "sourceSha256": "f136a9f2fc89a86485041a25ff33c575bc603d871a26ece15d79518c453afafa",
+  "operation": "asset",
+  "selection": [
+    {
+      "x": 704.232,
+      "y": 820.054
+    },
+    {
+      "x": 700.194,
+      "y": 789.809
+    },
+    {
+      "x": 755.311,
+      "y": 774.518
+    },
+    {
+      "x": 771.0260000000001,
+      "y": 808.226
+    }
+  ],
+  "repairPadding": 0,
+  "repairFeather": 0,
+  "prompt": "Přidej kolíček na prádlo na zem. Zachovej kreslený styl",
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "low"
+}

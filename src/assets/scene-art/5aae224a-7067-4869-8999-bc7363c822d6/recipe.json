@@ -1,0 +1,93 @@
+{
+  "version": 3,
+  "assetScale": 1,
+  "source": "scene-art/ae538529-cee9-45d0-b12c-50ccf4bc7f2d/image.png",
+  "sourceSha256": "d9ba6ca90704872bd4d3fc347b3cbecb386df75cb583f9e2471d28fd123fb1cc",
+  "operation": "edit",
+  "selection": [
+    {
+      "x": 457.29,
+      "y": 127.75900000000001
+    },
+    {
+      "x": 671.212,
+      "y": 11.452999999999975
+    },
+    {
+      "x": 1360.651,
+      "y": 19.130999999999975
+    },
+    {
+      "x": 1547.8850000000002,
+      "y": 11.428999999999974
+    },
+    {
+      "x": 1488.688,
+      "y": 137.966
+    },
+    {
+      "x": 1410.4389999999999,
+      "y": 129.738
+    },
+    {
+      "x": 1402.519,
+      "y": 91.28800000000001
+    },
+    {
+      "x": 1425.305,
+      "y": 92.78199999999998
+    },
+    {
+      "x": 1428.173,
+      "y": 67.24400000000003
+    },
+    {
+      "x": 1411.3649999999998,
+      "y": 36.27199999999999
+    },
+    {
+      "x": 1364.789,
+      "y": 32.84699999999998
+    },
+    {
+      "x": 1357.843,
+      "y": 74.87299999999999
+    },
+    {
+      "x": 1359.356,
+      "y": 96.52100000000002
+    },
+    {
+      "x": 1367.125,
+      "y": 102.38400000000001
+    },
+    {
+      "x": 1375.613,
+      "y": 133.82799999999997
+    },
+    {
+      "x": 1237.683,
+      "y": 122.91899999999998
+    },
+    {
+      "x": 1115.847,
+      "y": 124.928
+    },
+    {
+      "x": 832.037,
+      "y": 119.88800000000003
+    },
+    {
+      "x": 746.34,
+      "y": 157.16999999999996
+    }
+  ],
+  "repairPadding": 0,
+  "repairFeather": 0,
+  "prompt": "Odstran mraky z pozadí, nic jiného neodstranuj.  Zachovej stejnou barvu, styl, světla i stiny",
+  "providerPrompts": {
+    "background": "Edit only the selected area. Preserve the reference cartoon drawing style, perspective, lighting and composition outside the edit. Preserve the image framing. No UI, text labels or watermarks. User instructions: Odstran mraky z pozadí, nic jiného neodstranuj.  Zachovej stejnou barvu, styl, světla i stiny"
+  },
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "high"
+}

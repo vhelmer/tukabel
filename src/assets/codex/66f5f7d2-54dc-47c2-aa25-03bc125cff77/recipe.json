@@ -1,0 +1,124 @@
+{
+  "version": 1,
+  "provider": "codex-cli",
+  "model": "gpt-6.1-sol",
+  "effort": "high",
+  "context": {
+    "mode": "character",
+    "sceneId": "scene6",
+    "targetId": "innkeeper",
+    "source": "scene-art/4bcdf3eb-0f64-4c48-9fde-9c1ce4ad62a3/image.png",
+    "label": "Karol Odmerka",
+    "fingerprint": "[1672,941,{\"id\":\"innkeeper\",\"label\":\"Karol Odmerka\",\"bounds\":{\"x\":202,\"y\":300,\"width\":249,\"height\":235},\"imageFit\":\"contain\",\"image\":\"scene-art/4bcdf3eb-0f64-4c48-9fde-9c1ce4ad62a3/image.png\",\"onClick\":[{\"effects\":[{\"type\":\"dialogue\",\"id\":\"innkeeper-chat\"}]}],\"decorative\":false,\"animation\":{\"blink\":\"animation-6f443452-2c1d-4af4-a51b-bc38966b79d4\",\"talk\":\"animation-22d106ac-a8ef-4e30-b371-c6a9f1aad73c\",\"blinkIntervalMs\":[2800,6500],\"voice\":{\"modelId\":\"eleven_v4\",\"stability\":0.25,\"similarityBoost\":0.72,\"style\":0.8,\"speed\":1,\"useSpeakerBoost\":true,\"voiceId\":\"WeQhSWWkQZEA8DAKeg1r\",\"designRegistration\":\"speech/ee6bf383-8f32-402b-a655-27de2fdc1b74/registration.json\",\"slot\":\"rotating\",\"retired\":true,\"retirementManifest\":\"speech/85ee077f-1160-4701-a06d-cef6bdc3a0ad/retirement.json\"},\"mouthShapes\":{\"A\":4,\"B\":2,\"C\":1,\"D\":1,\"E\":3,\"F\":3,\"G\":2,\"H\":1,\"X\":4}},\"cursor\":\"talk\",\"uses\":{}}]",
+    "placement": {
+      "bounds": {
+        "x": 202,
+        "y": 300,
+        "width": 249,
+        "height": 235
+      },
+      "imageFit": "contain"
+    },
+    "instruction": "Připrav přirozené mrknutí a odlišné tvary úst pro mluvení. Zachovej původní kresbu, obrysy a všechny pixely mimo oči a ústa."
+  },
+  "prompt": "Připrav přirozené mrknutí a odlišné tvary úst pro mluvení. Zachovej původní kresbu, obrysy a všechny pixely mimo oči a ústa.",
+  "task": "blink-talk",
+  "count": 5,
+  "fps": 12,
+  "sourceSha256": "86132f0074e321ae2a3201cd7b4fb9de4b707eee62d2f177f1ee474ca3ab40e9",
+  "width": 249,
+  "height": 235,
+  "result": {
+    "source": "scene-art/4bcdf3eb-0f64-4c48-9fde-9c1ce4ad62a3/image.png",
+    "sourceSha256": "86132f0074e321ae2a3201cd7b4fb9de4b707eee62d2f177f1ee474ca3ab40e9",
+    "clips": [
+      {
+        "id": "codex-66f5f7d2-54dc-47c2-aa25-03bc125cff77-blink",
+        "source": "scene-art/4bcdf3eb-0f64-4c48-9fde-9c1ce4ad62a3/image.png",
+        "kind": "blink",
+        "label": "Přirozené mrknutí",
+        "frames": [
+          "codex/66f5f7d2-54dc-47c2-aa25-03bc125cff77/blink-01.png",
+          "codex/66f5f7d2-54dc-47c2-aa25-03bc125cff77/blink-02.png",
+          "codex/66f5f7d2-54dc-47c2-aa25-03bc125cff77/blink-03.png",
+          "codex/66f5f7d2-54dc-47c2-aa25-03bc125cff77/blink-04.png",
+          "codex/66f5f7d2-54dc-47c2-aa25-03bc125cff77/blink-05.png"
+        ],
+        "fps": 12,
+        "loop": false,
+        "region": {
+          "x": 143,
+          "y": 42,
+          "width": 44,
+          "height": 16
+        }
+      },
+      {
+        "id": "codex-66f5f7d2-54dc-47c2-aa25-03bc125cff77-talk",
+        "source": "scene-art/4bcdf3eb-0f64-4c48-9fde-9c1ce4ad62a3/image.png",
+        "kind": "talk",
+        "label": "Mluvení – pět tvarů úst",
+        "frames": [
+          "codex/66f5f7d2-54dc-47c2-aa25-03bc125cff77/talk-01.png",
+          "codex/66f5f7d2-54dc-47c2-aa25-03bc125cff77/talk-02.png",
+          "codex/66f5f7d2-54dc-47c2-aa25-03bc125cff77/talk-03.png",
+          "codex/66f5f7d2-54dc-47c2-aa25-03bc125cff77/talk-04.png",
+          "codex/66f5f7d2-54dc-47c2-aa25-03bc125cff77/talk-05.png"
+        ],
+        "fps": 12,
+        "loop": true,
+        "region": {
+          "x": 148,
+          "y": 77,
+          "width": 24,
+          "height": 15
+        }
+      }
+    ],
+    "manifest": "codex/66f5f7d2-54dc-47c2-aa25-03bc125cff77/recipe.json",
+    "notes": "Pět snímků přirozeného mrknutí a pět odlišných tvarů úst: klid, pootevření, otevřená samohláska, zuby a zaokrouhlení. Víčka zakrývají oči bez deformace. Knír omezuje velikost úst; pohyb je záměrně jemný. Původní rozměry, poloha a alfa zůstávají zachovány. První a poslední snímek mrknutí jsou přesně shodné se zdrojem. Oblasti změn očí a úst se nepřekrývají; všechny ostatní RGBA pixely jsou beze změny.",
+    "assets": [
+      "codex/66f5f7d2-54dc-47c2-aa25-03bc125cff77/blink-01.png",
+      "codex/66f5f7d2-54dc-47c2-aa25-03bc125cff77/blink-02.png",
+      "codex/66f5f7d2-54dc-47c2-aa25-03bc125cff77/blink-03.png",
+      "codex/66f5f7d2-54dc-47c2-aa25-03bc125cff77/blink-04.png",
+      "codex/66f5f7d2-54dc-47c2-aa25-03bc125cff77/blink-05.png",
+      "codex/66f5f7d2-54dc-47c2-aa25-03bc125cff77/talk-01.png",
+      "codex/66f5f7d2-54dc-47c2-aa25-03bc125cff77/talk-02.png",
+      "codex/66f5f7d2-54dc-47c2-aa25-03bc125cff77/talk-03.png",
+      "codex/66f5f7d2-54dc-47c2-aa25-03bc125cff77/talk-04.png",
+      "codex/66f5f7d2-54dc-47c2-aa25-03bc125cff77/talk-05.png"
+    ]
+  },
+  "scripts": ["generate.py"],
+  "generatedManifest": {
+    "notes": "Pět snímků přirozeného mrknutí a pět odlišných tvarů úst: klid, pootevření, otevřená samohláska, zuby a zaokrouhlení. Víčka zakrývají oči bez deformace. Knír omezuje velikost úst; pohyb je záměrně jemný. Původní rozměry, poloha a alfa zůstávají zachovány. První a poslední snímek mrknutí jsou přesně shodné se zdrojem. Oblasti změn očí a úst se nepřekrývají; všechny ostatní RGBA pixely jsou beze změny.",
+    "scripts": ["generate.py"],
+    "clips": [
+      {
+        "kind": "blink",
+        "label": "Přirozené mrknutí",
+        "fps": 12,
+        "frames": [
+          "blink-01.png",
+          "blink-02.png",
+          "blink-03.png",
+          "blink-04.png",
+          "blink-05.png"
+        ]
+      },
+      {
+        "kind": "talk",
+        "label": "Mluvení – pět tvarů úst",
+        "fps": 12,
+        "frames": [
+          "talk-01.png",
+          "talk-02.png",
+          "talk-03.png",
+          "talk-04.png",
+          "talk-05.png"
+        ]
+      }
+    ]
+  }
+}

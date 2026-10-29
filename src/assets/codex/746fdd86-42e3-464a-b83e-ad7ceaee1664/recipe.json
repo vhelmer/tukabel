@@ -1,0 +1,124 @@
+{
+  "version": 1,
+  "provider": "codex-cli",
+  "model": "gpt-6.1-sol",
+  "effort": "high",
+  "context": {
+    "mode": "character",
+    "sceneId": "scene7",
+    "targetId": "climbing-boy",
+    "source": "scene-art/3d2c9975-f964-46ce-bfe3-25dc0710bbf1/image.png",
+    "label": "Béla",
+    "fingerprint": "[1672,941,{\"id\":\"climbing-boy\",\"label\":\"Béla\",\"bounds\":{\"x\":1320,\"y\":267,\"width\":204,\"height\":316},\"onClick\":[{\"effects\":[{\"type\":\"dialogue\",\"id\":\"climber-chat\"}]}],\"decorative\":false,\"imageFit\":\"contain\",\"image\":\"scene-art/3d2c9975-f964-46ce-bfe3-25dc0710bbf1/image.png\",\"animation\":{\"blink\":\"animation-eafc2b2c-28c2-44ae-86f4-3dcf57949b4c\",\"talk\":\"animation-5337155a-717d-48a0-b196-31831c5d6438\",\"blinkIntervalMs\":[2800,6500],\"voice\":{\"modelId\":\"eleven_v4\",\"stability\":0.25,\"similarityBoost\":0.72,\"style\":0.8,\"speed\":1,\"useSpeakerBoost\":true,\"voiceId\":\"GTTXoS7HeTELz6svNEnz\",\"designRegistration\":\"speech/4a2d83b0-cdb8-40af-939b-259cbf5812ee/registration.json\",\"slot\":\"rotating\",\"retired\":true,\"retirementManifest\":\"speech/c37d455f-0054-4d64-ba46-a3b574c04c5d/retirement.json\",\"designPrompt\":\"Native Slovak child voice, a fictional boy aged seven to eight. A naturally small soft youthful voice with slightly uncertain starts, quick little breaths and gentle uneven intonation. A younger boy trying very hard to sound brave, switching between quiet concentration and short confident exclamations. Natural child anatomy and comfortable pitch, not an adult nasal falsetto and not a squeaking cartoon insect. Clear intelligible Slovak words with plausible young-child pacing. Clean dry studio recording, no music or effects.\"},\"mouthShapes\":{\"A\":4,\"B\":1,\"C\":2,\"D\":2,\"E\":3,\"F\":3,\"G\":1,\"H\":2,\"X\":4}},\"cursor\":\"talk\",\"uses\":{}}]",
+    "placement": {
+      "bounds": {
+        "x": 1320,
+        "y": 267,
+        "width": 204,
+        "height": 316
+      },
+      "imageFit": "contain"
+    },
+    "instruction": "Připrav přirozené mrknutí a odlišné tvary úst pro mluvení. Zachovej původní kresbu, obrysy a všechny pixely mimo oči a ústa."
+  },
+  "prompt": "Připrav přirozené mrknutí a odlišné tvary úst pro mluvení. Zachovej původní kresbu, obrysy a všechny pixely mimo oči a ústa.",
+  "task": "blink-talk",
+  "count": 5,
+  "fps": 12,
+  "sourceSha256": "c72a6777bd0d88857ddcf913971c87d9efe54e99d59cc2ad0fca3e5ec5fcd019",
+  "width": 204,
+  "height": 316,
+  "result": {
+    "source": "scene-art/3d2c9975-f964-46ce-bfe3-25dc0710bbf1/image.png",
+    "sourceSha256": "c72a6777bd0d88857ddcf913971c87d9efe54e99d59cc2ad0fca3e5ec5fcd019",
+    "clips": [
+      {
+        "id": "codex-746fdd86-42e3-464a-b83e-ad7ceaee1664-blink",
+        "source": "scene-art/3d2c9975-f964-46ce-bfe3-25dc0710bbf1/image.png",
+        "kind": "blink",
+        "label": "Přirozené mrknutí",
+        "frames": [
+          "codex/746fdd86-42e3-464a-b83e-ad7ceaee1664/blink-01.png",
+          "codex/746fdd86-42e3-464a-b83e-ad7ceaee1664/blink-02.png",
+          "codex/746fdd86-42e3-464a-b83e-ad7ceaee1664/blink-03.png",
+          "codex/746fdd86-42e3-464a-b83e-ad7ceaee1664/blink-04.png",
+          "codex/746fdd86-42e3-464a-b83e-ad7ceaee1664/blink-05.png"
+        ],
+        "fps": 12,
+        "loop": false,
+        "region": {
+          "x": 54,
+          "y": 43,
+          "width": 82,
+          "height": 32
+        }
+      },
+      {
+        "id": "codex-746fdd86-42e3-464a-b83e-ad7ceaee1664-talk",
+        "source": "scene-art/3d2c9975-f964-46ce-bfe3-25dc0710bbf1/image.png",
+        "kind": "talk",
+        "label": "Řeč – klid, sevření, široké E, A, O",
+        "frames": [
+          "codex/746fdd86-42e3-464a-b83e-ad7ceaee1664/talk-01.png",
+          "codex/746fdd86-42e3-464a-b83e-ad7ceaee1664/talk-02.png",
+          "codex/746fdd86-42e3-464a-b83e-ad7ceaee1664/talk-03.png",
+          "codex/746fdd86-42e3-464a-b83e-ad7ceaee1664/talk-04.png",
+          "codex/746fdd86-42e3-464a-b83e-ad7ceaee1664/talk-05.png"
+        ],
+        "fps": 12,
+        "loop": true,
+        "region": {
+          "x": 64,
+          "y": 76,
+          "width": 66,
+          "height": 18
+        }
+      }
+    ],
+    "manifest": "codex/746fdd86-42e3-464a-b83e-ad7ceaee1664/recipe.json",
+    "notes": "Dva zarovnané klipy po pěti snímcích, 12 fps. Mrknutí má původní první i poslední snímek; víčka překrývají oči bez deformace hlavy. Řeč obsahuje původní neutrální úsměv a čtyři různé artikulace. Kvůli vzájemně odděleným obdélníkům změn zůstává vysoko zvednutý pravý koutek původní; artikulace probíhá ve střední a dolní části úst. Alfa i všechny pixely mimo vymezené oči a ústa zůstávají přesně zachovány. Použit pouze lokální Pillow a původní kresba; chybějící pokožka pod ústy je lokálně interpolována.",
+    "assets": [
+      "codex/746fdd86-42e3-464a-b83e-ad7ceaee1664/blink-01.png",
+      "codex/746fdd86-42e3-464a-b83e-ad7ceaee1664/blink-02.png",
+      "codex/746fdd86-42e3-464a-b83e-ad7ceaee1664/blink-03.png",
+      "codex/746fdd86-42e3-464a-b83e-ad7ceaee1664/blink-04.png",
+      "codex/746fdd86-42e3-464a-b83e-ad7ceaee1664/blink-05.png",
+      "codex/746fdd86-42e3-464a-b83e-ad7ceaee1664/talk-01.png",
+      "codex/746fdd86-42e3-464a-b83e-ad7ceaee1664/talk-02.png",
+      "codex/746fdd86-42e3-464a-b83e-ad7ceaee1664/talk-03.png",
+      "codex/746fdd86-42e3-464a-b83e-ad7ceaee1664/talk-04.png",
+      "codex/746fdd86-42e3-464a-b83e-ad7ceaee1664/talk-05.png"
+    ]
+  },
+  "scripts": ["generate.py"],
+  "generatedManifest": {
+    "notes": "Dva zarovnané klipy po pěti snímcích, 12 fps. Mrknutí má původní první i poslední snímek; víčka překrývají oči bez deformace hlavy. Řeč obsahuje původní neutrální úsměv a čtyři různé artikulace. Kvůli vzájemně odděleným obdélníkům změn zůstává vysoko zvednutý pravý koutek původní; artikulace probíhá ve střední a dolní části úst. Alfa i všechny pixely mimo vymezené oči a ústa zůstávají přesně zachovány. Použit pouze lokální Pillow a původní kresba; chybějící pokožka pod ústy je lokálně interpolována.",
+    "scripts": ["generate.py"],
+    "clips": [
+      {
+        "kind": "blink",
+        "label": "Přirozené mrknutí",
+        "fps": 12,
+        "frames": [
+          "blink-01.png",
+          "blink-02.png",
+          "blink-03.png",
+          "blink-04.png",
+          "blink-05.png"
+        ]
+      },
+      {
+        "kind": "talk",
+        "label": "Řeč – klid, sevření, široké E, A, O",
+        "fps": 12,
+        "frames": [
+          "talk-01.png",
+          "talk-02.png",
+          "talk-03.png",
+          "talk-04.png",
+          "talk-05.png"
+        ]
+      }
+    ]
+  }
+}

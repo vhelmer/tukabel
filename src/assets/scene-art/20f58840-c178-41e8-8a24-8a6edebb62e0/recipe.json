@@ -1,0 +1,54 @@
+{
+  "version": 3,
+  "assetScale": 1,
+  "alphaCutoff": 1,
+  "assetPlacement": {
+    "target": {
+      "x": 924,
+      "y": 706,
+      "width": 110,
+      "height": 41
+    },
+    "fit": "contain",
+    "anchor": "bottom-center",
+    "background": "unchanged",
+    "guide": "placement-guide.png",
+    "provider": "provider-returned.png"
+  },
+  "preview": "preview.png",
+  "cutoutFrame": {
+    "x": 928,
+    "y": 706,
+    "width": 102,
+    "height": 41,
+    "sourceWidth": 1672,
+    "sourceHeight": 941
+  },
+  "cutoutFull": "cutout-full.png",
+  "source": "imported/Rustik-ln--hospoda-bez-elekt-iny-5c40a6a5.png",
+  "sourceSha256": "1af53e69113e3176527a502f2903202ba66df5603265040868139410757ea99e",
+  "operation": "asset",
+  "selection": [
+    {
+      "x": 924.304,
+      "y": 732.218
+    },
+    {
+      "x": 996.163,
+      "y": 706.052
+    },
+    {
+      "x": 1033.168,
+      "y": 709.918
+    },
+    {
+      "x": 964.9170000000001,
+      "y": 746.244
+    }
+  ],
+  "repairPadding": 0,
+  "repairFeather": 0,
+  "prompt": "Přidej na stůl Zlatý obal od čokolády.. Zachovej kreslený styl",
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "low"
+}

@@ -1,0 +1,53 @@
+{
+  "version": 3,
+  "assetScale": 1,
+  "assetPlacement": {
+    "target": {
+      "x": 121,
+      "y": 869,
+      "width": 119,
+      "height": 74
+    },
+    "fit": "contain",
+    "anchor": "bottom-center",
+    "background": "unchanged",
+    "guide": "placement-guide.png",
+    "provider": "provider-returned.png"
+  },
+  "preview": "preview.png",
+  "cutoutFrame": {
+    "x": 127,
+    "y": 869,
+    "width": 106,
+    "height": 74,
+    "sourceWidth": 1448,
+    "sourceHeight": 1086
+  },
+  "cutoutFull": "cutout-full.png",
+  "source": "scene-art/bdd21a1f-23ff-4add-9d1f-52a349be2a66/image.png",
+  "sourceSha256": "f136a9f2fc89a86485041a25ff33c575bc603d871a26ece15d79518c453afafa",
+  "operation": "asset",
+  "selection": [
+    {
+      "x": 121,
+      "y": 869
+    },
+    {
+      "x": 240,
+      "y": 869
+    },
+    {
+      "x": 240,
+      "y": 943
+    },
+    {
+      "x": 121,
+      "y": 943
+    }
+  ],
+  "repairPadding": 0,
+  "repairFeather": 0,
+  "prompt": "Přidej do sceny starý rohlík, Zachovej vizualní kreslený styl",
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "high"
+}

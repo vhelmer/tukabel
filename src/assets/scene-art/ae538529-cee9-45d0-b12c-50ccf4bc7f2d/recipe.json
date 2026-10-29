@@ -1,0 +1,49 @@
+{
+  "version": 3,
+  "assetScale": 1,
+  "source": "scene-art/13435c1e-cc90-44de-be3b-8e727c0a5890/provider-restored.png",
+  "sourceSha256": "0002e72d646e9f714d3bb67c3790512889bef9eb982e702f614daaacb98a329c",
+  "operation": "edit",
+  "selection": [
+    {
+      "x": 1020.3329999999999,
+      "y": 719.292
+    },
+    {
+      "x": 870.433,
+      "y": 683.667
+    },
+    {
+      "x": 886.592,
+      "y": 461.799
+    },
+    {
+      "x": 1139.82,
+      "y": 459.433
+    },
+    {
+      "x": 1297.451,
+      "y": 528.054
+    },
+    {
+      "x": 1516.48,
+      "y": 533.453
+    },
+    {
+      "x": 1506.924,
+      "y": 781.589
+    },
+    {
+      "x": 1024.786,
+      "y": 771.07
+    }
+  ],
+  "repairPadding": 0,
+  "repairFeather": 0,
+  "prompt": "Přidej na zem prázdnou rakev. Zachovej kreslený styl, perspektivu a světlo původní lokace.",
+  "providerPrompts": {
+    "background": "Edit only the selected area. Preserve the reference cartoon drawing style, perspective, lighting and composition outside the edit. Preserve the image framing. No UI, text labels or watermarks. User instructions: Přidej na zem prázdnou rakev. Zachovej kreslený styl, perspektivu a světlo původní lokace."
+  },
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "high"
+}
