@@ -170,6 +170,104 @@ test('AI assets use scenery and placement references, real alpha, proportional s
     });
 });
 
+test('new AI assets ignore alpha-one noise for placement while preserving the provider PNG and source', async () => {
+  await fixture(async (root, original) => {
+    const raw = Buffer.alloc(32 * 32 * 4);
+    for (let y = 8; y < 24; y++)
+      for (let x = 12; x < 20; x++) {
+        raw[(y * 32 + x) * 4] = 180;
+        raw[(y * 32 + x) * 4 + 3] = 254;
+      }
+    for (const p of [0, 31, 31 * 32, 32 * 32 - 1, 33]) raw[p * 4 + 3] = 1;
+    const generated = await sharp(raw, {
+      raw: { width: 32, height: 32, channels: 4 },
+    })
+      .png()
+      .toBuffer();
+    // The low-level helper remains strict unless its caller explicitly opts in.
+    await expect(
+      placeGeneratedAsset(
+        generated,
+        { x: 8, y: 8, width: 48, height: 32 },
+        64,
+        48,
+      ),
+    ).rejects.toThrow('průhledným okrajem');
+    let calls = 0;
+    const result = await createArtwork(
+      root,
+      {
+        source: 'source.png',
+        operation: 'asset',
+        selection: rectangle,
+        prompt: 'Úzká láhev.',
+        confirmed: true,
+      },
+      {
+        apiKey: 'test-secret',
+        fetch: (async () => {
+          calls++;
+          return Response.json({
+            data: [{ b64_json: generated.toString('base64') }],
+          });
+        }) as typeof fetch,
+      },
+    );
+    expect(result.blockedReason).toBeUndefined();
+    expect(result.assetDiagnostic).toBeUndefined();
+    expect(result.backgrounds).toBeUndefined();
+    expect(result.cutoutFrame).toEqual({
+      x: 24,
+      y: 8,
+      width: 16,
+      height: 32,
+      sourceWidth: 64,
+      sourceHeight: 48,
+    });
+    expect(await sharp(path.join(root, result.image)).metadata()).toMatchObject(
+      {
+        width: 16,
+        height: 32,
+        hasAlpha: true,
+      },
+    );
+    const alphas = (await rgba(path.join(root, result.image))).filter(
+      (_v, i) => i % 4 === 3,
+    );
+    expect(alphas.every((alpha) => alpha === 254)).toBe(true);
+    expect(
+      (
+        await readFile(
+          path.join(root, path.dirname(result.image), 'provider-returned.png'),
+        )
+      ).equals(generated),
+    ).toBe(true);
+    expect(
+      (await readFile(path.join(root, 'source.png'))).equals(original),
+    ).toBe(true);
+    const full = await rgba(path.join(root, result.cutoutFull!));
+    const preview = await rgba(path.join(root, result.preview!));
+    const source = await rgba(original);
+    for (let p = 0; p < 64 * 48; p++)
+      if (full[p * 4 + 3] === 0)
+        expect(preview.subarray(p * 4, p * 4 + 4)).toEqual(
+          source.subarray(p * 4, p * 4 + 4),
+        );
+    expect(
+      JSON.parse(await readFile(path.join(root, result.manifest), 'utf8')),
+    ).toMatchObject({
+      operation: 'asset',
+      alphaCutoff: 1,
+      assetPlacement: {
+        fit: 'contain',
+        anchor: 'bottom-center',
+        background: 'unchanged',
+      },
+    });
+    expect(calls).toBe(1);
+  });
+});
+
 test('generated assets keep their aspect and bottom anchor rather than clipping to selection contours', async () => {
   const png = await sharp({
     create: { width: 64, height: 64, channels: 4, background: '#00000000' },
@@ -1232,7 +1330,7 @@ test('rejected transparent assets retain raw provider PNG and alpha diagnostics 
           raw[(y * 32 + x) * 4] = 180;
           raw[(y * 32 + x) * 4 + 3] = 255;
         }
-      raw[3] = operation === 'extract' ? 255 : 1; // Real clipping remains blocked; legacy asset mode stays strict.
+      raw[3] = operation === 'extract' ? 255 : 2;
       const generated = await sharp(raw, {
         raw: { width: 32, height: 32, channels: 4 },
       })
@@ -1274,7 +1372,7 @@ test('rejected transparent assets retain raw provider PNG and alpha diagnostics 
         width: 32,
         height: 32,
         borderPixels: 1,
-        maxBorderAlpha: operation === 'extract' ? 255 : 1,
+        maxBorderAlpha: operation === 'extract' ? 255 : 2,
         opaquePixels: operation === 'extract' ? 257 : 256,
         partialPixels: operation === 'extract' ? 0 : 1,
         transparentPixels: 767,

@@ -378,7 +378,7 @@ export function SceneArtPanel({
           captured.result!.manifest,
           captured.result!.source,
           scale,
-          alignmentMode,
+          captured.result!.operation === 'asset' ? 'frame' : alignmentMode,
         );
         if (!mounted.current) return;
         onAssets(response.assets);
@@ -418,15 +418,20 @@ export function SceneArtPanel({
       busy ||
       !job ||
       !data ||
-      data.extractionMethod !== 'openai' ||
-      data.operation !== 'extract' ||
+      !(
+        data.operation === 'asset' ||
+        (data.extractionMethod === 'openai' && data.operation === 'extract')
+      ) ||
       !(
         (data.blockedReason &&
           diagnostic &&
           diagnostic.borderPixels > 0 &&
           diagnostic.maxBorderAlpha <= 1 &&
           diagnostic.partialPixels + diagnostic.opaquePixels > 0) ||
-        (!data.blockedReason && alignmentMode === 'features' && !data.alignment)
+        (data.operation === 'extract' &&
+          !data.blockedReason &&
+          alignmentMode === 'features' &&
+          !data.alignment)
       ) ||
       data.source !== source ||
       object?.locked ||
@@ -1027,8 +1032,12 @@ export function SceneArtPanel({
               <option value="">Vyber výsledek…</option>
               {archive.results.map((r) => (
                 <option key={r.manifest} value={r.manifest}>
-                  {r.operation === 'extract' ? 'Oddělení' : 'Odstranění'} ·{' '}
-                  {r.manifest.split('/')[1]} ·{' '}
+                  {r.operation === 'asset'
+                    ? 'Nový asset'
+                    : r.operation === 'extract'
+                      ? 'Oddělení'
+                      : 'Odstranění'}{' '}
+                  · {r.manifest.split('/')[1]} ·{' '}
                   {r.blockedReason ? 'vyžaduje přípravu' : 'připravené'} ·{' '}
                   {r.assetScale ?? 1}×
                 </option>
@@ -1073,25 +1082,38 @@ export function SceneArtPanel({
           {result.data.blockedReason && (
             <p role="alert">{result.data.blockedReason}</p>
           )}
-          {result.data.extractionMethod === 'openai' &&
-            result.data.operation === 'extract' &&
+          {(result.data.operation === 'asset' ||
+            (result.data.extractionMethod === 'openai' &&
+              result.data.operation === 'extract')) &&
             !result.data.debugOnly && (
               <div className="row-actions">
-                <Field label="Zarovnání připraveného výřezu">
-                  <select
-                    value={alignmentMode}
-                    disabled={busy}
-                    onChange={(e) =>
-                      setAlignmentChoice(e.target.value as 'frame' | 'features')
-                    }
-                  >
-                    <option value="features">
-                      Podle detailů původního objektu
-                    </option>
-                    <option value="frame">Podle rámu výběru · přibližně</option>
-                  </select>
-                </Field>
-                <Field label="Rozlišení připraveného výřezu">
+                {result.data.operation === 'extract' && (
+                  <Field label="Zarovnání připraveného výřezu">
+                    <select
+                      value={alignmentMode}
+                      disabled={busy}
+                      onChange={(e) =>
+                        setAlignmentChoice(
+                          e.target.value as 'frame' | 'features',
+                        )
+                      }
+                    >
+                      <option value="features">
+                        Podle detailů původního objektu
+                      </option>
+                      <option value="frame">
+                        Podle rámu výběru · přibližně
+                      </option>
+                    </select>
+                  </Field>
+                )}
+                <Field
+                  label={
+                    result.data.operation === 'asset'
+                      ? 'Rozlišení připraveného assetu'
+                      : 'Rozlišení připraveného výřezu'
+                  }
+                >
                   <select
                     value={assetScale}
                     disabled={busy}
@@ -1111,9 +1133,11 @@ export function SceneArtPanel({
                   }
                   onClick={() => void prepareExisting()}
                 >
-                  {alignmentMode === 'features'
-                    ? 'Zarovnat podle původního obrázku (bez API)'
-                    : 'Připravit uložený výřez (bez API)'}
+                  {result.data.operation === 'asset'
+                    ? 'Připravit uložený asset (bez API)'
+                    : alignmentMode === 'features'
+                      ? 'Zarovnat podle původního obrázku (bez API)'
+                      : 'Připravit uložený výřez (bez API)'}
                 </button>
                 {preparationError?.manifest === result.data.manifest && (
                   <p role="alert">{preparationError.text}</p>
@@ -1122,9 +1146,14 @@ export function SceneArtPanel({
                   Odstraní pouze zanedbatelnou alfu 1/255 a vytvoří nový soubor
                   z již zaplaceného PNG. Původní archiv zůstává zachovaný.
                   Skutečně useknutý nebo neprůhledný výstup se nepovolí.
-                  Zarovnání podle detailů počítá posun, měřítko a malé natočení
-                  pomocí OpenCV, lokálně nebo přes SSH; nepotřebuje nové OpenAI
-                  volání. Při nedostatku shod ponechá dosavadní výsledek.
+                  {result.data.operation === 'extract' && (
+                    <>
+                      Zarovnání podle detailů počítá posun, měřítko a malé
+                      natočení pomocí OpenCV, lokálně nebo přes SSH; nepotřebuje
+                      nové OpenAI volání. Při nedostatku shod ponechá dosavadní
+                      výsledek.
+                    </>
+                  )}
                 </p>
               </div>
             )}

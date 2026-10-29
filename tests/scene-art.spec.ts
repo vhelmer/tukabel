@@ -2,6 +2,7 @@ import { expect, type Page } from '@playwright/test';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
+import { randomUUID } from 'node:crypto';
 import { test, openEditor } from './editorFixture';
 import { ready, object, activate } from './helpers';
 import type { GameContent } from '../src/game/types';
@@ -99,6 +100,161 @@ async function save(page: Page) {
 }
 const art = (page: Page) =>
   page.getByRole('region', { name: 'Grafické nástroje scény' });
+
+test('legacy generated assets with negligible border alpha recover from history without API and save at native placement', async ({
+  page,
+  workspace,
+}) => {
+  await seed(workspace.root, workspace.source);
+  const before = await readFile(workspace.source, 'utf8');
+  const project = JSON.parse(before) as GameContent;
+  const source = project.scenes[0]!.background;
+  const sourceBytes = await readFile(
+    path.join(workspace.root, 'src/assets', source),
+  );
+  const folder = `scene-art/${randomUUID()}`;
+  const directory = path.join(workspace.root, 'src/assets', folder);
+  await mkdir(directory);
+  const raw = Buffer.alloc(96 * 96 * 4);
+  for (let y = 16; y < 80; y++)
+    for (let x = 24; x < 72; x++) {
+      raw[(y * 96 + x) * 4] = 180;
+      raw[(y * 96 + x) * 4 + 3] = 254;
+    }
+  raw[3] = 1;
+  const png = await sharp(raw, { raw: { width: 96, height: 96, channels: 4 } })
+    .png()
+    .toBuffer();
+  const { artHash } = await import('../dev/artSource');
+  const { inspectAssetAlpha } = await import('../dev/generatedAsset');
+  const recipe = JSON.stringify({
+    version: 3,
+    operation: 'asset',
+    source,
+    sourceSha256: artHash(sourceBytes),
+    assetScale: 1,
+    model: 'gpt-image-2.5-sunburst',
+    quality: 'low',
+    assetPlacement: {
+      target: { x: 650, y: 390, width: 200, height: 260 },
+      fit: 'contain',
+      anchor: 'bottom-center',
+      background: 'unchanged',
+    },
+    blockedReason: 'Starší kontrola odmítla neviditelný okrajový pixel.',
+    assetDiagnostic: {
+      image: 'provider-returned.png',
+      ...(await inspectAssetAlpha(png)),
+    },
+  });
+  for (const name of [
+    'source.png',
+    'image.png',
+    'provider-input.png',
+    'placement-guide.png',
+  ])
+    await writeFile(path.join(directory, name), sourceBytes);
+  await writeFile(path.join(directory, 'provider-returned.png'), png);
+  await writeFile(path.join(directory, 'recipe.json'), recipe);
+  let paid = 0;
+  page.on('request', (request) => {
+    if (
+      request.method() === 'POST' &&
+      /\/(jobs|art\/create)$/.test(request.url())
+    )
+      paid++;
+  });
+  await openEditor(page, workspace.url);
+  const panel = art(page);
+  await panel
+    .getByLabel('Grafická operace', { exact: true })
+    .selectOption('asset');
+  await panel
+    .getByRole('button', {
+      name: 'Načíst dřívější výsledky (bez API)',
+      exact: true,
+    })
+    .click();
+  const history = panel.getByLabel('Uložený výsledek', { exact: true });
+  await expect(history.locator('option')).toContainText([
+    'Vyber výsledek…',
+    'Nový asset',
+  ]);
+  await history.selectOption(`${folder}/recipe.json`);
+  const apply = panel.getByRole('button', {
+    name: 'Použít výsledek ve scéně',
+    exact: true,
+  });
+  await expect(apply).toBeEnabled();
+  await expect(
+    panel.getByLabel('Zarovnání připraveného výřezu', { exact: true }),
+  ).toHaveCount(0);
+  await panel
+    .getByLabel('Rozlišení připraveného assetu', { exact: true })
+    .selectOption('2');
+  const prepared = page.waitForResponse(
+    (r) => r.url().endsWith('/art/prepare') && r.request().method() === 'POST',
+  );
+  await panel
+    .getByRole('button', {
+      name: 'Připravit uložený asset (bez API)',
+      exact: true,
+    })
+    .click();
+  const result = (await (await prepared).json()).result;
+  await expect(apply).toBeEnabled();
+  expect(result.operation).toBe('asset');
+  expect(result.assetScale).toBe(2);
+  expect(result.backgrounds).toBeUndefined();
+  expect(await readFile(workspace.source, 'utf8')).toBe(before);
+  await apply.click();
+  await save(page);
+  const saved = JSON.parse(
+    await readFile(workspace.source, 'utf8'),
+  ) as GameContent;
+  const layer = saved.scenes[0]!.hotspots.at(-1)!;
+  expect(saved.scenes[0]!.background).toBe(source);
+  expect(layer.image).toBe(result.image);
+  expect(layer.decorative).toBe(false);
+  expect(layer.bounds).toEqual({ x: 652, y: 390, width: 195, height: 260 });
+  expect(
+    (
+      await sharp(
+        path.join(workspace.root, 'src/assets', result.image),
+      ).metadata()
+    ).width,
+  ).toBe(390);
+  expect(await readFile(path.join(directory, 'recipe.json'), 'utf8')).toBe(
+    recipe,
+  );
+  expect(
+    (await readFile(path.join(directory, 'provider-returned.png'))).equals(png),
+  ).toBe(true);
+  expect(
+    (await readFile(path.join(workspace.root, 'src/assets', source))).equals(
+      sourceBytes,
+    ),
+  ).toBe(true);
+  expect(paid).toBe(0);
+  await page.reload();
+  await ready(page);
+  await page.getByRole('button', { name: 'Dev Mode', exact: true }).click();
+  await art(page)
+    .getByLabel('Grafická operace', { exact: true })
+    .selectOption('asset');
+  await art(page)
+    .getByRole('button', {
+      name: 'Načíst dřívější výsledky (bez API)',
+      exact: true,
+    })
+    .click();
+  await expect(
+    art(page)
+      .getByLabel('Uložený výsledek')
+      .locator(`option[value="${result.manifest}"]`),
+  ).toHaveCount(1);
+  expect(paid).toBe(0);
+});
 
 test('layer editing, scene-space selection and local ambient clips save real assets and play in both modes', async ({
   page,

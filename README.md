@@ -180,6 +180,21 @@ modelu, oříznutý asset, plný transparentní snímek, náhled a recept s pův
 offsetem. Náhled je pouze pro kontrolu; nikdy nenahrazuje pozadí lokace.
 Použití tvoří jeden undo krok a odmítne mezitím změněný zdroj nebo rozměry lokace.
 
+Nové assety před touto kontrolou odstraní pouze zanedbatelnou alfu 0–1/255;
+několik téměř neviditelných pixelů tak neblokuje vložení. Průhledná hrana i
+vnitřní alfa objektu nad touto hodnotou zůstávají zachované. Skutečně useknutý
+nebo neprůhledný výstup se nadále odmítne.
+
+Již zaplacené blokované PNG otevři přes **Načíst dřívější výsledky (bez API) →
+Uložený výsledek → Nový asset**. Pokud vadí jen okrajová alfa 1/255, editor je
+automaticky lokálně připraví a zpřístupní **Použít výsledek ve scéně**. Ručně
+lze zvolit **Rozlišení připraveného assetu → 1× / 2×** a **Připravit uložený asset
+(bez API)**. 2× mění počet pixelů, nikoli herní velikost a polohu. Příprava
+vytvoří nový UUID archiv s `derivedFrom`; originál, původní odpověď poskytovatele
+a projekt zůstávají beze změny až do vědomého použití výsledku. Nepoužívá AI,
+SAM ani zarovnání podle detailů původního objektu. Historie kontroluje stejný
+zdroj, jeho SHA-256, rám a skutečné PNG rozměry; přežije restart Vite.
+
 ### Přesné oddělení objektu a oprava pozadí
 
 1. Vyber **Zdroj grafické úpravy → Pozadí lokace** a operaci
@@ -247,7 +262,7 @@ Dřívější výsledek lze otevřít bez regenerace: jako **Zdroj grafické úp
 **Pozadí lokace** (původní zdroj nebo už použité `image.png` / `provider-restored.png`), klikni **Načíst dřívější výsledky (bez API)** a vyber
 **Uložený výsledek**. Pak zvol variantu pozadí a použij výsledek. Archiv lze otevřít
 i po restartu Vite. U už použitého výsledku se vymění pouze pozadí, objekt se
-nezduplikuje. Nabízí pouze odstranění/oddělení se shodnou cestou i SHA-256
+nezduplikuje. Nabízí odstranění, oddělení i nové assety se shodnou cestou i SHA-256
 zdroje a platnými PNG. U změněného zdroje se nic nepoužije. Starší výřezy v2
 zůstávají v původních rozměrech, nové operace už vytvářejí oříznuté assety.
 
@@ -394,7 +409,7 @@ zachycuje metodu, původní rám, zdroj vodítka a umístění. Výsledky lze zn
 otevřít z historie bez generace. Oprava pozadí, její obě varianty, vědomé Apply,
 kontrola změněného cíle a jeden undo krok zůstávají stejné.
 
-Nové OpenAI výřezy automaticky odstraní zanedbatelnou alfu 0–1/255 už před
+Nové OpenAI výřezy i samostatné assety automaticky odstraní zanedbatelnou alfu 0–1/255 už před
 kontrolou umístění. Starší odmítnutý výřez s pouze takto slabou alfou na okraji
 se při otevření automaticky lokálně připraví jednou, bez API a bez přepsání archivu.
 Poté je Apply dostupné bez mezikroku. Skutečný obsah na okraji zůstává blokovaný.

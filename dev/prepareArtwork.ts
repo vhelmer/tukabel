@@ -57,15 +57,21 @@ export async function prepareArchivedExtraction(
     throw Error('Příliš velký recept.');
   const recipe = JSON.parse(await readFile(manifest, 'utf8'));
   const original = await readArtSource(root, request.source);
+  const isAsset = recipe.operation === 'asset';
   if (
-    recipe.operation !== 'extract' ||
-    recipe.extraction?.method !== 'openai' ||
+    (!isAsset &&
+      (recipe.operation !== 'extract' ||
+        recipe.extraction?.method !== 'openai')) ||
     recipe.source !== request.source ||
     recipe.sourceSha256 !== original.sourceSha256 ||
     recipe.debugOnly
   )
     throw Error('Uložený výřez neodpovídá aktuálnímu zdroji.');
-  const target = recipe.extraction.target;
+  if (isAsset && request.alignment === 'features')
+    throw Error('Nový asset lze zarovnat pouze podle původního rámu.');
+  const target = isAsset
+    ? recipe.assetPlacement?.target
+    : recipe.extraction.target;
   if (
     !target ||
     !['x', 'y', 'width', 'height'].every((k) => Number.isInteger(target[k])) ||
@@ -80,27 +86,36 @@ export async function prepareArchivedExtraction(
   const returned = await readArtSource(
     root,
     path
-      .relative(root, await file('extraction-returned.png'))
+      .relative(
+        root,
+        await file(
+          isAsset ? 'provider-returned.png' : 'extraction-returned.png',
+        ),
+      )
       .split(path.sep)
       .join('/'),
   );
-  const background = await readArtSource(
-    root,
-    path
-      .relative(root, await file('image.png'))
-      .split(path.sep)
-      .join('/'),
-  );
-  const restored = await readArtSource(
-    root,
-    path
-      .relative(root, await file('provider-restored.png'))
-      .split(path.sep)
-      .join('/'),
-  );
+  const background = isAsset
+    ? undefined
+    : await readArtSource(
+        root,
+        path
+          .relative(root, await file('image.png'))
+          .split(path.sep)
+          .join('/'),
+      );
+  const restored = isAsset
+    ? undefined
+    : await readArtSource(
+        root,
+        path
+          .relative(root, await file('provider-restored.png'))
+          .split(path.sep)
+          .join('/'),
+      );
   if (
     [background, restored].some(
-      (p) => p.width !== original.width || p.height !== original.height,
+      (p) => p && (p.width !== original.width || p.height !== original.height),
     )
   )
     throw Error('Neplatné rozměry opraveného pozadí.');
@@ -140,6 +155,7 @@ export async function prepareArchivedExtraction(
       'object-mask.png',
       'ownership-mask.png',
       'provider-input.png',
+      'placement-guide.png',
       'provider-mask.png',
       'provider-returned.png',
       'provider-restored.png',
@@ -151,6 +167,7 @@ export async function prepareArchivedExtraction(
       'extraction-guide.png',
       'extraction-returned.png',
     ]) {
+      if (isAsset && name === 'image.png') continue;
       let filename;
       try {
         filename = await file(name);
@@ -161,7 +178,7 @@ export async function prepareArchivedExtraction(
       await copyFile(filename, path.join(staging, name));
     }
     for (const [name, bytes] of [
-      ['cutout.png', placed.image],
+      [isAsset ? 'image.png' : 'cutout.png', placed.image],
       ['cutout-full.png', placed.full],
       [
         'preview.png',
@@ -170,15 +187,17 @@ export async function prepareArchivedExtraction(
           .png()
           .toBuffer(),
       ],
-      [
-        'reassembled.png',
+    ] as const)
+      await writeFile(path.join(staging, name), bytes, { flag: 'wx' });
+    if (background)
+      await writeFile(
+        path.join(staging, 'reassembled.png'),
         await sharp(background.source)
           .composite([{ input: placed.full }])
           .png()
           .toBuffer(),
-      ],
-    ] as const)
-      await writeFile(path.join(staging, name), bytes, { flag: 'wx' });
+        { flag: 'wx' },
+      );
     if (registered?.matches)
       await writeFile(
         path.join(staging, 'alignment-matches.png'),
@@ -216,24 +235,26 @@ export async function prepareArchivedExtraction(
       throw Error('Zdroj se mezitím změnil. Výsledek se nepoužil.');
     await rename(staging, path.join(parent, id));
     return {
-      operation: 'extract',
+      operation: isAsset ? 'asset' : 'extract',
       source: request.source,
       image: `${prefix}/image.png`,
-      backgrounds: {
-        masked: `${prefix}/image.png`,
-        restored: `${prefix}/provider-restored.png`,
-      },
-      extractionMethod: 'openai',
+      backgrounds: isAsset
+        ? undefined
+        : {
+            masked: `${prefix}/image.png`,
+            restored: `${prefix}/provider-restored.png`,
+          },
+      extractionMethod: isAsset ? undefined : 'openai',
       assetScale: request.scale as 1 | 2,
       alignment: registered?.alignment,
       alignmentMatches: registered?.matches
         ? `${prefix}/alignment-matches.png`
         : undefined,
-      cutout: `${prefix}/cutout.png`,
+      cutout: isAsset ? undefined : `${prefix}/cutout.png`,
       cutoutFull: `${prefix}/cutout-full.png`,
       cutoutFrame: placed.frame,
       preview: `${prefix}/preview.png`,
-      reassembled: `${prefix}/reassembled.png`,
+      reassembled: isAsset ? undefined : `${prefix}/reassembled.png`,
       original: `${prefix}/source.png`,
       manifest: `${prefix}/recipe.json`,
       width: original.width,

@@ -42,12 +42,19 @@ export async function artworkHistory(
       if ((await realpath(directory)) !== path.resolve(directory)) continue;
       const filename = path.join(directory, 'recipe.json');
       const stat = await lstat(filename);
-      if (!stat.isFile() || stat.size > 1024 * 1024) continue;
+      if (
+        !stat.isFile() ||
+        stat.size > 1024 * 1024 ||
+        (await realpath(filename)) !== filename
+      )
+        continue;
       const recipe = JSON.parse(await readFile(filename, 'utf8'));
       const prefix = `scene-art/${entry.name}`;
+      const isAsset = recipe.operation === 'asset';
       const appliedVariant =
-        input.source === `${prefix}/image.png` ||
-        input.source === `${prefix}/provider-restored.png`;
+        !isAsset &&
+        (input.source === `${prefix}/image.png` ||
+          input.source === `${prefix}/provider-restored.png`);
       const reference = appliedVariant
         ? await readArtSource(root, recipe.source)
         : original;
@@ -56,14 +63,15 @@ export async function artworkHistory(
         recipe.sourceSha256 !== reference.sourceSha256 ||
         reference.width !== original.width ||
         reference.height !== original.height ||
-        !['extract', 'remove'].includes(recipe.operation) ||
+        !['extract', 'remove', 'asset'].includes(recipe.operation) ||
         recipe.debugOnly ||
         (recipe.blockedReason && !recipe.assetDiagnostic)
       )
         continue;
       async function png(name: string, fullSize = true) {
         const file = path.join(directory, name);
-        if (!(await lstat(file)).isFile()) throw Error('Neplatný archiv.');
+        if (!(await lstat(file)).isFile() || (await realpath(file)) !== file)
+          throw Error('Neplatný archiv.');
         const meta = await sharp(file).metadata();
         if (
           meta.format !== 'png' ||
@@ -72,6 +80,85 @@ export async function artworkHistory(
         )
           throw Error('Neplatné rozměry archivu.');
         return `${prefix}/${name}`;
+      }
+      if (isAsset) {
+        if (
+          recipe.assetScale !== undefined &&
+          ![1, 2].includes(recipe.assetScale)
+        )
+          continue;
+        const target = recipe.assetPlacement?.target;
+        if (
+          !target ||
+          !['x', 'y', 'width', 'height'].every((k) =>
+            Number.isInteger(target[k]),
+          ) ||
+          target.x < 0 ||
+          target.y < 0 ||
+          target.width < 1 ||
+          target.height < 1 ||
+          target.x + target.width > original.width ||
+          target.y + target.height > original.height
+        )
+          continue;
+        const provider = await png('provider-returned.png', false);
+        const source = await png('source.png');
+        const image = await png('image.png', false);
+        if (recipe.blockedReason) {
+          results.push({
+            operation: 'asset',
+            source: String(input.source),
+            image,
+            original: source,
+            width: original.width,
+            height: original.height,
+            manifest: `${prefix}/recipe.json`,
+            blockedReason: String(recipe.blockedReason),
+            assetScale: recipe.assetScale === 2 ? 2 : 1,
+            assetDiagnostic: {
+              ...(await inspectAssetAlpha(
+                await readFile(path.join(root, provider)),
+              )),
+              image: provider,
+            },
+          });
+          continue;
+        }
+        const c = recipe.cutoutFrame;
+        if (
+          !c ||
+          !['x', 'y', 'width', 'height', 'sourceWidth', 'sourceHeight'].every(
+            (k) => Number.isInteger(c[k]),
+          ) ||
+          c.x < 0 ||
+          c.y < 0 ||
+          c.width < 1 ||
+          c.height < 1 ||
+          c.sourceWidth !== original.width ||
+          c.sourceHeight !== original.height ||
+          c.x + c.width > original.width ||
+          c.y + c.height > original.height
+        )
+          continue;
+        const scale = recipe.assetScale === 2 ? 2 : 1;
+        const meta = await sharp(path.join(root, image)).metadata();
+        if (meta.width !== c.width * scale || meta.height !== c.height * scale)
+          continue;
+        results.push({
+          operation: 'asset',
+          source: String(input.source),
+          image,
+          original: source,
+          preview: await png('preview.png'),
+          cutoutFull: await png('cutout-full.png'),
+          cutoutFrame: c,
+          assetScale: scale,
+          width: original.width,
+          height: original.height,
+          manifest: `${prefix}/recipe.json`,
+          model: typeof recipe.model === 'string' ? recipe.model : undefined,
+        });
+        continue;
       }
       if (recipe.blockedReason && recipe.assetDiagnostic) {
         if (appliedVariant) continue;
