@@ -54,6 +54,11 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
 - `npm run check` zahrnuje i validaci skutečného obsahu a testy pravidel.
   Řešitelnost nové hádanky ověř průchodem v `tests/scene.spec.ts`.
 
+- Minihry žijí v `src/minigames/<id>/` (React overlay vlastní Pixi canvas,
+  grafika v `src/assets/minigames/<id>/`). Obsah je spouští efektem `minigame`
+  a v `minigames` určí `winFlag`; nové ID přidej do `MINIGAME_IDS`. Stav běžící
+  minihry se neukládá a blokuje svět jako dialog.
+
 ## Editor a herní UI
 
 - Game Mode drží veškeré hraní uvnitř jednoho okna: scéna, reakce, dialog,

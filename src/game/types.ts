@@ -129,7 +129,19 @@ export type Effect =
   | { type: 'addItem' | 'removeItem'; id: string }
   | { type: 'scene' | 'unlockScene'; id: string }
   | { type: 'dialogue'; id: string }
-  | { type: 'startTask' | 'completeTask'; id: string };
+  | { type: 'startTask' | 'completeTask'; id: string }
+  | { type: 'minigame'; id: string };
+
+// Minigames implemented in src/minigames/. Content only references them.
+export const MINIGAME_IDS = ['suter-k-ciare'] as const;
+
+export interface MinigameDefinition {
+  readonly id: string;
+  // Latched to true by a won match; a later loss never clears it.
+  readonly winFlag: string;
+  readonly winMessage?: string;
+  readonly loseMessage?: string;
+}
 
 export interface TaskDefinition {
   readonly id: string;
@@ -271,6 +283,7 @@ export interface GameContent {
   readonly dialogues: readonly DialogueDefinition[];
   readonly animations?: readonly AnimationDefinition[];
   readonly tasks?: readonly TaskDefinition[];
+  readonly minigames?: readonly MinigameDefinition[];
   readonly worldMap?: WorldMapDefinition;
   readonly combinations: readonly {
     items: readonly [string, string];
@@ -286,6 +299,8 @@ export interface GameState {
   flags: Record<string, boolean>;
   tasks: Record<string, TaskStatus>;
   dialogue: { id: string; nodeId: string } | null;
+  // Running minigame; it blocks the world and is not restored from a save.
+  minigame?: string | null;
   message: string;
 }
 
@@ -295,6 +310,8 @@ export type GameAction =
   | { type: 'combine'; first: string; second: string }
   | { type: 'choose'; choiceId: string; from?: { id: string; nodeId: string } }
   | { type: 'closeDialogue' }
+  | { type: 'finishMinigame'; won: boolean }
+  | { type: 'closeMinigame' }
   | { type: 'inspectItem'; itemId: string };
 
 export interface SceneCallbacks {

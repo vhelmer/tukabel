@@ -23,6 +23,7 @@ import { GameCanvas } from './GameCanvas';
 import { DialoguePanel } from './DialoguePanel';
 import { EndingPanel } from './EndingPanel';
 import { BlackoutCutscene } from './BlackoutCutscene';
+import { SuterKCiare } from '../minigames/suter-k-ciare';
 import { useSceneAudio } from './useSceneAudio';
 
 type Target = { type: 'item'; id: string } | { type: 'hotspot'; id: string };
@@ -117,7 +118,8 @@ export function GameWindow({
   const [mapOpen, setMapOpen] = useState(false);
   const mapTravelLock = useRef(false);
   const ending = getEnding(content, state);
-  const modalOpen = menu || journal || mapOpen || Boolean(ending);
+  const modalOpen =
+    menu || journal || mapOpen || Boolean(ending) || Boolean(state.minigame);
   // Each dispatch restarts the reaction, so repeating the same click shows it again.
   const [reactionSerial, setReactionSerial] = useState(0);
   const [expiredReaction, setExpiredReaction] = useState<string | null>(null);
@@ -126,6 +128,7 @@ export function GameWindow({
     !openingPending &&
     !ending &&
     !state.dialogue &&
+    !state.minigame &&
     !mapOpen &&
     Boolean(state.message) &&
     expiredReaction !== reactionKey;
@@ -713,6 +716,24 @@ export function GameWindow({
               } else conversation.advance(dialogueAudio.stop);
             }}
           />
+        )}
+        {state.minigame === 'suter-k-ciare' && !ending && (
+          <div
+            className="minigame-overlay"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Šuter k čiare"
+          >
+            <SuterKCiare
+              onFinish={(result) =>
+                dispatch({
+                  type: 'finishMinigame',
+                  won: result.outcome === 'win',
+                })
+              }
+              onExit={() => dispatch({ type: 'closeMinigame' })}
+            />
+          </div>
         )}
         {!state.dialogue && !modalOpen && (
           <div className="scene-accessibility" aria-label="Ovládanie scény">

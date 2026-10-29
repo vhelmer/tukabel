@@ -20,6 +20,7 @@ export function initialState(content: GameContent): GameState {
       flags: {},
       tasks: {},
       dialogue: opening ? { id: opening.id, nodeId: opening.start } : null,
+      minigame: null,
       message: content.initialMessage,
     }),
   );
@@ -90,6 +91,7 @@ export function canTravel(
 ): boolean {
   return (
     !state.dialogue &&
+    !state.minigame &&
     sceneId !== state.sceneId &&
     state.unlockedScenes.includes(sceneId) &&
     !!content.worldMap?.points.some(
@@ -145,6 +147,10 @@ function applyEffects(
       case 'completeTask':
         next.tasks[effect.id] = 'completed';
         break;
+      case 'minigame':
+        next.minigame = effect.id;
+        next.dialogue = null;
+        break;
     }
   }
   return next;
@@ -178,6 +184,24 @@ function reduceAction(
   action: GameAction,
 ): GameState {
   if (action.type === 'closeDialogue') return { ...state, dialogue: null };
+  if (action.type === 'closeMinigame')
+    return state.minigame ? { ...state, minigame: null } : state;
+  if (action.type === 'finishMinigame') {
+    const minigame = content.minigames?.find(
+      (entry) => entry.id === state.minigame,
+    );
+    if (!minigame) return state;
+    const message = action.won ? minigame.winMessage : minigame.loseMessage;
+    return {
+      ...state,
+      flags: action.won
+        ? { ...state.flags, [minigame.winFlag]: true }
+        : state.flags,
+      message: message ?? state.message,
+    };
+  }
+  // A running minigame owns all input until the player leaves it.
+  if (state.minigame) return state;
   if (action.type === 'choose') {
     if (
       action.from &&

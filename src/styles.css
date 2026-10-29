@@ -724,3 +724,9 @@ body {
 .game-window.is-journal-open .scene-label {
   visibility: hidden;
 }
+/* Minigames cover the whole play area, including the Pixi HUD. */
+.minigame-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+}
