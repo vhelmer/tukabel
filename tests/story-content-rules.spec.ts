@@ -162,7 +162,7 @@ function solveToCrypt(content: GameContent, lateMagnet = false) {
   p.use('tool-chest');
   expect(p.state.inventory).not.toContain('wrench');
   p.use('resuscitator', 'cold-coffee');
-  expect(p.state.inventory).toContain('empty-bottle');
+  expect(p.state.inventory).not.toContain('empty-bottle');
   expect(p.state.flags['dingo-awake']).not.toBe(true);
   p.use('resuscitator');
   p.close();
@@ -194,6 +194,7 @@ function solveToCrypt(content: GameContent, lateMagnet = false) {
   p.use('layer1', 'machine-log');
   p.close();
   expect(p.state.inventory).toContain('rubber-stamp');
+  expect(p.state.inventory).not.toContain('machine-log');
   p.travel('scene7');
   p.use('swing-boy');
   p.choose('trade');
@@ -207,10 +208,12 @@ function solveToCrypt(content: GameContent, lateMagnet = false) {
   expect(p.state.inventory).toEqual(
     expect.arrayContaining(['potato', 'string']),
   );
+  expect(p.state.inventory).not.toContain('scissors');
   p.combine('magnet', 'string');
   expect(p.state.inventory).toContain('magnet-line');
   p.travel('scene3');
   p.combine('funeral-form', 'rubber-stamp');
+  expect(p.state.inventory).not.toContain('rubber-stamp');
   p.use('absolution-machine', 'cow-bell');
   p.use('cemetery-gate');
   expect(p.state.sceneId).toBe('scene3');
@@ -236,6 +239,7 @@ function solveToCrypt(content: GameContent, lateMagnet = false) {
   expect(p.state.sceneId).toBe('scene2');
   p.use('key-grate', 'magnet-line');
   expect(p.state.inventory).toContain('crypt-key');
+  expect(p.state.inventory).not.toContain('magnet-line');
   p.use('crypt-door', 'crypt-key');
   expect(p.state.sceneId).toBe('scene12');
   p.close();
@@ -254,6 +258,8 @@ test('the authored game completes through restoration and saves both before and 
   p.use('battery', 'wrench');
   p.use('main-cable', 'rubber-gloves');
   expect(p.state.inventory).toContain('stolen-cable');
+  expect(p.state.inventory).not.toContain('wrench');
+  expect(p.state.inventory).not.toContain('rubber-gloves');
   p.use('battery-reconnect');
   expect(p.state.flags['battery-isolated']).toBe(true);
   p.combine('stolen-cable', 'tape');
@@ -687,8 +693,9 @@ test('only a minigame winner can claim one potato medal and scissors release its
   p.use('stop-bin');
   p.combine('scissors', 'potato-medal');
   expect(p.state.inventory).toEqual(
-    expect.arrayContaining(['scissors', 'potato', 'string']),
+    expect.arrayContaining(['potato', 'string']),
   );
+  expect(p.state.inventory).not.toContain('scissors');
   expect(p.state.inventory).not.toContain('potato-medal');
   expect(p.state.tasks['playground-prize']).toBe('completed');
   p.state = deserializeSave(content, serializeSave(content, p.state));
@@ -701,7 +708,8 @@ test('only a minigame winner can claim one potato medal and scissors release its
   p.use('swing-boy');
   p.close();
   expect(p.state.inventory).not.toContain('potato-medal');
-  for (const id of ['scissors', 'potato', 'string'])
+  expect(p.state.inventory).not.toContain('scissors');
+  for (const id of ['potato', 'string'])
     expect(p.state.inventory.filter((item) => item === id)).toHaveLength(1);
 });
 

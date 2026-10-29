@@ -391,7 +391,7 @@ test('canvas inventory pages and notebook scrolling remain usable after resize a
   const content = JSON.parse(
     await readFile(workspace.source, 'utf8'),
   ) as GameContent;
-  const items = Array.from({ length: 12 }, (_, i) => ({
+  const items = Array.from({ length: 40 }, (_, i) => ({
     id: 'pocket-' + i,
     label: 'Skúšobný predmet ' + (i + 1),
     description: 'Predmet do vrecka.',

@@ -359,7 +359,7 @@
               ]
             },
             {
-              "message": "Nožnice už mám. V koši ostal iba pohreb na splátky. Do toho sa zmestím aj neskôr."
+              "message": "V koši ostal iba pohreb na splátky. Do toho sa zmestím aj neskôr."
             }
           ]
         },
@@ -599,6 +599,7 @@
                 "effects": [
                   { "type": "flag", "id": "stamp-given", "value": true },
                   { "type": "flag", "id": "false-funeral", "value": true },
+                  { "type": "removeItem", "id": "machine-log" },
                   { "type": "addItem", "id": "rubber-stamp" },
                   { "type": "dialogue", "id": "granny-log" }
                 ]
@@ -1862,6 +1863,7 @@
                 "message": "Magnet chytil kľúč. Zázrak bez potreby svedkov.",
                 "effects": [
                   { "type": "flag", "id": "key-taken", "value": true },
+                  { "type": "removeItem", "id": "magnet-line" },
                   { "type": "addItem", "id": "crypt-key" }
                 ]
               },
@@ -2099,7 +2101,6 @@
                     "value": true
                   },
                   { "type": "removeItem", "id": "cold-coffee" },
-                  { "type": "addItem", "id": "empty-bottle" },
                   { "type": "flag", "id": "dingo-remedy-known", "value": true }
                 ]
               }
@@ -2656,7 +2657,9 @@
                 "message": "Kábel som zobral, automat už nepripojím. Dobre, prehrám až na oficiálnom turnaji. Teraz oblepiť koniec páskou a naspäť do Ferovej skrine.",
                 "effects": [
                   { "type": "flag", "id": "cable-recovered", "value": true },
-                  { "type": "addItem", "id": "stolen-cable" }
+                  { "type": "addItem", "id": "stolen-cable" },
+                  { "type": "removeItem", "id": "wrench" },
+                  { "type": "removeItem", "id": "rubber-gloves" }
                 ]
               },
               {
@@ -5465,6 +5468,7 @@
           "message": "VYBAVENÉ. Som oficiálne mŕtvy a paradoxne mám konečne všetky papiere.",
           "effects": [
             { "type": "removeItem", "id": "funeral-form" },
+            { "type": "removeItem", "id": "rubber-stamp" },
             { "type": "addItem", "id": "stamped-form" }
           ],
           "sound": "soundtrack/elevenlabs-village-20261029/sfx-stamp.wav"
@@ -5544,9 +5548,10 @@
       "items": ["scissors", "potato-medal"],
       "rules": [
         {
-          "message": "Odstrihol som zalepený špagát. Mám špagát, bramboru a prvú úspešnú amputáciu bez pozostalých. Nožnice si nechám.",
+          "message": "Odstrihol som zalepený špagát. Mám špagát, bramboru a prvú úspešnú amputáciu bez pozostalých. Nožnice už nepotrebujem.",
           "effects": [
             { "type": "removeItem", "id": "potato-medal" },
+            { "type": "removeItem", "id": "scissors" },
             { "type": "addItem", "id": "string" },
             { "type": "addItem", "id": "potato" },
             { "type": "flag", "id": "medal-cut", "value": true }

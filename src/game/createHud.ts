@@ -514,7 +514,7 @@ export function createHud(
       : Math.max(310, 100 + snapshot.state.inventory.length * 68);
     const inventoryWidth = Math.max(
       75,
-      Math.min(700, desiredWidth, frame.width - (compact ? 80 : 180)),
+      Math.min(desiredWidth, frame.width - (compact ? 80 : 180)),
     );
     const inventory = {
       x: frame.x + 8,
@@ -591,19 +591,22 @@ export function createHud(
       '≡',
       28,
     );
-    // Every item sits in its own sunken pocket of the drawer.
-    const pitch = compact ? 46 : 62;
-    const slotSize = compact ? 40 : 52;
-    const slotY = top + (compact ? 11 : 15);
-    const slots = Math.max(
-      1,
-      Math.floor(
-        (inventoryWidth -
-          leading -
-          (compact && snapshot.state.inventory.length <= 2 ? 36 : 72)) /
-          pitch,
+    // Every item sits in its own sunken pocket of the drawer. Pockets shrink
+    // before the drawer pages, so items stay on one page for combining.
+    const room =
+      inventoryWidth -
+      leading -
+      (compact && snapshot.state.inventory.length <= 2 ? 36 : 72);
+    const pitch = Math.max(
+      compact ? 36 : 48,
+      Math.min(
+        compact ? 46 : 62,
+        room / Math.max(1, snapshot.state.inventory.length),
       ),
     );
+    const slotSize = compact ? 40 : 52;
+    const slotY = top + (compact ? 11 : 15);
+    const slots = Math.max(1, Math.floor(room / pitch + 1e-6));
     inventoryPage = Math.max(
       0,
       Math.min(

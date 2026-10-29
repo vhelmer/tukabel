@@ -2,7 +2,7 @@
 // 1280×720 scene scales to fit. React owns overlays, Pixi owns the canvas.
 import { useEffect, useRef, useState } from 'react';
 import { createGame, formatDistance, type GameHandle } from './createGame.ts';
-import { setMuted, unlockAudio } from './audio.ts';
+import { unlockAudio } from './audio.ts';
 import { NAMES, OPPONENT } from './lines.ts';
 import type { MatchResult } from './match.ts';
 import playgroundUrl from '../../assets/minigames/suter-k-ciare/playground.webp';
@@ -44,7 +44,6 @@ export function SuterKCiare({ onFinish, onExit, autoStart }: SuterKCiareProps) {
   const [started, setStarted] = useState(!!autoStart);
   const [result, setResult] = useState<MatchResult>();
   const [remark, setRemark] = useState<Remark>();
-  const [muted, setMutedState] = useState(false);
 
   useEffect(() => {
     onFinishRef.current = onFinish;
@@ -93,10 +92,6 @@ export function SuterKCiare({ onFinish, onExit, autoStart }: SuterKCiareProps) {
     gameRef.current?.restart();
     hostRef.current?.focus({ preventScroll: true });
   };
-  const toggleMute = () => {
-    setMuted(!muted);
-    setMutedState(!muted);
-  };
 
   return (
     <div className="skc">
@@ -108,13 +103,6 @@ export function SuterKCiare({ onFinish, onExit, autoStart }: SuterKCiareProps) {
         aria-hidden={!started || Boolean(result)}
         tabIndex={started && !result ? 0 : -1}
       />
-      <button
-        className="skc-mute"
-        onClick={toggleMute}
-        aria-label={muted ? 'Zapnúť zvuk' : 'Vypnúť zvuk'}
-      >
-        {muted ? '🔇' : '🔊'}
-      </button>
       {remark && !result && (
         <div className="skc-reaction" key={remark.id}>
           <b>{remark.name}</b>

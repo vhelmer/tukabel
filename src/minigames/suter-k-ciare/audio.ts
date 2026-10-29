@@ -1,22 +1,16 @@
 // Tiny synthesized sound effects. No audio files, unlocked on first user gesture.
 let ctx: AudioContext | undefined;
 let master: GainNode | undefined;
-let muted = false;
 
 function audio() {
   if (!ctx) {
     ctx = new AudioContext();
     master = ctx.createGain();
-    master.gain.value = muted ? 0 : 0.6;
+    master.gain.value = 0.6;
     master.connect(ctx.destination);
   }
   if (ctx.state === 'suspended') void ctx.resume();
   return { ctx, out: master! };
-}
-
-export function setMuted(value: boolean) {
-  muted = value;
-  if (master) master.gain.value = value ? 0 : 0.6;
 }
 
 export function unlockAudio() {

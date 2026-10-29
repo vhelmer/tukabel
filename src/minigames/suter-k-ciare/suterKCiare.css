@@ -110,16 +110,6 @@
   background: #ffffff12;
   border-color: #b58c605c;
 }
-.skc .skc-mute {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  padding: 4px 10px;
-  font-size: 18px;
-  color: #fff1cd;
-  background: #291e24ee;
-  border-color: #d9a75b;
-}
 /* Same paper slip as TUKABEL's .reaction */
 .skc-reaction {
   position: absolute;
