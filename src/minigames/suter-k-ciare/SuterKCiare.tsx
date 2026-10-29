@@ -85,11 +85,13 @@ export function SuterKCiare({ onFinish, onExit, autoStart }: SuterKCiareProps) {
   const start = () => {
     unlockAudio();
     setStarted(true);
+    hostRef.current?.focus({ preventScroll: true });
   };
   const again = () => {
     setResult(undefined);
     setRemark(undefined);
     gameRef.current?.restart();
+    hostRef.current?.focus({ preventScroll: true });
   };
   const toggleMute = () => {
     setMuted(!muted);
@@ -98,7 +100,14 @@ export function SuterKCiare({ onFinish, onExit, autoStart }: SuterKCiareProps) {
 
   return (
     <div className="skc">
-      <div className="skc-stage" ref={hostRef} />
+      <div
+        className="skc-stage"
+        ref={hostRef}
+        role="application"
+        aria-label="Mierenie hodu"
+        aria-hidden={!started || Boolean(result)}
+        tabIndex={started && !result ? 0 : -1}
+      />
       <button
         className="skc-mute"
         onClick={toggleMute}
@@ -128,6 +137,10 @@ export function SuterKCiare({ onFinish, onExit, autoStart }: SuterKCiareProps) {
               <br />
               Dĺžka ťahu je sila, sklon je výška. Nízky hod sa dlho šúcha,
               vysoký zastane skôr.
+              <br />
+              Klávesnica: <b>↑ ↓ uhol, ← → sila</b>, Shift mení hodnoty
+              rýchlejšie.
+              <b> Enter alebo medzerník</b> hodí šuter.
             </p>
             <div className="skc-buttons">
               <button onClick={start}>Hádzať</button>

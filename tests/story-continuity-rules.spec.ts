@@ -202,8 +202,7 @@ test('inventory inspection describes evidence without revealing future puzzle so
   const spoilers: Record<string, RegExp> = {
     'crypt-key': /Ľub|posmrtn.{0,30}podnik/iu,
     'scrap-metal': /Dežo.{0,80}magnet|vymen|vymie[nň]|výmen/iu,
-    bread: /hojdačk/iu,
-    washer: /žetón/iu,
+    potato: /žetón/iu,
     milk: /resuscitátor/iu,
     'coffee-grounds': /Dingo/iu,
     'cow-bell': /jackpot/iu,
@@ -345,7 +344,7 @@ test('Nika and Ľubo offer item-specific topics only while the referenced object
       hotspotId: 'sand-girl',
       dialogueId: 'girl-chat',
       choiceId: 'token',
-      itemId: 'washer',
+      itemId: 'potato',
     },
     {
       sceneId: 'scene12',

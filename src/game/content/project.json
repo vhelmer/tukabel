@@ -1,5 +1,5 @@
 {
-  "id": "tukabel-grotesque-2",
+  "id": "tukabel-potato-prize-3",
   "startScene": "scene4",
   "initialMessage": "Kábel sa nestratil sám. Keby mal nohy, odišiel by odtiaľto už dávno.",
   "worldMap": {
@@ -163,7 +163,6 @@
     "form-taken",
     "grounds-given",
     "key-taken",
-    "kids-helped",
     "log-found",
     "machine-burnt",
     "magnet-given",
@@ -175,13 +174,10 @@
     "tools-taken",
     "cow-milked",
     "bell-taken",
-    "string-taken",
-    "washer-taken",
     "erzika-bark4",
     "erzika-bark1",
     "erzika-bark2",
     "erzika-bark3",
-    "bread-taken",
     "tape-taken",
     "peg-taken",
     "bell-installed",
@@ -189,8 +185,6 @@
     "coffin-clipped",
     "beer-drained",
     "foil-taken",
-    "axle-loose",
-    "bread-loaded",
     "resuscitator-filled",
     "cow-asleep",
     "scrap-taken",
@@ -199,9 +193,12 @@
     "cow-deal-known",
     "pub-deal-known",
     "priest-distraction-known",
-    "swing-plan-known",
     "funeral-rules-known",
-    "stone-game-won"
+    "stone-game-won",
+    "scissors-taken",
+    "playground-game-known",
+    "medal-taken",
+    "medal-cut"
   ],
   "tasks": [
     {
@@ -237,22 +234,6 @@
       "completeWhen": { "flag": "cemetery-open" }
     },
     {
-      "id": "swing-contraption",
-      "text": "Pri osi hojdačky drží špagát a podložka. Rozhýb ju a pozbieraj, čo pustí.",
-      "startWhen": {
-        "not": {
-          "all": [
-            { "not": { "flag": "swing-plan-known" } },
-            { "not": { "flag": "axle-loose" } },
-            { "not": { "flag": "bread-loaded" } }
-          ]
-        }
-      },
-      "completeWhen": {
-        "all": [{ "flag": "string-taken" }, { "flag": "washer-taken" }]
-      }
-    },
-    {
       "id": "fake-death",
       "text": "Servisný denník má Ľubov podpis po dátume pohrebu. Ukáž ho Etele a nechaj ju skontrolovať vlastné papiere.",
       "startWhen": { "flag": "log-found" },
@@ -281,6 +262,19 @@
       "text": "Milan uzná skúšobný pohreb s opečiatkovaným listom na rakve a bez známok života.",
       "startWhen": { "flag": "funeral-rules-known" },
       "completeWhen": { "flag": "chapel-open" }
+    },
+    {
+      "id": "playground-prize",
+      "text": "Vyhraj Šuter k čiare a vypýtaj si od Špľucha medailu. Jej zalepený špagát odstrihni nožnicami.",
+      "startWhen": {
+        "not": {
+          "all": [
+            { "not": { "flag": "playground-game-known" } },
+            { "not": { "flag": "stone-game-won" } }
+          ]
+        }
+      },
+      "completeWhen": { "flag": "medal-cut" }
     }
   ],
   "scenes": [
@@ -357,7 +351,15 @@
           ],
           "onClick": [
             {
-              "message": "V koši je leták POHREB NA SPLÁTKY. Posledná splátka sa platí osobne. To je tá pasca."
+              "when": { "not": { "flag": "scissors-taken" } },
+              "message": "V koši boli nožnice a leták POHREB NA SPLÁTKY. Beriem nožnice; keď nedoplatím, aspoň mi odstrihnú upomienky.",
+              "effects": [
+                { "type": "flag", "id": "scissors-taken", "value": true },
+                { "type": "addItem", "id": "scissors" }
+              ]
+            },
+            {
+              "message": "Nožnice už mám. V koši ostal iba pohreb na splátky. Do toho sa zmestím aj neskôr."
             }
           ]
         },
@@ -389,13 +391,7 @@
               "message": "Vrčí na mňa, kým zistí, že nemám ani desiatu. Potom si ľahne. Aj pes má lepší odhad než Fero."
             }
           ],
-          "uses": {
-            "bread": [
-              {
-                "message": "Pes si odhryzol omrvinku. Zvyšok rožka ti nechal; aj on má hranice."
-              }
-            ]
-          }
+          "uses": {}
         },
         {
           "id": "stop-hen",
@@ -530,11 +526,6 @@
                 "effects": [{ "type": "dialogue", "id": "dezo-refuses-water" }]
               }
             ],
-            "washer": [
-              {
-                "effects": [{ "type": "dialogue", "id": "dezo-refuses-washer" }]
-              }
-            ],
             "scrap-metal": [
               {
                 "when": { "not": { "flag": "magnet-given" } },
@@ -549,6 +540,11 @@
               },
               {
                 "effects": [{ "type": "dialogue", "id": "dezo-already-traded" }]
+              }
+            ],
+            "potato": [
+              {
+                "effects": [{ "type": "dialogue", "id": "dezo-refuses-potato" }]
               }
             ]
           }
@@ -767,13 +763,6 @@
               {
                 "effects": [{ "type": "dialogue", "id": "erzika-refuses-peg" }]
               }
-            ],
-            "bread": [
-              {
-                "effects": [
-                  { "type": "dialogue", "id": "erzika-refuses-bread" }
-                ]
-              }
             ]
           }
         },
@@ -909,24 +898,6 @@
             { "x": 1448, "y": 949.959 },
             { "x": 1448, "y": 1086 }
           ]
-        },
-        {
-          "id": "layer3",
-          "label": "Rožok zo včerajšieho storočia",
-          "bounds": { "x": 127, "y": 869, "width": 106, "height": 74 },
-          "imageFit": "contain",
-          "image": "scene-art/6c07cc6d-ab39-4b71-8f2c-755a4332d1d6/image.png",
-          "onClick": [
-            {
-              "message": "Rožok. Keď s ním niekoho trafím, bude to stále potravinová pomoc.",
-              "effects": [
-                { "type": "flag", "id": "bread-taken", "value": true },
-                { "type": "addItem", "id": "bread" }
-              ]
-            }
-          ],
-          "visibleWhen": { "not": { "flag": "bread-taken" } },
-          "cursor": "interact"
         },
         {
           "id": "layer6",
@@ -1517,14 +1488,8 @@
           "bounds": { "x": 1080, "y": 530, "width": 197.3, "height": 196.967 },
           "onClick": [
             {
-              "when": {
-                "all": [{ "flag": "beer-drained" }, { "flag": "foil-taken" }]
-              },
-              "message": "V krígľoch sa usadila predhistorická pena. Zlatý obal som už vybral; archeológia môže pokračovať bezo mňa."
-            },
-            {
               "when": { "flag": "beer-drained" },
-              "message": "Krígle naplnila pena staršia než nájomná zmluva. V odkvapkávači ostal zlatý obal."
+              "message": "V krígľoch sa usadila predhistorická pena. Karol otvoril herňu; aspoň ten smrad nemusím vyšetrovať tu."
             },
             {
               "when": { "flag": "tap-fixed" },
@@ -1558,29 +1523,6 @@
             { "x": 1025.294, "y": 243.962 },
             { "x": 1026.04, "y": 617.629 }
           ]
-        },
-        {
-          "id": "layer1",
-          "label": "Zlatý obal ",
-          "bounds": { "x": 928, "y": 706, "width": 102, "height": 41 },
-          "imageFit": "contain",
-          "image": "scene-art/20f58840-c178-41e8-8a24-8a6edebb62e0/image.png",
-          "onClick": [
-            {
-              "message": "Zlatý obal od čokolády. Takto vyzerá bohatstvo pred zdanením.",
-              "effects": [
-                { "type": "flag", "id": "foil-taken", "value": true },
-                { "type": "addItem", "id": "foil" }
-              ]
-            }
-          ],
-          "visibleWhen": {
-            "all": [
-              { "flag": "beer-drained" },
-              { "not": { "flag": "foil-taken" } }
-            ]
-          },
-          "cursor": "interact"
         }
       ],
       "ambient": "ambience/tavern.wav",
@@ -1599,7 +1541,16 @@
           "bounds": { "x": 680, "y": 735, "width": 210, "height": 75 },
           "cursor": "interact",
           "onClick": [
-            { "effects": [{ "type": "minigame", "id": "suter-k-ciare" }] }
+            {
+              "effects": [
+                {
+                  "type": "flag",
+                  "id": "playground-game-known",
+                  "value": true
+                },
+                { "type": "minigame", "id": "suter-k-ciare" }
+              ]
+            }
           ]
         },
         {
@@ -1609,6 +1560,19 @@
           "imageFit": "contain",
           "image": "scene-art/f0d7db85-3ef1-4989-9860-fbd71b808e38/image.png",
           "onClick": [
+            {
+              "when": {
+                "all": [
+                  { "flag": "stone-game-won" },
+                  { "not": { "flag": "medal-taken" } }
+                ]
+              },
+              "effects": [
+                { "type": "flag", "id": "medal-taken", "value": true },
+                { "type": "addItem", "id": "potato-medal" },
+                { "type": "dialogue", "id": "boy-prize" }
+              ]
+            },
             { "effects": [{ "type": "dialogue", "id": "boy-chat" }] }
           ],
           "decorative": false,
@@ -1632,16 +1596,7 @@
             }
           },
           "cursor": "talk",
-          "uses": {
-            "bread": [
-              {
-                "effects": [
-                  { "type": "flag", "id": "swing-plan-known", "value": true },
-                  { "type": "dialogue", "id": "boy-refuses-bread" }
-                ]
-              }
-            ]
-          }
+          "uses": {}
         },
         {
           "id": "sand-girl",
@@ -1720,139 +1675,6 @@
             { "x": 1672, "y": 832.666 },
             { "x": 1672, "y": 941 }
           ]
-        },
-        {
-          "id": "swing-axle",
-          "label": "Zadretý čap hojdačky",
-          "bounds": { "x": 560, "y": 350, "width": 130, "height": 85 },
-          "placeholder": true,
-          "cursor": "interact",
-          "onClick": [
-            {
-              "when": { "flag": "axle-loose" },
-              "message": "Matica je povolená. Rozum sa mi kýve tiež, ale na ten nemám kľúč."
-            },
-            {
-              "message": "Zadretý čap. Hojdačka sa nehýbe; deti pod ňu napísali PAMÄTNÍK PRIEMYSLU."
-            }
-          ],
-          "uses": {
-            "wrench": [
-              {
-                "when": { "flag": "axle-loose" },
-                "message": "Čap sa už hýbe. Kľúč si nechám; maticami sa tu očividne nešetrí."
-              },
-              {
-                "message": "Maticu si povolil. Tak. Teraz je to odborne pokazené.",
-                "effects": [
-                  { "type": "flag", "id": "axle-loose", "value": true }
-                ],
-                "sound": "soundtrack/elevenlabs-village-20261029/sfx-tools.wav"
-              }
-            ]
-          }
-        },
-        {
-          "id": "swing-seat",
-          "label": "Sedadlo pre domácu tehlu",
-          "bounds": { "x": 601.345, "y": 520.672, "width": 185, "height": 85 },
-          "placeholder": true,
-          "cursor": "interact",
-          "onClick": [
-            {
-              "when": {
-                "all": [{ "flag": "string-taken" }, { "flag": "washer-taken" }]
-              },
-              "message": "Špagát aj podložku mám. Na sedadle ostal iba rožok, ktorý si konečne našiel dôstojnú prácu."
-            },
-            {
-              "when": { "flag": "kids-helped" },
-              "message": "Hojdačka sa pohla. Na zemi vidím špagát aj podložku, ak ich už niekto neodniesol."
-            },
-            {
-              "when": {
-                "all": [{ "flag": "axle-loose" }, { "flag": "bread-loaded" }]
-              },
-              "effects": [
-                { "type": "flag", "id": "kids-helped", "value": true },
-                { "type": "dialogue", "id": "boy-bread" }
-              ],
-              "sound": "soundtrack/elevenlabs-village-20261029/sfx-swing.wav"
-            },
-            {
-              "when": { "flag": "bread-loaded" },
-              "message": "Rožok váži ako tehla, ale čap stále drží. Do sedadla som kopol a prehral."
-            },
-            {
-              "when": { "flag": "axle-loose" },
-              "message": "Sedadlo sa hýbe, ale chce to poriadne závažie. Niečo medzi pečivom a stavebným materiálom."
-            },
-            {
-              "message": "Okolo osi je zamotaný špagát a pod ním podložka. Rukou to nejde; čap je zadretý a sedadlo sa ani nepohne.",
-              "effects": [
-                { "type": "flag", "id": "swing-plan-known", "value": true }
-              ]
-            }
-          ],
-          "uses": {
-            "bread": [
-              {
-                "when": { "flag": "bread-loaded" },
-                "message": "Závažie už je na mieste. Ďalšie pečivo by z toho spravilo nosnú stavbu."
-              },
-              {
-                "message": "Rožok som položil na sedadlo. Vyzerá to ako stravovanie stavebnej firmy.",
-                "effects": [
-                  { "type": "flag", "id": "bread-loaded", "value": true },
-                  { "type": "removeItem", "id": "bread" }
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "id": "loose-string",
-          "label": "Uvoľnený špagát",
-          "bounds": { "x": 404.436, "y": 739.381, "width": 125, "height": 65 },
-          "placeholder": true,
-          "cursor": "interact",
-          "visibleWhen": {
-            "all": [
-              { "flag": "kids-helped" },
-              { "not": { "flag": "string-taken" } }
-            ]
-          },
-          "onClick": [
-            {
-              "message": "Špagát je môj. Na obesenie nádejí krátky, na bežnú hlúposť akurát.",
-              "effects": [
-                { "type": "flag", "id": "string-taken", "value": true },
-                { "type": "addItem", "id": "string" }
-              ]
-            }
-          ]
-        },
-        {
-          "id": "loose-washer",
-          "label": "Vypadnutá podložka",
-          "bounds": { "x": 1012.02, "y": 657.605, "width": 125, "height": 65 },
-          "placeholder": true,
-          "cursor": "interact",
-          "visibleWhen": {
-            "all": [
-              { "flag": "kids-helped" },
-              { "not": { "flag": "washer-taken" } }
-            ]
-          },
-          "onClick": [
-            {
-              "message": "Oceľová podložka. Pri miestnej ekonomike z nej ešte môže byť mena.",
-              "effects": [
-                { "type": "flag", "id": "washer-taken", "value": true },
-                { "type": "addItem", "id": "washer" }
-              ]
-            }
-          ]
         }
       ],
       "ambient": "ambience/village.wav",
@@ -1922,9 +1744,9 @@
                 "message": "Automat je bez prúdu. Žetón si nechám; na poličke si výhru nespravím."
               }
             ],
-            "washer": [
+            "potato": [
               {
-                "message": "Podložka cinkla a vypadla späť. Tento automat nehrá; na podvody má momentálne dovolenku."
+                "message": "Zemiakový plátok bez lesku a automat bez prúdu. Neoklamem ani jedného; medailu si nechám."
               }
             ]
           },
@@ -1975,6 +1797,24 @@
           "onClick": [
             { "message": "", "effects": [{ "type": "scene", "id": "scene6" }] }
           ]
+        },
+        {
+          "id": "foil-wrapper",
+          "label": "Zlatý obal od čokolády",
+          "bounds": { "x": 1000, "y": 790, "width": 140, "height": 65 },
+          "imageFit": "contain",
+          "image": "scene-art/20f58840-c178-41e8-8a24-8a6edebb62e0/image.png",
+          "onClick": [
+            {
+              "message": "Zlatý obal a omrvinky pri automate. Niekto tu zajedal prehru čokoládou. Obal beriem; cukrovku nechám dedičom.",
+              "effects": [
+                { "type": "flag", "id": "foil-taken", "value": true },
+                { "type": "addItem", "id": "foil" }
+              ]
+            }
+          ],
+          "visibleWhen": { "not": { "flag": "foil-taken" } },
+          "cursor": "interact"
         }
       ],
       "ambient": "ambience/tavern.wav",
@@ -2854,7 +2694,7 @@
                     { "not": { "flag": "cable-recovered" } }
                   ]
                 },
-                "message": "Žetón spojil kontakty. Jackpot zazvonil naposledy.",
+                "message": "Alobal sa zachytil v kontaktoch. Automat zakvílil, batéria zasyčala a zemiaková mena práve zrušila elektrinu.",
                 "effects": [
                   { "type": "removeItem", "id": "fake-token" },
                   { "type": "flag", "id": "machine-burnt", "value": true },
@@ -2879,7 +2719,7 @@
         },
         {
           "id": "jackpot-washers",
-          "label": "Výhra v podložkách",
+          "label": "Vyvrhnutý šrot",
           "bounds": { "x": 850, "y": 735, "width": 340, "height": 150 },
           "onClick": [],
           "decorative": true,
@@ -2909,13 +2749,6 @@
       "image": "scene-art/87328cca-3ac8-4e49-aeb0-9e708388a762/image.png"
     },
     {
-      "id": "bread",
-      "label": "Kamenný rožok",
-      "description": "Rožok z Eržikinej kuchyne. Ako potrava je dôkazný materiál; ako závažie by ešte mohol preraziť.",
-      "icon": "✦",
-      "image": "story/bread.svg"
-    },
-    {
       "id": "tape",
       "label": "Izolačná páska",
       "description": "Páska z uličky za Ferovým dvorom. Izoluje a lepí; moje rozhodnutia by iba zamaskovala.",
@@ -2939,16 +2772,9 @@
     {
       "id": "string",
       "label": "Špagát",
-      "description": "Pevný špagát z hojdačky. Dá sa naň niečo zavesiť; dôstojnosť už mám mimo dosahu.",
+      "description": "Pevný špagát odstrihnutý z detskej medaily. Konečne sa mi niečo nerozpadlo v rukách.",
       "icon": "✦",
       "image": "story/string.svg"
-    },
-    {
-      "id": "washer",
-      "label": "Podložka",
-      "description": "Oceľový krúžok z hojdačky. Vyzerá ako minca zo štátu, ktorý ešte nevynašiel stred.",
-      "icon": "✦",
-      "image": "story/washer.svg"
     },
     {
       "id": "holy-water",
@@ -3002,16 +2828,16 @@
     {
       "id": "foil",
       "label": "Zlatá fólia",
-      "description": "Zlatý obal od čokolády z odkvapkávača. Hodnota čokolády je preč, lesk sa ešte tvári dôveryhodne.",
+      "description": "Zlatý obal od čokolády nájdený pri automate v starej herni. Čokoládu niekto prehral aj s obsahom žalúdka.",
       "icon": "✦",
       "image": "story/foil.svg"
     },
     {
       "id": "fake-token",
       "label": "Podvodný žetón",
-      "description": "Oceľová podložka v zlatom obale. Vyzerá ako žetón, ale ostala vodivá. Dôveryhodnosť má po mne.",
+      "description": "Vysušená zemiaková medaila v zlatom alobale. Rozmerom pripomína žetón, kvalitou dôvod na reklamáciu.",
       "icon": "✦",
-      "image": "story/fake-token.svg"
+      "image": "story/potato-token.svg"
     },
     {
       "id": "funeral-form",
@@ -3074,6 +2900,27 @@
       "label": "Drevený kolíček",
       "description": "Eržikin kolíček. Pevná pružina a dve čeľuste. Rozhryznúť ho radšej neskúsim.",
       "icon": "II"
+    },
+    {
+      "id": "scissors",
+      "label": "Nožnice",
+      "description": "Staré nožnice z koša. Ešte strihajú. Rodokmeň po predchádzajúcom majiteľovi pátrať nebudem.",
+      "icon": "✂",
+      "image": "story/scissors.svg"
+    },
+    {
+      "id": "potato-medal",
+      "label": "Brambora na špagátu",
+      "description": "Detská medaila: vysušené koliesko zemiaka na pevnom špagáte. Uzol je zaliaty stvrdnutým lepidlom; prstami ho nerozviažem.",
+      "icon": "✦",
+      "image": "story/potato-medal.svg"
+    },
+    {
+      "id": "potato",
+      "label": "Brambora",
+      "description": "Ploché vysušené koliesko zemiaka s vyrytým IV. Výživová hodnota štvrtého miesta, vôňa minulého režimu.",
+      "icon": "✦",
+      "image": "story/potato.svg"
     }
   ],
   "dialogues": [
@@ -4296,11 +4143,12 @@
           "choices": [
             {
               "id": "trade",
-              "text": "Čo sa tej hojdačke stalo?",
+              "text": "Čo dostanem, keď ťa porazím?",
               "next": "trade",
               "effects": [
-                { "type": "flag", "id": "swing-plan-known", "value": true }
-              ]
+                { "type": "flag", "id": "playground-game-known", "value": true }
+              ],
+              "when": { "not": { "flag": "medal-taken" } }
             },
             {
               "id": "van",
@@ -4315,15 +4163,16 @@
           "id": "trade",
           "speaker": "Špľuch",
           "actor": { "sceneId": "scene7", "hotspotId": "swing-boy" },
-          "text": "Pri skúšaní praku sme do osi zamotali špagát a podložku. Ak ich vyslobodíš, nechaj si ich. Čap povoľ kľúčom, sedadlo zaťaž a rozhýb ho. Tehlu ti nedám, má narodeniny. Nájdi si vlastnú stavebnú potravinu.",
+          "text": "Naša medaila BRAMBORA NA ŠPAGÁTU. Prvé miesto dostane štvrté, nech si nezvyká na úspech. Zadarmo ju nedám. Pri čiare v hline ma poraz v hádzaní a je tvoja. Uzol zalepil Béla; bez nožníc skôr rozviažeš vlastné črevá.",
           "choices": [
             {
               "id": "trade",
-              "text": "Čo sa tej hojdačke stalo?",
+              "text": "Čo dostanem, keď ťa porazím?",
               "next": "trade",
               "effects": [
-                { "type": "flag", "id": "swing-plan-known", "value": true }
-              ]
+                { "type": "flag", "id": "playground-game-known", "value": true }
+              ],
+              "when": { "not": { "flag": "medal-taken" } }
             },
             {
               "id": "van",
@@ -4331,8 +4180,7 @@
               "next": "van"
             },
             { "id": "leave", "text": "Idem, pozdravuj tehlu odo mňa." }
-          ],
-          "subtitle": "Pri skúšaní praku sme do osi zamotali špagát a podložku. Ak ich vyslobodíš, nechaj si ich. Čap povoľ kľúčom, sedadlo zaťaž a rozhýb ho. Tehlu ti nedám, má narodeniny. Nájdi si vlastnú stavebnú potravinu."
+          ]
         },
         {
           "id": "van",
@@ -4342,11 +4190,12 @@
           "choices": [
             {
               "id": "trade",
-              "text": "Čo sa tej hojdačke stalo?",
+              "text": "Čo dostanem, keď ťa porazím?",
               "next": "trade",
               "effects": [
-                { "type": "flag", "id": "swing-plan-known", "value": true }
-              ]
+                { "type": "flag", "id": "playground-game-known", "value": true }
+              ],
+              "when": { "not": { "flag": "medal-taken" } }
             },
             {
               "id": "van",
@@ -4356,47 +4205,6 @@
             { "id": "leave", "text": "Idem, pozdravuj tehlu odo mňa." }
           ],
           "subtitle": "Šiel tu pohrebák ku kostolu. Vzadu mu búchala bedňa a trčal kábel. Šofér nadával ako živý, ale tvár som nevidel. Mama mi na mŕtvych dovolí čumieť až po večeri."
-        }
-      ]
-    },
-    {
-      "id": "boy-bread",
-      "start": "line",
-      "entry": "speech",
-      "nodes": [
-        {
-          "id": "line",
-          "speaker": "Špľuch",
-          "actor": { "sceneId": "scene7", "hotspotId": "swing-boy" },
-          "text": "Hojdačka pustila špagát aj podložku, pozbieraj si ich zo zeme! Ten chlieb je väčšia tehla než moja tehla; ešte mu musíme vyrobiť búdu.",
-          "choices": [],
-          "speech": {
-            "audio": "speech/0b3ccab3-329b-40ea-8e6c-a3e491f9e2d6/audio.wav",
-            "text": "[cracking, raspy adult cartoon voice] [excited] Toto je poctivý rožok. Tehla konečne niečo rozhryzie. Tu máš špagát a podložku. Keď ju zabalíš do zlatého, vyzerá presne ako žetón.",
-            "subtitles": {
-              "text": "Toto je poctivý rožok. Tehla konečne niečo rozhryzie. Tu máš špagát a podložku. Keď ju zabalíš do zlatého, vyzerá presne ako žetón.",
-              "timing": "estimated",
-              "cues": [
-                {
-                  "start": 0,
-                  "end": 4.305736434108527,
-                  "text": "Toto je poctivý rožok. Tehla konečne niečo rozhryzie."
-                },
-                {
-                  "start": 4.305736434108527,
-                  "end": 6.336744186046512,
-                  "text": "Tu máš špagát a podložku."
-                },
-                {
-                  "start": 6.336744186046512,
-                  "end": 10.48,
-                  "text": "Keď ju zabalíš do zlatého, vyzerá presne ako žetón."
-                }
-              ]
-            },
-            "lipSync": "speech/0117bd69-075a-4cb7-ac0e-48bda89e1c2e/track.lipsync.json"
-          },
-          "subtitle": "Hojdačka pustila špagát aj podložku, pozbieraj si ich zo zeme! Ten chlieb je väčšia tehla než moja tehla; ešte mu musíme vyrobiť búdu."
         }
       ]
     },
@@ -4413,9 +4221,9 @@
             { "id": "tracks", "text": "Čo to tu kreslíš?", "next": "tracks" },
             {
               "id": "token",
-              "text": "Čo spravím s touto podložkou?",
+              "text": "Čo spravím s touto bramborou?",
               "next": "token",
-              "when": { "item": "washer" }
+              "when": { "item": "potato" }
             },
             { "id": "leave", "text": "Idem do tej namaľovanej jamy." }
           ],
@@ -4430,9 +4238,9 @@
             { "id": "tracks", "text": "Čo to tu kreslíš?", "next": "tracks" },
             {
               "id": "token",
-              "text": "Čo spravím s touto podložkou?",
+              "text": "Čo spravím s touto bramborou?",
               "next": "token",
-              "when": { "item": "washer" }
+              "when": { "item": "potato" }
             },
             { "id": "leave", "text": "Idem do tej namaľovanej jamy." }
           ],
@@ -4442,18 +4250,17 @@
           "id": "token",
           "speaker": "Nika",
           "actor": { "sceneId": "scene7", "hotspotId": "sand-girl" },
-          "text": "Oceľovú podložku obaľ zlatým alobalom a blbý automat ju vezme za žetón. Ocko vraví, že môže spojiť kontakty a skratovať. Raz tak zapálil kalkulačku; odvtedy počíta na susedoch.",
+          "text": "Je vysušená a okrúhla ako žetón. Obaľ ju zlatým obalom od čokolády. Karolovi hráči ich nechávajú pri automatoch v starej herni. Len pozor: alobal sa môže zachytiť v kontaktoch. Ocko tak raz vyhral hasičov.",
           "choices": [
             { "id": "tracks", "text": "Čo to tu kreslíš?", "next": "tracks" },
             {
               "id": "token",
-              "text": "Čo spravím s touto podložkou?",
+              "text": "Čo spravím s touto bramborou?",
               "next": "token",
-              "when": { "item": "washer" }
+              "when": { "item": "potato" }
             },
             { "id": "leave", "text": "Idem do tej namaľovanej jamy." }
-          ],
-          "subtitle": "Oceľovú podložku obaľ zlatým alobalom a blbý automat ju vezme za žetón. Ocko vraví, že môže spojiť kontakty a skratovať. Raz tak zapálil kalkulačku; odvtedy počíta na susedoch."
+          ]
         }
       ]
     },
@@ -5029,7 +4836,7 @@
           "id": "bribe",
           "speaker": "Ľubo Šťastný",
           "actor": { "sceneId": "scene12", "hotspotId": "layer1" },
-          "text": "Majster vyhrá aj s pozlátenou podložkou! Stav ju sem, ak máš gule. Ak to začne dymiť, je to atmosféra. Reklamácie beriem len od mŕtvych a tí sa mi zatiaľ neozvali.",
+          "text": "Pozlátená brambora! To je investícia podľa môjho gusta. Stav ju sem, ak máš gule. Keď začne dymiť alobal, netrhaj kábel, kazíš mi atmosféru. Reklamácie beriem len od mŕtvych.",
           "choices": [
             {
               "id": "fraud",
@@ -5060,8 +4867,7 @@
               "when": { "flag": "cable-recovered" }
             },
             { "id": "leave", "text": "Idem sa rozhodnúť bez mozgu." }
-          ],
-          "subtitle": "Majster vyhrá aj s pozlátenou podložkou! Stav ju sem, ak máš gule. Ak to začne dymiť, je to atmosféra. Reklamácie beriem len od mŕtvych a tí sa mi zatiaľ neozvali."
+          ]
         },
         {
           "id": "cable-taken",
@@ -5341,21 +5147,6 @@
       ]
     },
     {
-      "id": "dezo-refuses-washer",
-      "entry": "speech",
-      "start": "line",
-      "nodes": [
-        {
-          "id": "line",
-          "speaker": "Dežo Magnet",
-          "text": "Podložka? Pri tej by mi váha ukázala sústrasť. Ja vykupujem železo, nie jeho spomienku.",
-          "subtitle": "Podložka? Pri tej by mi váha ukázala sústrasť. Ja vykupujem železo, nie jeho spomienku.",
-          "actor": { "sceneId": "scene1", "hotspotId": "layer2" },
-          "choices": []
-        }
-      ]
-    },
-    {
       "id": "dezo-already-traded",
       "entry": "speech",
       "start": "line",
@@ -5395,21 +5186,6 @@
           "speaker": "Eržika",
           "text": "Kolíček si daj na nos, Rudo. Aspoň na chvíľu prestaneš cítiť vlastný mozog.",
           "subtitle": "Kolíček si daj na nos, Rudo. Aspoň na chvíľu prestaneš cítiť vlastný mozog.",
-          "actor": { "sceneId": "scene4", "hotspotId": "layer2" },
-          "choices": []
-        }
-      ]
-    },
-    {
-      "id": "erzika-refuses-bread",
-      "entry": "speech",
-      "start": "line",
-      "nodes": [
-        {
-          "id": "line",
-          "speaker": "Eržika",
-          "text": "Rožok mi nevracaj. V kuchyni mi ním podopierali sporák; teraz je to tvoja stavebná zákazka.",
-          "subtitle": "Rožok mi nevracaj. V kuchyni mi ním podopierali sporák; teraz je to tvoja stavebná zákazka.",
           "actor": { "sceneId": "scene4", "hotspotId": "layer2" },
           "choices": []
         }
@@ -5521,21 +5297,6 @@
       ]
     },
     {
-      "id": "boy-refuses-bread",
-      "entry": "speech",
-      "start": "line",
-      "nodes": [
-        {
-          "id": "line",
-          "speaker": "Špľuch",
-          "text": "To nie je desiata, to je závažie. Daj to na sedadlo a povoľ čap kľúčom. Tehla si konečne oddýchne.",
-          "subtitle": "To nie je desiata, to je závažie. Daj to na sedadlo a povoľ čap kľúčom. Tehla si konečne oddýchne.",
-          "actor": { "sceneId": "scene7", "hotspotId": "swing-boy" },
-          "choices": []
-        }
-      ]
-    },
-    {
       "id": "dingo-directs-coffee",
       "entry": "speech",
       "start": "line",
@@ -5639,6 +5400,34 @@
           "choices": []
         }
       ]
+    },
+    {
+      "id": "boy-prize",
+      "entry": "speech",
+      "start": "line",
+      "nodes": [
+        {
+          "id": "line",
+          "speaker": "Špľuch",
+          "actor": { "sceneId": "scene7", "hotspotId": "swing-boy" },
+          "text": "Tu máš bramboru na špagáte. Porazil si decko, hrdina. Keď si ju zavesíš na krk, vyzeráš ako obesený obed. Ten zalepený uzol odstrihni nožnicami; špagát je kvalitnejší než celá tvoja výhra.",
+          "choices": []
+        }
+      ]
+    },
+    {
+      "id": "dezo-refuses-potato",
+      "entry": "speech",
+      "start": "line",
+      "nodes": [
+        {
+          "id": "line",
+          "speaker": "Dežo Magnet",
+          "actor": { "sceneId": "scene1", "hotspotId": "layer2" },
+          "text": "Zemiak? Ja beriem železo, nie prílohu k poslednej večeri. Nechaj si ho, možno ťa ešte pochovajú aj s oblohou.",
+          "choices": []
+        }
+      ]
     }
   ],
   "combinations": [
@@ -5682,19 +5471,6 @@
       ]
     },
     {
-      "items": ["washer", "foil"],
-      "rules": [
-        {
-          "message": "Zlatá podložka. Vyzerá ako žetón, len je celá vodivá. Bez záruky; čiže priemerný miestny výrobok.",
-          "effects": [
-            { "type": "removeItem", "id": "washer" },
-            { "type": "removeItem", "id": "foil" },
-            { "type": "addItem", "id": "fake-token" }
-          ]
-        }
-      ]
-    },
-    {
       "items": ["stolen-cable", "tape"],
       "rules": [
         {
@@ -5704,14 +5480,6 @@
             { "type": "removeItem", "id": "tape" },
             { "type": "addItem", "id": "fixed-cable" }
           ]
-        }
-      ]
-    },
-    {
-      "items": ["bread", "tape"],
-      "rules": [
-        {
-          "message": "Oblepený rožok by sa dal dediť. Mám však málo pásky a priveľa životných omylov; radšej oboje nechám celé."
         }
       ]
     },
@@ -5732,14 +5500,6 @@
       ]
     },
     {
-      "items": ["bread", "magnet"],
-      "rules": [
-        {
-          "message": "Magnetický rožok. Mohol by priťahovať zuby, keby som ich ešte mal na rozdávanie."
-        }
-      ]
-    },
-    {
       "items": ["clothespin", "tape"],
       "rules": [
         {
@@ -5748,26 +5508,10 @@
       ]
     },
     {
-      "items": ["rubber-stamp", "bread"],
-      "rules": [
-        {
-          "message": "Pečivo úradne zosnulé. Pekár to vyhlásil už v utorok; pečiatku mu šetriť nemusím, iba ten rožok."
-        }
-      ]
-    },
-    {
       "items": ["holy-water", "rubber-gloves"],
       "rules": [
         {
           "message": "Posvätené rukavice by v reklamácii neprešli. Vodu nechám vo fľaši a gumu vcelku."
-        }
-      ]
-    },
-    {
-      "items": ["wrench", "bread"],
-      "rules": [
-        {
-          "message": "Francúzsky kľúč s rožkom. Kontinentálne raňajky po exekúcii. Oboje ešte využijem bez násilia."
         }
       ]
     },
@@ -5792,6 +5536,33 @@
       "rules": [
         {
           "message": "Úmrtný list sa neopravuje izolačkou. Škoda, mal som konečne plán na dôchodok."
+        }
+      ]
+    },
+    {
+      "items": ["scissors", "potato-medal"],
+      "rules": [
+        {
+          "message": "Odstrihol som zalepený špagát. Mám špagát, bramboru a prvú úspešnú amputáciu bez pozostalých. Nožnice si nechám.",
+          "effects": [
+            { "type": "removeItem", "id": "potato-medal" },
+            { "type": "addItem", "id": "string" },
+            { "type": "addItem", "id": "potato" },
+            { "type": "flag", "id": "medal-cut", "value": true }
+          ]
+        }
+      ]
+    },
+    {
+      "items": ["potato", "foil"],
+      "rules": [
+        {
+          "message": "Zemiakovú medailu som obalil zlatým alobalom. Vyzerá ako žetón; dôveryhodnosť má rovnakú ako Ľubov úmrtný list.",
+          "effects": [
+            { "type": "removeItem", "id": "potato" },
+            { "type": "removeItem", "id": "foil" },
+            { "type": "addItem", "id": "fake-token" }
+          ]
         }
       ]
     }
@@ -6706,7 +6477,7 @@
     {
       "id": "suter-k-ciare",
       "winFlag": "stone-game-won",
-      "winMessage": "Špľuch prehral. Tvári sa, že to bol len tréning pre tehlu.",
+      "winMessage": "Špľuch prehral. Bramborovú medailu si vypýtam od neho; sám mi ju na krk nevešia, má ešte trochu súcitu.",
       "loseMessage": "Prehral som s chlapcom, čo sa rozpráva s tehlou. Nižšie sa už klesnúť nedá."
     }
   ]

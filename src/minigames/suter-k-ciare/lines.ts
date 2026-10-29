@@ -68,7 +68,7 @@ export const LINES: Record<Cue, Line[]> = {
   opponentMeh: [
     ['nika', 'Špľuch, ty si ako hojdačka. Nehýbeš sa správnym smerom.'],
     ['bela', 'Hehe. Aj tehla by to hodila lepšie.'],
-    ['spluch', 'Šmyklo sa mi! Mal som mastné ruky od rožka!'],
+    ['spluch', 'Šmyklo sa mi! Potil som sa aj za tú bramboru!'],
   ],
   opponentOver: [
     ['spluch', 'To bol vietor! Fúkalo od kostola!'],

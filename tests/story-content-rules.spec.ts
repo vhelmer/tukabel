@@ -31,7 +31,6 @@ const deserializeSave = (content: GameContent, raw: string) => {
 };
 // Visual layers are editable; follow the authored puzzle effect, not old sprite IDs.
 const propEffects: Record<string, Pick<Effect, 'type' | 'id'>> = {
-  'bread-box': { type: 'addItem', id: 'bread' },
   'peg-basket': { type: 'addItem', id: 'clothespin' },
   'tape-roll': { type: 'addItem', id: 'tape' },
   'scrap-metal': { type: 'addItem', id: 'scrap-metal' },
@@ -108,7 +107,7 @@ function prepareFarm(content: GameContent, lateMagnet = false) {
     expect.arrayContaining(['scene1', 'scene3', 'scene6', 'scene7']),
   );
   expect(p.state.unlockedScenes).not.toContain('scene10');
-  for (const id of ['bread-box', 'peg-basket']) p.use(id);
+  p.use('peg-basket');
   p.use('alley-door');
   expect(p.state.sceneId).toBe('scene11');
   p.use('tape-roll');
@@ -116,10 +115,11 @@ function prepareFarm(content: GameContent, lateMagnet = false) {
   p.use('yard-door');
   expect(p.state.sceneId).toBe('scene4');
   expect(p.state.inventory).toEqual(
-    expect.arrayContaining(['bread', 'tape', 'clothespin', 'scrap-metal']),
+    expect.arrayContaining(['tape', 'clothespin', 'scrap-metal']),
   );
   p.travel('scene1');
   p.use('layer3');
+  p.use('stop-bin');
   p.use('layer2');
   p.choose('scrapyard');
   p.close();
@@ -185,9 +185,9 @@ function solveToCrypt(content: GameContent, lateMagnet = false) {
   p.use('beer-mugs');
   expect(p.state.flags['beer-drained']).toBe(true);
   p.close();
-  p.use('foil-wrapper');
   p.use('gaming-door');
   expect(p.state.sceneId).toBe('scene8');
+  p.use('foil-wrapper');
   p.use('service-hatch', 'wrench');
   expect(p.state.inventory).toContain('machine-log');
   p.travel('scene1');
@@ -195,14 +195,18 @@ function solveToCrypt(content: GameContent, lateMagnet = false) {
   p.close();
   expect(p.state.inventory).toContain('rubber-stamp');
   p.travel('scene7');
-  p.use('swing-axle', 'wrench');
-  p.use('swing-seat');
-  expect(p.state.flags['kids-helped']).not.toBe(true);
-  p.use('swing-seat', 'bread');
-  p.use('swing-seat');
+  p.use('swing-boy');
+  p.choose('trade');
   p.close();
-  p.use('loose-string');
-  p.use('loose-washer');
+  p.use('stone-line');
+  p.act({ type: 'finishMinigame', won: true });
+  p.act({ type: 'closeMinigame' });
+  p.use('swing-boy');
+  p.close();
+  p.combine('potato-medal', 'scissors');
+  expect(p.state.inventory).toEqual(
+    expect.arrayContaining(['potato', 'string']),
+  );
   p.combine('magnet', 'string');
   expect(p.state.inventory).toContain('magnet-line');
   p.travel('scene3');
@@ -271,7 +275,7 @@ test('the authored game completes through restoration and saves both before and 
 test('late scrap exchange remains solvable and a forged token causes the physically distinct jackpot ending', async () => {
   const content = await read(),
     p = solveToCrypt(content, true);
-  p.combine('washer', 'foil');
+  p.combine('potato', 'foil');
   expect(p.state.inventory).toContain('fake-token');
   p.use('battery', 'wrench');
   p.use('crypt-machine', 'fake-token');
@@ -334,7 +338,7 @@ test('seven outdoor destinations keep fast travel separate from interior passage
   );
   const p = player(content);
   p.choose('accept');
-  for (const id of ['bread-box', 'peg-basket']) p.use(id);
+  p.use('peg-basket');
   p.use('alley-door');
   expect(p.state.sceneId).toBe('scene11');
   p.use('tape-roll');
@@ -344,7 +348,7 @@ test('seven outdoor destinations keep fast travel separate from interior passage
   const inventory = [...p.state.inventory];
   p.use('layer1', 'tape');
   p.close();
-  p.combine('bread', 'tape');
+  p.combine('clothespin', 'tape');
   expect(p.state.inventory).toEqual(inventory);
   p.use('alley-door');
   expect(p.state.sceneId).toBe('scene11');
@@ -433,12 +437,11 @@ test('the alley tape is a unique visible pickup that stays collected after save/
 test('puzzle props retain visible artwork or authored targets in their locations', async () => {
   const content = await read();
   const props = {
-    scene4: ['bread-box', 'peg-basket'],
+    scene4: ['peg-basket'],
     scene10: ['milking-bucket', 'cow-bell-hook'],
     scene9: ['resuscitator', 'tool-chest'],
-    scene6: ['foil-wrapper'],
+    scene8: ['foil-wrapper'],
     scene3: ['absolution-machine'],
-    scene7: ['swing-axle', 'swing-seat', 'loose-string', 'loose-washer'],
     scene5: ['coffin'],
   };
   for (const [sceneId, ids] of Object.entries(props)) {
@@ -556,15 +559,15 @@ test('accepting the case opens one notebook task and tools alone reveal no futur
     syncTasks(content, { ...state, flags: { ...state.flags, [flag]: true } })
       .tasks;
   expect(after('tools-taken')['open-herna']).toBeUndefined();
-  expect(after('tap-fixed')['swing-contraption']).toBeUndefined();
+  expect(after('tap-fixed')['playground-prize']).toBeUndefined();
   expect(after('bell-taken').cemetery).toBeUndefined();
   expect(after('pub-deal-known')['open-herna']).toBe('active');
-  expect(after('swing-plan-known')['swing-contraption']).toBe('active');
-  expect(after('axle-loose')['swing-contraption']).toBe('active');
+  expect(after('playground-game-known')['playground-prize']).toBe('active');
+  expect(after('stone-game-won')['playground-prize']).toBe('active');
   expect(after('priest-distraction-known').cemetery).toBe('active');
 });
 
-test('Dežo barters one unique alley scrap pickup and refuses bottles, holy water and the jackpot washer', async () => {
+test('Dežo barters one unique alley scrap pickup and refuses bottles, holy water and the potato prize', async () => {
   const content = await read(),
     p = player(content);
   const pickups = content.scenes.flatMap((scene) =>
@@ -605,7 +608,7 @@ test('Dežo barters one unique alley scrap pickup and refuses bottles, holy wate
   p.use('yard-door');
   p.travel('scene1');
   const base = p.state;
-  for (const itemId of ['empty-bottle', 'holy-water', 'washer']) {
+  for (const itemId of ['empty-bottle', 'holy-water', 'potato']) {
     p.state = { ...base, inventory: [...base.inventory, itemId] };
     const before = p.state;
     p.use('layer2', itemId);
@@ -641,4 +644,92 @@ test('Dežo barters one unique alley scrap pickup and refuses bottles, holy wate
   p.travel('scene4');
   p.use('alley-door');
   expect(matches(p.state, hotspot.visibleWhen)).toBe(false);
+});
+
+test('bus stop bin yields scissors once and stays collected after reload', async () => {
+  const content = await read(),
+    p = player(content);
+  p.choose('accept');
+  p.travel('scene1');
+  p.use('stop-bin');
+  expect(p.state.inventory).toContain('scissors');
+  expect(p.state.message.trim()).not.toBe('');
+  p.state = deserializeSave(content, serializeSave(content, p.state));
+  p.use('stop-bin');
+  expect(p.state.inventory.filter((id) => id === 'scissors')).toHaveLength(1);
+});
+
+test('only a minigame winner can claim one potato medal and scissors release its string without duplicating rewards', async () => {
+  const content = await read(),
+    p = player(content);
+  p.choose('accept');
+  p.use('peg-basket');
+  p.travel('scene7');
+  p.use('swing-boy');
+  p.close();
+  expect(p.state.inventory).not.toContain('potato-medal');
+  p.use('stone-line');
+  p.act({ type: 'finishMinigame', won: false });
+  p.act({ type: 'closeMinigame' });
+  p.use('swing-boy');
+  p.close();
+  expect(p.state.inventory).not.toContain('potato-medal');
+  p.use('stone-line');
+  p.act({ type: 'finishMinigame', won: true });
+  p.act({ type: 'closeMinigame' });
+  p.use('swing-boy');
+  p.close();
+  expect(p.state.inventory).toContain('potato-medal');
+  expect(p.state.inventory).not.toContain('string');
+  p.combine('potato-medal', 'clothespin');
+  expect(p.state.inventory).toContain('potato-medal');
+  p.travel('scene1');
+  p.use('stop-bin');
+  p.combine('scissors', 'potato-medal');
+  expect(p.state.inventory).toEqual(
+    expect.arrayContaining(['scissors', 'potato', 'string']),
+  );
+  expect(p.state.inventory).not.toContain('potato-medal');
+  expect(p.state.tasks['playground-prize']).toBe('completed');
+  p.state = deserializeSave(content, serializeSave(content, p.state));
+  p.combine('potato-medal', 'scissors');
+  p.travel('scene7');
+  p.use('stone-line');
+  p.act({ type: 'finishMinigame', won: true });
+  p.act({ type: 'finishMinigame', won: false });
+  p.act({ type: 'closeMinigame' });
+  p.use('swing-boy');
+  p.close();
+  expect(p.state.inventory).not.toContain('potato-medal');
+  for (const id of ['scissors', 'potato', 'string'])
+    expect(p.state.inventory.filter((item) => item === id)).toHaveLength(1);
+});
+
+test('chocolate foil is a unique pickup inside the gaming room unlocked by repairing and draining the tap', async () => {
+  const content = await read(),
+    p = player(content);
+  const pickups = content.scenes.flatMap((scene) =>
+    scene.hotspots
+      .filter((h) => hasPropEffect(h, 'foil-wrapper'))
+      .map((hotspot) => ({ scene, hotspot })),
+  );
+  expect(pickups).toHaveLength(1);
+  expect(pickups[0]!.scene.id).toBe('scene8');
+  p.choose('accept');
+  p.travel('scene6');
+  p.use('gaming-door');
+  p.close();
+  expect(p.state.sceneId).toBe('scene6');
+  expect(p.state.inventory).not.toContain('foil');
+  p.state = { ...p.state, inventory: ['wrench'] };
+  p.use('beer-tap', 'wrench');
+  p.use('beer-mugs');
+  p.close();
+  p.use('gaming-door');
+  expect(p.state.sceneId).toBe('scene8');
+  p.use('foil-wrapper');
+  expect(p.state.inventory).toContain('foil');
+  p.state = deserializeSave(content, serializeSave(content, p.state));
+  p.use('foil-wrapper');
+  expect(p.state.inventory.filter((id) => id === 'foil')).toHaveLength(1);
 });

@@ -276,6 +276,10 @@ export async function createGame(
   let ghost: ThrowInput | undefined;
   let aimResolve: ((input: ThrowInput) => void) | undefined;
   let drag: { sx: number; sy: number; x: number; y: number } | undefined;
+  let keyboardAim: ThrowInput = {
+    angle: 35,
+    speed: (MIN_SPEED + MAX_SPEED) / 2,
+  };
   let lastStretchTick = 0;
   const handShadow = new Graphics()
     .ellipse(0, 0, 14, 4)
@@ -374,6 +378,7 @@ export async function createGame(
   app.stage.eventMode = 'static';
   app.stage.on('pointerdown', (e: FederatedPointerEvent) => {
     if (!aimResolve) return;
+    host.focus({ preventScroll: true });
     const p = root.toLocal(e.global);
     drag = { sx: p.x, sy: p.y, x: p.x, y: p.y };
   });
@@ -409,17 +414,72 @@ export async function createGame(
       return;
     }
     const { angle, speed } = inputFromDrag(dx, dy);
-    const resolve = aimResolve;
-    aimResolve = undefined;
-    setPhase('busy');
-    resolve({ angle, speed });
+    submitThrow({ angle, speed });
   };
   app.stage.on('pointerup', release);
   app.stage.on('pointerupoutside', release);
 
+  function submitThrow(input: ThrowInput) {
+    if (!aimResolve) return;
+    const resolve = aimResolve;
+    aimResolve = undefined;
+    drag = undefined;
+    setPhase('busy');
+    resolve(input);
+  }
+
+  function renderKeyboardAim() {
+    renderAim(keyboardAim);
+    host.setAttribute(
+      'aria-label',
+      `Mierenie: ${Math.round(keyboardAim.angle)}°, ${Math.round(powerOf(keyboardAim) * 100)} %. Šípky hore a dole menia uhol, vľavo a vpravo silu. Enter alebo medzerník hodí šuter.`,
+    );
+  }
+
+  function onAimKey(event: KeyboardEvent) {
+    if (
+      ![
+        'ArrowUp',
+        'ArrowDown',
+        'ArrowLeft',
+        'ArrowRight',
+        'Enter',
+        ' ',
+      ].includes(event.key)
+    )
+      return;
+    event.preventDefault();
+    event.stopPropagation();
+    if (!aimResolve) return;
+    if (event.key === 'Enter' || event.key === ' ') {
+      if (!event.repeat) submitThrow(keyboardAim);
+      return;
+    }
+    drag = undefined;
+    handStone.position.set(releaseScreen.x, releaseScreen.y);
+    const step = event.shiftKey ? 10 : 1;
+    const angleDelta =
+      event.key === 'ArrowUp' ? step : event.key === 'ArrowDown' ? -step : 0;
+    const powerDelta =
+      event.key === 'ArrowRight' ? step : event.key === 'ArrowLeft' ? -step : 0;
+    keyboardAim = {
+      angle: Math.max(0, Math.min(MAX_ANGLE, keyboardAim.angle + angleDelta)),
+      speed: Math.max(
+        MIN_SPEED,
+        Math.min(
+          MAX_SPEED,
+          keyboardAim.speed + (powerDelta / 100) * (MAX_SPEED - MIN_SPEED),
+        ),
+      ),
+    };
+    renderKeyboardAim();
+  }
+  host.addEventListener('keydown', onAimKey);
+
   function playerAim() {
     showHandStone('player');
-    renderAim();
+    keyboardAim = ghost ?? keyboardAim;
+    renderKeyboardAim();
     setPhase('aim');
     return new Promise<ThrowInput>((resolve) => (aimResolve = resolve));
   }
@@ -679,6 +739,7 @@ export async function createGame(
       run++;
       tweens.clear();
       observer.disconnect();
+      host.removeEventListener('keydown', onAimKey);
       app.destroy({ removeView: true }, { children: true });
     },
   };
