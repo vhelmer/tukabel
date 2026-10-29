@@ -331,7 +331,7 @@ export function createHud(
     control: HudControl,
     label = control.label,
     size = 14,
-    skin: 'tag' | 'bare' | 'notebook' | 'region' = 'tag',
+    skin: 'tag' | 'slot' | 'notebook' | 'region' = 'tag',
   ) {
     layout.controls.push(control);
     const c = panels.addChild(new Container());
@@ -348,21 +348,23 @@ export function createHud(
     const bg =
       skin === 'region'
         ? null
-        : skin === 'bare'
-          ? c.addChild(
-              new Graphics()
-                .ellipse(b.width / 2, b.height - 7, b.width * 0.37, 7)
-                .fill({
-                  color: control.pressed ? 0xf2cf80 : 0x19171a,
-                  alpha: control.pressed ? 0.6 : 0.22,
-                }),
-            )
-          : art(c, skin === 'notebook' ? hudArt.notebook : hudArt.tag, {
-              x: 0,
-              y: 0,
-              width: b.width,
-              height: b.height,
-            });
+        : art(
+            c,
+            skin === 'slot'
+              ? hudArt.slot
+              : skin === 'notebook'
+                ? hudArt.notebook
+                : hudArt.tag,
+            { x: 0, y: 0, width: b.width, height: b.height },
+          );
+    // The selected item glows inside its pocket instead of a floor shadow.
+    if (skin === 'slot' && control.pressed)
+      c.addChild(
+        new Graphics()
+          .roundRect(4, 4, b.width - 8, b.height - 8, 6)
+          .fill({ color: 0xf2cf80, alpha: 0.18 })
+          .stroke({ width: 3, color: 0xf2cf80 }),
+      ).eventMode = 'none';
     controlArt.set(control.id, c);
     if (label) {
       const caption = text(c, label, 0, 0, size);
@@ -448,15 +450,20 @@ export function createHud(
         box.y + (box.height - view.height) / 2,
       );
       view.eventMode = 'none';
-      parent.addChild(view);
-    } else
-      text(
-        parent,
-        icon,
-        box.x + 5,
-        box.y,
-        Math.min(box.width, box.height) * 0.7,
-      );
+      return parent.addChild(view);
+    }
+    const glyph = text(
+      parent,
+      icon,
+      box.x,
+      box.y,
+      Math.min(box.width, box.height) * 0.7,
+    );
+    glyph.position.set(
+      box.x + (box.width - glyph.width) / 2,
+      box.y + (box.height - glyph.height) / 2,
+    );
+    return glyph;
   }
   function drawFocus() {
     for (const control of layout.controls) {
@@ -520,7 +527,7 @@ export function createHud(
     const shelfScale = inventory.height / 116;
     const shelf = panels.addChild(
       new NineSliceSprite({
-        texture: textures.get(hudArt.shelf)!,
+        texture: textures.get(hudArt.tray)!,
         leftWidth: 70,
         rightWidth: 90,
         topHeight: 0,
@@ -584,13 +591,17 @@ export function createHud(
       '≡',
       28,
     );
+    // Every item sits in its own sunken pocket of the drawer.
+    const pitch = compact ? 46 : 62;
+    const slotSize = compact ? 40 : 52;
+    const slotY = top + (compact ? 11 : 15);
     const slots = Math.max(
       1,
       Math.floor(
         (inventoryWidth -
           leading -
           (compact && snapshot.state.inventory.length <= 2 ? 36 : 72)) /
-          (compact ? 56 : 65),
+          pitch,
       ),
     );
     inventoryPage = Math.max(
@@ -601,28 +612,16 @@ export function createHud(
       ),
     );
     const paged = snapshot.state.inventory.length > slots;
-    const inset = leading + (paged ? 37 : 18);
-    const trailing = paged ? 37 : 18;
-    if (!snapshot.state.inventory.length) {
-      const empty = text(
-        panels,
-        'Prázdne vrecká… zatiaľ.',
-        inventory.x + leading + 12,
-        top + (compact ? 14 : 22),
-        compact ? 11 : 13,
-        0xebd4a0,
-        inventoryWidth - leading - 26,
-      );
-      empty.style.stroke = { color: 0x312723, width: 3, join: 'round' };
-    }
+    const inset = leading + (paged ? 38 : 22);
+    const trailing = paged ? 38 : 22;
     if (paged) {
       button(
         {
           id: 'inventory-prev',
           label: 'Predchádzajúce predmety',
           bounds: {
-            x: inventory.x + leading - 1,
-            y: top + 7,
+            x: inventory.x + leading,
+            y: slotY + slotSize / 2 - 24,
             width: 36,
             height: 48,
           },
@@ -636,8 +635,8 @@ export function createHud(
           id: 'inventory-next',
           label: 'Ďalšie predmety',
           bounds: {
-            x: inventory.x + inventoryWidth - 35,
-            y: top + 7,
+            x: inventory.x + inventoryWidth - 36,
+            y: slotY + slotSize / 2 - 24,
             width: 36,
             height: 48,
           },
@@ -653,18 +652,29 @@ export function createHud(
       inventoryPage * slots,
       (inventoryPage + 1) * slots,
     );
+    const capacity = paged
+      ? visibleItems.length
+      : Math.max(
+          visibleItems.length,
+          Math.floor((inventoryWidth - inset - trailing) / pitch),
+        );
     const slotWidth = Math.min(
-      78,
-      (inventoryWidth - inset - trailing) / Math.max(1, visibleItems.length),
+      pitch,
+      (inventoryWidth - inset - trailing) / Math.max(1, capacity),
     );
+    const size = Math.min(slotSize, slotWidth - 4);
+    const slotBox = (index: number) => ({
+      x: inventory.x + inset + index * slotWidth + (slotWidth - size) / 2,
+      y: slotY + (slotSize - size) / 2,
+      width: size,
+      height: size,
+    });
+    // Unused pockets stay visible and silent: an empty drawer needs no caption.
+    for (let index = visibleItems.length; index < capacity; index++)
+      art(panels, hudArt.slot, slotBox(index)).alpha = 0.8;
     visibleItems.forEach((id, index) => {
       const item = snapshot.content.items.find((i) => i.id === id)!;
-      const b = {
-        x: inventory.x + inset + index * slotWidth,
-        y: top + 1,
-        width: slotWidth - 3,
-        height: compact ? 44 : 52,
-      };
+      const b = slotBox(index);
       const c = button(
         {
           id: 'item:' + id,
@@ -677,15 +687,17 @@ export function createHud(
         },
         '',
         14,
-        'bare',
+        'slot',
       );
-      image(c, item.image, item.icon, {
-        x: 6,
-        y: 0,
-        width: b.width - 12,
-        height: compact ? 34 : 44,
+      const pad = Math.round(size * 0.15);
+      const icon = image(c, item.image, item.icon, {
+        x: pad,
+        y: pad,
+        width: b.width - pad * 2,
+        height: b.height - pad * 2,
       });
-      if (snapshot.drag?.id === id) c.alpha = 0.4;
+      // The pocket stays while its item is being dragged out of it.
+      if (snapshot.drag?.id === id) icon.alpha = 0.35;
       if (
         snapshot.drag?.target?.type === 'item' &&
         snapshot.drag.target.id === id &&
@@ -693,7 +705,7 @@ export function createHud(
       )
         c.addChild(
           new Graphics()
-            .ellipse(b.width / 2, 25, b.width * 0.45, 24)
+            .roundRect(2, 2, b.width - 4, b.height - 4, 7)
             .stroke({ width: 3, color: 0xc7e597 }),
         ).eventMode = 'none';
     });

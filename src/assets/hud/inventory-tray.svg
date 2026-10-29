@@ -1,0 +1,91 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="900"
+  height="116"
+  viewBox="0 0 900 116"
+>
+  <defs>
+    <linearGradient id="rim" x2="0" y2="1">
+      <stop stop-color="#b48650" />
+      <stop offset=".45" stop-color="#7c5436" />
+      <stop offset="1" stop-color="#4a3026" />
+    </linearGradient>
+    <linearGradient id="floor" x2="0" y2="1">
+      <stop stop-color="#1c1416" />
+      <stop offset=".35" stop-color="#2d2020" />
+      <stop offset="1" stop-color="#3a2a24" />
+    </linearGradient>
+  </defs>
+  <!-- A carved drawer for Rudo's pockets. Ends (0-70, 810-900) keep their
+       ironwork; the middle only has horizontal grain, so it stretches cleanly.
+       The top edge stays transparent around the right corner for scene clicks. -->
+  <path
+    d="M14 24 26 18 852 17 894 44 894 106 882 114 24 114 10 104Z"
+    fill="#100c12"
+    opacity=".4"
+  />
+  <path
+    d="M8 20 20 14 850 13 891 40 891 100 879 108 20 109 7 98Z"
+    fill="url(#rim)"
+    stroke="#29201c"
+    stroke-width="5"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M22 26 846 25 878 46 878 96 22 97Z"
+    fill="url(#floor)"
+    stroke="#22191a"
+    stroke-width="3"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M24 28 844 27"
+    stroke="#0b080b"
+    stroke-width="5"
+    opacity=".55"
+  />
+  <path
+    d="M24 94 876 93"
+    stroke="#c49a63"
+    stroke-width="2"
+    opacity=".35"
+  />
+  <path
+    d="M24 18 846 17M24 104 876 103"
+    fill="none"
+    stroke="#ecc98d"
+    stroke-width="2"
+    stroke-linecap="round"
+    opacity=".45"
+  />
+  <path
+    d="M30 61 870 60"
+    fill="none"
+    stroke="#120d10"
+    stroke-width="2"
+    opacity=".35"
+  />
+  <!-- Iron corner brackets with nails on the fixed ends. -->
+  <g stroke="#1f1a1c" stroke-width="3" stroke-linejoin="round">
+    <path d="M6 20 19 12 52 12 50 24 22 25 21 52 7 54Z" fill="#5d5a57" />
+    <path d="M6 98 7 72 21 72 22 96 50 97 52 110 19 111Z" fill="#5d5a57" />
+    <path d="M892 42 872 29 862 34 878 46 879 60 892 61Z" fill="#5d5a57" />
+    <path d="M893 98 892 72 878 72 878 95 848 96 846 110 880 111Z" fill="#5d5a57" />
+  </g>
+  <g fill="#c9c0ac" stroke="#1f1a1c" stroke-width="2">
+    <circle cx="14" cy="38" r="3.5" />
+    <circle cx="38" cy="18" r="3.5" />
+    <circle cx="14" cy="86" r="3.5" />
+    <circle cx="38" cy="104" r="3.5" />
+    <circle cx="884" cy="52" r="3.5" />
+    <circle cx="886" cy="86" r="3.5" />
+    <circle cx="862" cy="104" r="3.5" />
+  </g>
+  <path
+    d="M10 30 16 24M10 80 14 76"
+    stroke="#e8e2d2"
+    stroke-width="2"
+    stroke-linecap="round"
+    opacity=".5"
+  />
+</svg>

@@ -89,6 +89,18 @@ test('game hides object hints, keeps keyboard interaction and uses drawn cursors
       'data-cursor-kind',
       'interact',
     );
+    // The map opens from the bottom edge, so its cursor points down.
+    const mapEdge = await pointInScene(page, 600, 670);
+    await page.mouse.move(mapEdge.x, mapEdge.y);
+    await expect(page.locator('.scene-cursor')).toHaveAttribute(
+      'data-cursor-kind',
+      'exit',
+    );
+    await expect(page.locator('.scene-cursor img')).toHaveAttribute(
+      'src',
+      // Vite inlines small SVGs as data URIs; match the downward arrow path.
+      /exit-down\.svg|M17%204L17%2027/,
+    );
   }
   await activate(page, 575, 275, isMobile);
   await expect(page.getByRole('status', { name: 'Reakcia' })).toContainText(

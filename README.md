@@ -793,17 +793,20 @@ endpointy `/__tukabel/editor/jobs` neobsahuje.
 ## Game Mode
 
 Scéna využívá celý canvas se zachováním poměru stran. Přímo přes její horní část
-PixiJS vykresluje inventář jako kreslenou dřevěnou poličku, ikonku potrhaného
+PixiJS vykresluje inventář jako kreslenou dřevěnou přihrádkovou bedýnku, ikonku potrhaného
 zápisníku a malou cedulku **Menu** (tři čárky). Seznam odhalující objekty ve scéně
 se v Game Mode nenabízí. Pozadí pokračuje
 pod HUD; nevzniká žádná lišta ani vyhrazený okraj. Při tvorbě lokace nech horní
 část obrazu volnější. HUD zůstává uvnitř obrazu i na vysokém displeji s letterboxem;
-na úzkém obrazu jsou pomocné cedulky v levém konci poličky. Polička se prodlužuje podle
-počtu předmětů, její konce se nedeformují. Další předměty zobrazí šipky.
+na úzkém obrazu jsou pomocné cedulky v levém konci bedýnky. Každý předmět leží ve vlastní
+zapuštěné přihrádce, vybraný předmět se v ní zlatě podsvítí. Nevyužité přihrádky zůstávají
+prázdné, bez textu. Bedýnka se prodlužuje podle počtu předmětů, její kované konce se
+nedeformují. Další předměty zobrazí šipky.
 Názvy se ukážou při najetí nebo zaměření klávesnicí, výběr předmětu zobrazí popis.
 Viditelné dřevo a ovládací prvky blokují svět pod sebou; průhledná místa HUDu
 propouštějí hover, kliky i drop do scény. Geometrie scény nezávisí na HUDu.
-Titulky a dialogové volby dál vykresluje současné React UI.
+Titulky a dialogové volby dál vykresluje současné React UI. Nové volby plynule
+najedou postupně za sebou; krátký zámek proti dvojkliku je tak skrytý v animaci.
 Stejné herní okno používá i **Otestovat odsud** v Dev Mode.
 
 - Klik/tap provede první splněné pravidlo `onClick`: komentář, sebrání, rozhovor,
@@ -812,7 +815,7 @@ Stejné herní okno používá i **Otestovat odsud** v Dev Mode.
 - Hover zobrazí pouze název. Objekty nemají obrys ani přepínač odhalující hotspoty.
   Výchozí kreslená ruka platí v celém herním okně, včetně mapy, dialogů a menu.
   Nad aktivním předmětem ji vystřídá uchopující ruka, nad postavou animovaná pusa
-  a nad přechodem šipka. Tichá kulisa výchozí ruku nemění. V editoru zvol typ, vlastní
+  a nad přechodem šipka; oblast otevírající mapu (`openMap`) ukazuje šipku dolů. Tichá kulisa výchozí ruku nemění. V editoru zvol typ, vlastní
   `cursorImage`, klip `cursorAnimation`, velikost 16–96 px a souřadnice špičky.
   Animované kurzory používají běžný registr klipů; bez samostatného obrázku vezmou
   zdroj klipu. Snímky a source podléhají stejné kontrole rozměrů jako postavy.
@@ -1039,7 +1042,7 @@ Původní technická hádanka a staré zastávkové dialogy zůstávají pouze v
 - `src/game/animation.ts` — vizuální hodiny, náhodné mrkání a priorita klipů.
 - `src/game/createHud.ts`, `hudLayout.ts` — Pixi HUD, inventář, deník, mapu a vizuální efekty;
   společný viewport scény a cílení předmětů bez změny autorských souřadnic.
-- `src/assets/hud/`, `src/game/hudArt.ts` — místní kreslené SVG poličky, obálky,
+- `src/assets/hud/`, `src/game/hudArt.ts` — místní kreslené SVG bedýnky inventáře a přihrádky, obálky,
   otevřeného zápisníku a cedulek; měnitelné bez externí služby.
 - `src/ui/` — herní stav/UI, životní cyklus canvasu, dialogové překryvy a pointer capture;
   `HudAccessibility.tsx` přidává pouze sémantiku a klávesnici k Pixi ovládání.
@@ -1271,7 +1274,7 @@ dabingu otevřeným zápisníkem. Kontrolují také pixely HUDu a deníku po skr
 sémantické HTML vrstvy, stránkování plného inventáře a posun dlouhého deníku
 při změně velikosti a zoomu na myši i dotyku.
 `tests/hud-overlay.spec.ts` nezávisle kontroluje pixely lokace na celém canvasu,
-ukotvení HUDu uvnitř obrazu a průchod kliků/dropů průhlednými místy poličky.
+ukotvení HUDu uvnitř obrazu a průchod kliků/dropů průhlednými místy bedýnky.
 Interakční testy ověřují let do inventáře, vlastní animovaný kurzor a dialog bez portrétu po
 uložení/reloadu; kontextový průchod zahrnuje i tichou kulisu.
 Transformační testy navíc ověřují PNG/WebP/SVG, rotaci, zamknuté proporce, explicitní

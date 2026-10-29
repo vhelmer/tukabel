@@ -388,6 +388,39 @@ body {
   gap: 12px;
   padding: 3px 5px 8px;
 }
+/* Choices slide in one after another while the short input lock runs, so the
+   lock is never shown as a dimmed flash. The lock itself stays in useConversation. */
+.dialogue-choices .dialogue-choice {
+  animation: choice-in 0.32s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+.dialogue-choices .dialogue-choice:nth-child(2) {
+  animation-delay: 0.05s;
+}
+.dialogue-choices .dialogue-choice:nth-child(3) {
+  animation-delay: 0.1s;
+}
+.dialogue-choices .dialogue-choice:nth-child(n + 4) {
+  animation-delay: 0.15s;
+}
+.dialogue-choices .dialogue-choice:disabled {
+  opacity: 1;
+}
+@keyframes choice-in {
+  from {
+    opacity: 0;
+    translate: 0 10px;
+  }
+}
+@keyframes caption-in {
+  from {
+    opacity: 0;
+    translate: 0 6px;
+  }
+}
 .dialogue-choice,
 .game-menu > button {
   position: relative;
@@ -461,8 +494,20 @@ body {
   box-shadow: 3px 5px 0 #100d1690;
   text-align: center;
 }
+.dialogue-caption {
+  animation: caption-in 0.26s ease-out both;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
 .dialogue-caption:disabled {
   opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dialogue-choices .dialogue-choice,
+  .dialogue-caption {
+    animation: none;
+  }
 }
 .dialogue-caption::after {
   content: '»';

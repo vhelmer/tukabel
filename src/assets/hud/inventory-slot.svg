@@ -1,0 +1,49 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="64"
+  height="64"
+  viewBox="0 0 64 64"
+>
+  <defs>
+    <linearGradient id="well" x2="0" y2="1">
+      <stop stop-color="#120d0f" />
+      <stop offset=".4" stop-color="#241a1a" />
+      <stop offset="1" stop-color="#33251f" />
+    </linearGradient>
+  </defs>
+  <!-- One sunken pocket of the drawer: a worn wooden lip around a dark well. -->
+  <path
+    d="M5 4 32 3 59 5 61 32 59 60 32 61 5 59 3 32Z"
+    fill="#6e4a31"
+    stroke="#241b1a"
+    stroke-width="3"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M10 9 32 8 54 10 55 32 54 54 32 55 10 54 9 32Z"
+    fill="url(#well)"
+    stroke="#1a1214"
+    stroke-width="2"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M11 11 53 12"
+    stroke="#050405"
+    stroke-width="4"
+    opacity=".5"
+  />
+  <path
+    d="M8 6 32 5 56 7M6 58 32 59 58 57"
+    fill="none"
+    stroke="#d8b07a"
+    stroke-width="1.5"
+    stroke-linecap="round"
+    opacity=".45"
+  />
+  <path
+    d="M12 52 52 52"
+    stroke="#a57e55"
+    stroke-width="1.5"
+    opacity=".35"
+  />
+</svg>

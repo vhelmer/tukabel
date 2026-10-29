@@ -208,7 +208,7 @@ function MountedCanvas({
             ];
           }),
         );
-        if (hudContent) maskUrls.add(hudArt.shelf);
+        if (hudContent) maskUrls.add(hudArt.tray);
         const [loaded, alpha] = await Promise.all([
           Promise.all(
             urls.map(
@@ -298,7 +298,7 @@ function MountedCanvas({
               },
               () => app.render(),
               () => syncPlayback(),
-              new Map(alpha).get(hudArt.shelf)!,
+              new Map(alpha).get(hudArt.tray)!,
             )
           : null;
         if (mountedHud) {

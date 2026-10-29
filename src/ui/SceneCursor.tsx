@@ -4,6 +4,7 @@ import type { AnimationDefinition, Hotspot } from '../game/types';
 import grab from '../assets/cursors/grab.svg';
 import mouth from '../assets/cursors/mouth.svg';
 import exit from '../assets/cursors/exit.svg';
+import exitDown from '../assets/cursors/exit-down.svg';
 
 export function SceneCursor({
   hotspot,
@@ -31,11 +32,13 @@ export function SceneCursor({
   const kind =
     hotspot.cursor && hotspot.cursor !== 'auto'
       ? hotspot.cursor
-      : hotspot.onClick.some((rule) =>
-            rule.effects?.some((e) => e.type === 'dialogue'),
-          )
-        ? 'talk'
-        : 'interact';
+      : hotspot.openMap
+        ? 'exit'
+        : hotspot.onClick.some((rule) =>
+              rule.effects?.some((e) => e.type === 'dialogue'),
+            )
+          ? 'talk'
+          : 'interact';
   const src = clip ? (frame ?? clip.frames[0]) : hotspot.cursorImage;
   return (
     <div
@@ -49,7 +52,16 @@ export function SceneCursor({
       aria-hidden="true"
       data-cursor-kind={kind}
     >
-      <img src={src ?? { talk: mouth, interact: grab, exit }[kind]} alt="" />
+      <img
+        src={
+          src ??
+          // The map opens from the bottom edge of every location.
+          (kind === 'exit' && hotspot.openMap
+            ? exitDown
+            : { talk: mouth, interact: grab, exit }[kind])
+        }
+        alt=""
+      />
     </div>
   );
 }

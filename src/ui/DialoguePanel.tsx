@@ -65,6 +65,7 @@ export function DialoguePanel({
       {speaking ? (
         <>
           <button
+            key={conversation.utteranceKey}
             type="button"
             className="dialogue-caption"
             aria-label={
