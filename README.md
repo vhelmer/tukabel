@@ -17,11 +17,33 @@ npm run validate:content  # skutečný projekt včetně dostupnosti assetů
 npm run test:rules        # reducer, validátor, save/load a souřadnice bez prohlížeče
 npm run assets:clean      # pouze audit nepoužívaných generací/importů
 npm run preview          # produkční hra z dist/, bez editoru a zápisového API
+npm run build:release    # zmenšená statická hra do dist-release/
+npx vite preview --config vite.release.config.ts   # náhled dist-release/
 ```
 
 Vite standardně vypíše `http://localhost:5173`. Pro editor používej lokální HTTP
 adresu `localhost` nebo `127.0.0.1`, nikoli síťovou IP. `dist/` funguje na statickém
 hostingu i v podadresáři. `file://` není podporované.
+
+### Release build (`dist-release/`)
+
+Běžný `dist/` balí celé `src/assets` (všechny generace a archivy). `build:release`
+(`scripts/build-release.mjs` + `vite.release.config.ts`) vydá jen frontend hry:
+
+- Do buildu jdou jen soubory, na které odkazuje `project.json`, a statické importy
+  kódu. Animace, na které nic neodkazuje, a portréty replik (hra je nezobrazuje)
+  se z release kopie obsahu vynechají.
+- Obrázek se zmenší na největší velikost na obrazovce (rám hotspotu, lokace, mapa,
+  ikonka 128 jednotek, kurzor) × `--scale` (výchozí 1.5), nikdy nezvětší, a uloží
+  jako WebP (`--quality`, výchozí 82). Všechny snímky klipů jednoho `source` sdílí
+  stejné měřítko; `region` se přepočítá na nové pixely. SVG s vloženým rastrem se
+  rasterizuje, ostatní SVG zůstávají vektorová.
+- WAV se převede na MP3 (`@breezystack/lamejs`, bez FFmpeg) s LAME Info tagem;
+  prohlížeč podle něj ořízne encoder delay/padding, takže smyčky hudby zůstanou
+  bez mezery a lip-sync na `currentTime` sedí.
+- ID assetů v obsahu zůstávají původní; Vite plugin podstrčí vygenerovaný
+  `.release/assetFiles.ts` a `.release/project.json`. Zdrojové soubory se nemění,
+  výstupy kódování se cachují v ignorované `.release/cache/`.
 
 ## Dev Mode: tvorba → test → Git
 
