@@ -121,6 +121,7 @@ function MountedCanvas({
         onPickerReady?.(null);
         pickerPublished = false;
       }
+      hudRef.current?.destroy();
       if (hudPublished) {
         onHudReady?.(null);
         hudRef.current = null;
