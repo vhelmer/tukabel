@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "operation": "superseded-voice-retirement",
+  "provider": "elevenlabs",
+  "userAuthorized": true,
+  "started": true,
+  "voiceId": "VnZ7lswb6C7FxwHfvIR6",
+  "actorKey": "scene1/layer1",
+  "proofs": [
+    {
+      "dialogueId": "granny-chat",
+      "nodeId": "farm",
+      "audio": "speech/d6fa17fe-dc87-4e8f-ac02-d4d99291c39f/audio.wav",
+      "lipSync": "speech/9cce64af-46ba-4d98-9bea-eaab7439acb8/track.lipsync.json",
+      "audioSha256": "803bdd27f4f363686521864b11b33543820e24723eca752c8a484e881eaf3b2c",
+      "replacementVoiceId": "xKlQrC6RzWnhQhiCFKBS",
+      "decoded": { "duration": 11.44, "rms": 0.09110465339680845 }
+    },
+    {
+      "dialogueId": "granny-chat",
+      "nodeId": "stamp",
+      "audio": "speech/75667b14-bbb6-428f-a69d-30a55caad50d/audio.wav",
+      "lipSync": "speech/0d3cc935-901d-4f9e-89d3-f2b5178b7a05/track.lipsync.json",
+      "audioSha256": "c3b6bcef15fd59bf80860a04eb91aac22c39936f207823285c6f11d0260aa8c1",
+      "replacementVoiceId": "xKlQrC6RzWnhQhiCFKBS",
+      "decoded": { "duration": 10.96, "rms": 0.09182113754930725 }
+    },
+    {
+      "dialogueId": "granny-chat",
+      "nodeId": "hearse",
+      "audio": "speech/4168565c-ad65-4ac0-a9e0-52c1094a19e4/audio.wav",
+      "lipSync": "speech/f530071d-53dd-4527-b0ad-4b53da406255/track.lipsync.json",
+      "audioSha256": "24702b118eb6b5c9d4d0733079992515601cd79935da707292dba2c80b9aa5af",
+      "replacementVoiceId": "xKlQrC6RzWnhQhiCFKBS",
+      "decoded": { "duration": 10.16, "rms": 0.09166260374588629 }
+    },
+    {
+      "dialogueId": "granny-log",
+      "nodeId": "line",
+      "audio": "speech/c6b12ed2-5733-4fb7-9e19-01d12cb9efe4/audio.wav",
+      "lipSync": "speech/83d1566f-4aaa-45f4-9e95-12ef372c5b16/track.lipsync.json",
+      "audioSha256": "14953bba865ede1d8cf7d45bf038e2d59d2d240bad36e792c35f2d8773fe138d",
+      "replacementVoiceId": "xKlQrC6RzWnhQhiCFKBS",
+      "decoded": { "duration": 13.92, "rms": 0.08732502566357817 }
+    }
+  ],
+  "deleted": true,
+  "deletedAt": "2026-10-29T09:42:40.902Z"
+}

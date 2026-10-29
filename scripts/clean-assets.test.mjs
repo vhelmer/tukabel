@@ -178,3 +178,59 @@ test('an accidentally emptied project never authorizes removing all generated as
     );
   });
 });
+
+test('successful and pending voice retirement ledgers remain durable and retain their proof dependencies after actor replacement', async () => {
+  await fixture(async ({ root, write }) => {
+    const speech = (n) => batch(n).replace('scene-art/', 'speech/');
+    for (const [n, receipt] of [
+      [1, 'retirement.json'],
+      [2, '.retirement.pending.json'],
+    ]) {
+      await write(
+        `${speech(n)}/${receipt}`,
+        JSON.stringify({
+          operation: 'voice-retirement',
+          verification: `${speech(n)}/verification.json`,
+        }),
+      );
+      await write(
+        `${speech(n)}/verification.json`,
+        JSON.stringify({
+          designRegistration: `${speech(3)}/registration.json`,
+          lines: [
+            {
+              audio: `${speech(4)}/audio.wav`,
+              lipSync: `${speech(5)}/track.json`,
+            },
+          ],
+        }),
+      );
+    }
+    await write(
+      `${speech(3)}/registration.json`,
+      JSON.stringify({ designManifest: `${speech(6)}/design.json` }),
+    );
+    await write(`${speech(4)}/audio.wav`);
+    await write(`${speech(4)}/record.json`, '{}');
+    await write(`${speech(5)}/track.json`, '{}');
+    await write(`${speech(6)}/design.json`, '{}');
+    await write(`${speech(6)}/preview-1.mp3`);
+    await write(`${speech(7)}/design.json`, '{}');
+    await write(`${speech(7)}/preview-1.mp3`);
+    await write(`${speech(8)}/audio.wav`);
+    const report = await auditAssets(root, options);
+    assert.deepEqual(
+      report.remove.map((g) => g.id).sort(),
+      [speech(7), speech(8)].sort(),
+    );
+    for (const n of [1, 2])
+      assert.ok(
+        report.kept
+          .find((g) => g.id === speech(n))
+          .reasons.includes('trvalá evidence uvolnění hlasu'),
+      );
+    await cleanAssets(root, options);
+    for (const n of [1, 2, 3, 4, 5, 6])
+      assert.ok(await fs.stat(path.join(root, 'src/assets', speech(n))));
+  });
+});

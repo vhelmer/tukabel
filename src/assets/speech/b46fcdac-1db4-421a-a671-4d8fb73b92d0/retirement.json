@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "operation": "superseded-voice-retirement",
+  "provider": "elevenlabs",
+  "userAuthorized": true,
+  "started": true,
+  "voiceId": "Iu5SuHOmMFnQrH4OjSZ3",
+  "actorKey": "scene1/layer2",
+  "proofs": [
+    {
+      "dialogueId": "dezo-chat",
+      "nodeId": "scrapyard",
+      "audio": "speech/fc55c0df-c3e6-45bc-a07c-87f88eaab271/audio.wav",
+      "lipSync": "speech/cd0c3e56-cd5f-4eec-9e49-c3e0472dd752/track.lipsync.json",
+      "audioSha256": "89c96e09b59effdab1d51f80c81565da070b091a04517e66884dccd9803c4c51",
+      "replacementVoiceId": "hK1QkZqr6jNBJ8sJlEuc",
+      "decoded": { "duration": 10, "rms": 0.1214230768408957 }
+    },
+    {
+      "dialogueId": "dezo-chat",
+      "nodeId": "deposit",
+      "audio": "speech/654bc89b-7eaa-4cd4-9aef-c3e856f56552/audio.wav",
+      "lipSync": "speech/37b35811-34da-4207-9298-cec415c65520/track.lipsync.json",
+      "audioSha256": "a4866a7bf95e00b8387cabdbc568a9162dcea9b63eca66cedacd9f7453c39387",
+      "replacementVoiceId": "hK1QkZqr6jNBJ8sJlEuc",
+      "decoded": { "duration": 10.32, "rms": 0.11557312302064504 }
+    },
+    {
+      "dialogueId": "dezo-chat",
+      "nodeId": "hearse",
+      "audio": "speech/8424702f-27e7-4e7a-a213-58c2eadf0983/audio.wav",
+      "lipSync": "speech/17289ce0-695d-4ace-8b57-e643f6b3a60a/track.lipsync.json",
+      "audioSha256": "55b0c9af205a810de7c693e4117ab974a5370d0d5b57a3d8216dd84a19bb2492",
+      "replacementVoiceId": "hK1QkZqr6jNBJ8sJlEuc",
+      "decoded": { "duration": 9.84, "rms": 0.1131508904177098 }
+    },
+    {
+      "dialogueId": "dezo-bottle",
+      "nodeId": "line",
+      "audio": "speech/1d88947b-60fc-472b-b543-8faad4c95b00/audio.wav",
+      "lipSync": "speech/e37c04eb-029e-4ec7-8fa6-0b1003aa168c/track.lipsync.json",
+      "audioSha256": "ba892101247bb38bffa52b00a74edc327aca0e5441464db29f68c097cc249255",
+      "replacementVoiceId": "hK1QkZqr6jNBJ8sJlEuc",
+      "decoded": { "duration": 8.56, "rms": 0.12200322701809434 }
+    }
+  ],
+  "deleted": true,
+  "deletedAt": "2026-10-29T09:42:39.162Z"
+}

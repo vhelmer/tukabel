@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "operation": "voice-registration",
+  "provider": "elevenlabs",
+  "designManifest": "speech/0888c67a-f28c-42d3-ac56-09029b7e1b5a/design.json",
+  "designSha256": "6b8e06d198b55851c6357abf58605efc91d21582a0ba2931f22ccac92cbfa6a2",
+  "generatedVoiceId": "GTTXoS7HeTELz6svNEnz",
+  "previewIndex": 1,
+  "voiceId": "GTTXoS7HeTELz6svNEnz",
+  "name": "TUKABEL · Béla · Ultravysoký nervózní nosový pískot",
+  "description": "Native Slovak, clear Slovak vowels and consonants with a light eastern Slovak cadence. An adult man aged thirty-five with an outrageous, very high pinched nasal falsetto. Audibly a grown male comic actor projecting a strained stage head voice, with occasional coarse mature chesty catches. Thin mosquito-like reed resonance, jittery staccato delivery and nervous sudden upward leaps. Urgent tightly packed little bursts followed by pompously certain declarations. Entirely different from a booming bass or melodic female soprano: brittle, nasal, tightly wound and sarcastic. Very exaggerated adult character acting while every word remains clear. Dry close studio recording, no background, music, effects or digital pitch shifting."
+}

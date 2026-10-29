@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "operation": "voice-design-casting",
+  "actor": "scene4/layer2",
+  "name": "Margita",
+  "direction": "[hoarse, cutting voice] [annoyed]",
+  "designManifest": "speech/c29dd33d-69df-45b2-b172-b4026bc40404/design.json",
+  "registrationManifest": "speech/3c173f79-5e0a-4142-8a2f-cc8264dbf81e/registration.json",
+  "voiceId": "H4DieoTMxMYl6lx1prWW"
+}

@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "operation": "voice-registration",
+  "provider": "elevenlabs",
+  "designManifest": "speech/c29dd33d-69df-45b2-b172-b4026bc40404/design.json",
+  "designSha256": "ca6411114151917105dfbc419cef7e4102ebb7376c7d25b059fae2037d8516b2",
+  "generatedVoiceId": "H4DieoTMxMYl6lx1prWW",
+  "previewIndex": 2,
+  "voiceId": "H4DieoTMxMYl6lx1prWW",
+  "name": "TUKABEL · Margita · Ostrý chraplavý skřehot",
+  "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Female, about fifty. A ferocious, commanding woman: low-mid chest voice with a metallic saw-toothed buzz, extremely coarse raspy edges and pinched nasal bite. Sharp barking starts, brutally clipped endings and sudden theatrical rises of annoyance. The unmistakable delivery of a household commander shouting over an argument, hilarious and impatient, NEVER smooth or soothing. Strong middle register, no breathy softness. Standard colloquial Slovak, aggressive staccato emphasis. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts."
+}

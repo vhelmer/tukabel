@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "operation": "voice-design",
+  "provider": "elevenlabs",
+  "model": "eleven_ttv_v3",
+  "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Female, about fifty. A ferocious, commanding woman: low-mid chest voice with a metallic saw-toothed buzz, extremely coarse raspy edges and pinched nasal bite. Sharp barking starts, brutally clipped endings and sudden theatrical rises of annoyance. The unmistakable delivery of a household commander shouting over an argument, hilarious and impatient, NEVER smooth or soothing. Strong middle register, no breathy softness. Standard colloquial Slovak, aggressive staccato emphasis. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts.",
+  "text": "[hoarse, cutting voice] [annoyed] Tu máš rožok a pásku. Rožok nedávaj do rozvodu. Je tvrdší než izolácia, ale priťahuje mravce. V noci tu šiel biely pohrebák. Z kufra mu trčal kábel. Myslela som, že zasa niekto zakopáva nabíjačku. Naposledy opravil zvonček tak, že som otvorila dvere a sused dostal výpoveď. Teraz už iba škriabe hlavu.",
+  "textSha256": "e687e002d3a52c9547a17ca2749da715a72853dad907b4c8f5cf8105513b07ce",
+  "seed": 61474,
+  "guidanceScale": 5,
+  "outputFormat": "mp3_44100_128",
+  "previews": [
+    {
+      "audio": "preview-1.mp3",
+      "generatedVoiceId": "TJoaHxgwWLsnemtN97Ql",
+      "duration": 22.2851875,
+      "audioSha256": "f19f27bc1dfc286cb202ec479ba44a9f32ae8b80c24861918e5fc14f21ab23fb"
+    },
+    {
+      "audio": "preview-2.mp3",
+      "generatedVoiceId": "1XwvsDJml8HEsD5QWjxB",
+      "duration": 21.397,
+      "audioSha256": "02fcb99c1bb9d726b72a900d72bacbb50cae728718fbf3bea1e153139822b7d2"
+    },
+    {
+      "audio": "preview-3.mp3",
+      "generatedVoiceId": "H4DieoTMxMYl6lx1prWW",
+      "duration": 22.52025,
+      "audioSha256": "535cddbd0e1770d0c19c79842da97c47b76eceadc8688831e8924334c56d6289"
+    }
+  ]
+}

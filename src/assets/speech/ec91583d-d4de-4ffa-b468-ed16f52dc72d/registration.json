@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "operation": "voice-registration",
+  "provider": "elevenlabs",
+  "designManifest": "speech/50c6b658-b240-45d1-bfb3-9f92318e6633/design.json",
+  "designSha256": "8aae4e5eb37e77806ac13a062c5222709b684fd1b251c9a14e9d80386e677d40",
+  "generatedVoiceId": "wk5NuWmufYkSfjl2kJr1",
+  "previewIndex": 2,
+  "voiceId": "wk5NuWmufYkSfjl2kJr1",
+  "name": "TUKABEL · Nika · Pisklavý zpěvavý hlas",
+  "description": "Native Slovak, crisp Slovak diction. An adult woman in her thirties, a wildly theatrical comic stage diva with a piercing bright soprano. Strong mature vocal projection, metallic whistle-like upper resonance and very precise consonants. Ridiculously elastic melodic rises and drops, smug playful emphasis, clipped decisive punchlines, then a sly drawn-out vowel. An exaggerated and slightly unnerving adult cartoon soprano, never a soft narrator. Her confident adult personality and bold acting dominate every line. Clearly intelligible speech at a moderate pace, not sustained singing. Dry close studio recording without music, echo, ambience or effects."
+}

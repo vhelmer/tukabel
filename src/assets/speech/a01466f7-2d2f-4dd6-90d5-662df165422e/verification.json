@@ -1,0 +1,86 @@
+{
+  "version": 1,
+  "operation": "voice-retirement-verification",
+  "provider": "elevenlabs",
+  "verifiedAt": "2026-10-29T09:47:15.335Z",
+  "projectId": "tukabel-complete-1",
+  "actor": { "sceneId": "scene7", "hotspotId": "sand-girl" },
+  "voiceId": "wk5NuWmufYkSfjl2kJr1",
+  "designRegistration": "speech/ec91583d-d4de-4ffa-b468-ed16f52dc72d/registration.json",
+  "registrationSha256": "026515c2009d8bd53bf9cc6130757f0f10ea19ade3689469db1d947128d62af0",
+  "registration": {
+    "version": 1,
+    "operation": "voice-registration",
+    "provider": "elevenlabs",
+    "designManifest": "speech/50c6b658-b240-45d1-bfb3-9f92318e6633/design.json",
+    "designSha256": "8aae4e5eb37e77806ac13a062c5222709b684fd1b251c9a14e9d80386e677d40",
+    "generatedVoiceId": "wk5NuWmufYkSfjl2kJr1",
+    "previewIndex": 2,
+    "voiceId": "wk5NuWmufYkSfjl2kJr1",
+    "name": "TUKABEL · Nika · Pisklavý zpěvavý hlas",
+    "description": "Native Slovak, crisp Slovak diction. An adult woman in her thirties, a wildly theatrical comic stage diva with a piercing bright soprano. Strong mature vocal projection, metallic whistle-like upper resonance and very precise consonants. Ridiculously elastic melodic rises and drops, smug playful emphasis, clipped decisive punchlines, then a sly drawn-out vowel. An exaggerated and slightly unnerving adult cartoon soprano, never a soft narrator. Her confident adult personality and bold acting dominate every line. Clearly intelligible speech at a moderate pace, not sustained singing. Dry close studio recording without music, echo, ambience or effects."
+  },
+  "lines": [
+    {
+      "dialogueId": "girl-chat",
+      "nodeId": "tracks",
+      "actor": { "sceneId": "scene7", "hotspotId": "sand-girl" },
+      "text": "[piercing, theatrical adult soprano] [mischievously] Plán úniku. Z ihriska sa dá uniknúť len tak, že vyrastieš. Ten pohrebák šiel ku kostolu, ak riešiš dospelácke problémy.",
+      "textSha256": "8bbc38b3ddc96730b9747f4dda40cf4dbc8a52ec73333d59b6ef469092738210",
+      "audio": "speech/6fc4e09a-e888-4a77-a246-4f25f791e2c2/audio.wav",
+      "audioSha256": "e7a9bd7e4610a4f2616e82f1fdc7060f5758cd9d2c3fdecf080ff551db0e1243",
+      "duration": 9.6,
+      "rms": 3031.3476306241837,
+      "peak": 20884,
+      "lipSync": "speech/e03f112a-4643-4ae4-b445-804c78a60128/track.lipsync.json",
+      "lipSyncSha256": "c699716e95508993b5c558ca56d66bd05afcd4eae6485b3a111901b4b45a4910",
+      "subtitles": {
+        "text": "Plán úniku. Z ihriska sa dá uniknúť len tak, že vyrastieš. Ten pohrebák šiel ku kostolu, ak riešiš dospelácke problémy.",
+        "timing": "alignment",
+        "cues": [
+          {
+            "start": 0.164,
+            "end": 5.284,
+            "text": "Plán úniku. Z ihriska sa dá uniknúť len tak, že vyrastieš."
+          },
+          {
+            "start": 5.604,
+            "end": 9.6,
+            "text": "Ten pohrebák šiel ku kostolu, ak riešiš dospelácke problémy."
+          }
+        ]
+      },
+      "record": "speech/6fc4e09a-e888-4a77-a246-4f25f791e2c2/record.json",
+      "recordSha256": "b6f78e5b54d5a60d4882dbd4ff55c8c0f1d74dff113127da541857cdc672748b",
+      "alignment": "speech/6fc4e09a-e888-4a77-a246-4f25f791e2c2/alignment.json"
+    },
+    {
+      "dialogueId": "girl-chat",
+      "nodeId": "token",
+      "actor": { "sceneId": "scene7", "hotspotId": "sand-girl" },
+      "text": "[piercing, theatrical adult soprano] [mischievously] Podložka a zlatý obal. Ale otec hovorí, že skrat je tiež výhra. Ak si poistený.",
+      "textSha256": "65062fd9ac86ee0c23e62f442bb6a29562c4758bee07fb0dec88881e25bc496f",
+      "audio": "speech/1a69b03e-f919-47d8-86ea-9ba99005a388/audio.wav",
+      "audioSha256": "bde7a83c6e2322ebb55feb0eb0286f0658da5c5d5c6a9bf1fe87ee01f6f5251f",
+      "duration": 7.36,
+      "rms": 3113.633489831858,
+      "peak": 25863,
+      "lipSync": "speech/4f1d216a-059a-4461-bdb2-a5c4db302490/track.lipsync.json",
+      "lipSyncSha256": "fc423154c74a6ddf9bb0095d13dfa4ff04f37ec59a20bc8f007b82780379b87d",
+      "subtitles": {
+        "text": "Podložka a zlatý obal. Ale otec hovorí, že skrat je tiež výhra. Ak si poistený.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 5.944615384615385,
+            "text": "Podložka a zlatý obal. Ale otec hovorí, že skrat je tiež výhra."
+          },
+          { "start": 5.944615384615385, "end": 7.36, "text": "Ak si poistený." }
+        ]
+      },
+      "record": "speech/1a69b03e-f919-47d8-86ea-9ba99005a388/record.json",
+      "recordSha256": "a30164fdf0ec8fc8fbeb6d8d834b0f269317c980a8c9b1a14cfac4df7586eb3f"
+    }
+  ]
+}

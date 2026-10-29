@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "operation": "voice-registration",
+  "provider": "elevenlabs",
+  "designManifest": "speech/e65e31d6-a962-49ed-a349-d824653fafba/design.json",
+  "designSha256": "c60d8437d90b61735563abbb4ce7ffc0b460c5d65a131017f65fa12107a4d4eb",
+  "generatedVoiceId": "Cs0q9bNTpnXhVCnLNXGI",
+  "previewIndex": 0,
+  "voiceId": "Cs0q9bNTpnXhVCnLNXGI",
+  "name": "TUKABEL · Ľubo Šťastný · Manický skřek s prudkými propady",
+  "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Male, late forties. A deranged miniature casino ringmaster: brittle breathless high falsetto, needle-sharp reedy nasal edge and a little raspy cackle in the voice. Manic sales-pitch bursts, enormous gloating rises, tense giggly catches and sudden guttural low drops on sinister punchlines before springing straight back up. Smug, hysterically excited and unstable, never a suave ordinary villain or calm narrator. The excitement lives in his voice, not added laughter sound effects. Highly exaggerated register swings with a mostly high male placement. Crisp intelligible Slovak. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts."
+}

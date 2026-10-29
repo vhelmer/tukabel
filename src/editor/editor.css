@@ -728,10 +728,12 @@
 }
 
 .voice-settings,
+.voice-design,
 .mouth-mapping {
   margin-top: 20px;
 }
 .voice-settings summary,
+.voice-design summary,
 .mouth-mapping summary {
   font-weight: bold;
   cursor: pointer;

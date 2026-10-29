@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "operation": "voice-design-casting",
+  "actor": "scene12/layer1",
+  "name": "Ľubo Šťastný",
+  "direction": "[brittle, manic falsetto] [excited]",
+  "designManifest": "speech/e65e31d6-a962-49ed-a349-d824653fafba/design.json",
+  "registrationManifest": "speech/21f9abba-7505-4707-a9f6-afdfaf7fc065/registration.json",
+  "voiceId": "Cs0q9bNTpnXhVCnLNXGI"
+}

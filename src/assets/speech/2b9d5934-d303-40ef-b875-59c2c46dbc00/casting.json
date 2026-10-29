@@ -1,0 +1,1494 @@
+{
+  "version": 1,
+  "operation": "voice-design-cast",
+  "generatedAt": "2026-10-29T09:49:50.766Z",
+  "projectId": "tukabel-complete-1",
+  "policy": {
+    "maxOwnedVoices": 10,
+    "staticSlots": 8,
+    "rotatingSlots": 2,
+    "staticVoicesNeverDeleted": true,
+    "retireOnlyAfterVerifiedLocalAudio": true
+  },
+  "provider": "elevenlabs",
+  "designModel": "eleven_ttv_v3",
+  "speechModel": "eleven_v4",
+  "languageCode": "sk",
+  "selectionNote": "Candidates chosen using acoustic pitch/range fit to directions, with decoded signal checks; subjective listening is not claimed.",
+  "actors": [
+    {
+      "actor": "scene4/layer1",
+      "name": "Fero",
+      "direction": "Vykouřený basový řev",
+      "slot": "static",
+      "status": "active",
+      "voiceId": "T4iGZQue94RIBivJIuhN",
+      "design": "speech/b04b5c65-aa5e-4222-b29a-6ab436c97532/design.json",
+      "registration": "speech/5f2733be-0b82-4f59-beb3-a96abae946fe/registration.json",
+      "description": "Native Slovak, slovenčina, clearly articulated Slovak consonants and vowels. Male, late fifties. Persona: furious village tournament organiser in a grotesque animated black comedy. An EXTREME burnt-out, chain-smoked bass-baritone: dense chest resonance, abrasive broken gravel, harsh creaking vocal fry, as if every sentence has to force its way past a sack of stones. Barking commands, sudden incredulous upward lunges, emphatic punchlines and irritated breathy growls between clauses. Very theatrical, explosive, rough and ridiculous, never a polite narrator or a normal conversational man. Low-mid register with violent intonation swings, NOT a whisper. Mild eastern Slovak cadence only; the personality comes from texture and acting. Every word must remain intelligible. Clean close dry recording, no music, ambience or effects.",
+      "deliveryTags": "[low, gravelly voice] [angry]",
+      "voiceSettings": {
+        "modelId": "eleven_v4",
+        "stability": 0.25,
+        "similarityBoost": 0.72,
+        "style": 0.8,
+        "speed": 1,
+        "useSpeakerBoost": true
+      },
+      "selectedPreview": 2,
+      "selectionMethod": "Acoustic pitch fit to character direction; no subjective listening claim",
+      "candidateMetrics": [
+        {
+          "duration": 17.162448979591836,
+          "rms": 0.11453969051866279,
+          "peak": 0.6524676084518433,
+          "clippingFraction": 0,
+          "medianF0": 285.91019754489975,
+          "p10F0": 236.36997155128205,
+          "p90F0": 320.9227712442097,
+          "voicedFraction": 0.6304347826086957
+        },
+        {
+          "duration": 15.960816326530612,
+          "rms": 0.11578241718886303,
+          "peak": 0.6766221523284912,
+          "clippingFraction": 0,
+          "medianF0": 276.1436167965542,
+          "p10F0": 205.02464883500414,
+          "p90F0": 300.72097410829724,
+          "voicedFraction": 0.4185185185185185
+        },
+        {
+          "duration": 14.602448979591836,
+          "rms": 0.12395443324874222,
+          "peak": 0.8342574238777161,
+          "clippingFraction": 0,
+          "medianF0": 269.58575496393235,
+          "p10F0": 244.34317660601806,
+          "p90F0": 293.0970440735093,
+          "voicedFraction": 0.5301204819277109
+        }
+      ],
+      "previews": [
+        {
+          "audio": "speech/b04b5c65-aa5e-4222-b29a-6ab436c97532/preview-1.mp3",
+          "generatedVoiceId": "YT7GNUz0scw5kKDMEBci",
+          "duration": 17.1651875
+        },
+        {
+          "audio": "speech/b04b5c65-aa5e-4222-b29a-6ab436c97532/preview-2.mp3",
+          "generatedVoiceId": "2Sok7NmoE5ImNGRtI1K8",
+          "duration": 15.9635625
+        },
+        {
+          "audio": "speech/b04b5c65-aa5e-4222-b29a-6ab436c97532/preview-3.mp3",
+          "generatedVoiceId": "T4iGZQue94RIBivJIuhN",
+          "duration": 14.6051875
+        }
+      ],
+      "dialogues": [
+        {
+          "dialogueId": "fero-intro",
+          "nodeId": "briefing",
+          "status": "verified-local",
+          "text": "[low, gravelly voice] [angry] Rudo! Niekto nám ukradol hlavný elektrický kábel. Celá osada je bez prúdu a majstrovstvá v automatoch v riti. Nájdi ho a máš štartovné zadarmo. Vyšetruj, len mi pri tom nezožer rodinu.",
+          "subtitle": "Rudo! Niekto nám ukradol hlavný elektrický kábel. Celá osada je bez prúdu a majstrovstvá v automatoch v riti. Nájdi ho a máš štartovné zadarmo. Vyšetruj, len mi pri tom nezožer rodinu.",
+          "audio": "speech/c4ee92a2-5386-4331-9c95-9840c71d5fd1/audio.wav",
+          "lipSync": "speech/7460ab15-38de-4c04-bb76-c0eb43ca02a6/track.lipsync.json",
+          "duration": 12.8,
+          "audioSha256": "20cde545d36498ab1ce1db830bb674e9fd94610a490514b9560888f04ebf3caa"
+        },
+        {
+          "dialogueId": "fero-chat",
+          "nodeId": "case",
+          "status": "verified-local",
+          "text": "[low, gravelly voice] [angry] Hlavný kábel. Nie predlžovačka, čo ňou Margita vešia klobásy. Zvyšok rozvodu zostal celý. Keď ho nájdeš, oblep koniec a pichni do skrine napravo.",
+          "subtitle": "Hlavný kábel. Nie predlžovačka, čo ňou Margita vešia klobásy. Zvyšok rozvodu zostal celý. Keď ho nájdeš, oblep koniec a pichni do skrine napravo.",
+          "audio": "speech/bdfc921f-b552-4049-9e53-cf687a86715c/audio.wav",
+          "lipSync": "speech/87bbfb46-46e3-4ed4-bcf5-af68f73b34a3/track.lipsync.json",
+          "duration": 10.48,
+          "audioSha256": "85a637419add486276b6ccdd598fe53dc98874cc32f1bd43da482ffd87d6cb8f"
+        },
+        {
+          "dialogueId": "fero-chat",
+          "nodeId": "suspects",
+          "status": "verified-local",
+          "text": "[low, gravelly voice] [angry] Ľubo Šťastný. Potom vraj zomrel. Ideálne načasovanie: dlhy zdedila urna a výhru nikto nevrátil.",
+          "subtitle": "Ľubo Šťastný. Potom vraj zomrel. Ideálne načasovanie: dlhy zdedila urna a výhru nikto nevrátil.",
+          "audio": "speech/2e4f4a7d-2a3f-44c0-8aca-35ef4a5b935c/audio.wav",
+          "lipSync": "speech/5f052a36-a18a-4964-89f2-9d2b0c7f8c17/track.lipsync.json",
+          "duration": 8.32,
+          "audioSha256": "5139204cfbbaddbf3cabbea5235fcbcf0cd6c4af405c19380935e165cd98f37e"
+        },
+        {
+          "dialogueId": "fero-chat",
+          "nodeId": "reward",
+          "status": "verified-local",
+          "text": "[low, gravelly voice] [angry] Na moje živé deti. Teda na tie, čo sa ešte neodsťahovali. Všetky predĺžené záruky mám na teba.",
+          "subtitle": "Na moje živé deti. Teda na tie, čo sa ešte neodsťahovali. Všetky predĺžené záruky mám na teba.",
+          "audio": "speech/553b42db-0490-4be5-931b-9ef77dfa7ffc/audio.wav",
+          "lipSync": "speech/187da080-06b0-4803-9392-cfd349c1ff55/track.lipsync.json",
+          "duration": 7.44,
+          "audioSha256": "516d9d985f0723c14e6325203f1a0ec78f8219cc8209854433f0db13a5295036"
+        }
+      ]
+    },
+    {
+      "actor": "scene4/layer2",
+      "name": "Margita",
+      "direction": "Ostrý chraplavý skřehot",
+      "slot": "rotating",
+      "status": "retired",
+      "voiceId": "H4DieoTMxMYl6lx1prWW",
+      "design": "speech/c29dd33d-69df-45b2-b172-b4026bc40404/design.json",
+      "registration": "speech/3c173f79-5e0a-4142-8a2f-cc8264dbf81e/registration.json",
+      "retirement": "speech/8bd58844-ca4a-4273-abc9-cef97e161d3a/retirement.json",
+      "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Female, about fifty. A ferocious, commanding woman: low-mid chest voice with a metallic saw-toothed buzz, extremely coarse raspy edges and pinched nasal bite. Sharp barking starts, brutally clipped endings and sudden theatrical rises of annoyance. The unmistakable delivery of a household commander shouting over an argument, hilarious and impatient, NEVER smooth or soothing. Strong middle register, no breathy softness. Standard colloquial Slovak, aggressive staccato emphasis. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts.",
+      "deliveryTags": "[hoarse, cutting voice] [annoyed]",
+      "voiceSettings": {
+        "modelId": "eleven_v4",
+        "stability": 0.25,
+        "similarityBoost": 0.72,
+        "style": 0.8,
+        "speed": 1,
+        "useSpeakerBoost": true
+      },
+      "selectedPreview": 2,
+      "selectionMethod": "Acoustic pitch fit to character direction; no subjective listening claim",
+      "candidateMetrics": [
+        {
+          "duration": 22.282448979591837,
+          "rms": 0.11430127708309758,
+          "peak": 0.6148813962936401,
+          "clippingFraction": 0,
+          "medianF0": 262.73525434658467,
+          "p10F0": 228.15462571742458,
+          "p90F0": 308.1431576199961,
+          "voicedFraction": 0.6537396121883656
+        },
+        {
+          "duration": 21.394285714285715,
+          "rms": 0.10619567210681181,
+          "peak": 0.8717028498649597,
+          "clippingFraction": 0,
+          "medianF0": 231.46792401694628,
+          "p10F0": 194.07216083686095,
+          "p90F0": 275.0806073532474,
+          "voicedFraction": 0.5043988269794721
+        },
+        {
+          "duration": 22.517551020408163,
+          "rms": 0.07367569766861129,
+          "peak": 0.6214777231216431,
+          "clippingFraction": 0,
+          "medianF0": 223.95729824920346,
+          "p10F0": 181.5459815115712,
+          "p90F0": 285.7249093217371,
+          "voicedFraction": 0.401840490797546
+        }
+      ],
+      "previews": [
+        {
+          "audio": "speech/c29dd33d-69df-45b2-b172-b4026bc40404/preview-1.mp3",
+          "generatedVoiceId": "TJoaHxgwWLsnemtN97Ql",
+          "duration": 22.2851875
+        },
+        {
+          "audio": "speech/c29dd33d-69df-45b2-b172-b4026bc40404/preview-2.mp3",
+          "generatedVoiceId": "1XwvsDJml8HEsD5QWjxB",
+          "duration": 21.397
+        },
+        {
+          "audio": "speech/c29dd33d-69df-45b2-b172-b4026bc40404/preview-3.mp3",
+          "generatedVoiceId": "H4DieoTMxMYl6lx1prWW",
+          "duration": 22.52025
+        }
+      ],
+      "dialogues": [
+        {
+          "dialogueId": "wife-chat",
+          "nodeId": "supplies",
+          "status": "verified-local",
+          "text": "[hoarse, cutting voice] [annoyed] Tu máš rožok a pásku. Rožok nedávaj do rozvodu. Je tvrdší než izolácia, ale priťahuje mravce.",
+          "subtitle": "Tu máš rožok a pásku. Rožok nedávaj do rozvodu. Je tvrdší než izolácia, ale priťahuje mravce.",
+          "audio": "speech/52b7111a-3ab1-46df-94a7-7cddee772719/audio.wav",
+          "lipSync": "speech/3da5d442-aae1-4008-9113-b16459f468d2/track.lipsync.json",
+          "duration": 6.96,
+          "audioSha256": "0f61d43c9a4cbf678dba3187fa71ec6a809c754d070cfafea49701a85736eca8"
+        },
+        {
+          "dialogueId": "wife-chat",
+          "nodeId": "gossip",
+          "status": "verified-local",
+          "text": "[hoarse, cutting voice] [annoyed] V noci tu šiel biely pohrebák. Z kufra mu trčal kábel. Myslela som, že zasa niekto zakopáva nabíjačku.",
+          "subtitle": "V noci tu šiel biely pohrebák. Z kufra mu trčal kábel. Myslela som, že zasa niekto zakopáva nabíjačku.",
+          "audio": "speech/8a0d107b-eb8f-45be-bf28-cd1505f7d5ef/audio.wav",
+          "lipSync": "speech/ac60119d-fa49-4723-9740-12c5364a180a/track.lipsync.json",
+          "alignment": "speech/8a0d107b-eb8f-45be-bf28-cd1505f7d5ef/alignment.json",
+          "duration": 7.52,
+          "audioSha256": "5880a8e056cd29ca03a8272942c1f6e100a17d0e368401d9605286c426337283"
+        },
+        {
+          "dialogueId": "wife-chat",
+          "nodeId": "fero",
+          "status": "verified-local",
+          "text": "[hoarse, cutting voice] [annoyed] Naposledy opravil zvonček tak, že som otvorila dvere a sused dostal výpoveď. Teraz už iba škriabe hlavu.",
+          "subtitle": "Naposledy opravil zvonček tak, že som otvorila dvere a sused dostal výpoveď. Teraz už iba škriabe hlavu.",
+          "audio": "speech/e9e78fa1-7324-4a08-aaec-d82faa1d2bda/audio.wav",
+          "lipSync": "speech/675c94f8-7944-4e14-ad2c-07625ed5f11e/track.lipsync.json",
+          "duration": 7.28,
+          "audioSha256": "48711019febdc13afebfc7061b5ef1067ce04e885f185d8129a239e942a6a0f2"
+        }
+      ]
+    },
+    {
+      "actor": "scene1/layer2",
+      "name": "Dežo Magnet",
+      "direction": "Nervózní nosový tenor",
+      "slot": "static",
+      "status": "active",
+      "voiceId": "hK1QkZqr6jNBJ8sJlEuc",
+      "design": "speech/0cd4cbcc-3892-4575-a678-9a1bf9c070c1/design.json",
+      "registration": "speech/3e8208b6-b0b3-4340-b834-33458c4b61fa/registration.json",
+      "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Male, forties. A paranoid but clever inventor of ridiculous explanations. Very thin, tightly pinched nasal tenor with a squeaking reed-like edge and a nervous dry rasp. Jagged rushed bursts, tiny hesitations, abrupt suspicious whispers and stressed syllables jumping sharply in pitch. Audibly wound-up, twitchy and defensive, with comically precise conspiratorial emphasis, never relaxed. Upper-mid male register, brisk clear articulation. A modest eastern Slovak rhythm and occasional natural ta/shak cadence, not an imitation of a real person. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts.",
+      "deliveryTags": "[pinched nasal voice] [nervous]",
+      "voiceSettings": {
+        "modelId": "eleven_v4",
+        "stability": 0,
+        "similarityBoost": 0.72,
+        "style": 0.8,
+        "speed": 1,
+        "useSpeakerBoost": true
+      },
+      "selectedPreview": 0,
+      "selectionMethod": "Acoustic pitch fit to character direction; no subjective listening claim",
+      "candidateMetrics": [
+        {
+          "duration": 27.16734693877551,
+          "rms": 0.10816172536413206,
+          "peak": 0.7816140651702881,
+          "clippingFraction": 0,
+          "medianF0": 133.69804598677854,
+          "p10F0": 105.18957194228385,
+          "p90F0": 182.97935829147826,
+          "voicedFraction": 0.34174311926605505
+        },
+        {
+          "duration": 29.231020408163264,
+          "rms": 0.0848820119550471,
+          "peak": 0.938774049282074,
+          "clippingFraction": 0,
+          "medianF0": 106.24612885596886,
+          "p10F0": 89.45899104885562,
+          "p90F0": 150.76477175232745,
+          "voicedFraction": 0.19617224880382775
+        },
+        {
+          "duration": 30.197551020408163,
+          "rms": 0.09277725702826405,
+          "peak": 0.8662915825843811,
+          "clippingFraction": 0,
+          "medianF0": 114.11050125955205,
+          "p10F0": 99.21407339194218,
+          "p90F0": 144.35893955490434,
+          "voicedFraction": 0.19542619542619544
+        }
+      ],
+      "previews": [
+        {
+          "audio": "speech/0cd4cbcc-3892-4575-a678-9a1bf9c070c1/preview-1.mp3",
+          "generatedVoiceId": "hK1QkZqr6jNBJ8sJlEuc",
+          "duration": 27.1700625
+        },
+        {
+          "audio": "speech/0cd4cbcc-3892-4575-a678-9a1bf9c070c1/preview-2.mp3",
+          "generatedVoiceId": "IP5QPAWLvDoPanE6BkqN",
+          "duration": 29.23375
+        },
+        {
+          "audio": "speech/0cd4cbcc-3892-4575-a678-9a1bf9c070c1/preview-3.mp3",
+          "generatedVoiceId": "Tgnggby36FUouH8FnJRZ",
+          "duration": 30.20025
+        }
+      ],
+      "dialogues": [
+        {
+          "dialogueId": "dezo-chat",
+          "nodeId": "scrapyard",
+          "status": "verified-local",
+          "text": "[pinched nasal voice] [nervous] Všetci hneď na mňa, lebo mám magnet. Meď sa naň nechytá, génius. Skús Dinga v zberni. Zaspal pri vyhlasovaní vlastnej pracovnej doby.",
+          "subtitle": "Všetci hneď na mňa, lebo mám magnet. Meď sa naň nechytá, génius. Skús Dinga v zberni. Zaspal pri vyhlasovaní vlastnej pracovnej doby.",
+          "audio": "speech/fc55c0df-c3e6-45bc-a07c-87f88eaab271/audio.wav",
+          "lipSync": "speech/cd0c3e56-cd5f-4eec-9e49-c3e0472dd752/track.lipsync.json",
+          "alignment": "speech/fc55c0df-c3e6-45bc-a07c-87f88eaab271/alignment.json",
+          "duration": 10,
+          "audioSha256": "89c96e09b59effdab1d51f80c81565da070b091a04517e66884dccd9803c4c51"
+        },
+        {
+          "dialogueId": "dezo-chat",
+          "nodeId": "deposit",
+          "status": "verified-local",
+          "text": "[pinched nasal voice] [nervous] Čakám na zálohu za fľašu. Autobus nepríde, ten už vyškrtli aj z cestovného poriadku. Ukáž mi fľašu a dostaneš môj magnet. Na meď mi je aj tak na hovno.",
+          "subtitle": "Čakám na zálohu za fľašu. Autobus nepríde, ten už vyškrtli aj z cestovného poriadku. Ukáž mi fľašu a dostaneš môj magnet. Na meď mi je aj tak na hovno.",
+          "audio": "speech/654bc89b-7eaa-4cd4-9aef-c3e856f56552/audio.wav",
+          "lipSync": "speech/37b35811-34da-4207-9298-cec415c65520/track.lipsync.json",
+          "duration": 10.32,
+          "audioSha256": "a4866a7bf95e00b8387cabdbc568a9162dcea9b63eca66cedacd9f7453c39387"
+        },
+        {
+          "dialogueId": "dezo-chat",
+          "nodeId": "hearse",
+          "status": "verified-local",
+          "text": "[pinched nasal voice] [nervous] Hej. Šofér si kupoval bagetu. Na mŕtvolu mal výborný apetít. Na smerovke mal veniec s nápisom ĽUBO, VRÁŤ DVE EURÁ.",
+          "subtitle": "Hej. Šofér si kupoval bagetu. Na mŕtvolu mal výborný apetít. Na smerovke mal veniec s nápisom ĽUBO, VRÁŤ DVE EURÁ.",
+          "audio": "speech/8424702f-27e7-4e7a-a213-58c2eadf0983/audio.wav",
+          "lipSync": "speech/17289ce0-695d-4ace-8b57-e643f6b3a60a/track.lipsync.json",
+          "alignment": "speech/8424702f-27e7-4e7a-a213-58c2eadf0983/alignment.json",
+          "duration": 9.84,
+          "audioSha256": "55b0c9af205a810de7c693e4117ab974a5370d0d5b57a3d8216dd84a19bb2492"
+        },
+        {
+          "dialogueId": "dezo-bottle",
+          "nodeId": "line",
+          "status": "verified-local",
+          "text": "[pinched nasal voice] [nervous] Vratná fľaša! Aspoň niečo tu má budúcnosť. Magnet je tvoj, fľašu si nechaj. Ešte sa ti zíde na tekuté dôkazy.",
+          "subtitle": "Vratná fľaša! Aspoň niečo tu má budúcnosť. Magnet je tvoj, fľašu si nechaj. Ešte sa ti zíde na tekuté dôkazy.",
+          "audio": "speech/1d88947b-60fc-472b-b543-8faad4c95b00/audio.wav",
+          "lipSync": "speech/e37c04eb-029e-4ec7-8fa6-0b1003aa168c/track.lipsync.json",
+          "duration": 8.56,
+          "audioSha256": "ba892101247bb38bffa52b00a74edc327aca0e5441464db29f68c097cc249255"
+        }
+      ]
+    },
+    {
+      "actor": "scene1/layer1",
+      "name": "Etela Pečiatka",
+      "direction": "Papírově suchý pisklavý hlas",
+      "slot": "static",
+      "status": "active",
+      "voiceId": "xKlQrC6RzWnhQhiCFKBS",
+      "design": "speech/5d2dea22-4799-4a9c-a44e-9a3b3b92efaa/design.json",
+      "registration": "speech/df34f616-45c6-4744-810b-48fbf2184228/registration.json",
+      "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Female, late seventies. An ancient terrifying municipal clerk with a high wiry screech, bone-dry papery crackle and extremely creaky edges. Her voice rattles and croaks between sharp little squeaks, like a rusty hinge that has learned to pronounce every bureaucratic syllable. Stamping staccato rhythm, clipped consonants, relish on threatening words and a malicious little upward curl on punchlines. High register with uneven quivering fry, NEVER a warm grandmother or polite narrator. Clear colloquial Slovak. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts.",
+      "deliveryTags": "[dry, squeaky, crackling voice] [sarcastic]",
+      "voiceSettings": {
+        "modelId": "eleven_v4",
+        "stability": 0.25,
+        "similarityBoost": 0.72,
+        "style": 0.8,
+        "speed": 1,
+        "useSpeakerBoost": true
+      },
+      "selectedPreview": 0,
+      "selectionMethod": "Acoustic pitch fit to character direction; no subjective listening claim",
+      "candidateMetrics": [
+        {
+          "duration": 39.39265306122449,
+          "rms": 0.09870023740892846,
+          "peak": 0.7257211208343506,
+          "clippingFraction": 0,
+          "medianF0": 246.26742026172653,
+          "p10F0": 167.17209124660798,
+          "p90F0": 316.1719614912704,
+          "voicedFraction": 0.6144200626959248
+        },
+        {
+          "duration": 40.59428571428571,
+          "rms": 0.09799058997480727,
+          "peak": 0.827079713344574,
+          "clippingFraction": 0,
+          "medianF0": 183.95437443506876,
+          "p10F0": 141.24196100103805,
+          "p90F0": 238.99567111236502,
+          "voicedFraction": 0.4661016949152542
+        },
+        {
+          "duration": 38.84408163265306,
+          "rms": 0.1045990306151302,
+          "peak": 0.7107679843902588,
+          "clippingFraction": 0,
+          "medianF0": 238.18481634373495,
+          "p10F0": 192.62646551106494,
+          "p90F0": 270.09333545240077,
+          "voicedFraction": 0.7163695299837926
+        }
+      ],
+      "previews": [
+        {
+          "audio": "speech/5d2dea22-4799-4a9c-a44e-9a3b3b92efaa/preview-1.mp3",
+          "generatedVoiceId": "xKlQrC6RzWnhQhiCFKBS",
+          "duration": 39.395375
+        },
+        {
+          "audio": "speech/5d2dea22-4799-4a9c-a44e-9a3b3b92efaa/preview-2.mp3",
+          "generatedVoiceId": "AghiCtb9NA785KvIV2Xa",
+          "duration": 40.597
+        },
+        {
+          "audio": "speech/5d2dea22-4799-4a9c-a44e-9a3b3b92efaa/preview-3.mp3",
+          "generatedVoiceId": "RH7QxloNR3SRNTULZBn2",
+          "duration": 38.8468125
+        }
+      ],
+      "dialogues": [
+        {
+          "dialogueId": "granny-chat",
+          "nodeId": "farm",
+          "status": "verified-local",
+          "text": "[dry, squeaky, crackling voice] [sarcastic] Za Jolandou do kravína. Krava ju živí a prasa jej robí audítora. Vraj potrebuje svätenú vodu. Kostol ju dáva zadarmo, ešte nemajú terminál.",
+          "subtitle": "Za Jolandou do kravína. Krava ju živí a prasa jej robí audítora. Vraj potrebuje svätenú vodu. Kostol ju dáva zadarmo, ešte nemajú terminál.",
+          "audio": "speech/d6fa17fe-dc87-4e8f-ac02-d4d99291c39f/audio.wav",
+          "lipSync": "speech/9cce64af-46ba-4d98-9bea-eaab7439acb8/track.lipsync.json",
+          "duration": 11.44,
+          "audioSha256": "803bdd27f4f363686521864b11b33543820e24723eca752c8a484e881eaf3b2c"
+        },
+        {
+          "dialogueId": "granny-chat",
+          "nodeId": "stamp",
+          "status": "verified-local",
+          "text": "[dry, squeaky, crackling voice] [sarcastic] Mám. Ale nedávam ju hocikomu, kto chce byť mŕtvy. Dones dôkaz, že Ľubo po pohrebe ešte niečo reklamoval. Skús servisný denník z herne.",
+          "subtitle": "Mám. Ale nedávam ju hocikomu, kto chce byť mŕtvy. Dones dôkaz, že Ľubo po pohrebe ešte niečo reklamoval. Skús servisný denník z herne.",
+          "audio": "speech/75667b14-bbb6-428f-a69d-30a55caad50d/audio.wav",
+          "lipSync": "speech/0d3cc935-901d-4f9e-89d3-f2b5178b7a05/track.lipsync.json",
+          "alignment": "speech/75667b14-bbb6-428f-a69d-30a55caad50d/alignment.json",
+          "duration": 10.96,
+          "audioSha256": "c3b6bcef15fd59bf80860a04eb91aac22c39936f207823285c6f11d0260aa8c1"
+        },
+        {
+          "dialogueId": "granny-chat",
+          "nodeId": "hearse",
+          "status": "verified-local",
+          "text": "[dry, squeaky, crackling voice] [sarcastic] Bývalý účtovník turnaja. Zomrel bez rozlúčky a s mojím hrncom. Ak vstane z mŕtvych bez neho, pochovám ho osobne.",
+          "subtitle": "Bývalý účtovník turnaja. Zomrel bez rozlúčky a s mojím hrncom. Ak vstane z mŕtvych bez neho, pochovám ho osobne.",
+          "audio": "speech/4168565c-ad65-4ac0-a9e0-52c1094a19e4/audio.wav",
+          "lipSync": "speech/f530071d-53dd-4527-b0ad-4b53da406255/track.lipsync.json",
+          "duration": 10.16,
+          "audioSha256": "24702b118eb6b5c9d4d0733079992515601cd79935da707292dba2c80b9aa5af"
+        },
+        {
+          "dialogueId": "granny-log",
+          "nodeId": "line",
+          "status": "verified-local",
+          "text": "[dry, squeaky, crackling voice] [sarcastic] Servis deň po pohrebe! Ten hajzel je živý aj podľa papierov. Tu máš pečiatku. Opečiatkuj prázdny úmrtný list z kostolnej nástenky; Milan púšťa do kaplnky iba zosnulých.",
+          "subtitle": "Servis deň po pohrebe! Ten hajzel je živý aj podľa papierov. Tu máš pečiatku. Opečiatkuj prázdny úmrtný list z kostolnej nástenky; Milan púšťa do kaplnky iba zosnulých.",
+          "audio": "speech/c6b12ed2-5733-4fb7-9e19-01d12cb9efe4/audio.wav",
+          "lipSync": "speech/83d1566f-4aaa-45f4-9e95-12ef372c5b16/track.lipsync.json",
+          "duration": 13.92,
+          "audioSha256": "14953bba865ede1d8cf7d45bf038e2d59d2d240bad36e792c35f2d8773fe138d"
+        }
+      ]
+    },
+    {
+      "actor": "scene3/priest",
+      "name": "Otec Bonifác",
+      "direction": "Rozechvělý přepjatý kostelní tenor",
+      "slot": "static",
+      "status": "active",
+      "voiceId": "Dm506FEP6AkprXTsWzmW",
+      "design": "speech/907d4761-3f98-4c32-9617-9d3aefd45d80/design.json",
+      "registration": "speech/2f047eb2-01cd-4bc9-99ad-daf933cb9dd4/registration.json",
+      "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Male, sixties. A theatrically self-important priest with a thin quavering nasal tenor, throaty croak and unstable tremulous vibrato. Stretch rounded vowels as if about to preach, then abruptly squeak or gasp into an absurdly serious declaration. Pompous comic liturgical intonation with huge rises and falls, wounded dignity and strained dramatic projection. Do NOT sing the whole sentence and do not sound solemnly neutral: every line is an overacted sermon, yet its words remain distinct. Middle-high male register. Slovak with careful ceremonial diction. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts.",
+      "deliveryTags": "[trembling, nasal, theatrical voice] [dramatic]",
+      "voiceSettings": {
+        "modelId": "eleven_v4",
+        "stability": 0.25,
+        "similarityBoost": 0.72,
+        "style": 0.8,
+        "speed": 1,
+        "useSpeakerBoost": true
+      },
+      "selectedPreview": 1,
+      "selectionMethod": "Acoustic pitch fit to character direction; no subjective listening claim",
+      "candidateMetrics": [
+        {
+          "duration": 41.56081632653061,
+          "rms": 0.07415559043599167,
+          "peak": 0.8683710098266602,
+          "clippingFraction": 0,
+          "medianF0": 133.30651253779945,
+          "p10F0": 95.63160922237527,
+          "p90F0": 159.88156640139974,
+          "voicedFraction": 0.07596899224806201
+        },
+        {
+          "duration": 40.04571428571428,
+          "rms": 0.08565038054433392,
+          "peak": 0.8592879772186279,
+          "clippingFraction": 0,
+          "medianF0": 160.80151815137714,
+          "p10F0": 96.8238585897075,
+          "p90F0": 201.6121582307555,
+          "voicedFraction": 0.29015544041450775
+        },
+        {
+          "duration": 42.76244897959184,
+          "rms": 0.07764755410192202,
+          "peak": 0.8501967787742615,
+          "clippingFraction": 0,
+          "medianF0": 178.18447357532312,
+          "p10F0": 135.57696166898623,
+          "p90F0": 211.9611545875954,
+          "voicedFraction": 0.19343696027633853
+        }
+      ],
+      "previews": [
+        {
+          "audio": "speech/907d4761-3f98-4c32-9617-9d3aefd45d80/preview-1.mp3",
+          "generatedVoiceId": "vl8ouZRHwZCcTCP2TT9k",
+          "duration": 41.5635625
+        },
+        {
+          "audio": "speech/907d4761-3f98-4c32-9617-9d3aefd45d80/preview-2.mp3",
+          "generatedVoiceId": "Dm506FEP6AkprXTsWzmW",
+          "duration": 40.0484375
+        },
+        {
+          "audio": "speech/907d4761-3f98-4c32-9617-9d3aefd45d80/preview-3.mp3",
+          "generatedVoiceId": "N6SAJnBhVzftXaMdUG1Y",
+          "duration": 42.7651875
+        }
+      ],
+      "dialogues": [
+        {
+          "dialogueId": "priest-chat",
+          "nodeId": "water",
+          "status": "verified-local",
+          "text": "[trembling, nasal, theatrical voice] [dramatic] Pumpa naľavo. Naber do vlastnej fľaše. Posvätil som celý prívod, takže aj obecné WC má konečne duchovný rozmer.",
+          "subtitle": "Pumpa naľavo. Naber do vlastnej fľaše. Posvätil som celý prívod, takže aj obecné WC má konečne duchovný rozmer.",
+          "audio": "speech/9f9b8388-293f-41d8-ac0b-654b84a9acad/audio.wav",
+          "lipSync": "speech/84fa04b2-ea74-4b2b-a096-4b660aaa6d10/track.lipsync.json",
+          "alignment": "speech/9f9b8388-293f-41d8-ac0b-654b84a9acad/alignment.json",
+          "duration": 9.6,
+          "audioSha256": "d931b422a1becdcaa3855925cd6722012643615d434e4d8b0dc2d9c95cf7b5d0"
+        },
+        {
+          "dialogueId": "priest-chat",
+          "nodeId": "cemetery",
+          "status": "verified-local",
+          "text": "[trembling, nasal, theatrical voice] [dramatic] Bránu otvorím, keď bude čím zvoniť. Elektrický zvon nehrá a mne po treťom ding-dongu krvácala dôstojnosť. Jolanda má na krave poriadny zvonec.",
+          "subtitle": "Bránu otvorím, keď bude čím zvoniť. Elektrický zvon nehrá a mne po treťom ding-dongu krvácala dôstojnosť. Jolanda má na krave poriadny zvonec.",
+          "audio": "speech/7a1ca127-8343-42ed-8773-7b923613f72a/audio.wav",
+          "lipSync": "speech/521954f9-f620-4be0-8abb-7187f57aef36/track.lipsync.json",
+          "alignment": "speech/7a1ca127-8343-42ed-8773-7b923613f72a/alignment.json",
+          "duration": 11.6,
+          "audioSha256": "3c91bde416b78db1e8ba6cc87043834382e693680196e5195526544d9265f705"
+        },
+        {
+          "dialogueId": "priest-chat",
+          "nodeId": "paper",
+          "status": "verified-local",
+          "text": "[trembling, nasal, theatrical voice] [dramatic] Úmrtné listy. Vyplníš sám, na pečiatku je obecná Etela. Konečne administratíva, pri ktorej nemusíš prísť osobne živý.",
+          "subtitle": "Úmrtné listy. Vyplníš sám, na pečiatku je obecná Etela. Konečne administratíva, pri ktorej nemusíš prísť osobne živý.",
+          "audio": "speech/0b9634e7-d4ed-4478-8fce-25be96bafc97/audio.wav",
+          "lipSync": "speech/30a6a125-daac-4d6c-abdd-80ed7bebeefb/track.lipsync.json",
+          "duration": 10.16,
+          "audioSha256": "e0742672ea3e8418d595a1f94b27225e69624105250a5ac372911725a266cc3e"
+        },
+        {
+          "dialogueId": "priest-bell",
+          "nodeId": "line",
+          "status": "verified-local",
+          "text": "[trembling, nasal, theatrical voice] [dramatic] Krásny tón. Trochu pasienok, trochu posledný súd. Bránu som otvoril. Pri pohrebe Ľuba som pre istotu pochoval aj jeho záruku na automat.",
+          "subtitle": "Krásny tón. Trochu pasienok, trochu posledný súd. Bránu som otvoril. Pri pohrebe Ľuba som pre istotu pochoval aj jeho záruku na automat.",
+          "audio": "speech/cf1c8376-5768-4e3e-b874-8df59ab1117b/audio.wav",
+          "lipSync": "speech/8005f4d3-011f-4f53-8187-6ff94c081231/track.lipsync.json",
+          "duration": 11.2,
+          "audioSha256": "df7c80fc962d756a496fc5bf4bb93690b6b87539d278b355c309cb22b01b7224"
+        }
+      ]
+    },
+    {
+      "actor": "scene5/layer1",
+      "name": "Milan Jamka",
+      "direction": "Nepřirozeně hluboký mrtvolný bas",
+      "slot": "static",
+      "status": "active",
+      "voiceId": "zWHgsvbNzrffMNY5MMeW",
+      "design": "speech/df2756e1-a966-4172-8db7-5b0a6ce76452/design.json",
+      "registration": "speech/0ee076d4-99b6-4b01-9523-452a2a74d51d/registration.json",
+      "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Male, fifties. An impossibly subterranean bass, hollow chest resonance and dry rattling creak, with almost no smooth upper register. A funeral worker whose morbid deadpan is so serious that it becomes disturbing. Extremely low dark pitch, slow deliberate clipped phrasing, gravel at the end of every statement and tiny ominous pauses before punchlines. Speech rather than a monster roar: keep clean precise Slovak consonants despite the unnatural depth. A dry human voice with immense low resonance, no reverb or audio processing. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts.",
+      "deliveryTags": "[unnaturally deep, hollow, creaking voice] [deadpan]",
+      "voiceSettings": {
+        "modelId": "eleven_v4",
+        "stability": 0.25,
+        "similarityBoost": 0.72,
+        "style": 0.8,
+        "speed": 1,
+        "useSpeakerBoost": true
+      },
+      "selectedPreview": 2,
+      "selectionMethod": "Acoustic pitch fit to character direction; no subjective listening claim",
+      "candidateMetrics": [
+        {
+          "duration": 44.93061224489796,
+          "rms": 0.07856552539767127,
+          "peak": 0.8510487079620361,
+          "clippingFraction": 0,
+          "medianF0": 72.90663254033771,
+          "p10F0": 65.35664525533427,
+          "p90F0": 89.91344470280396,
+          "voicedFraction": 0.06514657980456026
+        },
+        {
+          "duration": 42.18775510204082,
+          "rms": 0.09958090984672398,
+          "peak": 0.7930155396461487,
+          "clippingFraction": 0,
+          "medianF0": 78.62149508099235,
+          "p10F0": 68.54751375333946,
+          "p90F0": 103.5938452858486,
+          "voicedFraction": 0.22306525037936267
+        },
+        {
+          "duration": 43.72897959183673,
+          "rms": 0.09312409521410839,
+          "peak": 0.7589713335037231,
+          "clippingFraction": 0,
+          "medianF0": 88.21415424103303,
+          "p10F0": 71.99079484581095,
+          "p90F0": 113.25215115411139,
+          "voicedFraction": 0.28304821150855364
+        }
+      ],
+      "previews": [
+        {
+          "audio": "speech/df2756e1-a966-4172-8db7-5b0a6ce76452/preview-1.mp3",
+          "generatedVoiceId": "uHhlnvOsD499BRfJx7b4",
+          "duration": 44.9333125
+        },
+        {
+          "audio": "speech/df2756e1-a966-4172-8db7-5b0a6ce76452/preview-2.mp3",
+          "generatedVoiceId": "cvqJtg2ibOoapA4dpF3E",
+          "duration": 42.1905
+        },
+        {
+          "audio": "speech/df2756e1-a966-4172-8db7-5b0a6ce76452/preview-3.mp3",
+          "generatedVoiceId": "zWHgsvbNzrffMNY5MMeW",
+          "duration": 43.7316875
+        }
+      ],
+      "dialogues": [
+        {
+          "dialogueId": "gravedigger-chat",
+          "nodeId": "chapel",
+          "status": "verified-local",
+          "text": "[unnaturally deep, hollow, creaking voice] [deadpan] Len s vlastným úmrtným listom. Živí mi tam nechávajú odtlačky a potom mám nadčasy. Papier pri kostole, pečiatku dáva Etela.",
+          "subtitle": "Len s vlastným úmrtným listom. Živí mi tam nechávajú odtlačky a potom mám nadčasy. Papier pri kostole, pečiatku dáva Etela.",
+          "audio": "speech/28fbedcb-c32b-4f71-9b0e-002895ce4299/audio.wav",
+          "lipSync": "speech/8736dd8f-0c76-45d9-88f8-f7832aec837e/track.lipsync.json",
+          "duration": 11.28,
+          "audioSha256": "4fcca555a5b6cdda5ae0e1fbdcea47eb6d6ffd52994b82abab0088d8b7e273d5"
+        },
+        {
+          "dialogueId": "gravedigger-chat",
+          "nodeId": "lubo",
+          "status": "verified-local",
+          "text": "[unnaturally deep, hollow, creaking voice] [deadpan] Pochovali sme skrinku od televízora. Tvrdil, že chce ekologický pohreb. Potom mi z truhly zazvonil telefón a objednal si taxík.",
+          "subtitle": "Pochovali sme skrinku od televízora. Tvrdil, že chce ekologický pohreb. Potom mi z truhly zazvonil telefón a objednal si taxík.",
+          "audio": "speech/063a8396-cc7b-4193-91e0-a4a35422f239/audio.wav",
+          "lipSync": "speech/63ee70ed-6555-44e7-95d3-eeb025f8fd79/track.lipsync.json",
+          "duration": 11.04,
+          "audioSha256": "b94978a3aa371d9dc4639b91f199a831c35fb1c327b51f9393ee9f22171dbf2a"
+        },
+        {
+          "dialogueId": "gravedigger-chat",
+          "nodeId": "key",
+          "status": "verified-local",
+          "text": "[unnaturally deep, hollow, creaking voice] [deadpan] Spadol mi do mreže v kaplnke. Nie je hlboko. Niečo magnetické na špagáte ho vytiahne, rukou tam netlač. Tá mreža vyhrala tri rozvody.",
+          "subtitle": "Spadol mi do mreže v kaplnke. Nie je hlboko. Niečo magnetické na špagáte ho vytiahne, rukou tam netlač. Tá mreža vyhrala tri rozvody.",
+          "audio": "speech/fe7f3ee5-8047-4011-a5d3-0918b7e08ec4/audio.wav",
+          "lipSync": "speech/b43e9537-700b-4148-b65a-d753ca36cd82/track.lipsync.json",
+          "duration": 11.36,
+          "audioSha256": "fdc83350fb580824ad120026e51bc07d5753e9477fa3ebc66cc5ebf5786a9fef"
+        },
+        {
+          "dialogueId": "gravedigger-paper",
+          "nodeId": "line",
+          "status": "verified-local",
+          "text": "[unnaturally deep, hollow, creaking voice] [deadpan] Rudo, úradne mŕtvy. Konečne slušný klient. Kaplnka je tvoja. Ak tam nájdeš živého Ľuba, nech mi aspoň vráti dosky z truhly.",
+          "subtitle": "Rudo, úradne mŕtvy. Konečne slušný klient. Kaplnka je tvoja. Ak tam nájdeš živého Ľuba, nech mi aspoň vráti dosky z truhly.",
+          "audio": "speech/d75713e1-45d2-4c53-9af0-cfc5e52e562b/audio.wav",
+          "lipSync": "speech/17b1329b-c87d-4f8c-ba42-87e356dbce83/track.lipsync.json",
+          "alignment": "speech/d75713e1-45d2-4c53-9af0-cfc5e52e562b/alignment.json",
+          "duration": 11.76,
+          "audioSha256": "5908e852379607fdc2edda3740d7cf9aa1f812bef05457b86a9f8a2e64436f40"
+        }
+      ]
+    },
+    {
+      "actor": "scene6/innkeeper",
+      "name": "Karol Odmerka",
+      "direction": "Rozedraný hospodský tenor",
+      "slot": "rotating",
+      "status": "retired",
+      "voiceId": "GMq1ucyG2a8EKFsKRbDQ",
+      "design": "speech/b1accbc4-8e93-49ba-b6a7-7b2af57d8f4f/design.json",
+      "registration": "speech/e6dd72bf-6d4e-421a-9c19-38a32a3d0b41/registration.json",
+      "retirement": "speech/d5e97738-7f21-40d5-9813-3f184a324469/retirement.json",
+      "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Male, late forties. A beer-soaked publican with an upper-middle register shredded by a lifetime of shouting across a pub. Harsh hoarse sandpaper rasp, scratchy wheeze, coarse forward nasal resonance and strained buzzy vowels. Loud argumentative rhythmic jabs, sarcastic upward scoops, rough breath at the end of clauses and sudden indignant bursts. He is audibly half-cut but every word remains understandable; no long mumbling or random hiccup noises. A damaged loud tenor, quite unlike a booming deep bass. Colloquial Slovak. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts.",
+      "deliveryTags": "[shredded, raspy tenor] [irritated]",
+      "voiceSettings": {
+        "modelId": "eleven_v4",
+        "stability": 0.25,
+        "similarityBoost": 0.72,
+        "style": 0.8,
+        "speed": 1,
+        "useSpeakerBoost": true
+      },
+      "selectedPreview": 1,
+      "selectionMethod": "Acoustic pitch fit to character direction; no subjective listening claim",
+      "candidateMetrics": [
+        {
+          "duration": 26.671020408163265,
+          "rms": 0.07640662313480198,
+          "peak": 0.7395374774932861,
+          "clippingFraction": 0,
+          "medianF0": 128.38777479678203,
+          "p10F0": 93.52385066294477,
+          "p90F0": 186.8903694766236,
+          "voicedFraction": 0.29476584022038566
+        },
+        {
+          "duration": 25.808979591836735,
+          "rms": 0.09169150435088012,
+          "peak": 0.7950697541236877,
+          "clippingFraction": 0,
+          "medianF0": 209.56341521745622,
+          "p10F0": 155.40042443956295,
+          "p90F0": 247.16375319922307,
+          "voicedFraction": 0.36828644501278773
+        },
+        {
+          "duration": 31.555918367346937,
+          "rms": 0.10685588101437489,
+          "peak": 0.8767002820968628,
+          "clippingFraction": 0,
+          "medianF0": 86.60139525894166,
+          "p10F0": 77.00829153954106,
+          "p90F0": 95.03148102113792,
+          "voicedFraction": 0.18202764976958524
+        }
+      ],
+      "previews": [
+        {
+          "audio": "speech/b1accbc4-8e93-49ba-b6a7-7b2af57d8f4f/preview-1.mp3",
+          "generatedVoiceId": "3ydvJOUquoUX6SWsHXEO",
+          "duration": 26.67375
+        },
+        {
+          "audio": "speech/b1accbc4-8e93-49ba-b6a7-7b2af57d8f4f/preview-2.mp3",
+          "generatedVoiceId": "GMq1ucyG2a8EKFsKRbDQ",
+          "duration": 25.8116875
+        },
+        {
+          "audio": "speech/b1accbc4-8e93-49ba-b6a7-7b2af57d8f4f/preview-3.mp3",
+          "generatedVoiceId": "uR7N25iLB95EORANQM8n",
+          "duration": 31.558625
+        }
+      ],
+      "dialogues": [
+        {
+          "dialogueId": "innkeeper-chat",
+          "nodeId": "grounds",
+          "status": "verified-local",
+          "text": "[shredded, raspy tenor] [irritated] Mletú. Elektrina nejde, kanvica je teraz drahá váza. Zmiešaj ju s mliekom. Dingo to vypije studené, má žalúdok zo zberu.",
+          "subtitle": "Mletú. Elektrina nejde, kanvica je teraz drahá váza. Zmiešaj ju s mliekom. Dingo to vypije studené, má žalúdok zo zberu.",
+          "audio": "speech/f93348e4-3ce8-4741-be90-cd743f533b47/audio.wav",
+          "lipSync": "speech/02fd8968-da70-4438-8a71-cdf5e0d3c076/track.lipsync.json",
+          "duration": 9.52,
+          "audioSha256": "b3aa0f564c0b2e4f078f76bc54fa3e620ad17748e2539e069e1b78957fbc5e0e"
+        },
+        {
+          "dialogueId": "innkeeper-chat",
+          "nodeId": "gaming",
+          "status": "verified-local",
+          "text": "[shredded, raspy tenor] [irritated] Keď mi niekto opraví pípu. Matica sa pretáča. Potrebujem francúzsky kľúč, nie ďalšiu modlitbu na páku.",
+          "subtitle": "Keď mi niekto opraví pípu. Matica sa pretáča. Potrebujem francúzsky kľúč, nie ďalšiu modlitbu na páku.",
+          "audio": "speech/008a0768-4b44-4c40-bf5c-e801f1b95475/audio.wav",
+          "lipSync": "speech/13932c03-5a2b-4da8-9d36-ccd9d6dc70da/track.lipsync.json",
+          "duration": 7.92,
+          "audioSha256": "751fb397059a894980380ee9abe519a9451bc38f871fcf15162487083d0afdcc"
+        },
+        {
+          "dialogueId": "innkeeper-chat",
+          "nodeId": "lubo",
+          "status": "verified-local",
+          "text": "[shredded, raspy tenor] [irritated] Ľubo. Ráno pohreb, večer reklamácia jackpotu. Myslel som, že to robí jeho pozostalý. Mali rovnaké ponožky.",
+          "subtitle": "Ľubo. Ráno pohreb, večer reklamácia jackpotu. Myslel som, že to robí jeho pozostalý. Mali rovnaké ponožky.",
+          "audio": "speech/57b0fe5e-aaac-4110-96ca-05eb1e411ff6/audio.wav",
+          "lipSync": "speech/6f4fa833-ed95-4f0b-846a-ac5f87922978/track.lipsync.json",
+          "duration": 8.16,
+          "audioSha256": "56ef8f1bc538bd55e389b7a38c5ed98e053765854c7a9832baef8e6da2b1b5a8"
+        }
+      ]
+    },
+    {
+      "actor": "scene7/swing-boy",
+      "name": "Špľuch",
+      "direction": "Praskající kreslený hlas",
+      "slot": "rotating",
+      "status": "retired",
+      "voiceId": "iiDZOH9TArCghKD6MfNt",
+      "design": "speech/a98f431b-b687-4eb2-88e8-4f0d98767299/design.json",
+      "registration": "speech/9d24dc00-0a83-4c1e-9355-581e887151dc/registration.json",
+      "retirement": "speech/bbefdfff-203d-40a0-b602-5f5e847ca02b/retirement.json",
+      "description": "Native Slovak, clear Slovak consonants and vowels. An adult man in his thirties with an unmistakably mature chest resonance. An outrageous comic stage performer whose voice repeatedly cracks from a raspy baritone into strained squeaky head voice. He starts with low creaky barks, flips upwards on stressed words, then lands in a rough chesty growl. Irregular emphatic rhythm, pompous confidence and rubbery cartoon intonation. The contrast of mature bass grit and unstable falsetto should be hilarious and bizarre. Clearly adult male vocal anatomy and diction. Extreme acting rather than a normal civil conversation. Keep every word intelligible at a moderate pace. Dry close studio recording, no music, echo or background effects.",
+      "deliveryTags": "[cracking, raspy adult cartoon voice] [excited]",
+      "voiceSettings": {
+        "modelId": "eleven_v4",
+        "stability": 0.25,
+        "similarityBoost": 0.72,
+        "style": 0.8,
+        "speed": 1,
+        "useSpeakerBoost": true
+      },
+      "selectedPreview": 1,
+      "selectionMethod": "Acoustic pitch fit to character direction; no subjective listening claim",
+      "candidateMetrics": [
+        {
+          "duration": 26.671020408163265,
+          "rms": 0.07051938138921289,
+          "peak": 0.7092450857162476,
+          "clippingFraction": 0,
+          "medianF0": 157.00534222218113,
+          "p10F0": 101.35256274666034,
+          "p90F0": 241.73727757549997,
+          "voicedFraction": 0.2077922077922078
+        },
+        {
+          "duration": 28.99591836734694,
+          "rms": 0.08994726164988988,
+          "peak": 0.8337392210960388,
+          "clippingFraction": 0,
+          "medianF0": 216.33734817640044,
+          "p10F0": 145.11172291538327,
+          "p90F0": 306.51056856847686,
+          "voicedFraction": 0.257847533632287
+        },
+        {
+          "duration": 24.346122448979592,
+          "rms": 0.09309861177560265,
+          "peak": 0.5796677470207214,
+          "clippingFraction": 0,
+          "medianF0": 200.88406477894793,
+          "p10F0": 141.72621143798654,
+          "p90F0": 238.87624291029906,
+          "voicedFraction": 0.19471153846153846
+        }
+      ],
+      "previews": [
+        {
+          "audio": "speech/a98f431b-b687-4eb2-88e8-4f0d98767299/preview-1.mp3",
+          "generatedVoiceId": "QPNJgb5R3Pkw7mEBVIiK",
+          "duration": 26.67375
+        },
+        {
+          "audio": "speech/a98f431b-b687-4eb2-88e8-4f0d98767299/preview-2.mp3",
+          "generatedVoiceId": "iiDZOH9TArCghKD6MfNt",
+          "duration": 28.998625
+        },
+        {
+          "audio": "speech/a98f431b-b687-4eb2-88e8-4f0d98767299/preview-3.mp3",
+          "generatedVoiceId": "JzmyhaFuxrS3Z5UJNGGg",
+          "duration": 24.3488125
+        }
+      ],
+      "dialogues": [
+        {
+          "dialogueId": "boy-chat",
+          "nodeId": "trade",
+          "status": "verified-local",
+          "text": "[cracking, raspy adult cartoon voice] [excited] Špagát a podložku. Za rožok. Kŕmime nimi domácu tehlu, je alergická na granule.",
+          "subtitle": "Špagát a podložku. Za rožok. Kŕmime nimi domácu tehlu, je alergická na granule.",
+          "audio": "speech/369caabf-a633-47ba-8bcf-25e8f0f02c43/audio.wav",
+          "lipSync": "speech/a3d5dad2-fc89-46f0-a715-a569647135e2/track.lipsync.json",
+          "alignment": "speech/369caabf-a633-47ba-8bcf-25e8f0f02c43/alignment.json",
+          "duration": 7.28,
+          "audioSha256": "5ef7913d7349bfe4ac4252eb9fbe047c5c159b1cd4c7de009c3a8eab176e3f4d"
+        },
+        {
+          "dialogueId": "boy-chat",
+          "nodeId": "van",
+          "status": "verified-local",
+          "text": "[cracking, raspy adult cartoon voice] [excited] Hej, viezol toho pána, čo má byť pod zemou. Doviezol si aj automat. Asi nechce, aby ho deti otravovali pri práci.",
+          "subtitle": "Hej, viezol toho pána, čo má byť pod zemou. Doviezol si aj automat. Asi nechce, aby ho deti otravovali pri práci.",
+          "audio": "speech/7e0c0bf9-9308-45ff-b8d5-44acbc6ca5fe/audio.wav",
+          "lipSync": "speech/b63518d5-efce-437c-8d62-c03784aac231/track.lipsync.json",
+          "alignment": "speech/7e0c0bf9-9308-45ff-b8d5-44acbc6ca5fe/alignment.json",
+          "duration": 8.48,
+          "audioSha256": "e5bd3f5a3f0e2d7d3945122b5fb51b2fca481427d78dfbebfeac8ce1ea0c2fba"
+        },
+        {
+          "dialogueId": "boy-bread",
+          "nodeId": "line",
+          "status": "verified-local",
+          "text": "[cracking, raspy adult cartoon voice] [excited] Toto je poctivý rožok. Tehla konečne niečo rozhryzie. Tu máš špagát a podložku. Keď ju zabalíš do zlatého, vyzerá presne ako žetón.",
+          "subtitle": "Toto je poctivý rožok. Tehla konečne niečo rozhryzie. Tu máš špagát a podložku. Keď ju zabalíš do zlatého, vyzerá presne ako žetón.",
+          "audio": "speech/0b3ccab3-329b-40ea-8e6c-a3e491f9e2d6/audio.wav",
+          "lipSync": "speech/0117bd69-075a-4cb7-ac0e-48bda89e1c2e/track.lipsync.json",
+          "duration": 10.48,
+          "audioSha256": "3cf578e5c7cd3fbe8f465c4bcaf6e13d3e1652b2c4eba13b8db7a2cf219e8c7b"
+        }
+      ]
+    },
+    {
+      "actor": "scene7/sand-girl",
+      "name": "Nika",
+      "direction": "Pisklavý zpěvavý hlas",
+      "slot": "rotating",
+      "status": "retired",
+      "voiceId": "wk5NuWmufYkSfjl2kJr1",
+      "design": "speech/50c6b658-b240-45d1-bfb3-9f92318e6633/design.json",
+      "registration": "speech/ec91583d-d4de-4ffa-b468-ed16f52dc72d/registration.json",
+      "retirement": "speech/a01466f7-2d2f-4dd6-90d5-662df165422e/retirement.json",
+      "description": "Native Slovak, crisp Slovak diction. An adult woman in her thirties, a wildly theatrical comic stage diva with a piercing bright soprano. Strong mature vocal projection, metallic whistle-like upper resonance and very precise consonants. Ridiculously elastic melodic rises and drops, smug playful emphasis, clipped decisive punchlines, then a sly drawn-out vowel. An exaggerated and slightly unnerving adult cartoon soprano, never a soft narrator. Her confident adult personality and bold acting dominate every line. Clearly intelligible speech at a moderate pace, not sustained singing. Dry close studio recording without music, echo, ambience or effects.",
+      "deliveryTags": "[piercing, theatrical adult soprano] [mischievously]",
+      "voiceSettings": {
+        "modelId": "eleven_v4",
+        "stability": 0.25,
+        "similarityBoost": 0.72,
+        "style": 0.8,
+        "speed": 1,
+        "useSpeakerBoost": true
+      },
+      "selectedPreview": 2,
+      "selectionMethod": "Acoustic pitch fit to character direction; no subjective listening claim",
+      "candidateMetrics": [
+        {
+          "duration": 18.75591836734694,
+          "rms": 0.09934644723598032,
+          "peak": 0.6799784898757935,
+          "clippingFraction": 0,
+          "medianF0": 239.0228677090947,
+          "p10F0": 158.87999003746876,
+          "p90F0": 332.05641382089016,
+          "voicedFraction": 0.4982698961937716
+        },
+        {
+          "duration": 14.445714285714285,
+          "rms": 0.10520790204292632,
+          "peak": 0.7836450338363647,
+          "clippingFraction": 0,
+          "medianF0": 217.30284914092923,
+          "p10F0": 159.31142227438292,
+          "p90F0": 278.9114063645182,
+          "voicedFraction": 0.522633744855967
+        },
+        {
+          "duration": 17.711020408163265,
+          "rms": 0.09491327812625795,
+          "peak": 0.6564794182777405,
+          "clippingFraction": 0,
+          "medianF0": 273.3223031879722,
+          "p10F0": 194.09713326288406,
+          "p90F0": 336.43763247904576,
+          "voicedFraction": 0.48771929824561405
+        }
+      ],
+      "previews": [
+        {
+          "audio": "speech/50c6b658-b240-45d1-bfb3-9f92318e6633/preview-1.mp3",
+          "generatedVoiceId": "W6t8ZpWw7AGa2AOaZYdI",
+          "duration": 18.758625
+        },
+        {
+          "audio": "speech/50c6b658-b240-45d1-bfb3-9f92318e6633/preview-2.mp3",
+          "generatedVoiceId": "xJa0bNtvpWGrDCFphiGa",
+          "duration": 14.4484375
+        },
+        {
+          "audio": "speech/50c6b658-b240-45d1-bfb3-9f92318e6633/preview-3.mp3",
+          "generatedVoiceId": "wk5NuWmufYkSfjl2kJr1",
+          "duration": 17.71375
+        }
+      ],
+      "dialogues": [
+        {
+          "dialogueId": "girl-chat",
+          "nodeId": "tracks",
+          "status": "verified-local",
+          "text": "[piercing, theatrical adult soprano] [mischievously] Plán úniku. Z ihriska sa dá uniknúť len tak, že vyrastieš. Ten pohrebák šiel ku kostolu, ak riešiš dospelácke problémy.",
+          "subtitle": "Plán úniku. Z ihriska sa dá uniknúť len tak, že vyrastieš. Ten pohrebák šiel ku kostolu, ak riešiš dospelácke problémy.",
+          "audio": "speech/6fc4e09a-e888-4a77-a246-4f25f791e2c2/audio.wav",
+          "lipSync": "speech/e03f112a-4643-4ae4-b445-804c78a60128/track.lipsync.json",
+          "alignment": "speech/6fc4e09a-e888-4a77-a246-4f25f791e2c2/alignment.json",
+          "duration": 9.6,
+          "audioSha256": "e7a9bd7e4610a4f2616e82f1fdc7060f5758cd9d2c3fdecf080ff551db0e1243"
+        },
+        {
+          "dialogueId": "girl-chat",
+          "nodeId": "token",
+          "status": "verified-local",
+          "text": "[piercing, theatrical adult soprano] [mischievously] Podložka a zlatý obal. Ale otec hovorí, že skrat je tiež výhra. Ak si poistený.",
+          "subtitle": "Podložka a zlatý obal. Ale otec hovorí, že skrat je tiež výhra. Ak si poistený.",
+          "audio": "speech/1a69b03e-f919-47d8-86ea-9ba99005a388/audio.wav",
+          "lipSync": "speech/4f1d216a-059a-4461-bdb2-a5c4db302490/track.lipsync.json",
+          "duration": 7.36,
+          "audioSha256": "bde7a83c6e2322ebb55feb0eb0286f0658da5c5d5c6a9bf1fe87ee01f6f5251f"
+        }
+      ]
+    },
+    {
+      "actor": "scene7/climbing-boy",
+      "name": "Béla",
+      "direction": "Ultravysoký nervózní nosový pískot",
+      "slot": "rotating",
+      "status": "retired",
+      "voiceId": "GTTXoS7HeTELz6svNEnz",
+      "design": "speech/0888c67a-f28c-42d3-ac56-09029b7e1b5a/design.json",
+      "registration": "speech/4a2d83b0-cdb8-40af-939b-259cbf5812ee/registration.json",
+      "retirement": "speech/c37d455f-0054-4d64-ba46-a3b574c04c5d/retirement.json",
+      "description": "Native Slovak, clear Slovak vowels and consonants with a light eastern Slovak cadence. An adult man aged thirty-five with an outrageous, very high pinched nasal falsetto. Audibly a grown male comic actor projecting a strained stage head voice, with occasional coarse mature chesty catches. Thin mosquito-like reed resonance, jittery staccato delivery and nervous sudden upward leaps. Urgent tightly packed little bursts followed by pompously certain declarations. Entirely different from a booming bass or melodic female soprano: brittle, nasal, tightly wound and sarcastic. Very exaggerated adult character acting while every word remains clear. Dry close studio recording, no background, music, effects or digital pitch shifting.",
+      "deliveryTags": "[strained, pinched adult male falsetto] [nervous]",
+      "voiceSettings": {
+        "modelId": "eleven_v4",
+        "stability": 0.25,
+        "similarityBoost": 0.72,
+        "style": 0.8,
+        "speed": 1,
+        "useSpeakerBoost": true
+      },
+      "selectedPreview": 1,
+      "selectionMethod": "Acoustic pitch fit to character direction; no subjective listening claim",
+      "candidateMetrics": [
+        {
+          "duration": 13.714285714285714,
+          "rms": 0.09033160577120773,
+          "peak": 0.6137838959693909,
+          "clippingFraction": 0,
+          "medianF0": 181.01241582037414,
+          "p10F0": 118.74624400143671,
+          "p90F0": 235.64814820259443,
+          "voicedFraction": 0.37668161434977576
+        },
+        {
+          "duration": 12.51265306122449,
+          "rms": 0.08818848481576197,
+          "peak": 0.8890507221221924,
+          "clippingFraction": 0,
+          "medianF0": 250.50167372977427,
+          "p10F0": 170.56456510980993,
+          "p90F0": 278.93939689976816,
+          "voicedFraction": 0.4036697247706422
+        },
+        {
+          "duration": 17.08408163265306,
+          "rms": 0.0776555087900727,
+          "peak": 0.8356794118881226,
+          "clippingFraction": 0,
+          "medianF0": 148.91885566648253,
+          "p10F0": 127.39833629404038,
+          "p90F0": 202.16994818785255,
+          "voicedFraction": 0.2868525896414343
+        }
+      ],
+      "previews": [
+        {
+          "audio": "speech/0888c67a-f28c-42d3-ac56-09029b7e1b5a/preview-1.mp3",
+          "generatedVoiceId": "z8JDF7Aby2VJCuszdCS2",
+          "duration": 13.717
+        },
+        {
+          "audio": "speech/0888c67a-f28c-42d3-ac56-09029b7e1b5a/preview-2.mp3",
+          "generatedVoiceId": "GTTXoS7HeTELz6svNEnz",
+          "duration": 12.515375
+        },
+        {
+          "audio": "speech/0888c67a-f28c-42d3-ac56-09029b7e1b5a/preview-3.mp3",
+          "generatedVoiceId": "iPLB3d4mGXY0UbOaNpc9",
+          "duration": 17.0868125
+        }
+      ],
+      "dialogues": [
+        {
+          "dialogueId": "climber-chat",
+          "nodeId": "hearse",
+          "status": "verified-local",
+          "text": "[strained, pinched adult male falsetto] [nervous] Z pohrebáku trčal ako chvost. Ten pán tvrdil, že je to nabíjačka na dušu. Ani u nás doma takú nemáme.",
+          "subtitle": "Z pohrebáku trčal ako chvost. Ten pán tvrdil, že je to nabíjačka na dušu. Ani u nás doma takú nemáme.",
+          "audio": "speech/d64781df-b104-4cf4-9920-c2362f25f07b/audio.wav",
+          "lipSync": "speech/35a095f3-8fee-4c8c-97b1-69a2a0322dcb/track.lipsync.json",
+          "duration": 8.16,
+          "audioSha256": "618ddae47e9a9cf87b52a13f8bb0cc2845e6dff14279435b3169f93fb23d4385"
+        },
+        {
+          "dialogueId": "climber-chat",
+          "nodeId": "map",
+          "status": "verified-local",
+          "text": "[strained, pinched adult male falsetto] [nervous] Spodok obrázka, veľký detektív. Tam je mapa. Do hrobu sa chodí cez bránu, nie cez menu.",
+          "subtitle": "Spodok obrázka, veľký detektív. Tam je mapa. Do hrobu sa chodí cez bránu, nie cez menu.",
+          "audio": "speech/36553384-32f8-45e9-8ed6-62a735f3a42a/audio.wav",
+          "lipSync": "speech/3cc70494-0a40-4bec-8d6a-dc01f1408785/track.lipsync.json",
+          "duration": 7.44,
+          "audioSha256": "fb8abb22d85e633d0d7f768ee9e05bae56e051893a377b85f2be92cd83c255c8"
+        }
+      ]
+    },
+    {
+      "actor": "scene9/layer1",
+      "name": "Dingo",
+      "direction": "Přepitý rozvleklý chrapot",
+      "slot": "static",
+      "status": "active",
+      "voiceId": "OAHw71DTm0tFvJJU4HGL",
+      "design": "speech/96a7e646-8282-4b8b-8658-7d2a9ee86594/design.json",
+      "registration": "speech/06c88758-c6d1-4d4b-aecd-6bbf0f668e0d/registration.json",
+      "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Male, about fifty. A half-asleep scrapyard dealer with a deeply booze-soaked, slack, floppy rumble and a wet gravelly rasp. The pitch hangs low and sags at phrase ends; vowels drag lazily, consonants arrive late but clearly, then a key word suddenly gets a stubborn little burst of energy. Strong comedic drowsiness, audible vocal fry and breathy chest buzz, as if speaking requires an absurd personal effort. Not an ordinary laid-back man: grossly exaggerated drunken sluggishness while still fully understandable. Low register, loose uneven pacing. Colloquial Slovak. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts.",
+      "deliveryTags": "[very hoarse, drowsy, slurred but intelligible voice]",
+      "voiceSettings": {
+        "modelId": "eleven_v4",
+        "stability": 0.25,
+        "similarityBoost": 0.72,
+        "style": 0.8,
+        "speed": 1,
+        "useSpeakerBoost": true
+      },
+      "selectedPreview": 2,
+      "selectionMethod": "Acoustic pitch fit to character direction; no subjective listening claim",
+      "candidateMetrics": [
+        {
+          "duration": 39.88897959183674,
+          "rms": 0.08275637093256397,
+          "peak": 0.7442834377288818,
+          "clippingFraction": 0,
+          "medianF0": 144.72001071573584,
+          "p10F0": 118.43685066935898,
+          "p90F0": 349.07754993230185,
+          "voicedFraction": 0.15721231766612642
+        },
+        {
+          "duration": 43.15428571428571,
+          "rms": 0.08319090021640205,
+          "peak": 0.8003159761428833,
+          "clippingFraction": 0,
+          "medianF0": 158.9926757869044,
+          "p10F0": 71.4565233453707,
+          "p90F0": 211.64462924160537,
+          "voicedFraction": 0.11132075471698114
+        },
+        {
+          "duration": 39.54938775510204,
+          "rms": 0.0974044779861109,
+          "peak": 0.95876145362854,
+          "clippingFraction": 0,
+          "medianF0": 97.24369750873497,
+          "p10F0": 69.82786980815017,
+          "p90F0": 184.95189233674566,
+          "voicedFraction": 0.23370429252782193
+        }
+      ],
+      "previews": [
+        {
+          "audio": "speech/96a7e646-8282-4b8b-8658-7d2a9ee86594/preview-1.mp3",
+          "generatedVoiceId": "d8LAPMPoCcwCjgDgUQl5",
+          "duration": 39.8916875
+        },
+        {
+          "audio": "speech/96a7e646-8282-4b8b-8658-7d2a9ee86594/preview-2.mp3",
+          "generatedVoiceId": "NXmRkOZdAJWN41hGt3ly",
+          "duration": 43.157
+        },
+        {
+          "audio": "speech/96a7e646-8282-4b8b-8658-7d2a9ee86594/preview-3.mp3",
+          "generatedVoiceId": "OAHw71DTm0tFvJJU4HGL",
+          "duration": 39.552125
+        }
+      ],
+      "dialogues": [
+        {
+          "dialogueId": "dingo-chat",
+          "nodeId": "coffee",
+          "status": "verified-local",
+          "text": "[very hoarse, drowsy, slurred but intelligible voice] Potrebujem kávu. Studenú s mliekom, nech si nezobudím vredy. Karol má mletú, Jolanda kravu. Ja mám čas.",
+          "subtitle": "Potrebujem kávu. Studenú s mliekom, nech si nezobudím vredy. Karol má mletú, Jolanda kravu. Ja mám čas.",
+          "audio": "speech/12dda129-01c6-47c8-9824-2d5208df5e25/audio.wav",
+          "lipSync": "speech/152dc895-7bc2-4df4-931c-6473e21116e9/track.lipsync.json",
+          "duration": 9.12,
+          "audioSha256": "722bdf838632c851865969c0d22a41f1850f01fa9b263f3fe7107d4eb06b01f9"
+        },
+        {
+          "dialogueId": "dingo-chat",
+          "nodeId": "copper",
+          "status": "verified-local",
+          "text": "[very hoarse, drowsy, slurred but intelligible voice] Nie. Ľubo chcel požičať autobatériu. Na cintorín. Vraj mu tam chýba zážitková elektronika. Meď si doniesol vlastnú, furt zapojenú do celej osady.",
+          "subtitle": "Nie. Ľubo chcel požičať autobatériu. Na cintorín. Vraj mu tam chýba zážitková elektronika. Meď si doniesol vlastnú, furt zapojenú do celej osady.",
+          "audio": "speech/763bcb26-2094-492f-b6fa-cc0c037fbceb/audio.wav",
+          "lipSync": "speech/82881c33-a019-490a-8d47-b7be7e321dce/track.lipsync.json",
+          "duration": 12.48,
+          "audioSha256": "dba232d690e10aebffa84e5fe9e92969e46741172fc67d03c9af5692d45fb2e3"
+        },
+        {
+          "dialogueId": "dingo-chat",
+          "nodeId": "work",
+          "status": "verified-local",
+          "text": "[very hoarse, drowsy, slurred but intelligible voice] To isté čo s elektrinou, ale nikto nemôže dokázať, že som zaspal pri práci.",
+          "subtitle": "To isté čo s elektrinou, ale nikto nemôže dokázať, že som zaspal pri práci.",
+          "audio": "speech/2a57e5bd-ab93-44c9-b52b-a84c4678a542/audio.wav",
+          "lipSync": "speech/0347dabb-2109-4fec-8d6f-07f5eddd04f9/track.lipsync.json",
+          "alignment": "speech/2a57e5bd-ab93-44c9-b52b-a84c4678a542/alignment.json",
+          "duration": 6.24,
+          "audioSha256": "dc3841ed5ae425aeb09ce3dd4eb10a9c1e8b3ae1ec5f66867d07acc620cbf4eb"
+        },
+        {
+          "dialogueId": "dingo-coffee",
+          "nodeId": "line",
+          "status": "verified-local",
+          "text": "[very hoarse, drowsy, slurred but intelligible voice] Výborné. Chutí to ako moja posledná šanca. Tu máš kľúč a gumené rukavice. A vraciam fľašu. Pri svorke batérie najprv povoľ maticu, až potom sa hraj na elektrikára.",
+          "subtitle": "Výborné. Chutí to ako moja posledná šanca. Tu máš kľúč a gumené rukavice. A vraciam fľašu. Pri svorke batérie najprv povoľ maticu, až potom sa hraj na elektrikára.",
+          "audio": "speech/40571409-f44a-44f9-b424-c5dd30ac48e9/audio.wav",
+          "lipSync": "speech/9ffc2556-24a5-4e91-958d-eaed13103ba3/track.lipsync.json",
+          "alignment": "speech/40571409-f44a-44f9-b424-c5dd30ac48e9/alignment.json",
+          "duration": 14.4,
+          "audioSha256": "54654d8e4d0e4d4498799944fa45cb640d09b99e256458d00e5349d94bd06c8b"
+        }
+      ]
+    },
+    {
+      "actor": "scene10/layer1",
+      "name": "Jolanda",
+      "direction": "Dunivý hysterický kontraalt",
+      "slot": "static",
+      "status": "active",
+      "voiceId": "Jfvw40qotTOck51vIvrm",
+      "design": "speech/a44207e1-d267-48d2-86b9-5a10a1fe023d/design.json",
+      "registration": "speech/1a89f747-49e0-424b-9c61-6e4fc151c0c1/registration.json",
+      "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Female, fifties. An enormous commanding, unnaturally low female contralto with brass-like chest power, throaty frog-like grit and a coarse rolling growl. She relishes vowels like an operatic farmyard duchess, then snaps upwards into outraged hysterical peaks. Slow dramatic pronouncements alternate with explosive indignation and a rumbling mocking undertone. Absolutely not gentle or civil, not a normal conversational woman. Powerful very low female register with wild theatrical intonation, but no sustained singing. Every Slovak consonant must remain clear. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts.",
+      "deliveryTags": "[throaty, booming contralto] [outraged]",
+      "voiceSettings": {
+        "modelId": "eleven_v4",
+        "stability": 0.25,
+        "similarityBoost": 0.72,
+        "style": 0.8,
+        "speed": 1,
+        "useSpeakerBoost": true
+      },
+      "selectedPreview": 1,
+      "selectionMethod": "Acoustic pitch fit to character direction; no subjective listening claim",
+      "candidateMetrics": [
+        {
+          "duration": 39.54938775510204,
+          "rms": 0.09026328314194854,
+          "peak": 0.7526272535324097,
+          "clippingFraction": 0,
+          "medianF0": 249.18936034930556,
+          "p10F0": 179.15586624862374,
+          "p90F0": 305.3162686300065,
+          "voicedFraction": 0.6980108499095841
+        },
+        {
+          "duration": 42.68408163265306,
+          "rms": 0.10266362052130745,
+          "peak": 0.6351227760314941,
+          "clippingFraction": 0,
+          "medianF0": 222.45376993418122,
+          "p10F0": 174.6525367841231,
+          "p90F0": 298.3418897007238,
+          "voicedFraction": 0.6322188449848024
+        },
+        {
+          "duration": 44.04244897959184,
+          "rms": 0.0902503644232958,
+          "peak": 0.6479825377464294,
+          "clippingFraction": 0,
+          "medianF0": 235.7841393125044,
+          "p10F0": 185.01674598050636,
+          "p90F0": 297.4859286661114,
+          "voicedFraction": 0.7032786885245902
+        }
+      ],
+      "previews": [
+        {
+          "audio": "speech/a44207e1-d267-48d2-86b9-5a10a1fe023d/preview-1.mp3",
+          "generatedVoiceId": "4yLeSfpa2Hq9ou5whjtC",
+          "duration": 39.552125
+        },
+        {
+          "audio": "speech/a44207e1-d267-48d2-86b9-5a10a1fe023d/preview-2.mp3",
+          "generatedVoiceId": "Jfvw40qotTOck51vIvrm",
+          "duration": 42.6868125
+        },
+        {
+          "audio": "speech/a44207e1-d267-48d2-86b9-5a10a1fe023d/preview-3.mp3",
+          "generatedVoiceId": "gR0Bhy571BVgOSxfwVlf",
+          "duration": 44.0451875
+        }
+      ],
+      "dialogues": [
+        {
+          "dialogueId": "jolanda-chat",
+          "nodeId": "blessing",
+          "status": "verified-local",
+          "text": "[throaty, booming contralto] [outraged] Krava nemá krst a poisťovňa neuzná vyššiu moc. Dones svätenú vodu v nejakej fľaši. Mlieko aj zvonec dostaneš, len nech to je papierovo čisté.",
+          "subtitle": "Krava nemá krst a poisťovňa neuzná vyššiu moc. Dones svätenú vodu v nejakej fľaši. Mlieko aj zvonec dostaneš, len nech to je papierovo čisté.",
+          "audio": "speech/60956628-5682-4d9e-91a5-eacde2e9c76c/audio.wav",
+          "lipSync": "speech/ffea1b8a-0e98-47de-b8a7-caed271e0bda/track.lipsync.json",
+          "duration": 11.2,
+          "audioSha256": "4f41e93352d5b70b045cc244f9efa1979dfbd5e86df4374fc4ff0c0c1a6db0b4"
+        },
+        {
+          "dialogueId": "jolanda-chat",
+          "nodeId": "battery",
+          "status": "verified-local",
+          "text": "[throaty, booming contralto] [outraged] Pýtal hnoj na bioplyn. Poslala som ho za Dingom po batériu. Nech mi tu aspoň niekto nekradne aj výsledok trávenia.",
+          "subtitle": "Pýtal hnoj na bioplyn. Poslala som ho za Dingom po batériu. Nech mi tu aspoň niekto nekradne aj výsledok trávenia.",
+          "audio": "speech/7f5b97af-81f9-48c9-878b-4b8760daad46/audio.wav",
+          "lipSync": "speech/32864825-d18b-4bd6-8378-8e33fd672565/track.lipsync.json",
+          "alignment": "speech/7f5b97af-81f9-48c9-878b-4b8760daad46/alignment.json",
+          "duration": 8.08,
+          "audioSha256": "38c548b3cbceddafc61873f0fa8e44253e322d139d63d9ba0d182b468f513d61"
+        },
+        {
+          "dialogueId": "jolanda-chat",
+          "nodeId": "pig",
+          "status": "verified-local",
+          "text": "[throaty, booming contralto] [outraged] Keď niečo nesedí, zje to. Robí to rovnako ako obec, iba bez pečiatky.",
+          "subtitle": "Keď niečo nesedí, zje to. Robí to rovnako ako obec, iba bez pečiatky.",
+          "audio": "speech/eb6e3b0d-beb5-4a4a-bd44-7db767ca9678/audio.wav",
+          "lipSync": "speech/d3f24b91-c08a-4208-bfcc-b33e9600b20c/track.lipsync.json",
+          "duration": 6.08,
+          "audioSha256": "6b087b919b01657580b402c9fb2f0ec94cfdfce4997eda75df7fc4723dbe59d3"
+        },
+        {
+          "dialogueId": "jolanda-water",
+          "nodeId": "line",
+          "status": "verified-local",
+          "text": "[throaty, booming contralto] [outraged] V mene Otca, Syna a poistnej udalosti. Krava je vybavená. Do fľaše ti nalejem mlieko a zvonec ber tiež. Bez elektriny nás tu aj tak počuť až príliš.",
+          "subtitle": "V mene Otca, Syna a poistnej udalosti. Krava je vybavená. Do fľaše ti nalejem mlieko a zvonec ber tiež. Bez elektriny nás tu aj tak počuť až príliš.",
+          "audio": "speech/2161186a-41e1-4f75-8395-3dcbcdccdf3b/audio.wav",
+          "lipSync": "speech/f3c3c035-89f4-4f8d-9000-d4744d4828be/track.lipsync.json",
+          "duration": 12.56,
+          "audioSha256": "8204f189cac096ecf0d5a20c1bb3674561b95486763bb589e476c5aff707dae8"
+        }
+      ]
+    },
+    {
+      "actor": "scene12/layer1",
+      "name": "Ľubo Šťastný",
+      "direction": "Manický skřek s prudkými propady",
+      "slot": "static",
+      "status": "active",
+      "voiceId": "Cs0q9bNTpnXhVCnLNXGI",
+      "design": "speech/e65e31d6-a962-49ed-a349-d824653fafba/design.json",
+      "registration": "speech/21f9abba-7505-4707-a9f6-afdfaf7fc065/registration.json",
+      "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Male, late forties. A deranged miniature casino ringmaster: brittle breathless high falsetto, needle-sharp reedy nasal edge and a little raspy cackle in the voice. Manic sales-pitch bursts, enormous gloating rises, tense giggly catches and sudden guttural low drops on sinister punchlines before springing straight back up. Smug, hysterically excited and unstable, never a suave ordinary villain or calm narrator. The excitement lives in his voice, not added laughter sound effects. Highly exaggerated register swings with a mostly high male placement. Crisp intelligible Slovak. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts.",
+      "deliveryTags": "[brittle, manic falsetto] [excited]",
+      "voiceSettings": {
+        "modelId": "eleven_v4",
+        "stability": 0,
+        "similarityBoost": 0.72,
+        "style": 0.8,
+        "speed": 1,
+        "useSpeakerBoost": true
+      },
+      "selectedPreview": 0,
+      "selectionMethod": "Acoustic pitch fit to character direction; no subjective listening claim",
+      "candidateMetrics": [
+        {
+          "duration": 30.354285714285716,
+          "rms": 0.09940358996862945,
+          "peak": 0.7691543102264404,
+          "clippingFraction": 0,
+          "medianF0": 230.1989126644777,
+          "p10F0": 162.17264280089572,
+          "p90F0": 331.4125505979713,
+          "voicedFraction": 0.31094049904030713
+        },
+        {
+          "duration": 33.30612244897959,
+          "rms": 0.07213588884667543,
+          "peak": 0.7713973522186279,
+          "clippingFraction": 0,
+          "medianF0": 195.72578787776675,
+          "p10F0": 136.52430269547793,
+          "p90F0": 248.2230539786821,
+          "voicedFraction": 0.23858921161825727
+        },
+        {
+          "duration": 35.86612244897959,
+          "rms": 0.07737425129815956,
+          "peak": 0.7736330628395081,
+          "clippingFraction": 0,
+          "medianF0": 166.325750798459,
+          "p10F0": 83.86988214307547,
+          "p90F0": 297.78892760511627,
+          "voicedFraction": 0.1763668430335097
+        }
+      ],
+      "previews": [
+        {
+          "audio": "speech/e65e31d6-a962-49ed-a349-d824653fafba/preview-1.mp3",
+          "generatedVoiceId": "Cs0q9bNTpnXhVCnLNXGI",
+          "duration": 30.357
+        },
+        {
+          "audio": "speech/e65e31d6-a962-49ed-a349-d824653fafba/preview-2.mp3",
+          "generatedVoiceId": "BZo6ul5r2qTsBY2ywXxO",
+          "duration": 33.3088125
+        },
+        {
+          "audio": "speech/e65e31d6-a962-49ed-a349-d824653fafba/preview-3.mp3",
+          "generatedVoiceId": "nTTmUS5YcKqIc3BAIIYL",
+          "duration": 35.8688125
+        }
+      ],
+      "dialogues": [
+        {
+          "dialogueId": "villain-chat",
+          "nodeId": "fraud",
+          "status": "verified-local",
+          "text": "[brittle, manic falsetto] [excited] Umrel. Len splátky to neuznali. Zobral som hlavný kábel, pripojil autobatériu a mám súkromné majstrovstvá. Mŕtveho nemôžu diskvalifikovať.",
+          "subtitle": "Umrel. Len splátky to neuznali. Zobral som hlavný kábel, pripojil autobatériu a mám súkromné majstrovstvá. Mŕtveho nemôžu diskvalifikovať.",
+          "audio": "speech/7fe79da8-634a-4fe6-828c-64b8ab555ee6/audio.wav",
+          "lipSync": "speech/6748fbbc-4add-4f2f-be78-2a4e7fc33036/track.lipsync.json",
+          "duration": 10.32,
+          "audioSha256": "cee904500014a8c786fbbf7d50063337d73de11ab95e86977527bda279ae14d7"
+        },
+        {
+          "dialogueId": "villain-chat",
+          "nodeId": "power",
+          "status": "verified-local",
+          "text": "[brittle, manic falsetto] [excited] Osada má kolektívne nešťastie. Ja mám individuálnu batériu. To je trh, Rudo. Neťahaj kábel pod napätím, nech mi tu nepribudne konkurencia v truhle.",
+          "subtitle": "Osada má kolektívne nešťastie. Ja mám individuálnu batériu. To je trh, Rudo. Neťahaj kábel pod napätím, nech mi tu nepribudne konkurencia v truhle.",
+          "audio": "speech/1e3c8122-abcd-4d5b-a615-243a78c2e3b1/audio.wav",
+          "lipSync": "speech/072048a7-0e8f-4a7c-b13d-70d7e3a35798/track.lipsync.json",
+          "duration": 10.64,
+          "audioSha256": "e61a268b096e2f6de735bf9bc19dc36711d441e1b1bb70d7874a1925e6002fa3"
+        },
+        {
+          "dialogueId": "villain-chat",
+          "nodeId": "bribe",
+          "status": "verified-local",
+          "text": "[brittle, manic falsetto] [excited] Pravý žetón nemám. Všetky som prehral sám so sebou. Ale keď to cinkne, je jedno, z čoho to je. Čo by sa asi tak mohlo posrať?",
+          "subtitle": "Pravý žetón nemám. Všetky som prehral sám so sebou. Ale keď to cinkne, je jedno, z čoho to je. Čo by sa asi tak mohlo posrať?",
+          "audio": "speech/8c7c8390-6960-438f-8dde-1e2f60eef76d/audio.wav",
+          "lipSync": "speech/7ad243c4-9d06-47e5-ae7b-042ac6191627/track.lipsync.json",
+          "duration": 9.04,
+          "audioSha256": "d59032bb33be334c2e88692e45aa63bf7df64143aacb84276807b035e573927e"
+        },
+        {
+          "dialogueId": "crypt-intro",
+          "nodeId": "reveal",
+          "status": "verified-local",
+          "text": "[brittle, manic falsetto] [excited] Prekvapenie, Rudo. Pohreb bol kvôli dlhom. Kábel som vzal kvôli jackpotu. Tento automat živí Dingova autobatéria. Vy môžete sedieť potme, ja mám konečne nulovú konkurenciu.",
+          "subtitle": "Prekvapenie, Rudo. Pohreb bol kvôli dlhom. Kábel som vzal kvôli jackpotu. Tento automat živí Dingova autobatéria. Vy môžete sedieť potme, ja mám konečne nulovú konkurenciu.",
+          "audio": "speech/d951b6ed-2299-4b90-a2a1-197a1556a049/audio.wav",
+          "lipSync": "speech/e39cc06c-d37c-4c4b-a33e-c444e077fee1/track.lipsync.json",
+          "duration": 12.24,
+          "audioSha256": "fedf1b6aff17f70b0fd9ff1d10afb7fa29aa71b18b847999280a94d798eac8d3"
+        }
+      ]
+    }
+  ],
+  "legacyRetirements": [
+    {
+      "voiceId": "Iu5SuHOmMFnQrH4OjSZ3",
+      "actor": "scene1/layer2",
+      "manifest": "speech/b46fcdac-1db4-421a-a671-4d8fb73b92d0/retirement.json"
+    },
+    {
+      "voiceId": "VnZ7lswb6C7FxwHfvIR6",
+      "actor": "scene1/layer1",
+      "manifest": "speech/bc03bd45-53d6-4fa6-903b-19bb4c46acbd/retirement.json"
+    }
+  ]
+}

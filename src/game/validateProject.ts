@@ -355,6 +355,10 @@ export function validateProject(
           if (
             object(binding.voice, `${key}.animation.voice`, [
               'voiceId',
+              'designRegistration',
+              'slot',
+              'retired',
+              'retirementManifest',
               'modelId',
               'stability',
               'similarityBoost',

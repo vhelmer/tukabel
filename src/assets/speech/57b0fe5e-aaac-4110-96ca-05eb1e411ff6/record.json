@@ -1,0 +1,17 @@
+{
+  "text": "[shredded, raspy tenor] [irritated] Ľubo. Ráno pohreb, večer reklamácia jackpotu. Myslel som, že to robí jeho pozostalý. Mali rovnaké ponožky.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "GMq1ucyG2a8EKFsKRbDQ",
+    "designRegistration": "speech/e6dd72bf-6d4e-421a-9c19-38a32a3d0b41/registration.json"
+  },
+  "languageCode": "sk",
+  "duration": 8.16,
+  "audioSha256": "56ef8f1bc538bd55e389b7a38c5ed98e053765854c7a9832baef8e6da2b1b5a8"
+}

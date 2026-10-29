@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "operation": "voice-design-casting",
+  "actor": "scene3/priest",
+  "name": "Otec Bonifác",
+  "direction": "[trembling, nasal, theatrical voice] [dramatic]",
+  "designManifest": "speech/907d4761-3f98-4c32-9617-9d3aefd45d80/design.json",
+  "registrationManifest": "speech/2f047eb2-01cd-4bc9-99ad-daf933cb9dd4/registration.json",
+  "voiceId": "Dm506FEP6AkprXTsWzmW"
+}

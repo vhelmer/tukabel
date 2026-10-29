@@ -16,20 +16,24 @@ import { useDialogueAudio } from '../ui/DialogueAudio';
 import { CombinedPreview } from './CharacterPreview';
 import { Field, SelectId } from './fields';
 import { SubtitleEditor } from './SubtitleEditor';
+import { VoiceDesignPanel } from './VoiceDesignPanel';
 import {
   analyzeSpeech,
   generateSpeech,
   getSpeechCatalog,
   getSpeechStatus,
+  retireVoiceDesign,
   uploadSpeech,
 } from './api';
 import type { SpeechCatalog } from './api';
 
 export function VoicePanel({
+  sceneId,
   hotspot,
   content,
   onHotspot,
 }: {
+  sceneId: string;
   hotspot: Hotspot;
   content: GameContent;
   onHotspot: (h: Hotspot) => void;
@@ -38,13 +42,31 @@ export function VoicePanel({
     [message, setMessage] = useState(''),
     [busy, setBusy] = useState(false);
   const mounted = useRef(false);
+  const retiring = useRef(false);
+  const latest = useRef({ hotspot, onHotspot });
+  useEffect(() => {
+    latest.current = { hotspot, onHotspot };
+  }, [hotspot, onHotspot]);
   useEffect(() => {
     mounted.current = true;
     return () => {
       mounted.current = false;
     };
   }, []);
-  const voice = hotspot.animation?.voice ?? defaultVoice;
+  const voice: VoiceSettings = hotspot.animation?.voice ?? defaultVoice;
+  const assignedVoices = content.scenes.flatMap((scene) =>
+    scene.hotspots.flatMap((actor) =>
+      actor.animation?.voice ? [actor.animation.voice] : [],
+    ),
+  );
+  const fixedCount = new Set(
+    assignedVoices.filter((v) => v.slot === 'static').map((v) => v.voiceId),
+  ).size;
+  const rotatingCount = new Set(
+    assignedVoices
+      .filter((v) => v.slot === 'rotating' && !v.retired)
+      .map((v) => v.voiceId),
+  ).size;
   const model = catalog?.models.find((m) => m.id === voice.modelId);
   const features = modelFeatures(voice.modelId);
   const models = catalog?.models ?? suggestedModels;
@@ -69,6 +91,20 @@ export function VoicePanel({
   );
   return (
     <>
+      <VoiceDesignPanel
+        key={hotspot.id}
+        characterName={hotspot.label}
+        onVoice={(registration) =>
+          update({
+            ...voice,
+            voiceId: registration.voiceId,
+            designRegistration: registration.manifest,
+            slot: voice.slot ?? 'rotating',
+            retired: undefined,
+            retirementManifest: undefined,
+          })
+        }
+      />
       <details className="voice-settings">
         <summary>Hlas ElevenLabs</summary>
         <button
@@ -101,9 +137,120 @@ export function VoicePanel({
           <input
             list="eleven-voices"
             value={voice.voiceId}
-            onChange={(e) => update({ ...voice, voiceId: e.target.value })}
+            onChange={(e) =>
+              update({
+                ...voice,
+                voiceId: e.target.value,
+                designRegistration: undefined,
+                retired: undefined,
+                retirementManifest: undefined,
+              })
+            }
           />
         </Field>
+        <Field label="Správa hlasového slotu">
+          <select
+            value={voice.slot ?? ''}
+            disabled={
+              busy ||
+              !voice.voiceId ||
+              voice.retired === true ||
+              voice.slot === 'static'
+            }
+            onChange={(e) =>
+              update({
+                ...voice,
+                slot: (e.target.value || undefined) as VoiceSettings['slot'],
+              })
+            }
+          >
+            <option value="">Bez správy slotu</option>
+            <option
+              value="static"
+              disabled={voice.slot !== 'static' && fixedCount >= 8}
+            >
+              Stálý hlas · chráněný před smazáním
+            </option>
+            <option
+              value="rotating"
+              disabled={voice.slot !== 'rotating' && rotatingCount >= 2}
+            >
+              Rotační hlas · po ověření uvolnit
+            </option>
+          </select>
+        </Field>
+        <p className="field-note">
+          Stálé hlasy {fixedCount}/8 · obsazené rotační sloty {rotatingCount}/2.
+        </p>
+        {voice.slot === 'static' && (
+          <p className="field-note">
+            Stálý hlas nelze přes správu rotace smazat.
+          </p>
+        )}
+        {voice.retired && (
+          <p role="status">
+            Hlas byl uvolněn z účtu. Místní WAV, titulky a lip-sync zůstávají
+            funkční. Pro nové repliky nejprve vytvoř nový hlas přes Voice
+            Design.
+          </p>
+        )}
+        {voice.slot === 'rotating' &&
+          voice.designRegistration &&
+          !voice.retired && (
+            <>
+              <p className="field-note">
+                Nejprve ulož projekt. Uvolnění ověří všechny hrané repliky,
+                původ WAV, titulky a lip-sync; poté smaže pouze tento rotační
+                hlas z ElevenLabs.
+              </p>
+              <button
+                disabled={busy}
+                onClick={async () => {
+                  if (retiring.current) return;
+                  retiring.current = true;
+                  setBusy(true);
+                  setMessage('Ověřuji uložené repliky před uvolněním hlasu…');
+                  try {
+                    const result = await retireVoiceDesign({
+                      sceneId,
+                      hotspotId: hotspot.id,
+                      expectedVoice: voice,
+                    });
+                    if (!mounted.current) return;
+                    const current = latest.current.hotspot;
+                    if (current.animation?.voice?.voiceId !== result.voiceId)
+                      return;
+                    latest.current.onHotspot({
+                      ...current,
+                      animation: {
+                        ...current.animation,
+                        voice: {
+                          ...current.animation.voice,
+                          retired: true,
+                          retirementManifest: result.manifest,
+                        },
+                      },
+                    });
+                    setMessage(
+                      `Ověřeno ${result.verifiedLines} replik. Hlas je uvolněný; ulož evidenci do projektu.`,
+                    );
+                  } catch (error) {
+                    if (mounted.current)
+                      setMessage(
+                        error instanceof Error
+                          ? error.message
+                          : 'Uvolnění hlasu selhalo.',
+                      );
+                  } finally {
+                    retiring.current = false;
+                    if (mounted.current) setBusy(false);
+                  }
+                }}
+              >
+                Ověřit dabing a uvolnit rotační hlas (smaže z účtu)
+              </button>
+            </>
+          )}
         <datalist id="eleven-voices">
           {catalog?.voices.map((v) => (
             <option key={v.id} value={v.id}>
@@ -452,6 +599,7 @@ export function SpeechPanel({
                   disabled={
                     !confirmed ||
                     !hotspot.animation?.voice ||
+                    hotspot.animation.voice.retired === true ||
                     !node.text.trim() ||
                     status?.elevenLabs === false
                   }

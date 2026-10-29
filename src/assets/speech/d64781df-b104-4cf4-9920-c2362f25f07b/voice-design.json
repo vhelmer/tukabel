@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "operation": "voice-design-casting",
+  "actor": "scene7/climbing-boy",
+  "name": "Béla",
+  "direction": "[strained, pinched adult male falsetto] [nervous]",
+  "designManifest": "speech/0888c67a-f28c-42d3-ac56-09029b7e1b5a/design.json",
+  "registrationManifest": "speech/4a2d83b0-cdb8-40af-939b-259cbf5812ee/registration.json",
+  "voiceId": "GTTXoS7HeTELz6svNEnz"
+}

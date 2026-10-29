@@ -1,0 +1,17 @@
+{
+  "text": "[pinched nasal voice] [nervous] Hej. Šofér si kupoval bagetu. Na mŕtvolu mal výborný apetít. Na smerovke mal veniec s nápisom ĽUBO, VRÁŤ DVE EURÁ.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "hK1QkZqr6jNBJ8sJlEuc",
+    "designRegistration": "speech/3e8208b6-b0b3-4340-b834-33458c4b61fa/registration.json"
+  },
+  "languageCode": "sk",
+  "duration": 9.84,
+  "audioSha256": "55b0c9af205a810de7c693e4117ab974a5370d0d5b57a3d8216dd84a19bb2492"
+}

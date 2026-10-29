@@ -405,7 +405,12 @@ export function AnimationPanel({
             <option value="sway">Jemné kývání</option>
           </select>
         </Field>
-        <VoicePanel hotspot={hotspot} content={content} onHotspot={onHotspot} />
+        <VoicePanel
+          sceneId={sceneId}
+          hotspot={hotspot}
+          content={content}
+          onHotspot={onHotspot}
+        />
         <details>
           <summary>Animace při interakci</summary>
           {(['onClick', 'onUse'] as const).map((key) => (

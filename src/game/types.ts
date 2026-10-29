@@ -66,6 +66,10 @@ export interface CharacterAnimation {
 export type MouthShape = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'X';
 export interface VoiceSettings {
   readonly voiceId: string;
+  readonly designRegistration?: string;
+  readonly slot?: 'static' | 'rotating';
+  readonly retired?: true;
+  readonly retirementManifest?: string;
   readonly modelId: string;
   readonly stability: number;
   readonly similarityBoost: number;

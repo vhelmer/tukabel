@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "operation": "voice-design",
+  "provider": "elevenlabs",
+  "model": "eleven_ttv_v3",
+  "description": "Native Slovak, crisp Slovak diction. An adult woman in her thirties, a wildly theatrical comic stage diva with a piercing bright soprano. Strong mature vocal projection, metallic whistle-like upper resonance and very precise consonants. Ridiculously elastic melodic rises and drops, smug playful emphasis, clipped decisive punchlines, then a sly drawn-out vowel. An exaggerated and slightly unnerving adult cartoon soprano, never a soft narrator. Her confident adult personality and bold acting dominate every line. Clearly intelligible speech at a moderate pace, not sustained singing. Dry close studio recording without music, echo, ambience or effects.",
+  "text": "[piercing, theatrical adult soprano] [mischievously] Plán úniku. Z ihriska sa dá uniknúť len tak, že vyrastieš. Ten pohrebák šiel ku kostolu, ak riešiš dospelácke problémy. Podložka a zlatý obal. Ale otec hovorí, že skrat je tiež výhra. Ak si poistený.",
+  "textSha256": "484d6509eca080bbc1c4268c91230e851fbef36f0eb6763501f2c703f0226b31",
+  "seed": 112685,
+  "guidanceScale": 5,
+  "outputFormat": "mp3_44100_128",
+  "previews": [
+    {
+      "audio": "preview-1.mp3",
+      "generatedVoiceId": "W6t8ZpWw7AGa2AOaZYdI",
+      "duration": 18.758625,
+      "audioSha256": "d8aa535708a29b5dabd2debbb856933e6be68310a54c960c21b1a4a87ee6d004"
+    },
+    {
+      "audio": "preview-2.mp3",
+      "generatedVoiceId": "xJa0bNtvpWGrDCFphiGa",
+      "duration": 14.4484375,
+      "audioSha256": "93a12cf2076cdd7524a073e7907c4b6462db80410863969da6373ac0ccf0b1a7"
+    },
+    {
+      "audio": "preview-3.mp3",
+      "generatedVoiceId": "wk5NuWmufYkSfjl2kJr1",
+      "duration": 17.71375,
+      "audioSha256": "2d551227a32f8e8d38409403d99921cf51dc5b7eaa9e6a1063ccde78cde625f8"
+    }
+  ]
+}

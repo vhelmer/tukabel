@@ -1,0 +1,17 @@
+{
+  "text": "[very hoarse, drowsy, slurred but intelligible voice] Nie. Ľubo chcel požičať autobatériu. Na cintorín. Vraj mu tam chýba zážitková elektronika. Meď si doniesol vlastnú, furt zapojenú do celej osady.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "OAHw71DTm0tFvJJU4HGL",
+    "designRegistration": "speech/06c88758-c6d1-4d4b-aecd-6bbf0f668e0d/registration.json"
+  },
+  "languageCode": "sk",
+  "duration": 12.48,
+  "audioSha256": "dba232d690e10aebffa84e5fe9e92969e46741172fc67d03c9af5692d45fb2e3"
+}

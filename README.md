@@ -836,11 +836,24 @@ hoverem/kliknutím na spodní polygonový východ venkovní scény, bez zkratky 
 Stejné východy i objekty jsou přístupné seznamem **Objekty** a klávesnicí.
 
 Všech 45 skutečně hraných replik má místní ElevenLabs WAV a skutečný Rhubarb
-lip-sync; 13 hlasů je přiřazeno postavám. Nabídky témat nejsou zbytečně dabované.
+lip-sync. Všech **13 postav a 45 replik** má nový dabing přes vlastní
+ElevenLabs Voice Design (`eleven_ttv_v3` → TTS `eleven_v4`, vynucená slovenština).
+Každá postava má vlastní hlasové zadání a herecké tagy; původní viditelné slovenské
+texty i mapy úst zůstávají zachované. V účtu je ověřených **osm stálých hlasů**;
+pět vedlejších bylo po ověření všech nahrávek uvolněno, takže **oba rotační sloty
+jsou volné**. Původní dva nahrazené hlasy byly uvolněny až po kontrole náhrad.
+[Evidence hlasů a všech dialogů](src/assets/speech/2b9d5934-d303-40ef-b875-59c2c46dbc00/casting.json)
+obsahuje prompty, přiřazení slotů, vybrané návrhy, WAV/lip-sync, otisky a stav.
+[Poslechová stránka](src/assets/speech/2b9d5934-d303-40ef-b875-59c2c46dbc00/listen.html)
+nabízí 39 návrhových ukázek i všech 45 hotových replik; lokálně ji otevři pod
+`/src/assets/speech/2b9d5934-d303-40ef-b875-59c2c46dbc00/listen.html` na běžícím Vite.
+Výběr návrhů vychází z měření výšky hlasu a kontroly dekódovaného signálu;
+subjektivní poslechové hodnocení není vydáváno za provedené.
+Nabídky témat nejsou zbytečně dabované.
 Kliknutí/tapnutí na titulek nebo Enter/mezerník dokončí repliku a okamžitě
-zastaví ústa. Jedna replika má přesné provider alignment, 44 mají výslovně
+zastaví ústa. Třináct replik má přesné provider alignment, 32 má výslovně
 odhadované časování titulků; pohyb úst vždy čte skutečné audio. Celková délka
-nahrávek je 7:05. Hra při přehrávání nepotřebuje žádný token ani síťovou službu.
+nahrávek je 7:21. Hra při přehrávání nepotřebuje žádný token ani síťovou službu.
 Stávající mrkání, lokální obličejové oblasti a Ferova smyčka škrábání zůstávají.
 
 Pozadí zberny a kravína mají zhasnuté žárovky. V kryptě svítí pouze automat
@@ -938,7 +951,8 @@ nepatří do příběhové hry ani jejího buildu.
   výřez, samostatnou opravu pozadí a pixelovou kontrolu.
 - `dev/animationImport.ts` — lokální import PNG sekvencí a atlasů přes Sharp, obnova
   plátna oříznutých snímků, atomický zápis a kontrola rozměrů. Bez runtime závislosti.
-- `dev/speech.ts` — vývojové ElevenLabs TTS, WAV import, Rhubarb a validace souborů.
+- `dev/speech.ts` — ElevenLabs Voice Design/TTS, WAV import, Rhubarb a validace archivů.
+- `dev/voiceRotation.ts` — ověření úplného dabingu a bezpečné uvolnění rotačního hlasu.
 - `src/game/speech.ts`, `src/ui/DialogueAudio.tsx` — časování tvarů a přehrávání lokálního dabingu.
 - `tests/` — pravidla, průchody hry, izolované testy editoru a produkčního buildu.
 
@@ -1288,7 +1302,9 @@ automaticky nemažou. `OPENAI_API_KEY` lze použít pro grafické úpravy lokac�
 
 1. Do ignorovaného `.env.local` přidej `ELEVENLABS_API_KEY=...` a restartuj Vite.
    Klíč potřebuje **Text to Speech** (`text_to_speech`), **Voices: Read**
-   (`voices_read`) a **Models: Read** (`models_read`). Při 401 `missing_permissions`
+   (`voices_read`) a **Models: Read** (`models_read`). Pro nové charakterové hlasy
+   povol také **Voice Generation** (`voice_generation`); pro uvolňování rotačních
+   hlasů **Voices: Write** (`voices_write`). Při 401 `missing_permissions`
    doplň oprávnění v ElevenLabs → Developers → API Keys → (…) → Edit.
    Editor nyní ukáže konkrétní chybějící oprávnění. Nikdy nepoužívej
    prefix `VITE_`. Žádný klíč nepatří do projektového JSON ani do produkce.
@@ -1308,6 +1324,13 @@ automaticky nemažou. `OPENAI_API_KEY` lze použít pro grafické úpravy lokac�
    ověří schopnosti modelu a odešle pouze podporované volitelné parametry.
    U v3/v4 se neposílá speed; style a speaker boost řídí schopnosti vrácené API.
    Nedostupná pole jsou vypnutá.
+   **Voice Design · nový charakterový hlas** vytváří vlastní hlas modelem
+   `eleven_ttv_v3`: popis musí mít 20–1000 znaků, ukázkový text 100–1000.
+   Jediné výslovné spuštění vrátí tři místní MP3 ukázky. Přehrání nevolá TTS.
+   Vyber ukázku, pojmenuj ji a samostatně ulož do účtu; tím se přiřadí do návrhu
+   postavy. Popis, text, seed, tři ukázky a jejich SHA-256 zůstávají v `design.json`;
+   `registration.json` dokládá zvolený návrh a výsledné Voice ID. Projektový
+   `voice.designRegistration` chrání celý tento řetězec před úklidem assetů.
    Při 402 ověř tarif a kredity: [hlasy z Voice Library nejsou na bezplatném tarifu dostupné přes API](https://elevenlabs.io/docs/eleven-creative/voices/voice-library),
    i když je lze přehrát na webu. Vyber hlas dostupný pro svůj tarif nebo importuj WAV.
 4. Otevři **Dabing a lip-sync**. Vyber repliku z existujících dialogů a uprav text
@@ -1330,6 +1353,30 @@ automaticky nemažou. `OPENAI_API_KEY` lze použít pro grafické úpravy lokac�
 8. Přehrávej/pozastavuj audio v náhledu, posouvej jeho čas a přibliž tvář. Oči
    náhodně mrkají a idle pokračuje nezávisle. **Uložit do projektu** zapíše vazby,
    hlas a mapování do JSON. **Game Mode** okamžitě přehraje tentýž návrh.
+
+**Limit 10 vlastních hlasů:** osm stálých slotů je určeno Ferovi, Dežovi,
+Etele, otci Bonifácovi, Milanovi Jamkovi, Dingovi, Jolandě a Ľubu Šťastnému.
+Tyto hlasy se přes správu rotace nemažou. Margita, Karol a trojice z hřiště
+používají dva rotační sloty. Nastavení je u postavy v **Správa hlasového slotu**;
+editor zobrazuje počet stálých a právě obsazených rotačních slotů.
+
+Před uvolněním rotačního hlasu vygeneruj a analyzuj **všechny** jeho hrané
+repliky a ulož projekt. Tlačítko **Ověřit dabing a uvolnit rotační hlas** pracuje
+s uloženým projektem a odmítne odlišný návrh, stálý nebo neoznačený hlas.
+Kontroluje skutečné PCM vzorky, SHA-256 a délku WAV, původ nahrávky a Voice ID,
+aktuální text, titulky a odpovídající Rhubarb data všech jeho postav. Teprve
+poté uloží `verification.json` a zavolá DELETE hlasu v ElevenLabs. Úspěch
+dokládá `retirement.json`; `voice.retired` a `retirementManifest` následně
+ulož do projektu. Hraní dál používá místní WAV a zůstává plně funkční.
+Uvolněný hlas nelze použít pro další placené TTS ani ze staršího návrhu.
+Nový Voice Design přiřadí nové ID a stav uvolnění zruší; existující nahrávky
+se samy nepřegenerují.
+
+Mazání se automaticky neopakuje. Při nejasném výsledku sítě zůstane pending
+záznam a další mazání i TTS se zablokují do ručního ověření účtu. Stálé hlasy
+a místní nahrávky se rotací nemažou. Úspěšné i pending záznamy uvolnění a jejich
+tranzitivní podklady úklid assetů trvale chrání, i když editor mezitím zavřeš
+nebo postavě přiřadíš nový hlas.
 
 **Titulky** se upravují ve stejném panelu pod správou dabingu. `text` uzlu je
 původní text pro TTS včetně tagů. Hráč ve výchozím stavu vidí text bez hranatých

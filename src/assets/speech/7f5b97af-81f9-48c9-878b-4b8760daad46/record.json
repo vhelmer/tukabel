@@ -1,0 +1,18 @@
+{
+  "text": "[throaty, booming contralto] [outraged] Pýtal hnoj na bioplyn. Poslala som ho za Dingom po batériu. Nech mi tu aspoň niekto nekradne aj výsledok trávenia.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "Jfvw40qotTOck51vIvrm",
+    "designRegistration": "speech/1a89f747-49e0-424b-9c61-6e4fc151c0c1/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 8.08,
+  "audioSha256": "38c548b3cbceddafc61873f0fa8e44253e322d139d63d9ba0d182b468f513d61"
+}

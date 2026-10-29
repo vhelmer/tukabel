@@ -1,0 +1,17 @@
+{
+  "text": "[hoarse, cutting voice] [annoyed] V noci tu šiel biely pohrebák. Z kufra mu trčal kábel. Myslela som, že zasa niekto zakopáva nabíjačku.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "H4DieoTMxMYl6lx1prWW",
+    "designRegistration": "speech/3c173f79-5e0a-4142-8a2f-cc8264dbf81e/registration.json"
+  },
+  "languageCode": "sk",
+  "duration": 7.52,
+  "audioSha256": "5880a8e056cd29ca03a8272942c1f6e100a17d0e368401d9605286c426337283"
+}

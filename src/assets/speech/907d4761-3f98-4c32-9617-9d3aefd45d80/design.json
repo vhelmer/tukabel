@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "operation": "voice-design",
+  "provider": "elevenlabs",
+  "model": "eleven_ttv_v3",
+  "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Male, sixties. A theatrically self-important priest with a thin quavering nasal tenor, throaty croak and unstable tremulous vibrato. Stretch rounded vowels as if about to preach, then abruptly squeak or gasp into an absurdly serious declaration. Pompous comic liturgical intonation with huge rises and falls, wounded dignity and strained dramatic projection. Do NOT sing the whole sentence and do not sound solemnly neutral: every line is an overacted sermon, yet its words remain distinct. Middle-high male register. Slovak with careful ceremonial diction. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts.",
+  "text": "[trembling, nasal, theatrical voice] [dramatic] Pumpa naľavo. Naber do vlastnej fľaše. Posvätil som celý prívod, takže aj obecné WC má konečne duchovný rozmer. Bránu otvorím, keď bude čím zvoniť. Elektrický zvon nehrá a mne po treťom ding-dongu krvácala dôstojnosť. Jolanda má na krave poriadny zvonec. Úmrtné listy. Vyplníš sám, na pečiatku je obecná Etela. Konečne administratíva, pri ktorej nemusíš prísť osobne živý. Krásny tón. Trochu pasienok, trochu posledný súd.",
+  "textSha256": "78ef0a7e025c311b3710bd4257725a07e7566b8336677372cf2be6ad1668d78b",
+  "seed": 61993,
+  "guidanceScale": 5,
+  "outputFormat": "mp3_44100_128",
+  "previews": [
+    {
+      "audio": "preview-1.mp3",
+      "generatedVoiceId": "vl8ouZRHwZCcTCP2TT9k",
+      "duration": 41.5635625,
+      "audioSha256": "5782eb988c8ee5907e0c026068e0e5279e62f6c4ea2696e41de09898cf3863e8"
+    },
+    {
+      "audio": "preview-2.mp3",
+      "generatedVoiceId": "Dm506FEP6AkprXTsWzmW",
+      "duration": 40.0484375,
+      "audioSha256": "2eaf1bcc58be2efe7b78d1b97ec1c771ff2dfacab84746d68254de06ad91fdfb"
+    },
+    {
+      "audio": "preview-3.mp3",
+      "generatedVoiceId": "N6SAJnBhVzftXaMdUG1Y",
+      "duration": 42.7651875,
+      "audioSha256": "89af3f856cfb7e92beec75c648cc390854a46684a8730b4532c4b4bc1a400875"
+    }
+  ]
+}

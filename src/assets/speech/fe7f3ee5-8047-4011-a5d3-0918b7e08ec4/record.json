@@ -1,0 +1,17 @@
+{
+  "text": "[unnaturally deep, hollow, creaking voice] [deadpan] Spadol mi do mreže v kaplnke. Nie je hlboko. Niečo magnetické na špagáte ho vytiahne, rukou tam netlač. Tá mreža vyhrala tri rozvody.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "zWHgsvbNzrffMNY5MMeW",
+    "designRegistration": "speech/0ee076d4-99b6-4b01-9523-452a2a74d51d/registration.json"
+  },
+  "languageCode": "sk",
+  "duration": 11.36,
+  "audioSha256": "fdc83350fb580824ad120026e51bc07d5753e9477fa3ebc66cc5ebf5786a9fef"
+}

@@ -1,0 +1,18 @@
+{
+  "text": "[brittle, manic falsetto] [excited] Prekvapenie, Rudo. Pohreb bol kvôli dlhom. Kábel som vzal kvôli jackpotu. Tento automat živí Dingova autobatéria. Vy môžete sedieť potme, ja mám konečne nulovú konkurenciu.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "Cs0q9bNTpnXhVCnLNXGI",
+    "designRegistration": "speech/21f9abba-7505-4707-a9f6-afdfaf7fc065/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 12.24,
+  "audioSha256": "fedf1b6aff17f70b0fd9ff1d10afb7fa29aa71b18b847999280a94d798eac8d3"
+}

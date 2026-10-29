@@ -1,0 +1,17 @@
+{
+  "text": "[trembling, nasal, theatrical voice] [dramatic] Úmrtné listy. Vyplníš sám, na pečiatku je obecná Etela. Konečne administratíva, pri ktorej nemusíš prísť osobne živý.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "Dm506FEP6AkprXTsWzmW",
+    "designRegistration": "speech/2f047eb2-01cd-4bc9-99ad-daf933cb9dd4/registration.json"
+  },
+  "languageCode": "sk",
+  "duration": 10.16,
+  "audioSha256": "e0742672ea3e8418d595a1f94b27225e69624105250a5ac372911725a266cc3e"
+}

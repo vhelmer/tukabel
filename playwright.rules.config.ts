@@ -10,6 +10,7 @@ export default defineConfig({
     'world-map-rules.spec.ts',
     'animation-rules.spec.ts',
     'speech-rules.spec.ts',
+    'voice-rotation-rules.spec.ts',
     'scene-art-rules.spec.ts',
     'prepared-artwork-rules.spec.ts',
     'registration-rules.spec.ts',

@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "operation": "voice-design",
+  "provider": "elevenlabs",
+  "model": "eleven_ttv_v3",
+  "description": "Native Slovak, clear Slovak consonants and vowels. An adult man in his thirties with an unmistakably mature chest resonance. An outrageous comic stage performer whose voice repeatedly cracks from a raspy baritone into strained squeaky head voice. He starts with low creaky barks, flips upwards on stressed words, then lands in a rough chesty growl. Irregular emphatic rhythm, pompous confidence and rubbery cartoon intonation. The contrast of mature bass grit and unstable falsetto should be hilarious and bizarre. Clearly adult male vocal anatomy and diction. Extreme acting rather than a normal civil conversation. Keep every word intelligible at a moderate pace. Dry close studio recording, no music, echo or background effects.",
+  "text": "[cracking, raspy adult cartoon voice] [excited] Špagát a podložku. Za rožok. Kŕmime nimi domácu tehlu, je alergická na granule. Hej, viezol toho pána, čo má byť pod zemou. Doviezol si aj automat. Asi nechce, aby ho deti otravovali pri práci. Toto je poctivý rožok. Tehla konečne niečo rozhryzie. Tu máš špagát a podložku. Keď ju zabalíš do zlatého, vyzerá presne ako žetón.",
+  "textSha256": "a798fb657fee0737cd834ab987f1f15c0b06f7da3159b25ef0270fd6470b2395",
+  "seed": 112512,
+  "guidanceScale": 5,
+  "outputFormat": "mp3_44100_128",
+  "previews": [
+    {
+      "audio": "preview-1.mp3",
+      "generatedVoiceId": "QPNJgb5R3Pkw7mEBVIiK",
+      "duration": 26.67375,
+      "audioSha256": "b77f88f93733618645b879d5ecd5ea6f6f0b088c30190bcc88785aa66bfee31d"
+    },
+    {
+      "audio": "preview-2.mp3",
+      "generatedVoiceId": "iiDZOH9TArCghKD6MfNt",
+      "duration": 28.998625,
+      "audioSha256": "a436bf6479c2a878d19513b6e09a0174cd363da32e25156cba3a0a46725b441f"
+    },
+    {
+      "audio": "preview-3.mp3",
+      "generatedVoiceId": "JzmyhaFuxrS3Z5UJNGGg",
+      "duration": 24.3488125,
+      "audioSha256": "3409d8ea5b3c2008d49cb2927058b5426004ace6456cf8d7eb5d988a3bb8621b"
+    }
+  ]
+}

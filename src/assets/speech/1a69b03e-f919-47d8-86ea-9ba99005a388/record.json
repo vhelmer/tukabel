@@ -1,0 +1,18 @@
+{
+  "text": "[piercing, theatrical adult soprano] [mischievously] Podložka a zlatý obal. Ale otec hovorí, že skrat je tiež výhra. Ak si poistený.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "wk5NuWmufYkSfjl2kJr1",
+    "designRegistration": "speech/ec91583d-d4de-4ffa-b468-ed16f52dc72d/registration.json",
+    "slot": "rotating"
+  },
+  "languageCode": "sk",
+  "duration": 7.36,
+  "audioSha256": "bde7a83c6e2322ebb55feb0eb0286f0658da5c5d5c6a9bf1fe87ee01f6f5251f"
+}

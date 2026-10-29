@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "operation": "voice-design",
+  "provider": "elevenlabs",
+  "model": "eleven_ttv_v3",
+  "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Female, fifties. An enormous commanding, unnaturally low female contralto with brass-like chest power, throaty frog-like grit and a coarse rolling growl. She relishes vowels like an operatic farmyard duchess, then snaps upwards into outraged hysterical peaks. Slow dramatic pronouncements alternate with explosive indignation and a rumbling mocking undertone. Absolutely not gentle or civil, not a normal conversational woman. Powerful very low female register with wild theatrical intonation, but no sustained singing. Every Slovak consonant must remain clear. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts.",
+  "text": "[throaty, booming contralto] [outraged] Krava nemá krst a poisťovňa neuzná vyššiu moc. Dones svätenú vodu v nejakej fľaši. Mlieko aj zvonec dostaneš, len nech to je papierovo čisté. Pýtal hnoj na bioplyn. Poslala som ho za Dingom po batériu. Nech mi tu aspoň niekto nekradne aj výsledok trávenia. Keď niečo nesedí, zje to. Robí to rovnako ako obec, iba bez pečiatky. V mene Otca, Syna a poistnej udalosti. Krava je vybavená. Do fľaše ti nalejem mlieko a zvonec ber tiež.",
+  "textSha256": "17a5b84949fda4063484e1af81135c9f2806edd71ba007bfaa154b0c1c3220d7",
+  "seed": 63204,
+  "guidanceScale": 5,
+  "outputFormat": "mp3_44100_128",
+  "previews": [
+    {
+      "audio": "preview-1.mp3",
+      "generatedVoiceId": "4yLeSfpa2Hq9ou5whjtC",
+      "duration": 39.552125,
+      "audioSha256": "fdf180109b65a935b4a44babe13732435231b4b3197a7fa40133417f79c2294f"
+    },
+    {
+      "audio": "preview-2.mp3",
+      "generatedVoiceId": "Jfvw40qotTOck51vIvrm",
+      "duration": 42.6868125,
+      "audioSha256": "c1b9e6f48cb9285b05975c54364b63c18a76482691625602f2eed92d717d5ca1"
+    },
+    {
+      "audio": "preview-3.mp3",
+      "generatedVoiceId": "gR0Bhy571BVgOSxfwVlf",
+      "duration": 44.0451875,
+      "audioSha256": "2e3bf4237ca2b82aaff149fb4e6d7472668f68551f06349d278aa35d51729a18"
+    }
+  ]
+}

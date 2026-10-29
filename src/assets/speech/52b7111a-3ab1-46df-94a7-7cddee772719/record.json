@@ -1,0 +1,17 @@
+{
+  "text": "[hoarse, cutting voice] [annoyed] Tu máš rožok a pásku. Rožok nedávaj do rozvodu. Je tvrdší než izolácia, ale priťahuje mravce.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "H4DieoTMxMYl6lx1prWW",
+    "designRegistration": "speech/3c173f79-5e0a-4142-8a2f-cc8264dbf81e/registration.json"
+  },
+  "languageCode": "sk",
+  "duration": 6.96,
+  "audioSha256": "0f61d43c9a4cbf678dba3187fa71ec6a809c754d070cfafea49701a85736eca8"
+}

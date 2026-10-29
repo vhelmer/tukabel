@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "operation": "voice-registration",
+  "provider": "elevenlabs",
+  "designManifest": "speech/96a7e646-8282-4b8b-8658-7d2a9ee86594/design.json",
+  "designSha256": "121b133115e737180a97d86bb8ceeffcad6a31f95e1fea743494436bdb21625e",
+  "generatedVoiceId": "OAHw71DTm0tFvJJU4HGL",
+  "previewIndex": 2,
+  "voiceId": "OAHw71DTm0tFvJJU4HGL",
+  "name": "TUKABEL · Dingo · Přepitý rozvleklý chrapot",
+  "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Male, about fifty. A half-asleep scrapyard dealer with a deeply booze-soaked, slack, floppy rumble and a wet gravelly rasp. The pitch hangs low and sags at phrase ends; vowels drag lazily, consonants arrive late but clearly, then a key word suddenly gets a stubborn little burst of energy. Strong comedic drowsiness, audible vocal fry and breathy chest buzz, as if speaking requires an absurd personal effort. Not an ordinary laid-back man: grossly exaggerated drunken sluggishness while still fully understandable. Low register, loose uneven pacing. Colloquial Slovak. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts."
+}

@@ -37,11 +37,14 @@ import type { ArtContext } from '../src/editor/jobs.ts';
 import { artStatus, createArtwork, type ArtOptions } from './sceneArt.ts';
 import {
   createSpeech,
+  designVoice,
+  saveDesignedVoice,
   analyzeSpeech,
   speechCatalog,
   speechStatus,
   validateSpeechAssets,
 } from './speech.ts';
+import { retireDesignedVoice } from './voiceRotation.ts';
 import {
   importAnimation,
   validateAnimationAssets,
@@ -395,6 +398,73 @@ export function editorPlugin(
           }
           if (endpoint === `${API}/speech/catalog` && req.method === 'POST') {
             respond(200, await speechCatalog(speechOptions));
+            return;
+          }
+          if (
+            [`${API}/speech/design`, `${API}/speech/design/save`].includes(
+              endpoint,
+            ) &&
+            req.method === 'POST'
+          ) {
+            const input = await readJson(req);
+            const result = endpoint.endsWith('/save')
+              ? await saveDesignedVoice(assetsRoot, input, speechOptions)
+              : await designVoice(assetsRoot, input, speechOptions);
+            const modules =
+              server.environments.client.moduleGraph.getModulesByFile(
+                path.resolve(server.config.root, 'src/game/assets.ts'),
+              );
+            for (const module of modules ?? [])
+              server.environments.client.moduleGraph.invalidateModule(module);
+            respond(201, result);
+            return;
+          }
+          if (
+            endpoint === `${API}/speech/design/retire` &&
+            req.method === 'POST'
+          ) {
+            const input = (await readJson(req)) as {
+              sceneId?: unknown;
+              hotspotId?: unknown;
+              expectedVoice?: unknown;
+              confirmed?: unknown;
+            } | null;
+            if (
+              !input ||
+              input.confirmed !== true ||
+              typeof input.sceneId !== 'string' ||
+              typeof input.hotspotId !== 'string'
+            )
+              throw new Error('Vyber uloženou postavu a potvrď uvolnění.');
+            const raw = await readFile(source, 'utf8');
+            const project = JSON.parse(
+              raw,
+            ) as import('../src/game/types.ts').GameContent;
+            const current = project.scenes
+              .find((scene) => scene.id === input.sceneId)
+              ?.hotspots.find((hotspot) => hotspot.id === input.hotspotId)
+              ?.animation?.voice;
+            if (
+              !current ||
+              JSON.stringify(current) !== JSON.stringify(input.expectedVoice)
+            ) {
+              respond(409, {
+                error:
+                  'Hlas se liší od uloženého projektu. Nejprve ulož změny a znovu ověř dabing.',
+              });
+              return;
+            }
+            const result = await retireDesignedVoice(
+              assetsRoot,
+              project,
+              {
+                sceneId: input.sceneId,
+                hotspotId: input.hotspotId,
+                confirmed: true,
+              },
+              speechOptions,
+            );
+            respond(201, result);
             return;
           }
           if (

@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "operation": "voice-design",
+  "provider": "elevenlabs",
+  "model": "eleven_ttv_v3",
+  "description": "Native Slovak, slovenčina, clearly articulated Slovak consonants and vowels. Male, late fifties. Persona: furious village tournament organiser in a grotesque animated black comedy. An EXTREME burnt-out, chain-smoked bass-baritone: dense chest resonance, abrasive broken gravel, harsh creaking vocal fry, as if every sentence has to force its way past a sack of stones. Barking commands, sudden incredulous upward lunges, emphatic punchlines and irritated breathy growls between clauses. Very theatrical, explosive, rough and ridiculous, never a polite narrator or a normal conversational man. Low-mid register with violent intonation swings, NOT a whisper. Mild eastern Slovak cadence only; the personality comes from texture and acting. Every word must remain intelligible. Clean close dry recording, no music, ambience or effects.",
+  "text": "[angry] Rudo! Niekto nám ukradol hlavný elektrický kábel! Celá osada je bez prúdu a majstrovstvá v automatoch v riti. Nájdi ho a máš štartovné zadarmo. [gravelly, exasperated] Vyšetruj, len mi pri tom nezožer rodinu!",
+  "textSha256": "42ee10ac5403df310f105ca099456069c88de0a6bf0babe814a600527051cec5",
+  "seed": 61301,
+  "guidanceScale": 5,
+  "outputFormat": "mp3_44100_128",
+  "previews": [
+    {
+      "audio": "preview-1.mp3",
+      "generatedVoiceId": "YT7GNUz0scw5kKDMEBci",
+      "duration": 17.1651875,
+      "audioSha256": "1282491cedd859eacf15da84e711968292750070a98000e1449101945990230d"
+    },
+    {
+      "audio": "preview-2.mp3",
+      "generatedVoiceId": "2Sok7NmoE5ImNGRtI1K8",
+      "duration": 15.9635625,
+      "audioSha256": "b8762429d8b31a58d7d0c1322d85176cdb259147cfd24fd7792dbc12e8d21a37"
+    },
+    {
+      "audio": "preview-3.mp3",
+      "generatedVoiceId": "T4iGZQue94RIBivJIuhN",
+      "duration": 14.6051875,
+      "audioSha256": "642c4846676cd4828d9588c34cf4aa61be5c06a9ba1e78ca7e832ae07b8c18a7"
+    }
+  ]
+}

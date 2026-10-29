@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "operation": "voice-registration",
+  "provider": "elevenlabs",
+  "designManifest": "speech/5d2dea22-4799-4a9c-a44e-9a3b3b92efaa/design.json",
+  "designSha256": "3d815805914d0a132f3a69a108ec146ab336fe82133a7592fa98c7f6a770853d",
+  "generatedVoiceId": "xKlQrC6RzWnhQhiCFKBS",
+  "previewIndex": 0,
+  "voiceId": "xKlQrC6RzWnhQhiCFKBS",
+  "name": "TUKABEL · Etela Pečiatka · Papírově suchý pisklavý hlas",
+  "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Female, late seventies. An ancient terrifying municipal clerk with a high wiry screech, bone-dry papery crackle and extremely creaky edges. Her voice rattles and croaks between sharp little squeaks, like a rusty hinge that has learned to pronounce every bureaucratic syllable. Stamping staccato rhythm, clipped consonants, relish on threatening words and a malicious little upward curl on punchlines. High register with uneven quivering fry, NEVER a warm grandmother or polite narrator. Clear colloquial Slovak. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts."
+}

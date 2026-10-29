@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "operation": "voice-design",
+  "provider": "elevenlabs",
+  "model": "eleven_ttv_v3",
+  "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Male, forties. A paranoid but clever inventor of ridiculous explanations. Very thin, tightly pinched nasal tenor with a squeaking reed-like edge and a nervous dry rasp. Jagged rushed bursts, tiny hesitations, abrupt suspicious whispers and stressed syllables jumping sharply in pitch. Audibly wound-up, twitchy and defensive, with comically precise conspiratorial emphasis, never relaxed. Upper-mid male register, brisk clear articulation. A modest eastern Slovak rhythm and occasional natural ta/shak cadence, not an imitation of a real person. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts.",
+  "text": "[pinched nasal voice] [nervous] Všetci hneď na mňa, lebo mám magnet. Meď sa naň nechytá, génius. Skús Dinga v zberni. Zaspal pri vyhlasovaní vlastnej pracovnej doby. Čakám na zálohu za fľašu. Autobus nepríde, ten už vyškrtli aj z cestovného poriadku. Ukáž mi fľašu a dostaneš môj magnet. Na meď mi je aj tak na hovno. Hej. Šofér si kupoval bagetu. Na mŕtvolu mal výborný apetít. Na smerovke mal veniec s nápisom ĽUBO, VRÁŤ DVE EURÁ.",
+  "textSha256": "2a3a21f2322afbcf35b363be22c143abdcf645e6a44a0688cfbb0a1c5382c7bf",
+  "seed": 61647,
+  "guidanceScale": 5,
+  "outputFormat": "mp3_44100_128",
+  "previews": [
+    {
+      "audio": "preview-1.mp3",
+      "generatedVoiceId": "hK1QkZqr6jNBJ8sJlEuc",
+      "duration": 27.1700625,
+      "audioSha256": "ec53e2578d5756c8f0e75a6bc17a73fb6805a83994400b10bcfdf66e2b6af12c"
+    },
+    {
+      "audio": "preview-2.mp3",
+      "generatedVoiceId": "IP5QPAWLvDoPanE6BkqN",
+      "duration": 29.23375,
+      "audioSha256": "69c9c9d35dee78dff17818a81d175411181a9b3bd92de65d2288f7605f483af5"
+    },
+    {
+      "audio": "preview-3.mp3",
+      "generatedVoiceId": "Tgnggby36FUouH8FnJRZ",
+      "duration": 30.20025,
+      "audioSha256": "c9c093a5e1a64496c6607c7f9e9d0638a4ff202d1820809ddd1e9adf045a63e7"
+    }
+  ]
+}

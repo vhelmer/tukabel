@@ -1,0 +1,17 @@
+{
+  "text": "[pinched nasal voice] [nervous] Všetci hneď na mňa, lebo mám magnet. Meď sa naň nechytá, génius. Skús Dinga v zberni. Zaspal pri vyhlasovaní vlastnej pracovnej doby.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "hK1QkZqr6jNBJ8sJlEuc",
+    "designRegistration": "speech/3e8208b6-b0b3-4340-b834-33458c4b61fa/registration.json"
+  },
+  "languageCode": "sk",
+  "duration": 10,
+  "audioSha256": "89c96e09b59effdab1d51f80c81565da070b091a04517e66884dccd9803c4c51"
+}

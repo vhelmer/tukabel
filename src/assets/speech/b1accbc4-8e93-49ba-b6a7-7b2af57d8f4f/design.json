@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "operation": "voice-design",
+  "provider": "elevenlabs",
+  "model": "eleven_ttv_v3",
+  "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Male, late forties. A beer-soaked publican with an upper-middle register shredded by a lifetime of shouting across a pub. Harsh hoarse sandpaper rasp, scratchy wheeze, coarse forward nasal resonance and strained buzzy vowels. Loud argumentative rhythmic jabs, sarcastic upward scoops, rough breath at the end of clauses and sudden indignant bursts. He is audibly half-cut but every word remains understandable; no long mumbling or random hiccup noises. A damaged loud tenor, quite unlike a booming deep bass. Colloquial Slovak. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts.",
+  "text": "[shredded, raspy tenor] [irritated] Mletú. Elektrina nejde, kanvica je teraz drahá váza. Zmiešaj ju s mliekom. Dingo to vypije studené, má žalúdok zo zberu. Keď mi niekto opraví pípu. Matica sa pretáča. Potrebujem francúzsky kľúč, nie ďalšiu modlitbu na páku. Ľubo. Ráno pohreb, večer reklamácia jackpotu. Myslel som, že to robí jeho pozostalý. Mali rovnaké ponožky.",
+  "textSha256": "923383a4f3421813a8042f1c31214a962a1110d530a446f2fc9d05253b811ff6",
+  "seed": 62339,
+  "guidanceScale": 5,
+  "outputFormat": "mp3_44100_128",
+  "previews": [
+    {
+      "audio": "preview-1.mp3",
+      "generatedVoiceId": "3ydvJOUquoUX6SWsHXEO",
+      "duration": 26.67375,
+      "audioSha256": "6bc7a5d02d2dc1b99a61b030e653d75ad4d2c787ab2867fd37b95fded22c9993"
+    },
+    {
+      "audio": "preview-2.mp3",
+      "generatedVoiceId": "GMq1ucyG2a8EKFsKRbDQ",
+      "duration": 25.8116875,
+      "audioSha256": "dfc3299a5e2be115cf214cf7232b5ce63e70581ee20572e1285f9cda1a396b9e"
+    },
+    {
+      "audio": "preview-3.mp3",
+      "generatedVoiceId": "uR7N25iLB95EORANQM8n",
+      "duration": 31.558625,
+      "audioSha256": "80d6178a035207934db469046514e70e05f4e0daf30ee5b4e251f1bad4a55a54"
+    }
+  ]
+}

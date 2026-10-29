@@ -1,0 +1,17 @@
+{
+  "text": "[dry, squeaky, crackling voice] [sarcastic] Za Jolandou do kravína. Krava ju živí a prasa jej robí audítora. Vraj potrebuje svätenú vodu. Kostol ju dáva zadarmo, ešte nemajú terminál.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "xKlQrC6RzWnhQhiCFKBS",
+    "designRegistration": "speech/df34f616-45c6-4744-810b-48fbf2184228/registration.json"
+  },
+  "languageCode": "sk",
+  "duration": 11.44,
+  "audioSha256": "803bdd27f4f363686521864b11b33543820e24723eca752c8a484e881eaf3b2c"
+}

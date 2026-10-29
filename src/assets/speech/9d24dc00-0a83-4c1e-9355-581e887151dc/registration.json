@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "operation": "voice-registration",
+  "provider": "elevenlabs",
+  "designManifest": "speech/a98f431b-b687-4eb2-88e8-4f0d98767299/design.json",
+  "designSha256": "9427c2ce589c5a71f5b5f6eb2b112b702d4dbe36ee51058e48d620ea96d9d97e",
+  "generatedVoiceId": "iiDZOH9TArCghKD6MfNt",
+  "previewIndex": 1,
+  "voiceId": "iiDZOH9TArCghKD6MfNt",
+  "name": "TUKABEL · Špľuch · Praskající kreslený hlas",
+  "description": "Native Slovak, clear Slovak consonants and vowels. An adult man in his thirties with an unmistakably mature chest resonance. An outrageous comic stage performer whose voice repeatedly cracks from a raspy baritone into strained squeaky head voice. He starts with low creaky barks, flips upwards on stressed words, then lands in a rough chesty growl. Irregular emphatic rhythm, pompous confidence and rubbery cartoon intonation. The contrast of mature bass grit and unstable falsetto should be hilarious and bizarre. Clearly adult male vocal anatomy and diction. Extreme acting rather than a normal civil conversation. Keep every word intelligible at a moderate pace. Dry close studio recording, no music, echo or background effects."
+}

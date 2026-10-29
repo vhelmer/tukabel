@@ -1,0 +1,17 @@
+{
+  "text": "[pinched nasal voice] [nervous] Čakám na zálohu za fľašu. Autobus nepríde, ten už vyškrtli aj z cestovného poriadku. Ukáž mi fľašu a dostaneš môj magnet. Na meď mi je aj tak na hovno.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "hK1QkZqr6jNBJ8sJlEuc",
+    "designRegistration": "speech/3e8208b6-b0b3-4340-b834-33458c4b61fa/registration.json"
+  },
+  "languageCode": "sk",
+  "duration": 10.32,
+  "audioSha256": "a4866a7bf95e00b8387cabdbc568a9162dcea9b63eca66cedacd9f7453c39387"
+}

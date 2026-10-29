@@ -1,0 +1,17 @@
+{
+  "text": "[shredded, raspy tenor] [irritated] Mletú. Elektrina nejde, kanvica je teraz drahá váza. Zmiešaj ju s mliekom. Dingo to vypije studené, má žalúdok zo zberu.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "GMq1ucyG2a8EKFsKRbDQ",
+    "designRegistration": "speech/e6dd72bf-6d4e-421a-9c19-38a32a3d0b41/registration.json"
+  },
+  "languageCode": "sk",
+  "duration": 9.52,
+  "audioSha256": "b3aa0f564c0b2e4f078f76bc54fa3e620ad17748e2539e069e1b78957fbc5e0e"
+}

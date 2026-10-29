@@ -1,0 +1,18 @@
+{
+  "text": "[brittle, manic falsetto] [excited] Umrel. Len splátky to neuznali. Zobral som hlavný kábel, pripojil autobatériu a mám súkromné majstrovstvá. Mŕtveho nemôžu diskvalifikovať.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "Cs0q9bNTpnXhVCnLNXGI",
+    "designRegistration": "speech/21f9abba-7505-4707-a9f6-afdfaf7fc065/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 10.32,
+  "audioSha256": "cee904500014a8c786fbbf7d50063337d73de11ab95e86977527bda279ae14d7"
+}

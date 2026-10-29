@@ -243,3 +243,36 @@ export const prepareArchivedArtwork = (
     scale,
     alignment,
   });
+
+export const generateVoiceDesign = (input: {
+  description: string;
+  text: string;
+  seed?: number;
+  guidanceScale?: number;
+}) =>
+  request<import('./voiceDesign').VoiceDesignResult>('speech/design', 'POST', {
+    ...input,
+    confirmed: true,
+  });
+export const saveVoiceDesign = (input: {
+  manifest: string;
+  previewIndex: number;
+  generatedVoiceId: string;
+  name: string;
+}) =>
+  request<import('./voiceDesign').SavedDesignVoice>(
+    'speech/design/save',
+    'POST',
+    { ...input, confirmed: true },
+  );
+export const retireVoiceDesign = (input: {
+  sceneId: string;
+  hotspotId: string;
+  expectedVoice: import('../game/types').VoiceSettings;
+}) =>
+  request<{
+    voice: import('../game/types').VoiceSettings;
+    manifest: string;
+    voiceId: string;
+    verifiedLines: number;
+  }>('speech/design/retire', 'POST', { ...input, confirmed: true });

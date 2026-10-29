@@ -149,6 +149,19 @@ export async function auditAssets(root, options = {}) {
   for (const file of sourceFiles)
     if (textFile.test(file))
       scan(await readReferences(file), path.relative(root, file));
+  // Account deletion receipts guard future TTS even after an actor gets a new
+  // voice or the editor closes before saving. Preserve pending outcomes too;
+  // their proof dependencies are followed by the ordinary recursive scan below.
+  for (const g of groups.values())
+    if (
+      g.id.startsWith('speech/') &&
+      g.files.some(
+        (id) =>
+          id === `${g.id}/retirement.json` ||
+          id === `${g.id}/.retirement.pending.json`,
+      )
+    )
+      protect(g.id, 'trvalá evidence uvolnění hlasu');
   // A recently published job may still be an unsaved editor preview.
   for (const g of groups.values())
     if (Date.now() - g.newest < 60 * 60 * 1000)

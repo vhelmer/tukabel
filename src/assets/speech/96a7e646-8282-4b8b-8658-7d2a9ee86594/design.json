@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "operation": "voice-design",
+  "provider": "elevenlabs",
+  "model": "eleven_ttv_v3",
+  "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Male, about fifty. A half-asleep scrapyard dealer with a deeply booze-soaked, slack, floppy rumble and a wet gravelly rasp. The pitch hangs low and sags at phrase ends; vowels drag lazily, consonants arrive late but clearly, then a key word suddenly gets a stubborn little burst of energy. Strong comedic drowsiness, audible vocal fry and breathy chest buzz, as if speaking requires an absurd personal effort. Not an ordinary laid-back man: grossly exaggerated drunken sluggishness while still fully understandable. Low register, loose uneven pacing. Colloquial Slovak. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts.",
+  "text": "[very hoarse, drowsy, slurred but intelligible voice] Potrebujem kávu. Studenú s mliekom, nech si nezobudím vredy. Karol má mletú, Jolanda kravu. Ja mám čas. Nie. Ľubo chcel požičať autobatériu. Na cintorín. Vraj mu tam chýba zážitková elektronika. Meď si doniesol vlastnú, furt zapojenú do celej osady. To isté čo s elektrinou, ale nikto nemôže dokázať, že som zaspal pri práci. Výborné. Chutí to ako moja posledná šanca. Tu máš kľúč a gumené rukavice. A vraciam fľašu.",
+  "textSha256": "30eca7e41b69e8d568201ba194ced0ad65ccd4484b5fb3947e72a8f11c28c12c",
+  "seed": 63031,
+  "guidanceScale": 5,
+  "outputFormat": "mp3_44100_128",
+  "previews": [
+    {
+      "audio": "preview-1.mp3",
+      "generatedVoiceId": "d8LAPMPoCcwCjgDgUQl5",
+      "duration": 39.8916875,
+      "audioSha256": "adf9c3cbdc84fc945541265640df6a259d0ef2f312573c7d0684f4c53a335e28"
+    },
+    {
+      "audio": "preview-2.mp3",
+      "generatedVoiceId": "NXmRkOZdAJWN41hGt3ly",
+      "duration": 43.157,
+      "audioSha256": "16794609294a9c2ede053f87efe5d59e25e130d51cb9ca33261765ebf578b58c"
+    },
+    {
+      "audio": "preview-3.mp3",
+      "generatedVoiceId": "OAHw71DTm0tFvJJU4HGL",
+      "duration": 39.552125,
+      "audioSha256": "f322f65458ae0c3440a2d941ae9c9bc81effa541dea1be78239515138c82a913"
+    }
+  ]
+}

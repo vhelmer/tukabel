@@ -1,0 +1,18 @@
+{
+  "text": "[brittle, manic falsetto] [excited] Pravý žetón nemám. Všetky som prehral sám so sebou. Ale keď to cinkne, je jedno, z čoho to je. Čo by sa asi tak mohlo posrať?",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "Cs0q9bNTpnXhVCnLNXGI",
+    "designRegistration": "speech/21f9abba-7505-4707-a9f6-afdfaf7fc065/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 9.04,
+  "audioSha256": "d59032bb33be334c2e88692e45aa63bf7df64143aacb84276807b035e573927e"
+}

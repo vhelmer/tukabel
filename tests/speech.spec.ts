@@ -49,11 +49,29 @@ const test = base.extend<{
           url: String(url),
           body: init?.body ? JSON.parse(String(init.body)) : undefined,
         });
+        if (init?.method === 'DELETE') return Response.json({ status: 'ok' });
+        if (String(url).includes('/text-to-voice/design')) {
+          const frame = Buffer.alloc(417);
+          frame.set([0xff, 0xfb, 0x90, 0x64]);
+          return Response.json({
+            previews: [0, 1, 2].map((index) => ({
+              audio_base_64: Buffer.concat([frame, frame]).toString('base64'),
+              generated_voice_id: `generated-character-${index}`,
+              duration_secs: 1,
+              media_type: 'audio/mpeg',
+            })),
+          });
+        }
+        if (String(url).endsWith('/text-to-voice'))
+          return Response.json({ voice_id: 'saved-designed-character' });
         if (String(url).includes('/text-to-speech/')) {
           const text = String(JSON.parse(String(init?.body)).text),
             characters = [...text];
           const pivot = text.indexOf('Druhá');
           const duration = pivot > 0 ? 15 : 4;
+          const pcm = Buffer.alloc(duration * 22050 * 2);
+          for (let i = 0; i < pcm.length / 2; i++)
+            pcm.writeInt16LE(Math.round(Math.sin(i * 0.13) * 4000), i * 2);
           const starts = characters.map((_, i) =>
             pivot > 0
               ? i < pivot
@@ -62,7 +80,7 @@ const test = base.extend<{
               : (i / characters.length) * 3.5,
           );
           return Response.json({
-            audio_base64: Buffer.alloc(duration * 22050 * 2).toString('base64'),
+            audio_base64: pcm.toString('base64'),
             alignment: {
               characters,
               character_start_times_seconds: starts,
@@ -112,9 +130,15 @@ async function studio(page: Page, url: string) {
     .selectOption(JSON.stringify(['animation-lab', 'blink-character']));
 }
 async function save(page: Page) {
+  const saved = page.waitForResponse(
+    (response) =>
+      response.request().method() === 'PUT' &&
+      response.url().endsWith('/__tukabel/editor/project'),
+  );
   await page
     .getByRole('button', { name: 'Uložit do projektu', exact: true })
     .click();
+  expect((await saved).ok()).toBe(true);
   await expect(
     page.getByRole('status', { name: 'Stav editoru' }),
   ).toContainText('Uložené do');
@@ -320,6 +344,145 @@ stopTest(
   },
 );
 
+test('Voice Design archives three previews and saves only the selected custom voice with persistent provenance', async ({
+  page,
+  workspace,
+  speechMock,
+}) => {
+  test.setTimeout(90000);
+  await studio(page, workspace.url);
+  await page.getByText('Voice Design · nový charakterový hlas').click();
+  const generate = page.getByRole('button', {
+    name: 'Vygenerovat 3 ukázky (čerpá kredity)',
+    exact: true,
+  });
+  await expect(generate).toBeDisabled();
+  await page
+    .getByLabel('Popis hlasu (20–1000 znaků)', { exact: true })
+    .fill(
+      'An extremely gravelly, roaring Slovak cartoon character with clear words.',
+    );
+  expect(speechMock.requests).toHaveLength(0);
+  await generate.click();
+  const design = page.locator('.voice-design');
+  await expect(design.locator('audio')).toHaveCount(3);
+  expect(
+    speechMock.requests.filter((r) => r.url.includes('/text-to-voice/design')),
+  ).toHaveLength(1);
+  expect(
+    speechMock.requests.filter((r) => r.url.endsWith('/text-to-voice')),
+  ).toHaveLength(0);
+  const previewUrl = await design.locator('audio').nth(1).getAttribute('src');
+  expect((await page.request.get(previewUrl!)).ok()).toBe(true);
+  await design.getByLabel('Ukázka 2', { exact: true }).check();
+  await design.getByLabel('Název uloženého hlasu').fill('TUKABEL · drsný hlas');
+  const register = design.getByRole('button', {
+    name: 'Uložit vybraný hlas a přiřadit do návrhu',
+    exact: true,
+  });
+  await register.click();
+  await expect(register).toBeDisabled();
+  await expect(page.getByLabel('ElevenLabs Voice ID')).toHaveValue(
+    'saved-designed-character',
+  );
+  const registrations = speechMock.requests.filter((r) =>
+    r.url.endsWith('/text-to-voice'),
+  );
+  expect(registrations).toHaveLength(1);
+  expect(registrations[0]!.body).toMatchObject({
+    generated_voice_id: 'generated-character-1',
+  });
+  await save(page);
+  const disk = JSON.parse(
+    await readFile(workspace.source, 'utf8'),
+  ) as GameContent;
+  const voice = disk.scenes
+    .find((s) => s.id === 'animation-lab')!
+    .hotspots.find((h) => h.id === 'blink-character')!.animation!.voice!;
+  expect(voice.voiceId).toBe('saved-designed-character');
+  expect(voice.designRegistration).toMatch(
+    /^speech\/[\w-]+\/registration\.json$/,
+  );
+  const archive = JSON.parse(
+    await readFile(
+      path.join(workspace.root, 'src/assets', voice.designRegistration!),
+      'utf8',
+    ),
+  );
+  expect(archive.voiceId).toBe(voice.voiceId);
+  expect(archive.previewIndex).toBe(1);
+  await page.reload();
+  await studio(page, workspace.url);
+  await expect(page.getByLabel('ElevenLabs Voice ID')).toHaveValue(
+    voice.voiceId,
+  );
+  expect(
+    speechMock.requests.filter((r) => r.url.includes('/text-to-voice/design')),
+  ).toHaveLength(1);
+  await page.getByText('Hlas ElevenLabs', { exact: true }).click();
+  await expect(page.getByLabel('Správa hlasového slotu')).toHaveValue(
+    'rotating',
+  );
+  await page
+    .getByRole('button', { name: 'Dabing a lip-sync', exact: true })
+    .click();
+  await page
+    .getByLabel('Potvrzuji placené generování této repliky', { exact: true })
+    .check();
+  await page
+    .getByRole('button', { name: 'Vygenerovat dabing ElevenLabs', exact: true })
+    .click();
+  await expect(
+    page.getByRole('status', { name: 'Stav dabingu' }),
+  ).toContainText('Hotovo');
+  await page
+    .getByRole('button', { name: 'Analyzovat Rhubarb', exact: true })
+    .click();
+  await expect(
+    page.getByRole('status', { name: 'Stav dabingu' }),
+  ).toContainText('Hotovo');
+  await save(page);
+  const release = page.getByRole('button', {
+    name: 'Ověřit dabing a uvolnit rotační hlas (smaže z účtu)',
+    exact: true,
+  });
+  await release.click();
+  await expect(
+    page.getByText('Hlas byl uvolněn z účtu.', { exact: false }),
+  ).toBeVisible();
+  expect(
+    speechMock.requests.filter((r) =>
+      r.url.endsWith('/v1/voices/saved-designed-character'),
+    ),
+  ).toHaveLength(1);
+  await expect(
+    page.getByRole('button', {
+      name: 'Vygenerovat dabing ElevenLabs',
+      exact: true,
+    }),
+  ).toBeDisabled();
+  await save(page);
+  const retired = JSON.parse(
+    await readFile(workspace.source, 'utf8'),
+  ) as GameContent;
+  const retiredVoice = retired.scenes
+    .find((s) => s.id === 'animation-lab')!
+    .hotspots.find((h) => h.id === 'blink-character')!.animation!.voice!;
+  expect(retiredVoice.retired).toBe(true);
+  const receipt = JSON.parse(
+    await readFile(
+      path.join(workspace.root, 'src/assets', retiredVoice.retirementManifest!),
+      'utf8',
+    ),
+  );
+  expect(receipt.operation).toBe('voice-retirement');
+  expect(receipt.verifiedLines).toBe(1);
+  expect(
+    retired.dialogues.find((d) => d.id === 'animation-demo')!.nodes[0]!.speech
+      ?.lipSync,
+  ).toBeTruthy();
+});
+
 test('studio explicitly generates, analyzes, previews, saves and reloads speech without exposing provider credentials', async ({
   page,
   workspace,
@@ -327,7 +490,7 @@ test('studio explicitly generates, analyzes, previews, saves and reloads speech 
 }, testInfo) => {
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await studio(page, workspace.url);
-  await page.locator('.voice-settings summary').click();
+  await page.getByText('Hlas ElevenLabs', { exact: true }).click();
   await page
     .getByRole('button', { name: 'Načíst hlasy a modely', exact: true })
     .click();
@@ -679,7 +842,7 @@ test('models and editable subtitle segments survive save/reload and follow the a
   speechMock,
 }, testInfo) => {
   await studio(page, workspace.url);
-  await page.locator('.voice-settings summary').click();
+  await page.getByText('Hlas ElevenLabs', { exact: true }).click();
   await page
     .getByRole('button', { name: 'Načíst hlasy a modely', exact: true })
     .click();
@@ -795,7 +958,7 @@ test('models and editable subtitle segments survive save/reload and follow the a
   await page.reload();
   await ready(page);
   await studio(page, workspace.url);
-  await page.locator('.voice-settings summary').click();
+  await page.getByText('Hlas ElevenLabs', { exact: true }).click();
   await expect(
     page.getByLabel('Model ElevenLabs', { exact: true }),
   ).toHaveValue('eleven_v3');

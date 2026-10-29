@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "operation": "voice-design-casting",
+  "actor": "scene10/layer1",
+  "name": "Jolanda",
+  "direction": "[throaty, booming contralto] [outraged]",
+  "designManifest": "speech/a44207e1-d267-48d2-86b9-5a10a1fe023d/design.json",
+  "registrationManifest": "speech/1a89f747-49e0-424b-9c61-6e4fc151c0c1/registration.json",
+  "voiceId": "Jfvw40qotTOck51vIvrm"
+}

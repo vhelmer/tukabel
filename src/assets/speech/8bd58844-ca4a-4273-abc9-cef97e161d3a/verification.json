@@ -1,0 +1,122 @@
+{
+  "version": 1,
+  "operation": "voice-retirement-verification",
+  "provider": "elevenlabs",
+  "verifiedAt": "2026-10-29T09:45:51.471Z",
+  "projectId": "tukabel-complete-1",
+  "actor": { "sceneId": "scene4", "hotspotId": "layer2" },
+  "voiceId": "H4DieoTMxMYl6lx1prWW",
+  "designRegistration": "speech/3c173f79-5e0a-4142-8a2f-cc8264dbf81e/registration.json",
+  "registrationSha256": "50a513cf3eafd72272bef738a7931c60f804c042b79d655542200f1b6c94ea13",
+  "registration": {
+    "version": 1,
+    "operation": "voice-registration",
+    "provider": "elevenlabs",
+    "designManifest": "speech/c29dd33d-69df-45b2-b172-b4026bc40404/design.json",
+    "designSha256": "ca6411114151917105dfbc419cef7e4102ebb7376c7d25b059fae2037d8516b2",
+    "generatedVoiceId": "H4DieoTMxMYl6lx1prWW",
+    "previewIndex": 2,
+    "voiceId": "H4DieoTMxMYl6lx1prWW",
+    "name": "TUKABEL · Margita · Ostrý chraplavý skřehot",
+    "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Female, about fifty. A ferocious, commanding woman: low-mid chest voice with a metallic saw-toothed buzz, extremely coarse raspy edges and pinched nasal bite. Sharp barking starts, brutally clipped endings and sudden theatrical rises of annoyance. The unmistakable delivery of a household commander shouting over an argument, hilarious and impatient, NEVER smooth or soothing. Strong middle register, no breathy softness. Standard colloquial Slovak, aggressive staccato emphasis. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts."
+  },
+  "lines": [
+    {
+      "dialogueId": "wife-chat",
+      "nodeId": "supplies",
+      "actor": { "sceneId": "scene4", "hotspotId": "layer2" },
+      "text": "[hoarse, cutting voice] [annoyed] Tu máš rožok a pásku. Rožok nedávaj do rozvodu. Je tvrdší než izolácia, ale priťahuje mravce.",
+      "textSha256": "b73016df452ed4b3b8d7231450f0f8bb25cc0a942693d51b3b5e73a85fbac67e",
+      "audio": "speech/52b7111a-3ab1-46df-94a7-7cddee772719/audio.wav",
+      "audioSha256": "0f61d43c9a4cbf678dba3187fa71ec6a809c754d070cfafea49701a85736eca8",
+      "duration": 6.96,
+      "rms": 3782.469322318077,
+      "peak": 19785,
+      "lipSync": "speech/3da5d442-aae1-4008-9113-b16459f468d2/track.lipsync.json",
+      "lipSyncSha256": "3fac427d216fdf8d4aef304465b80340e2237712e6a2494bbc314a0b7a256e58",
+      "subtitles": {
+        "text": "Tu máš rožok a pásku. Rožok nedávaj do rozvodu. Je tvrdší než izolácia, ale priťahuje mravce.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 3.5556521739130433,
+            "text": "Tu máš rožok a pásku. Rožok nedávaj do rozvodu."
+          },
+          {
+            "start": 3.5556521739130433,
+            "end": 6.959999999999999,
+            "text": "Je tvrdší než izolácia, ale priťahuje mravce."
+          }
+        ]
+      },
+      "record": "speech/52b7111a-3ab1-46df-94a7-7cddee772719/record.json",
+      "recordSha256": "d7484dcb4c8d60a3a92b1bfcad54d307f6a81e66729361c7fae380a1fe6baedb"
+    },
+    {
+      "dialogueId": "wife-chat",
+      "nodeId": "gossip",
+      "actor": { "sceneId": "scene4", "hotspotId": "layer2" },
+      "text": "[hoarse, cutting voice] [annoyed] V noci tu šiel biely pohrebák. Z kufra mu trčal kábel. Myslela som, že zasa niekto zakopáva nabíjačku.",
+      "textSha256": "28e55db3e1470123180185455b322624884dbede19da54f6484d66ab18643ce1",
+      "audio": "speech/8a0d107b-eb8f-45be-bf28-cd1505f7d5ef/audio.wav",
+      "audioSha256": "5880a8e056cd29ca03a8272942c1f6e100a17d0e368401d9605286c426337283",
+      "duration": 7.52,
+      "rms": 3295.383596863594,
+      "peak": 23679,
+      "lipSync": "speech/ac60119d-fa49-4723-9740-12c5364a180a/track.lipsync.json",
+      "lipSyncSha256": "09ea0286fdf74e617dde408d67cfc53191958c8b44cfc59008d794a7a3a0cd74",
+      "subtitles": {
+        "text": "V noci tu šiel biely pohrebák. Z kufra mu trčal kábel. Myslela som, že zasa niekto zakopáva nabíjačku.",
+        "timing": "alignment",
+        "cues": [
+          {
+            "start": 0.24,
+            "end": 2.48,
+            "text": "V noci tu šiel biely pohrebák."
+          },
+          {
+            "start": 2.72,
+            "end": 7.52,
+            "text": "Z kufra mu trčal kábel. Myslela som, že zasa niekto zakopáva nabíjačku."
+          }
+        ]
+      },
+      "record": "speech/8a0d107b-eb8f-45be-bf28-cd1505f7d5ef/record.json",
+      "recordSha256": "a5b4f38ac6dc6fe32aa81faf3830239c4a02c1c6db2b14f742cd866de0d434eb",
+      "alignment": "speech/8a0d107b-eb8f-45be-bf28-cd1505f7d5ef/alignment.json"
+    },
+    {
+      "dialogueId": "wife-chat",
+      "nodeId": "fero",
+      "actor": { "sceneId": "scene4", "hotspotId": "layer2" },
+      "text": "[hoarse, cutting voice] [annoyed] Naposledy opravil zvonček tak, že som otvorila dvere a sused dostal výpoveď. Teraz už iba škriabe hlavu.",
+      "textSha256": "5fc3fcd08abb9da37b94c44da1122a53eb5604e7e3d0c3948f290b6d4b0d6473",
+      "audio": "speech/e9e78fa1-7324-4a08-aaec-d82faa1d2bda/audio.wav",
+      "audioSha256": "48711019febdc13afebfc7061b5ef1067ce04e885f185d8129a239e942a6a0f2",
+      "duration": 7.28,
+      "rms": 2946.2231621648366,
+      "peak": 19548,
+      "lipSync": "speech/675c94f8-7944-4e14-ad2c-07625ed5f11e/track.lipsync.json",
+      "lipSyncSha256": "4f3779b6e824137b8b25bc8a86ab73668ca941fd6ce0b20a0540bf7e0cf477a4",
+      "subtitles": {
+        "text": "Naposledy opravil zvonček tak, že som otvorila dvere a sused dostal výpoveď. Teraz už iba škriabe hlavu.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 5.371650485436893,
+            "text": "Naposledy opravil zvonček tak, že som otvorila dvere a sused dostal výpoveď."
+          },
+          {
+            "start": 5.371650485436893,
+            "end": 7.28,
+            "text": "Teraz už iba škriabe hlavu."
+          }
+        ]
+      },
+      "record": "speech/e9e78fa1-7324-4a08-aaec-d82faa1d2bda/record.json",
+      "recordSha256": "034b4536bca1e7b294162ef8a17679eb9494bde93b088e3c5921452ab9017bd4"
+    }
+  ]
+}

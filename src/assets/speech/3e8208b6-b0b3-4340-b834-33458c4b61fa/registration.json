@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "operation": "voice-registration",
+  "provider": "elevenlabs",
+  "designManifest": "speech/0cd4cbcc-3892-4575-a678-9a1bf9c070c1/design.json",
+  "designSha256": "a4abfd5e77e0a0b0f809c432f1bdc6caae3bc95ab9a9926cc2e25a693192d213",
+  "generatedVoiceId": "hK1QkZqr6jNBJ8sJlEuc",
+  "previewIndex": 0,
+  "voiceId": "hK1QkZqr6jNBJ8sJlEuc",
+  "name": "TUKABEL · Dežo Magnet · Nervózní nosový tenor",
+  "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Male, forties. A paranoid but clever inventor of ridiculous explanations. Very thin, tightly pinched nasal tenor with a squeaking reed-like edge and a nervous dry rasp. Jagged rushed bursts, tiny hesitations, abrupt suspicious whispers and stressed syllables jumping sharply in pitch. Audibly wound-up, twitchy and defensive, with comically precise conspiratorial emphasis, never relaxed. Upper-mid male register, brisk clear articulation. A modest eastern Slovak rhythm and occasional natural ta/shak cadence, not an imitation of a real person. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts."
+}

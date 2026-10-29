@@ -1,0 +1,17 @@
+{
+  "text": "[low, gravelly voice] [angry] Hlavný kábel. Nie predlžovačka, čo ňou Margita vešia klobásy. Zvyšok rozvodu zostal celý. Keď ho nájdeš, oblep koniec a pichni do skrine napravo.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "T4iGZQue94RIBivJIuhN",
+    "designRegistration": "speech/5f2733be-0b82-4f59-beb3-a96abae946fe/registration.json"
+  },
+  "languageCode": "sk",
+  "duration": 10.48,
+  "audioSha256": "85a637419add486276b6ccdd598fe53dc98874cc32f1bd43da482ffd87d6cb8f"
+}

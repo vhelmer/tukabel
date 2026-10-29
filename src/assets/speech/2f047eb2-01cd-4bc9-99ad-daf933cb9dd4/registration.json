@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "operation": "voice-registration",
+  "provider": "elevenlabs",
+  "designManifest": "speech/907d4761-3f98-4c32-9617-9d3aefd45d80/design.json",
+  "designSha256": "7a608716d2e3dce79d084e4ced975c8fcf3f5195988c8b3fc8bf97080a1151ac",
+  "generatedVoiceId": "Dm506FEP6AkprXTsWzmW",
+  "previewIndex": 1,
+  "voiceId": "Dm506FEP6AkprXTsWzmW",
+  "name": "TUKABEL · Otec Bonifác · Rozechvělý přepjatý kostelní tenor",
+  "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Male, sixties. A theatrically self-important priest with a thin quavering nasal tenor, throaty croak and unstable tremulous vibrato. Stretch rounded vowels as if about to preach, then abruptly squeak or gasp into an absurdly serious declaration. Pompous comic liturgical intonation with huge rises and falls, wounded dignity and strained dramatic projection. Do NOT sing the whole sentence and do not sound solemnly neutral: every line is an overacted sermon, yet its words remain distinct. Middle-high male register. Slovak with careful ceremonial diction. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts."
+}

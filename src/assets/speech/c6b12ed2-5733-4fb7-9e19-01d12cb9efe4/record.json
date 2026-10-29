@@ -1,0 +1,17 @@
+{
+  "text": "[dry, squeaky, crackling voice] [sarcastic] Servis deň po pohrebe! Ten hajzel je živý aj podľa papierov. Tu máš pečiatku. Opečiatkuj prázdny úmrtný list z kostolnej nástenky; Milan púšťa do kaplnky iba zosnulých.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "xKlQrC6RzWnhQhiCFKBS",
+    "designRegistration": "speech/df34f616-45c6-4744-810b-48fbf2184228/registration.json"
+  },
+  "languageCode": "sk",
+  "duration": 13.92,
+  "audioSha256": "14953bba865ede1d8cf7d45bf038e2d59d2d240bad36e792c35f2d8773fe138d"
+}

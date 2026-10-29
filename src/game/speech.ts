@@ -107,6 +107,38 @@ export function voiceIssue(value: unknown): string | undefined {
     !/^[a-zA-Z0-9_-]{1,100}$/.test(String(value.modelId))
   )
     return 'Vyber platné ID hlasu a modelu.';
+  if (
+    value.designRegistration !== undefined &&
+    (typeof value.designRegistration !== 'string' ||
+      !/^speech\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/registration\.json$/.test(
+        value.designRegistration,
+      ))
+  )
+    return 'Vyber platný lokální archiv registrace hlasu.';
+  if (
+    value.slot !== undefined &&
+    value.slot !== 'static' &&
+    value.slot !== 'rotating'
+  )
+    return 'Neplatný typ hlasového slotu.';
+  if (value.retired !== undefined && value.retired !== true)
+    return 'Neplatný stav uvolněného hlasu.';
+  if (
+    value.retired === true &&
+    (value.slot !== 'rotating' ||
+      !value.designRegistration ||
+      !value.retirementManifest)
+  )
+    return 'Uvolněný hlas vyžaduje rotující slot a archiv registrace i uvolnění.';
+  if (
+    value.retirementManifest !== undefined &&
+    (value.retired !== true ||
+      typeof value.retirementManifest !== 'string' ||
+      !/^speech\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/retirement\.json$/.test(
+        value.retirementManifest,
+      ))
+  )
+    return 'Vyber platný lokální archiv uvolnění hlasu.';
   for (const key of ['stability', 'similarityBoost', 'style', 'speed']) {
     const n = value[key];
     if (

@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "operation": "voice-design-casting",
+  "actor": "scene6/innkeeper",
+  "name": "Karol Odmerka",
+  "direction": "[shredded, raspy tenor] [irritated]",
+  "designManifest": "speech/b1accbc4-8e93-49ba-b6a7-7b2af57d8f4f/design.json",
+  "registrationManifest": "speech/e6dd72bf-6d4e-421a-9c19-38a32a3d0b41/registration.json",
+  "voiceId": "GMq1ucyG2a8EKFsKRbDQ"
+}

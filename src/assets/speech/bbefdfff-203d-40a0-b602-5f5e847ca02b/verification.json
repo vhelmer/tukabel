@@ -1,0 +1,124 @@
+{
+  "version": 1,
+  "operation": "voice-retirement-verification",
+  "provider": "elevenlabs",
+  "verifiedAt": "2026-10-29T09:47:13.383Z",
+  "projectId": "tukabel-complete-1",
+  "actor": { "sceneId": "scene7", "hotspotId": "swing-boy" },
+  "voiceId": "iiDZOH9TArCghKD6MfNt",
+  "designRegistration": "speech/9d24dc00-0a83-4c1e-9355-581e887151dc/registration.json",
+  "registrationSha256": "417d7e1b622d61e07b913d2fadff3e94725c2baef134086a57a2e429dfa79438",
+  "registration": {
+    "version": 1,
+    "operation": "voice-registration",
+    "provider": "elevenlabs",
+    "designManifest": "speech/a98f431b-b687-4eb2-88e8-4f0d98767299/design.json",
+    "designSha256": "9427c2ce589c5a71f5b5f6eb2b112b702d4dbe36ee51058e48d620ea96d9d97e",
+    "generatedVoiceId": "iiDZOH9TArCghKD6MfNt",
+    "previewIndex": 1,
+    "voiceId": "iiDZOH9TArCghKD6MfNt",
+    "name": "TUKABEL · Špľuch · Praskající kreslený hlas",
+    "description": "Native Slovak, clear Slovak consonants and vowels. An adult man in his thirties with an unmistakably mature chest resonance. An outrageous comic stage performer whose voice repeatedly cracks from a raspy baritone into strained squeaky head voice. He starts with low creaky barks, flips upwards on stressed words, then lands in a rough chesty growl. Irregular emphatic rhythm, pompous confidence and rubbery cartoon intonation. The contrast of mature bass grit and unstable falsetto should be hilarious and bizarre. Clearly adult male vocal anatomy and diction. Extreme acting rather than a normal civil conversation. Keep every word intelligible at a moderate pace. Dry close studio recording, no music, echo or background effects."
+  },
+  "lines": [
+    {
+      "dialogueId": "boy-chat",
+      "nodeId": "trade",
+      "actor": { "sceneId": "scene7", "hotspotId": "swing-boy" },
+      "text": "[cracking, raspy adult cartoon voice] [excited] Špagát a podložku. Za rožok. Kŕmime nimi domácu tehlu, je alergická na granule.",
+      "textSha256": "0126446b123c7b7c9a6493365e45cfddee4ec22d175265866f704e4e1c0aad0f",
+      "audio": "speech/369caabf-a633-47ba-8bcf-25e8f0f02c43/audio.wav",
+      "audioSha256": "5ef7913d7349bfe4ac4252eb9fbe047c5c159b1cd4c7de009c3a8eab176e3f4d",
+      "duration": 7.28,
+      "rms": 2841.2886510930357,
+      "peak": 26936,
+      "lipSync": "speech/a3d5dad2-fc89-46f0-a715-a569647135e2/track.lipsync.json",
+      "lipSyncSha256": "fec61f752c98fa1167f4bb51ad303cb1a38bf20a1ffbc42ce688eeaf6cb24504",
+      "subtitles": {
+        "text": "Špagát a podložku. Za rožok. Kŕmime nimi domácu tehlu, je alergická na granule.",
+        "timing": "alignment",
+        "cues": [
+          { "start": 0.4, "end": 3.12, "text": "Špagát a podložku. Za rožok." },
+          {
+            "start": 3.36,
+            "end": 7.28,
+            "text": "Kŕmime nimi domácu tehlu, je alergická na granule."
+          }
+        ]
+      },
+      "record": "speech/369caabf-a633-47ba-8bcf-25e8f0f02c43/record.json",
+      "recordSha256": "6da1ebb264f73e55a147a62fe09ffb1b08f74358ef7ba68afc926e1f081f7211",
+      "alignment": "speech/369caabf-a633-47ba-8bcf-25e8f0f02c43/alignment.json"
+    },
+    {
+      "dialogueId": "boy-chat",
+      "nodeId": "van",
+      "actor": { "sceneId": "scene7", "hotspotId": "swing-boy" },
+      "text": "[cracking, raspy adult cartoon voice] [excited] Hej, viezol toho pána, čo má byť pod zemou. Doviezol si aj automat. Asi nechce, aby ho deti otravovali pri práci.",
+      "textSha256": "4d2b2683abd287137387a3f123d347369f5cd308061ee4315ecc0c139e7e69fd",
+      "audio": "speech/7e0c0bf9-9308-45ff-b8d5-44acbc6ca5fe/audio.wav",
+      "audioSha256": "e5bd3f5a3f0e2d7d3945122b5fb51b2fca481427d78dfbebfeac8ce1ea0c2fba",
+      "duration": 8.48,
+      "rms": 2743.3244968865374,
+      "peak": 23360,
+      "lipSync": "speech/b63518d5-efce-437c-8d62-c03784aac231/track.lipsync.json",
+      "lipSyncSha256": "d2adc48859901fd64a8d757917639c158158bfa01abb0e06343473ff842ebf8b",
+      "subtitles": {
+        "text": "Hej, viezol toho pána, čo má byť pod zemou. Doviezol si aj automat. Asi nechce, aby ho deti otravovali pri práci.",
+        "timing": "alignment",
+        "cues": [
+          {
+            "start": 0.161,
+            "end": 3.401,
+            "text": "Hej, viezol toho pána, čo má byť pod zemou."
+          },
+          {
+            "start": 3.601,
+            "end": 8.48,
+            "text": "Doviezol si aj automat. Asi nechce, aby ho deti otravovali pri práci."
+          }
+        ]
+      },
+      "record": "speech/7e0c0bf9-9308-45ff-b8d5-44acbc6ca5fe/record.json",
+      "recordSha256": "1f85f6f77a81cbbfb91d4e8fad5bfd3a9628655472414d55baa301c0dceb92f3",
+      "alignment": "speech/7e0c0bf9-9308-45ff-b8d5-44acbc6ca5fe/alignment.json"
+    },
+    {
+      "dialogueId": "boy-bread",
+      "nodeId": "line",
+      "actor": { "sceneId": "scene7", "hotspotId": "swing-boy" },
+      "text": "[cracking, raspy adult cartoon voice] [excited] Toto je poctivý rožok. Tehla konečne niečo rozhryzie. Tu máš špagát a podložku. Keď ju zabalíš do zlatého, vyzerá presne ako žetón.",
+      "textSha256": "cf69af9d1e06df7ebf4bcc50be6da5f41a8813795730818d972e7dd3a17f08eb",
+      "audio": "speech/0b3ccab3-329b-40ea-8e6c-a3e491f9e2d6/audio.wav",
+      "audioSha256": "3cf578e5c7cd3fbe8f465c4bcaf6e13d3e1652b2c4eba13b8db7a2cf219e8c7b",
+      "duration": 10.48,
+      "rms": 3061.3822469660518,
+      "peak": 30572,
+      "lipSync": "speech/0117bd69-075a-4cb7-ac0e-48bda89e1c2e/track.lipsync.json",
+      "lipSyncSha256": "a0d89b261de4e5004a1327f44973f886519e6a6cfbc24e68baa1df1cfb26d653",
+      "subtitles": {
+        "text": "Toto je poctivý rožok. Tehla konečne niečo rozhryzie. Tu máš špagát a podložku. Keď ju zabalíš do zlatého, vyzerá presne ako žetón.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 4.305736434108527,
+            "text": "Toto je poctivý rožok. Tehla konečne niečo rozhryzie."
+          },
+          {
+            "start": 4.305736434108527,
+            "end": 6.336744186046512,
+            "text": "Tu máš špagát a podložku."
+          },
+          {
+            "start": 6.336744186046512,
+            "end": 10.48,
+            "text": "Keď ju zabalíš do zlatého, vyzerá presne ako žetón."
+          }
+        ]
+      },
+      "record": "speech/0b3ccab3-329b-40ea-8e6c-a3e491f9e2d6/record.json",
+      "recordSha256": "0a004556ccada8c87c1e0990bbbfd0c11100830bdfc8338ef8479e6b2bda74ae"
+    }
+  ]
+}

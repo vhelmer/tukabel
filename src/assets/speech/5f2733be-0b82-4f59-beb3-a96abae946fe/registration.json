@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "operation": "voice-registration",
+  "provider": "elevenlabs",
+  "designManifest": "speech/b04b5c65-aa5e-4222-b29a-6ab436c97532/design.json",
+  "designSha256": "b149b74322c78d49be30ddfab5ec79c2385eecc43c7d90e7d67ea38dbd5ade88",
+  "generatedVoiceId": "T4iGZQue94RIBivJIuhN",
+  "previewIndex": 2,
+  "voiceId": "T4iGZQue94RIBivJIuhN",
+  "name": "TUKABEL · Fero · Vykouřený basový řev",
+  "description": "Native Slovak, slovenčina, clearly articulated Slovak consonants and vowels. Male, late fifties. Persona: furious village tournament organiser in a grotesque animated black comedy. An EXTREME burnt-out, chain-smoked bass-baritone: dense chest resonance, abrasive broken gravel, harsh creaking vocal fry, as if every sentence has to force its way past a sack of stones. Barking commands, sudden incredulous upward lunges, emphatic punchlines and irritated breathy growls between clauses. Very theatrical, explosive, rough and ridiculous, never a polite narrator or a normal conversational man. Low-mid register with violent intonation swings, NOT a whisper. Mild eastern Slovak cadence only; the personality comes from texture and acting. Every word must remain intelligible. Clean close dry recording, no music, ambience or effects."
+}

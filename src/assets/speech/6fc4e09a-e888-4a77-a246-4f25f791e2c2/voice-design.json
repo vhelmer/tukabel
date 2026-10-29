@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "operation": "voice-design-casting",
+  "actor": "scene7/sand-girl",
+  "name": "Nika",
+  "direction": "[piercing, theatrical adult soprano] [mischievously]",
+  "designManifest": "speech/50c6b658-b240-45d1-bfb3-9f92318e6633/design.json",
+  "registrationManifest": "speech/ec91583d-d4de-4ffa-b468-ed16f52dc72d/registration.json",
+  "voiceId": "wk5NuWmufYkSfjl2kJr1"
+}

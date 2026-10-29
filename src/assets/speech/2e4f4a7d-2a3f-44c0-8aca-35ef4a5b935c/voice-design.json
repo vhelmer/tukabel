@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "operation": "voice-design-casting",
+  "actor": "scene4/layer1",
+  "name": "Fero",
+  "direction": "[low, gravelly voice] [angry]",
+  "designManifest": "speech/b04b5c65-aa5e-4222-b29a-6ab436c97532/design.json",
+  "registrationManifest": "speech/5f2733be-0b82-4f59-beb3-a96abae946fe/registration.json",
+  "voiceId": "T4iGZQue94RIBivJIuhN"
+}

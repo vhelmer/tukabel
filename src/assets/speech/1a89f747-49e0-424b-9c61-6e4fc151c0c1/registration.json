@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "operation": "voice-registration",
+  "provider": "elevenlabs",
+  "designManifest": "speech/a44207e1-d267-48d2-86b9-5a10a1fe023d/design.json",
+  "designSha256": "a04f16b2d709e71fac8c9df2bd91c4a5f69f8d8e2dceaf97426d6f2ac57a44c0",
+  "generatedVoiceId": "Jfvw40qotTOck51vIvrm",
+  "previewIndex": 1,
+  "voiceId": "Jfvw40qotTOck51vIvrm",
+  "name": "TUKABEL · Jolanda · Dunivý hysterický kontraalt",
+  "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Female, fifties. An enormous commanding, unnaturally low female contralto with brass-like chest power, throaty frog-like grit and a coarse rolling growl. She relishes vowels like an operatic farmyard duchess, then snaps upwards into outraged hysterical peaks. Slow dramatic pronouncements alternate with explosive indignation and a rumbling mocking undertone. Absolutely not gentle or civil, not a normal conversational woman. Powerful very low female register with wild theatrical intonation, but no sustained singing. Every Slovak consonant must remain clear. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts."
+}

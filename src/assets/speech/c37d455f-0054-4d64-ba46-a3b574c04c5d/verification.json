@@ -1,0 +1,94 @@
+{
+  "version": 1,
+  "operation": "voice-retirement-verification",
+  "provider": "elevenlabs",
+  "verifiedAt": "2026-10-29T09:48:49.641Z",
+  "projectId": "tukabel-complete-1",
+  "actor": { "sceneId": "scene7", "hotspotId": "climbing-boy" },
+  "voiceId": "GTTXoS7HeTELz6svNEnz",
+  "designRegistration": "speech/4a2d83b0-cdb8-40af-939b-259cbf5812ee/registration.json",
+  "registrationSha256": "4a10492c59c0149a297327177258f2d4b6ff742c26a0ffdaf0613735af1be510",
+  "registration": {
+    "version": 1,
+    "operation": "voice-registration",
+    "provider": "elevenlabs",
+    "designManifest": "speech/0888c67a-f28c-42d3-ac56-09029b7e1b5a/design.json",
+    "designSha256": "6b8e06d198b55851c6357abf58605efc91d21582a0ba2931f22ccac92cbfa6a2",
+    "generatedVoiceId": "GTTXoS7HeTELz6svNEnz",
+    "previewIndex": 1,
+    "voiceId": "GTTXoS7HeTELz6svNEnz",
+    "name": "TUKABEL · Béla · Ultravysoký nervózní nosový pískot",
+    "description": "Native Slovak, clear Slovak vowels and consonants with a light eastern Slovak cadence. An adult man aged thirty-five with an outrageous, very high pinched nasal falsetto. Audibly a grown male comic actor projecting a strained stage head voice, with occasional coarse mature chesty catches. Thin mosquito-like reed resonance, jittery staccato delivery and nervous sudden upward leaps. Urgent tightly packed little bursts followed by pompously certain declarations. Entirely different from a booming bass or melodic female soprano: brittle, nasal, tightly wound and sarcastic. Very exaggerated adult character acting while every word remains clear. Dry close studio recording, no background, music, effects or digital pitch shifting."
+  },
+  "lines": [
+    {
+      "dialogueId": "climber-chat",
+      "nodeId": "hearse",
+      "actor": { "sceneId": "scene7", "hotspotId": "climbing-boy" },
+      "text": "[strained, pinched adult male falsetto] [nervous] Z pohrebáku trčal ako chvost. Ten pán tvrdil, že je to nabíjačka na dušu. Ani u nás doma takú nemáme.",
+      "textSha256": "dd733b6963418736be13be45164611da9a1c41f5a58429d59dbcd995ab70a7dd",
+      "audio": "speech/d64781df-b104-4cf4-9920-c2362f25f07b/audio.wav",
+      "audioSha256": "618ddae47e9a9cf87b52a13f8bb0cc2845e6dff14279435b3169f93fb23d4385",
+      "duration": 8.16,
+      "rms": 2834.2596205710993,
+      "peak": 22651,
+      "lipSync": "speech/35a095f3-8fee-4c8c-97b1-69a2a0322dcb/track.lipsync.json",
+      "lipSyncSha256": "e11741173aa8583125d7cfe61d625d0ab547a8d8a1dac84a8473ce508e72293b",
+      "subtitles": {
+        "text": "Z pohrebáku trčal ako chvost. Ten pán tvrdil, že je to nabíjačka na dušu. Ani u nás doma takú nemáme.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 2.3903030303030306,
+            "text": "Z pohrebáku trčal ako chvost."
+          },
+          {
+            "start": 2.3903030303030306,
+            "end": 5.9345454545454555,
+            "text": "Ten pán tvrdil, že je to nabíjačka na dušu."
+          },
+          {
+            "start": 5.9345454545454555,
+            "end": 8.16,
+            "text": "Ani u nás doma takú nemáme."
+          }
+        ]
+      },
+      "record": "speech/d64781df-b104-4cf4-9920-c2362f25f07b/record.json",
+      "recordSha256": "092192d54b576768c30c27c1f2864f0ab3184c79765ac2a0365336f61835feea"
+    },
+    {
+      "dialogueId": "climber-chat",
+      "nodeId": "map",
+      "actor": { "sceneId": "scene7", "hotspotId": "climbing-boy" },
+      "text": "[strained, pinched adult male falsetto] [nervous] Spodok obrázka, veľký detektív. Tam je mapa. Do hrobu sa chodí cez bránu, nie cez menu.",
+      "textSha256": "7e78e34d62eb6f5d702572e06157648287cce51a6bdf5d69141daceb5327c91f",
+      "audio": "speech/36553384-32f8-45e9-8ed6-62a735f3a42a/audio.wav",
+      "audioSha256": "fb8abb22d85e633d0d7f768ee9e05bae56e051893a377b85f2be92cd83c255c8",
+      "duration": 7.44,
+      "rms": 2656.4729619605732,
+      "peak": 21384,
+      "lipSync": "speech/3cc70494-0a40-4bec-8d6a-dc01f1408785/track.lipsync.json",
+      "lipSyncSha256": "012f4fb4dfaa6c805a275d548f1f3834279c3968d433e6b0ae1b1a2d48fe2e70",
+      "subtitles": {
+        "text": "Spodok obrázka, veľký detektív. Tam je mapa. Do hrobu sa chodí cez bránu, nie cez menu.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 2.681860465116279,
+            "text": "Spodok obrázka, veľký detektív."
+          },
+          {
+            "start": 2.681860465116279,
+            "end": 7.44,
+            "text": "Tam je mapa. Do hrobu sa chodí cez bránu, nie cez menu."
+          }
+        ]
+      },
+      "record": "speech/36553384-32f8-45e9-8ed6-62a735f3a42a/record.json",
+      "recordSha256": "426c7ac63d32dbbcf8ecebff7250658a481dbf5ea1fda57f85798aa50084b325"
+    }
+  ]
+}

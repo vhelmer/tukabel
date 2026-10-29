@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "operation": "voice-design-casting",
+  "actor": "scene1/layer1",
+  "name": "Etela Pečiatka",
+  "direction": "[dry, squeaky, crackling voice] [sarcastic]",
+  "designManifest": "speech/5d2dea22-4799-4a9c-a44e-9a3b3b92efaa/design.json",
+  "registrationManifest": "speech/df34f616-45c6-4744-810b-48fbf2184228/registration.json",
+  "voiceId": "xKlQrC6RzWnhQhiCFKBS"
+}

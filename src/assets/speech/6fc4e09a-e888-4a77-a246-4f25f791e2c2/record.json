@@ -1,0 +1,18 @@
+{
+  "text": "[piercing, theatrical adult soprano] [mischievously] Plán úniku. Z ihriska sa dá uniknúť len tak, že vyrastieš. Ten pohrebák šiel ku kostolu, ak riešiš dospelácke problémy.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "wk5NuWmufYkSfjl2kJr1",
+    "designRegistration": "speech/ec91583d-d4de-4ffa-b468-ed16f52dc72d/registration.json",
+    "slot": "rotating"
+  },
+  "languageCode": "sk",
+  "duration": 9.6,
+  "audioSha256": "e7a9bd7e4610a4f2616e82f1fdc7060f5758cd9d2c3fdecf080ff551db0e1243"
+}

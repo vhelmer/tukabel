@@ -1,0 +1,18 @@
+{
+  "text": "[strained, pinched adult male falsetto] [nervous] Z pohrebáku trčal ako chvost. Ten pán tvrdil, že je to nabíjačka na dušu. Ani u nás doma takú nemáme.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "GTTXoS7HeTELz6svNEnz",
+    "designRegistration": "speech/4a2d83b0-cdb8-40af-939b-259cbf5812ee/registration.json",
+    "slot": "rotating"
+  },
+  "languageCode": "sk",
+  "duration": 8.16,
+  "audioSha256": "618ddae47e9a9cf87b52a13f8bb0cc2845e6dff14279435b3169f93fb23d4385"
+}

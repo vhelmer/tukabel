@@ -1,0 +1,18 @@
+{
+  "text": "[cracking, raspy adult cartoon voice] [excited] Hej, viezol toho pána, čo má byť pod zemou. Doviezol si aj automat. Asi nechce, aby ho deti otravovali pri práci.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "iiDZOH9TArCghKD6MfNt",
+    "designRegistration": "speech/9d24dc00-0a83-4c1e-9355-581e887151dc/registration.json",
+    "slot": "rotating"
+  },
+  "languageCode": "sk",
+  "duration": 8.48,
+  "audioSha256": "e5bd3f5a3f0e2d7d3945122b5fb51b2fca481427d78dfbebfeac8ce1ea0c2fba"
+}

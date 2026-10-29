@@ -1,0 +1,17 @@
+{
+  "text": "[unnaturally deep, hollow, creaking voice] [deadpan] Len s vlastným úmrtným listom. Živí mi tam nechávajú odtlačky a potom mám nadčasy. Papier pri kostole, pečiatku dáva Etela.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "zWHgsvbNzrffMNY5MMeW",
+    "designRegistration": "speech/0ee076d4-99b6-4b01-9523-452a2a74d51d/registration.json"
+  },
+  "languageCode": "sk",
+  "duration": 11.28,
+  "audioSha256": "4fcca555a5b6cdda5ae0e1fbdcea47eb6d6ffd52994b82abab0088d8b7e273d5"
+}

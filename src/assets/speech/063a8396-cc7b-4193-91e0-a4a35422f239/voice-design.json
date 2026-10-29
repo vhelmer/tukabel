@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "operation": "voice-design-casting",
+  "actor": "scene5/layer1",
+  "name": "Milan Jamka",
+  "direction": "[unnaturally deep, hollow, creaking voice] [deadpan]",
+  "designManifest": "speech/df2756e1-a966-4172-8db7-5b0a6ce76452/design.json",
+  "registrationManifest": "speech/0ee076d4-99b6-4b01-9523-452a2a74d51d/registration.json",
+  "voiceId": "zWHgsvbNzrffMNY5MMeW"
+}

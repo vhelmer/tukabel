@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "operation": "voice-design",
+  "provider": "elevenlabs",
+  "model": "eleven_ttv_v3",
+  "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Female, late seventies. An ancient terrifying municipal clerk with a high wiry screech, bone-dry papery crackle and extremely creaky edges. Her voice rattles and croaks between sharp little squeaks, like a rusty hinge that has learned to pronounce every bureaucratic syllable. Stamping staccato rhythm, clipped consonants, relish on threatening words and a malicious little upward curl on punchlines. High register with uneven quivering fry, NEVER a warm grandmother or polite narrator. Clear colloquial Slovak. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts.",
+  "text": "[dry, squeaky, crackling voice] [sarcastic] Za Jolandou do kravína. Krava ju živí a prasa jej robí audítora. Vraj potrebuje svätenú vodu. Kostol ju dáva zadarmo, ešte nemajú terminál. Mám. Ale nedávam ju hocikomu, kto chce byť mŕtvy. Dones dôkaz, že Ľubo po pohrebe ešte niečo reklamoval. Skús servisný denník z herne. Bývalý účtovník turnaja. Zomrel bez rozlúčky a s mojím hrncom. Ak vstane z mŕtvych bez neho, pochovám ho osobne.",
+  "textSha256": "c4354f1b15917cd18d8331a9de1f5b0b98b665aaac7f9d761782a1dcc2dd9a25",
+  "seed": 61820,
+  "guidanceScale": 5,
+  "outputFormat": "mp3_44100_128",
+  "previews": [
+    {
+      "audio": "preview-1.mp3",
+      "generatedVoiceId": "xKlQrC6RzWnhQhiCFKBS",
+      "duration": 39.395375,
+      "audioSha256": "7595b32825046bcee7cc6d50c59b94c7ff7c20722f62c66da80414a52ac6affa"
+    },
+    {
+      "audio": "preview-2.mp3",
+      "generatedVoiceId": "AghiCtb9NA785KvIV2Xa",
+      "duration": 40.597,
+      "audioSha256": "44b9bd51770de4d02956ec26cbfc2f63254f3f68845fb2387dd91a9dfd864420"
+    },
+    {
+      "audio": "preview-3.mp3",
+      "generatedVoiceId": "RH7QxloNR3SRNTULZBn2",
+      "duration": 38.8468125,
+      "audioSha256": "e9517e209766ed12213d1a01cfd9642dd1597f763de89cb437ed8307bf376b20"
+    }
+  ]
+}

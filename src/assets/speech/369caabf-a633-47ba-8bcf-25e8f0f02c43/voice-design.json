@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "operation": "voice-design-casting",
+  "actor": "scene7/swing-boy",
+  "name": "Špľuch",
+  "direction": "[cracking, raspy adult cartoon voice] [excited]",
+  "designManifest": "speech/a98f431b-b687-4eb2-88e8-4f0d98767299/design.json",
+  "registrationManifest": "speech/9d24dc00-0a83-4c1e-9355-581e887151dc/registration.json",
+  "voiceId": "iiDZOH9TArCghKD6MfNt"
+}

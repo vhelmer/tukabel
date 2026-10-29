@@ -1,0 +1,18 @@
+{
+  "text": "[brittle, manic falsetto] [excited] Osada má kolektívne nešťastie. Ja mám individuálnu batériu. To je trh, Rudo. Neťahaj kábel pod napätím, nech mi tu nepribudne konkurencia v truhle.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "Cs0q9bNTpnXhVCnLNXGI",
+    "designRegistration": "speech/21f9abba-7505-4707-a9f6-afdfaf7fc065/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 10.64,
+  "audioSha256": "e61a268b096e2f6de735bf9bc19dc36711d441e1b1bb70d7874a1925e6002fa3"
+}

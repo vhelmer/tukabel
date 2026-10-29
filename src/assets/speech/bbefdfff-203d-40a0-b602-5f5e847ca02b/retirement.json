@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "operation": "voice-retirement",
+  "provider": "elevenlabs",
+  "voiceId": "iiDZOH9TArCghKD6MfNt",
+  "designRegistration": "speech/9d24dc00-0a83-4c1e-9355-581e887151dc/registration.json",
+  "verification": "speech/bbefdfff-203d-40a0-b602-5f5e847ca02b/verification.json",
+  "verificationSha256": "02b0ffd7814c3452b9ee19992ec59a8f8c722d48a5704c35ee1a10f27605e68d",
+  "verifiedLines": 3,
+  "deleteRequestedAt": "2026-10-29T09:47:13.409Z"
+}

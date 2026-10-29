@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "operation": "voice-design",
+  "provider": "elevenlabs",
+  "model": "eleven_ttv_v3",
+  "description": "Native Slovak, clear Slovak vowels and consonants with a light eastern Slovak cadence. An adult man aged thirty-five with an outrageous, very high pinched nasal falsetto. Audibly a grown male comic actor projecting a strained stage head voice, with occasional coarse mature chesty catches. Thin mosquito-like reed resonance, jittery staccato delivery and nervous sudden upward leaps. Urgent tightly packed little bursts followed by pompously certain declarations. Entirely different from a booming bass or melodic female soprano: brittle, nasal, tightly wound and sarcastic. Very exaggerated adult character acting while every word remains clear. Dry close studio recording, no background, music, effects or digital pitch shifting.",
+  "text": "[strained, pinched adult male falsetto] [nervous] Z pohrebáku trčal ako chvost. Ten pán tvrdil, že je to nabíjačka na dušu. Ani u nás doma takú nemáme. Spodok obrázka, veľký detektív. Tam je mapa. Do hrobu sa chodí cez bránu, nie cez menu.",
+  "textSha256": "a19931b7d65b69a2d86242f2fe780c37bfe1d7817acf7e605ef7096b59aa1499",
+  "seed": 112858,
+  "guidanceScale": 5,
+  "outputFormat": "mp3_44100_128",
+  "previews": [
+    {
+      "audio": "preview-1.mp3",
+      "generatedVoiceId": "z8JDF7Aby2VJCuszdCS2",
+      "duration": 13.717,
+      "audioSha256": "c36cbc0e1e227661f34ce38661b6bd1a404b7667c81e4fb04a6eb2c2414e49a5"
+    },
+    {
+      "audio": "preview-2.mp3",
+      "generatedVoiceId": "GTTXoS7HeTELz6svNEnz",
+      "duration": 12.515375,
+      "audioSha256": "9a8344201f6a042144920d6917ee6ecf1835d6c12b77cde61b97a12a7f75280c"
+    },
+    {
+      "audio": "preview-3.mp3",
+      "generatedVoiceId": "iPLB3d4mGXY0UbOaNpc9",
+      "duration": 17.0868125,
+      "audioSha256": "41f0007bac263aa33db481f85be3029e832965e3097bed643969bc4618f01ad5"
+    }
+  ]
+}

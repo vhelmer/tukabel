@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "operation": "voice-design-casting",
+  "actor": "scene1/layer2",
+  "name": "Dežo Magnet",
+  "direction": "[pinched nasal voice] [nervous]",
+  "designManifest": "speech/0cd4cbcc-3892-4575-a678-9a1bf9c070c1/design.json",
+  "registrationManifest": "speech/3e8208b6-b0b3-4340-b834-33458c4b61fa/registration.json",
+  "voiceId": "hK1QkZqr6jNBJ8sJlEuc"
+}

@@ -1,0 +1,18 @@
+{
+  "text": "[throaty, booming contralto] [outraged] Keď niečo nesedí, zje to. Robí to rovnako ako obec, iba bez pečiatky.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "Jfvw40qotTOck51vIvrm",
+    "designRegistration": "speech/1a89f747-49e0-424b-9c61-6e4fc151c0c1/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 6.08,
+  "audioSha256": "6b087b919b01657580b402c9fb2f0ec94cfdfce4997eda75df7fc4723dbe59d3"
+}

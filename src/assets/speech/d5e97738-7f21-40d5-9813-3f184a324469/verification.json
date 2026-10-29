@@ -1,0 +1,126 @@
+{
+  "version": 1,
+  "operation": "voice-retirement-verification",
+  "provider": "elevenlabs",
+  "verifiedAt": "2026-10-29T09:45:53.585Z",
+  "projectId": "tukabel-complete-1",
+  "actor": { "sceneId": "scene6", "hotspotId": "innkeeper" },
+  "voiceId": "GMq1ucyG2a8EKFsKRbDQ",
+  "designRegistration": "speech/e6dd72bf-6d4e-421a-9c19-38a32a3d0b41/registration.json",
+  "registrationSha256": "f8a60f92d779d7dc7399cbf25b36f54153e19cf102067b88cfefa2e29f2f0ef5",
+  "registration": {
+    "version": 1,
+    "operation": "voice-registration",
+    "provider": "elevenlabs",
+    "designManifest": "speech/b1accbc4-8e93-49ba-b6a7-7b2af57d8f4f/design.json",
+    "designSha256": "2cd3e9dedc618184daf8f537560a622cb0fecf515dffb927bb9ffa7607a0122a",
+    "generatedVoiceId": "GMq1ucyG2a8EKFsKRbDQ",
+    "previewIndex": 1,
+    "voiceId": "GMq1ucyG2a8EKFsKRbDQ",
+    "name": "TUKABEL · Karol Odmerka · Rozedraný hospodský tenor",
+    "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Male, late forties. A beer-soaked publican with an upper-middle register shredded by a lifetime of shouting across a pub. Harsh hoarse sandpaper rasp, scratchy wheeze, coarse forward nasal resonance and strained buzzy vowels. Loud argumentative rhythmic jabs, sarcastic upward scoops, rough breath at the end of clauses and sudden indignant bursts. He is audibly half-cut but every word remains understandable; no long mumbling or random hiccup noises. A damaged loud tenor, quite unlike a booming deep bass. Colloquial Slovak. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts."
+  },
+  "lines": [
+    {
+      "dialogueId": "innkeeper-chat",
+      "nodeId": "grounds",
+      "actor": { "sceneId": "scene6", "hotspotId": "innkeeper" },
+      "text": "[shredded, raspy tenor] [irritated] Mletú. Elektrina nejde, kanvica je teraz drahá váza. Zmiešaj ju s mliekom. Dingo to vypije studené, má žalúdok zo zberu.",
+      "textSha256": "2d1725880c4546367188fc56ad0240f05ce125060bc613a8bc22178d2c67b91f",
+      "audio": "speech/f93348e4-3ce8-4741-be90-cd743f533b47/audio.wav",
+      "audioSha256": "b3aa0f564c0b2e4f078f76bc54fa3e620ad17748e2539e069e1b78957fbc5e0e",
+      "duration": 9.52,
+      "rms": 3567.6672171844784,
+      "peak": 29719,
+      "lipSync": "speech/02fd8968-da70-4438-8a71-cdf5e0d3c076/track.lipsync.json",
+      "lipSyncSha256": "260b0b89f079e368a284d728450f71c3300a67ee8ac475b1e101b686eecd825c",
+      "subtitles": {
+        "text": "Mletú. Elektrina nejde, kanvica je teraz drahá váza. Zmiešaj ju s mliekom. Dingo to vypije studené, má žalúdok zo zberu.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 4.159999999999999,
+            "text": "Mletú. Elektrina nejde, kanvica je teraz drahá váza."
+          },
+          {
+            "start": 4.159999999999999,
+            "end": 9.52,
+            "text": "Zmiešaj ju s mliekom. Dingo to vypije studené, má žalúdok zo zberu."
+          }
+        ]
+      },
+      "record": "speech/f93348e4-3ce8-4741-be90-cd743f533b47/record.json",
+      "recordSha256": "85dae9fa262ec5d0a5330c377f3aac46c5c4ac21df777792996d35ee096cfd46"
+    },
+    {
+      "dialogueId": "innkeeper-chat",
+      "nodeId": "gaming",
+      "actor": { "sceneId": "scene6", "hotspotId": "innkeeper" },
+      "text": "[shredded, raspy tenor] [irritated] Keď mi niekto opraví pípu. Matica sa pretáča. Potrebujem francúzsky kľúč, nie ďalšiu modlitbu na páku.",
+      "textSha256": "44d68d45f1db035eef6c6ade57fe210a03196b48f9942147c0d067184145183f",
+      "audio": "speech/008a0768-4b44-4c40-bf5c-e801f1b95475/audio.wav",
+      "audioSha256": "751fb397059a894980380ee9abe519a9451bc38f871fcf15162487083d0afdcc",
+      "duration": 7.92,
+      "rms": 3482.3897346844055,
+      "peak": 25593,
+      "lipSync": "speech/13932c03-5a2b-4da8-9d36-ccd9d6dc70da/track.lipsync.json",
+      "lipSyncSha256": "d13b8885acd5fa4fa37a0e0cd6f138cc97cecaece7ebd13e5c3c07a068966d37",
+      "subtitles": {
+        "text": "Keď mi niekto opraví pípu. Matica sa pretáča. Potrebujem francúzsky kľúč, nie ďalšiu modlitbu na páku.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 2.038811881188119,
+            "text": "Keď mi niekto opraví pípu."
+          },
+          {
+            "start": 2.038811881188119,
+            "end": 7.92,
+            "text": "Matica sa pretáča. Potrebujem francúzsky kľúč, nie ďalšiu modlitbu na páku."
+          }
+        ]
+      },
+      "record": "speech/008a0768-4b44-4c40-bf5c-e801f1b95475/record.json",
+      "recordSha256": "5231fcaccabd90d3f82c9f5b942df6e130441865c6657fff26b38861488e5a25"
+    },
+    {
+      "dialogueId": "innkeeper-chat",
+      "nodeId": "lubo",
+      "actor": { "sceneId": "scene6", "hotspotId": "innkeeper" },
+      "text": "[shredded, raspy tenor] [irritated] Ľubo. Ráno pohreb, večer reklamácia jackpotu. Myslel som, že to robí jeho pozostalý. Mali rovnaké ponožky.",
+      "textSha256": "f133378b446bd4bc3933c8b4e7927e98632709ff4eb928bdafee09f0578e5d28",
+      "audio": "speech/57b0fe5e-aaac-4110-96ca-05eb1e411ff6/audio.wav",
+      "audioSha256": "56ef8f1bc538bd55e389b7a38c5ed98e053765854c7a9832baef8e6da2b1b5a8",
+      "duration": 8.16,
+      "rms": 3480.30574294577,
+      "peak": 27733,
+      "lipSync": "speech/6f4fa833-ed95-4f0b-846a-ac5f87922978/track.lipsync.json",
+      "lipSyncSha256": "746f2d62b45c7b4d36545715fdecf7c26d02b404142e944905ff5d4d1d12763a",
+      "subtitles": {
+        "text": "Ľubo. Ráno pohreb, večer reklamácia jackpotu. Myslel som, že to robí jeho pozostalý. Mali rovnaké ponožky.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 3.5307692307692307,
+            "text": "Ľubo. Ráno pohreb, večer reklamácia jackpotu."
+          },
+          {
+            "start": 3.5307692307692307,
+            "end": 6.512307692307692,
+            "text": "Myslel som, že to robí jeho pozostalý."
+          },
+          {
+            "start": 6.512307692307692,
+            "end": 8.16,
+            "text": "Mali rovnaké ponožky."
+          }
+        ]
+      },
+      "record": "speech/57b0fe5e-aaac-4110-96ca-05eb1e411ff6/record.json",
+      "recordSha256": "7f48e4954eb72ba861c343f248469d7e01fb729fc822a3bded75b016cb50247d"
+    }
+  ]
+}

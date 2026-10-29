@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "operation": "voice-registration",
+  "provider": "elevenlabs",
+  "designManifest": "speech/df2756e1-a966-4172-8db7-5b0a6ce76452/design.json",
+  "designSha256": "cd773ac864565ba455ea0202319a1c5d504c7916929aece4266279c140fd48c6",
+  "generatedVoiceId": "zWHgsvbNzrffMNY5MMeW",
+  "previewIndex": 2,
+  "voiceId": "zWHgsvbNzrffMNY5MMeW",
+  "name": "TUKABEL · Milan Jamka · Nepřirozeně hluboký mrtvolný bas",
+  "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Male, fifties. An impossibly subterranean bass, hollow chest resonance and dry rattling creak, with almost no smooth upper register. A funeral worker whose morbid deadpan is so serious that it becomes disturbing. Extremely low dark pitch, slow deliberate clipped phrasing, gravel at the end of every statement and tiny ominous pauses before punchlines. Speech rather than a monster roar: keep clean precise Slovak consonants despite the unnatural depth. A dry human voice with immense low resonance, no reverb or audio processing. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts."
+}

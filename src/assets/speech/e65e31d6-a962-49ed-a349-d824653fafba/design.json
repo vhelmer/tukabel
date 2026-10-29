@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "operation": "voice-design",
+  "provider": "elevenlabs",
+  "model": "eleven_ttv_v3",
+  "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Male, late forties. A deranged miniature casino ringmaster: brittle breathless high falsetto, needle-sharp reedy nasal edge and a little raspy cackle in the voice. Manic sales-pitch bursts, enormous gloating rises, tense giggly catches and sudden guttural low drops on sinister punchlines before springing straight back up. Smug, hysterically excited and unstable, never a suave ordinary villain or calm narrator. The excitement lives in his voice, not added laughter sound effects. Highly exaggerated register swings with a mostly high male placement. Crisp intelligible Slovak. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts.",
+  "text": "[brittle, manic falsetto] [excited] Umrel. Len splátky to neuznali. Zobral som hlavný kábel, pripojil autobatériu a mám súkromné majstrovstvá. Mŕtveho nemôžu diskvalifikovať. Osada má kolektívne nešťastie. Ja mám individuálnu batériu. To je trh, Rudo. Neťahaj kábel pod napätím, nech mi tu nepribudne konkurencia v truhle. Pravý žetón nemám. Všetky som prehral sám so sebou. Ale keď to cinkne, je jedno, z čoho to je. Čo by sa asi tak mohlo posrať? Prekvapenie, Rudo.",
+  "textSha256": "eb62c75b119540762813ef4fb889485f53a6bff4cf4fcb6f8ddae0e075da209d",
+  "seed": 63377,
+  "guidanceScale": 5,
+  "outputFormat": "mp3_44100_128",
+  "previews": [
+    {
+      "audio": "preview-1.mp3",
+      "generatedVoiceId": "Cs0q9bNTpnXhVCnLNXGI",
+      "duration": 30.357,
+      "audioSha256": "ee78a4bc2f1dfe9c7475f9dd646b7dd2b1a0f986ec7e41a11db52e8d5904d4ab"
+    },
+    {
+      "audio": "preview-2.mp3",
+      "generatedVoiceId": "BZo6ul5r2qTsBY2ywXxO",
+      "duration": 33.3088125,
+      "audioSha256": "a6e0bcd41e17ad3d0dccfbc439350973858c2b4d404d46e0c90148f85fa4ff78"
+    },
+    {
+      "audio": "preview-3.mp3",
+      "generatedVoiceId": "nTTmUS5YcKqIc3BAIIYL",
+      "duration": 35.8688125,
+      "audioSha256": "c3cca7bb5ae09a2d41355a0ef48e0f696c8b53c4e4203e780d169c4e5af6e573"
+    }
+  ]
+}

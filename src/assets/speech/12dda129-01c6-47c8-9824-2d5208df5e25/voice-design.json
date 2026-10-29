@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "operation": "voice-design-casting",
+  "actor": "scene9/layer1",
+  "name": "Dingo",
+  "direction": "[very hoarse, drowsy, slurred but intelligible voice]",
+  "designManifest": "speech/96a7e646-8282-4b8b-8658-7d2a9ee86594/design.json",
+  "registrationManifest": "speech/06c88758-c6d1-4d4b-aecd-6bbf0f668e0d/registration.json",
+  "voiceId": "OAHw71DTm0tFvJJU4HGL"
+}
