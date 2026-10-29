@@ -258,6 +258,8 @@ export interface GameContent {
   readonly id: string;
   readonly startScene: string;
   readonly startDialogue?: string;
+  // Built-in cutscene played before the start dialogue of a new game.
+  readonly openingCutscene?: 'blackout';
   readonly endings?: readonly EndingDefinition[];
   readonly initialMessage: string;
   readonly flags: readonly string[];

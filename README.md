@@ -854,9 +854,14 @@ Aktuální příběh (`tukabel-grotesque-2`) začíná automatickým rozhovorem
 s Ferem na **Ferovom dvore**. Rudo bere pátrání po ukradeném hlavním kabelu za
 štartovné zdarma na zrušeném mistrovství v automatech. Hra má 12 zachovaných
 lokací, 13 postav, 25 předmětů, devět úkolů v deníku a dva fyzicky odlišné konce.
-Po načtení úvodní scény hra jednu sekundu nepřijímá vstup a teprve potom
-zobrazí titulky a spustí hotový Ferův dabing s lip-syncem. Stejná pauza platí
-pro **Nová hra**; načtení uložené pozice úvod neopakuje. Pauza není součástí save.
+Nová hra nejdřív přehraje cutscénu **výpadku proudu v celé osadě**
+(`openingCutscene: "blackout"`, `src/ui/BlackoutCutscene.tsx`): osvětlené a tmavé
+noční pozadí z `src/assets/cutscenes/blackout/`, čtvrti postupně zhasínají podle
+zvuku vypínače a elektřiny, pak zazní Rudova hláška. Tlačítko **Preskočiť** ji
+kdykoli ukončí; při zablokovaném zvuku nabídne **Spustiť úvod**. Chybějící zvuk
+úvod nezablokuje. Po cutscéně hra jednu sekundu nepřijímá vstup a teprve potom
+zobrazí titulky a spustí hotový Ferův dabing s lip-syncem. Totéž platí
+pro **Nová hra**; načtení uložené pozice úvod neopakuje. Stav úvodu není součástí save.
 Když prohlížeč zablokuje automatický zvuk, titulková plocha nabídne **Spustiť
 dabing**: první klik/tap/Enter přehraje repliku a nepřeskočí ji. Další potvrzení
 už řeč běžně dokončí. Pokud zvuk selže i po tomto gestu, lze pokračovat titulky.
@@ -919,6 +924,8 @@ Zkrat spálí automat i kabel, Ľubo uteče a vyvalí se bezcenné podložky.
 Osada zůstane potmě a následuje druhý epilog. Po pouhém odpojení baterie lze
 svorku znovu připojit; žeton se při použití na vypnutý automat nespotřebuje.
 Uloženou pozici před volbou lze načíst i po konci; nová hra ruční slot nemaže.
+Konec obrazovku pomalu zčerná, zobrazí nápis **KONIEC** a pod ním krátký epilog
+z `endings[].text`; `title` slouží jako přístupný název dialogu.
 
 ### Chybějící grafika
 
@@ -1006,7 +1013,8 @@ Původní technická hádanka a staré zastávkové dialogy zůstávají pouze v
 - `src/game/validateContent.ts` — ID, odkazy, rozměry, pořadí pravidel, duplicity.
 - `src/game/state.ts` — původní čistý reducer; stejná pravidla v náhledu i produkci.
 - `src/game/storage.ts` — save/load postupu; nikdy neukládá definice obsahu.
-- Volitelné `startDialogue` spouští autorský úvod; `endings` odvozuje epilogy přes
+- Volitelné `startDialogue` spouští autorský úvod, `openingCutscene: "blackout"` mu
+  předřadí vestavěnou cutscénu (validace vyžaduje `startDialogue`); `endings` odvozuje epilogy přes
   stejné podmínky z uložených flags. Žádný druhý ending/progress stav.
 - `SceneDefinition.ambient`, `src/ui/useSceneAudio.ts` a `EndingPanel.tsx` — lokální
   zvukové prostředí, lifecycle a finální modal. API ani dabingové kredity se za hry nevolají.

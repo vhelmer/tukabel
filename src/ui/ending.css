@@ -1,3 +1,4 @@
+/* The screen slowly turns black, then KONIEC, the epilogue and the actions appear. */
 .ending-overlay {
   position: absolute;
   inset: 0;
@@ -6,48 +7,52 @@
   place-items: center;
   padding: clamp(12px, 4vw, 44px);
   overflow: auto;
-  background: linear-gradient(180deg, #121810b8, #11170ff2);
-  backdrop-filter: blur(3px);
+  background: #000;
+  animation: ending-fade 2.5s ease-in both;
 }
 .ending-panel {
   width: min(640px, 100%);
   max-height: 100%;
   overflow: auto;
-  padding: clamp(18px, 4vw, 42px);
-  border: 1px solid #b79a61;
-  border-radius: 5px;
-  background: #20251fed;
   color: #f6ead1;
   text-align: center;
-  box-shadow: 0 20px 70px #0007;
 }
 .ending-panel h1 {
-  margin: 20px 0;
+  margin: 0 0 24px;
   font-family: Georgia, serif;
-  font-size: clamp(25px, 4vw, 42px);
+  font-size: clamp(36px, 8vw, 84px);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  animation: ending-fade 1.2s ease-out 2.5s both;
 }
 .ending-panel p {
   white-space: pre-line;
   font-size: clamp(14px, 2vw, 18px);
   line-height: 1.65;
-}
-.ending-kicker,
-.ending-finish {
-  color: #cbb781;
-  font-size: 12px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-.ending-finish {
-  display: block;
-  margin: 24px 0;
+  animation: ending-fade 1.2s ease-out 3.6s both;
 }
 .ending-actions {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 12px;
+  margin-top: 28px;
+  animation: ending-fade 0.8s ease-out 5s both;
 }
 .ending-actions button {
   min-height: 44px;
+}
+@keyframes ending-fade {
+  from {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ending-overlay,
+  .ending-panel h1,
+  .ending-panel p,
+  .ending-actions {
+    animation-duration: 0.01s;
+    animation-delay: 0s;
+  }
 }

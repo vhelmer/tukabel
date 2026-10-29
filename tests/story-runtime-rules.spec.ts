@@ -107,6 +107,26 @@ test('story references and local WAV ambience are validated', () => {
     validateProject({ ...content, startDialogue: 'missing' }).join(' '),
   ).toContain('startDialogue');
   expect(
+    validateProject({ ...content, openingCutscene: 'blackout' }, [
+      'yard.svg',
+      'ambience/village.wav',
+      'ambience/ending.wav',
+    ]),
+  ).toEqual([]);
+  expect(
+    validateProject({
+      ...content,
+      openingCutscene: 'sunrise' as 'blackout',
+    }).join(' '),
+  ).toContain('openingCutscene');
+  expect(
+    validateProject({
+      ...content,
+      startDialogue: undefined,
+      openingCutscene: 'blackout',
+    }).join(' '),
+  ).toContain('requires startDialogue');
+  expect(
     validateProject({
       ...content,
       endings: [{ ...content.endings![0], when: { flag: 'missing' } }],

@@ -6190,19 +6190,20 @@
     }
   ],
   "startDialogue": "fero-intro",
+  "openingCutscene": "blackout",
   "endings": [
     {
       "id": "community",
       "when": { "flag": "ending-community" },
-      "title": "Koniec: Kábel pre každého kokota",
-      "text": "Osada svieti a majstrovstvá sa začali. Ľubo dostal účet za fingovaný pohreb aj obnovené členstvo medzi živými; Milan mu k tomu pribalil lopatu a veľmi osobné odporúčanie.\n\nFero dodržal slovo: hráš zadarmo. Eržika ti spoza plota poradila, kam si máš výhru strčiť, a Bonifác už požehnáva prvý prehratý dôchodok. Zachránil si kábel, osadu aj turnaj; na ten pocit sa radšej nepozeraj v dennom svetle.",
+      "title": "Zachránil si kábel",
+      "text": "Podarilo sa ti nájsť ukradnutý kábel a zachrániť elektrinu v celej osade.\nMajstrovstvá sveta vo výherných automatoch sa konečne uskutočnili a Fero dodržal slovo. Štartovné si mal zadarmo.\nZa necelých päť minút si prehral všetky peniaze, hodinky aj vlastné topánky.\nAle aspoň si ušetril 20 eur na štartovnom.",
       "ambient": "ambience/ending.wav"
     },
     {
       "id": "jackpot",
       "when": { "flag": "ending-jackpot" },
-      "title": "Koniec: Jackpot, ty kokot",
-      "text": "Podložka v alobale spojila kontakty, batéria sa vysyčala a ukradnutý kábel sa pripiekol k automatu. Ľubo zdrhol cez vlastný prázdny hrob; tentoraz mu ešte chvíľu stúpal dym z vlasov.\n\nOsada zostala potme a majstrovstvá v automatoch nahradilo majstrovstvo v nadávaní na Ruda. Eržika vedie o tri urážky, Bonifác berie stávky a Fero ti slávnostne odovzdal vedro podložiek. Konečne si vyhral všetko, čo tam bolo.",
+      "title": "Večný jackpot",
+      "text": "Namiesto záchrany osady si sa rozhodol skúsiť šťastie na automate.\nPodarilo sa ti odpáliť automat, ukradnutý kábel aj poslednú fungujúcu baterku v osade.\nMajstrovstvá boli definitívne zrušené a Fero ti vystavil faktúru za škodu vo výške 38 000 eur.\nAle na chvíľu tam boli tri sedmičky, takže sa to oplatilo.",
       "ambient": "ambience/ending.wav"
     }
   ]

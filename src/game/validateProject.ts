@@ -125,6 +125,7 @@ export function validateProject(
       'id',
       'startScene',
       'startDialogue',
+      'openingCutscene',
       'endings',
       'initialMessage',
       'flags',
@@ -141,6 +142,16 @@ export function validateProject(
   for (const key of ['id', 'startScene', 'initialMessage'])
     string(value[key], key);
   optionalString(value, 'startDialogue', 'project');
+  if (
+    value.openingCutscene !== undefined &&
+    value.openingCutscene !== 'blackout'
+  )
+    errors.push('project.openingCutscene: expected "blackout"');
+  else if (
+    value.openingCutscene !== undefined &&
+    value.startDialogue === undefined
+  )
+    errors.push('project.openingCutscene: requires startDialogue');
   function ambient(input: unknown, path: string) {
     if (input === undefined) return;
     if (

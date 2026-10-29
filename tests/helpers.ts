@@ -26,6 +26,14 @@ export async function ready(page: Page) {
       }),
     )
     .toBe(true);
+  await skipCutscene(page);
+}
+// Gameplay tests start after the authored opening cutscene; opening.spec covers it.
+export async function skipCutscene(page: Page) {
+  const skip = page.locator('.cutscene-skip');
+  if (!(await skip.count())) return;
+  await skip.click();
+  await expect(page.locator('.cutscene')).toHaveCount(0);
 }
 export async function pointInScene(page: Page, x: number, y: number) {
   const box = await page.locator('.canvas-host canvas').boundingBox();

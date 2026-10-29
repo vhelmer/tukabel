@@ -4,7 +4,7 @@ import { test } from './editorFixture';
 import { hudClick, ready } from './helpers';
 import type { GameContent } from '../src/game/types';
 
-async function opening(source: string) {
+async function opening(source: string, cutscene = false) {
   const content = JSON.parse(await readFile(source, 'utf8')) as GameContent;
   const dialogue = content.dialogues.find((d) => d.id === 'animation-demo')!;
   const node = dialogue.nodes.find((n) => n.speech)!;
@@ -14,6 +14,7 @@ async function opening(source: string) {
       ...content,
       startDialogue: dialogue.id,
       startScene: 'animation-lab',
+      ...(cutscene ? { openingCutscene: 'blackout' } : {}),
       dialogues: content.dialogues.map((d) =>
         d.id !== dialogue.id
           ? d
@@ -228,4 +229,111 @@ test('failed opening scene keeps the reload recovery usable instead of leaving t
   ]);
   await ready(page);
   await expect(page.locator('.dialogue-panel')).toBeVisible();
+});
+
+// Cutscene recordings are detached Audio elements; finish them quickly.
+const fastCutsceneAudio = (blockFirst: boolean) => {
+  let blocked = blockFirst;
+  const played: string[] = [];
+  Object.assign(window, { cutscenePlays: played });
+  HTMLMediaElement.prototype.play = function () {
+    if (this.closest('.dialogue-panel')) {
+      this.dispatchEvent(new Event('play'));
+      return Promise.resolve();
+    }
+    if (!this.src.includes('/cutscenes/')) return Promise.resolve();
+    if (blocked) {
+      blocked = false;
+      return Promise.reject(
+        new DOMException('Gesture required', 'NotAllowedError'),
+      );
+    }
+    played.push(this.src.split('/').pop()!.split('?')[0]!);
+    setTimeout(() => this.dispatchEvent(new Event('ended')), 50);
+    return Promise.resolve();
+  };
+};
+const cutscenePlays = (page: import('@playwright/test').Page) =>
+  page.evaluate(() =>
+    (window as unknown as { cutscenePlays: string[] }).cutscenePlays.map(
+      (name) => name.replace(/-[\w-]+(?=\.mp3$)/, ''),
+    ),
+  );
+
+test('the blackout cutscene plays before the opening dialogue and hands over by itself', async ({
+  page,
+  workspace,
+}) => {
+  await opening(workspace.source, true);
+  await page.addInitScript(fastCutsceneAudio, false);
+  await page.goto(workspace.url);
+  const cutscene = page.getByRole('dialog', { name: 'Úvod: výpadok prúdu' });
+  await expect(cutscene).toBeVisible();
+  await expect(
+    page.getByRole('region', { name: 'Herné okno' }),
+  ).toHaveAttribute('aria-busy', 'true');
+  await expect(page.locator('.dialogue-panel')).toHaveCount(0);
+  await expect(cutscene).toHaveCount(0, { timeout: 15000 });
+  expect(await cutscenePlays(page)).toEqual([
+    'switch.mp3',
+    'electricity.mp3',
+    'voice.mp3',
+  ]);
+  await expect(page.locator('.dialogue-panel')).toHaveClass(/is-speaking/);
+});
+
+test('skipping the cutscene opens Fero at once and a new game shows it again', async ({
+  page,
+  workspace,
+  isMobile,
+}) => {
+  await opening(workspace.source, true);
+  await page.addInitScript(fastCutsceneAudio, false);
+  await page.goto(workspace.url);
+  const cutscene = page.getByRole('dialog', { name: 'Úvod: výpadok prúdu' });
+  const skip = cutscene.getByRole('button', { name: 'Preskočiť ›' });
+  await expect(skip).toBeFocused();
+  await page.keyboard.press('Enter');
+  await expect(cutscene).toHaveCount(0);
+  await expect(page.locator('.dialogue-panel')).toHaveClass(/is-speaking/);
+  await page
+    .getByRole('button', { name: 'Dokončiť repliku', exact: true })
+    .click();
+  await page
+    .getByRole('button', { name: 'Prípad beriem.', exact: true })
+    .click();
+  await hudClick(
+    page,
+    page.getByRole('button', { name: 'Menu', exact: true }),
+    isMobile,
+  );
+  await page.getByRole('button', { name: 'Nová hra', exact: true }).click();
+  await expect(cutscene).toBeVisible();
+  if (isMobile) await skip.tap();
+  else await skip.click();
+  await expect(page.locator('.dialogue-panel')).toHaveClass(/is-speaking/);
+});
+
+test('blocked cutscene sound waits for a start gesture', async ({
+  page,
+  workspace,
+  isMobile,
+}) => {
+  await opening(workspace.source, true);
+  await page.addInitScript(fastCutsceneAudio, true);
+  await page.goto(workspace.url);
+  const start = page.getByRole('button', { name: '▶ Spustiť úvod' });
+  await expect(start).toBeVisible();
+  if (isMobile) await start.tap();
+  else await start.click();
+  await expect(start).toHaveCount(0);
+  await expect(
+    page.getByRole('dialog', { name: 'Úvod: výpadok prúdu' }),
+  ).toHaveCount(0, { timeout: 15000 });
+  expect(await cutscenePlays(page)).toEqual([
+    'switch.mp3',
+    'electricity.mp3',
+    'voice.mp3',
+  ]);
+  await expect(page.locator('.dialogue-panel')).toHaveClass(/is-speaking/);
 });

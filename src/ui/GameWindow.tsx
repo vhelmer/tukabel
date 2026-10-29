@@ -22,6 +22,7 @@ import { saveGame, loadGame } from '../game/storage';
 import { GameCanvas } from './GameCanvas';
 import { DialoguePanel } from './DialoguePanel';
 import { EndingPanel } from './EndingPanel';
+import { BlackoutCutscene } from './BlackoutCutscene';
 import { useSceneAudio } from './useSceneAudio';
 
 type Target = { type: 'item'; id: string } | { type: 'hotspot'; id: string };
@@ -59,14 +60,27 @@ export function GameWindow({
     state.sceneId === content.startScene &&
     state.dialogue?.id === content.startDialogue,
   );
-  const [opening, setOpening] = useState({
+  // A new game first plays the authored cutscene, then the opening dialogue.
+  const startOpening = () => ({
     sequence: openingSequence,
     pending: startsWithDialogue,
+    cutscene: startsWithDialogue && content.openingCutscene === 'blackout',
   });
-  if (opening.sequence !== openingSequence)
-    setOpening({ sequence: openingSequence, pending: startsWithDialogue });
-  const openingPending =
-    opening.sequence === openingSequence ? opening.pending : startsWithDialogue;
+  const [opening, setOpening] = useState(startOpening);
+  if (opening.sequence !== openingSequence) setOpening(startOpening());
+  const current =
+    opening.sequence === openingSequence ? opening : startOpening();
+  const openingPending = current.pending;
+  const cutscenePlaying = current.pending && current.cutscene;
+  const finishCutscene = useCallback(
+    () =>
+      setOpening((previous) =>
+        previous.sequence === openingSequence
+          ? { ...previous, cutscene: false }
+          : previous,
+      ),
+    [openingSequence],
+  );
   const [readyScene, setReadyScene] = useState<string | null>(null);
   const [sceneFailed, setSceneFailed] = useState(false);
   const markSceneReady = useCallback((id: string) => {
@@ -75,13 +89,25 @@ export function GameWindow({
   }, []);
   const markSceneFailed = useCallback(() => setSceneFailed(true), []);
   useEffect(() => {
-    if (!openingPending || readyScene !== state.sceneId) return;
+    if (!openingPending || cutscenePlaying || readyScene !== state.sceneId)
+      return;
     const timer = window.setTimeout(
-      () => setOpening({ sequence: openingSequence, pending: false }),
+      () =>
+        setOpening({
+          sequence: openingSequence,
+          pending: false,
+          cutscene: false,
+        }),
       1000,
     );
     return () => window.clearTimeout(timer);
-  }, [openingPending, readyScene, state.sceneId, openingSequence]);
+  }, [
+    openingPending,
+    cutscenePlaying,
+    readyScene,
+    state.sceneId,
+    openingSequence,
+  ]);
   const [animationTrigger, setAnimationTrigger] =
     useState<AnimationTrigger | null>(null);
   const [hovered, setHovered] = useState<Hotspot | null>(null);
@@ -850,6 +876,9 @@ export function GameWindow({
             <span>{item.label}</span>
           </div>
         )}
+      {cutscenePlaying && !sceneFailed && (
+        <BlackoutCutscene key={openingSequence} onFinish={finishCutscene} />
+      )}
     </section>
   );
 }

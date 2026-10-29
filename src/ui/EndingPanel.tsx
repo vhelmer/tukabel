@@ -22,7 +22,7 @@ export function EndingPanel({
         className="ending-panel"
         role="dialog"
         aria-modal="true"
-        aria-labelledby="ending-title"
+        aria-label={ending.title}
         onKeyDown={(event) => {
           if (event.key !== 'Tab') return;
           const controls =
@@ -38,10 +38,8 @@ export function EndingPanel({
           }
         }}
       >
-        <span className="ending-kicker">Záhada strateného kábla</span>
-        <h1 id="ending-title">{ending.title}</h1>
+        <h1>Koniec</h1>
         <p>{ending.text}</p>
-        <span className="ending-finish">Koniec</span>
         <div className="ending-actions">
           <button onClick={onMenu}>Menu a uložené hry</button>
           <button onClick={onReset}>Nová hra</button>
