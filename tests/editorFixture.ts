@@ -16,6 +16,7 @@ import { ready } from './helpers';
 // project, developer notes, or another test's JSON/assets.
 export const test = base.extend<{
   demoContent: boolean;
+  stopContent: boolean;
   speechTools: SpeechOptions;
   artTools: ArtOptions;
   directionTools: DirectionOptions;
@@ -23,6 +24,7 @@ export const test = base.extend<{
   workspace: { url: string; source: string; root: string };
 }>({
   demoContent: [true, { option: true }],
+  stopContent: [false, { option: true }],
   speechTools: [{}, { option: true }],
   artTools: [{ apiKey: '' }, { option: true }],
   directionTools: [{ apiKey: '' }, { option: true }],
@@ -31,6 +33,7 @@ export const test = base.extend<{
     {
       browserName,
       demoContent,
+      stopContent,
       speechTools,
       artTools,
       directionTools,
@@ -66,9 +69,13 @@ export const test = base.extend<{
             );
           },
         });
-      if (demoContent)
+      if (demoContent || stopContent)
         await cp(
-          path.resolve('tests/fixtures/demo-project.json'),
+          path.resolve(
+            stopContent
+              ? 'tests/fixtures/stop-demo-project.json'
+              : 'tests/fixtures/demo-project.json',
+          ),
           path.join(root, 'src/game/content/project.json'),
         );
       await symlink(
@@ -130,6 +137,8 @@ export const test = base.extend<{
 // Engine regressions use the archived demo only inside temporary workspaces.
 // Authored-content checks opt out so they always exercise the current game.
 export const authoredTest = test.extend({ demoContent: false });
+// Recorded bus-stop dialogue is an archived speech fixture, independent of story rewrites.
+export const stopTest = test.extend({ demoContent: false, stopContent: true });
 
 export async function openEditor(
   page: import('@playwright/test').Page,

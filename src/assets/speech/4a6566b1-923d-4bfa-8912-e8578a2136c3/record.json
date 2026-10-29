@@ -1,0 +1,15 @@
+{
+  "text": "Čakám na zálohu za fľašu. Autobus nepríde, ten už vyškrtli aj z cestovného poriadku. Ukáž mi fľašu a dostaneš môj magnet. Na meď mi je aj tak na hovno.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "Iu5SuHOmMFnQrH4OjSZ3",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 10.4,
+  "audioSha256": "c1e548325ca7c9be81d994dae6472328a1cb71f6be0107cb79d04e9271ff7428"
+}

@@ -1,0 +1,15 @@
+{
+  "text": "Krásny tón. Trochu pasienok, trochu posledný súd. Bránu som otvoril. Pri pohrebe Ľuba som pre istotu pochoval aj jeho záruku na automat.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "JBFqnCBsd6RMkjVDRZzb",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 10.32,
+  "audioSha256": "315941729b59e3f41ed1505efd1590a216afcd51fd9dd992d2cb7b7b0d05e858"
+}

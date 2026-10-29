@@ -332,6 +332,7 @@ test('rapid subtitle taps and held keys cannot skip into another branch', async 
   workspace,
   isMobile,
 }) => {
+  await page.clock.install();
   await seed(workspace.source);
   await page.goto(workspace.url);
   await ready(page);
@@ -345,6 +346,19 @@ test('rapid subtitle taps and held keys cannot skip into another branch', async 
       exact: true,
     });
   const oldAudio = await panel.locator('audio').elementHandle();
+  await expect(caption).toBeEnabled();
+  // Physical taps must arrive within the authored 300 ms quiet period even
+  // when a busy browser or the automation transport takes longer in real time.
+  await page.clock.pauseAt(await page.evaluate(() => Date.now() + 1000));
+  const tapTimes = await panel.evaluateHandle((element) => {
+    const times: number[] = [];
+    element.addEventListener(
+      'pointerdown',
+      () => times.push(performance.now()),
+      { capture: true },
+    );
+    return times;
+  });
   await finishLine(page, isMobile);
   const reward = page.getByRole('button', {
     name: 'Vezmem si pásku.',
@@ -359,8 +373,18 @@ test('rapid subtitle taps and held keys cannot skip into another branch', async 
       await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2, {
         clickCount: i + 2,
       });
-    await page.waitForTimeout(80);
+    await page.clock.runFor(80);
   }
+  const times = await tapTimes.jsonValue();
+  // Desktop clickCount sends 2..9 physical pointerdowns per burst; touch
+  // sends one. Each group still lands at the same controlled input time.
+  expect(times).toHaveLength(isMobile ? 9 : 45);
+  const groups = [...new Set(times)];
+  expect(groups).toHaveLength(8);
+  expect(groups.slice(1).map((time, index) => time - groups[index]!)).toEqual([
+    80, 80, 80, 80, 80, 80, 80,
+  ]);
+  await tapTimes.dispose();
   await expect(panel).toHaveClass(/is-choosing/);
   await expect(panel.locator('audio')).toHaveCount(0);
   expect(
@@ -369,6 +393,8 @@ test('rapid subtitle taps and held keys cannot skip into another branch', async 
   await expect(
     page.getByRole('button', { name: 'Izolačná páska', exact: true }),
   ).toHaveCount(0);
+  await page.clock.runFor(300);
+  await page.clock.resume();
   await expect(reward).toBeEnabled();
   if (isMobile) await reward.tap();
   else await reward.click();

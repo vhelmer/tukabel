@@ -1,0 +1,15 @@
+{
+  "text": "Hlavný kábel. Nie predlžovačka, čo ňou Margita vešia klobásy. Zvyšok rozvodu zostal celý. Keď ho nájdeš, oblep koniec a pichni do skrine napravo.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "pqHfZKP75CvOlQylNhV4",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 11.12,
+  "audioSha256": "23c3844eafff37b973f9f62a192c97dc63026bd75dfac5a0e7f08ce1fd67d59e"
+}

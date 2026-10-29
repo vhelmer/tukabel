@@ -79,6 +79,14 @@ export function validateContent(content: GameContent): string[] {
     });
   };
   reference(scenes, content.startScene, 'startScene');
+  if (content.startDialogue !== undefined)
+    reference(dialogues, content.startDialogue, 'startDialogue');
+  collect(
+    (content.endings ?? []).map((ending) => ending.id),
+    'endings',
+  );
+  for (const ending of content.endings ?? [])
+    condition(ending.when, 'endings/' + ending.id);
   if (content.worldMap) {
     const map = content.worldMap;
     if (

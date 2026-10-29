@@ -30,12 +30,15 @@ export function App() {
   function preview() {
     if (errors.length) return;
     setPlayDocument(document);
+    const start = initialState(document);
+    const previewScene = document.scenes.some((scene) => scene.id === sceneId)
+      ? sceneId
+      : document.startScene;
     setState(
       syncLocations(document, {
-        ...initialState(document),
-        sceneId: document.scenes.some((scene) => scene.id === sceneId)
-          ? sceneId
-          : document.startScene,
+        ...start,
+        sceneId: previewScene,
+        dialogue: previewScene === document.startScene ? start.dialogue : null,
       }),
     );
     setMode('game');
@@ -49,7 +52,7 @@ export function App() {
           aria-label={mode === 'dev' ? 'Režim aplikace' : 'Režim aplikácie'}
         >
           <span>
-            ↯ TUKABEL <small>WORKSHOP</small>
+            ↯ TUKABEL <small>Záhada strateného kábla</small>
           </span>
           <div>
             <button
@@ -74,7 +77,7 @@ export function App() {
             </button>
           </div>
           <span className="mode-note">
-            {mode === 'dev' ? 'Úpravy → test → zdrojový JSON' : 'Herný náhľad'}
+            {mode === 'dev' ? 'Úpravy → test → zdrojový JSON' : 'Príbehová hra'}
           </span>
         </nav>
       )}

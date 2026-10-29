@@ -1,0 +1,15 @@
+{
+  "text": "Servis deň po pohrebe! Ten hajzel je živý aj podľa papierov. Tu máš pečiatku. Opečiatkuj prázdny úmrtný list z kostolnej nástenky; Milan púšťa do kaplnky iba zosnulých.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "VnZ7lswb6C7FxwHfvIR6",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 15.12,
+  "audioSha256": "f03c179a47b36d0ecbf5eaa32093efb5d623dd55ef58881cd889c47e963532dc"
+}

@@ -1,0 +1,140 @@
+{
+  "version": 1,
+  "provider": "codex-cli",
+  "model": "gpt-6.1-sol",
+  "effort": "high",
+  "context": {
+    "mode": "scene",
+    "sceneId": "scene3",
+    "targetId": "",
+    "source": "scene-art/b1cd0ba5-ef22-407a-8c62-e8a0b0db202f/image.png",
+    "label": "Nový výřez",
+    "fingerprint": "[1672,941,\"scene-art/b1cd0ba5-ef22-407a-8c62-e8a0b0db202f/image.png\"]",
+    "placement": {
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1672,
+        "height": 941
+      },
+      "imageFit": "stretch"
+    },
+    "selection": [
+      {
+        "x": 954.43,
+        "y": 151.72500000000005
+      },
+      {
+        "x": 1113.469,
+        "y": 236.563
+      },
+      {
+        "x": 1116.712,
+        "y": 180.349
+      },
+      {
+        "x": 1112.967,
+        "y": 178.98199999999997
+      },
+      {
+        "x": 1112.967,
+        "y": 170.753
+      },
+      {
+        "x": 1157.649,
+        "y": 161.575
+      },
+      {
+        "x": 1170.034,
+        "y": 178.885
+      },
+      {
+        "x": 1162.756,
+        "y": 184.16700000000003
+      },
+      {
+        "x": 1166.652,
+        "y": 265.943
+      },
+      {
+        "x": 1216.876,
+        "y": 290.32
+      },
+      {
+        "x": 1310.8139999999999,
+        "y": 316.10100000000006
+      },
+      {
+        "x": 1670.006,
+        "y": 251.816
+      },
+      {
+        "x": 1670.175,
+        "y": 4.011000000000024
+      },
+      {
+        "x": 1095.391,
+        "y": 4.725000000000023
+      }
+    ],
+    "instruction": "Přidej jemnou animaci vlnění mraků."
+  },
+  "prompt": "Přidej jemnou animaci vlnění mraků.",
+  "task": "ambient",
+  "count": 5,
+  "fps": 12,
+  "sourceSha256": "642cde309399ec8d2b1f2c79c0ed70a7481edea44eb996b6602194e51a3402e1",
+  "width": 1672,
+  "height": 941,
+  "result": {
+    "source": "scene-art/b1cd0ba5-ef22-407a-8c62-e8a0b0db202f/image.png",
+    "sourceSha256": "642cde309399ec8d2b1f2c79c0ed70a7481edea44eb996b6602194e51a3402e1",
+    "clips": [
+      {
+        "id": "codex-a1a33a28-457b-46ce-8d66-b9bc156bb5ce-idle",
+        "source": "codex/a1a33a28-457b-46ce-8d66-b9bc156bb5ce/image.png",
+        "kind": "idle",
+        "label": "Jemné vlnění mraků",
+        "frames": [
+          "codex/a1a33a28-457b-46ce-8d66-b9bc156bb5ce/idle-01.png",
+          "codex/a1a33a28-457b-46ce-8d66-b9bc156bb5ce/idle-02.png",
+          "codex/a1a33a28-457b-46ce-8d66-b9bc156bb5ce/idle-03.png",
+          "codex/a1a33a28-457b-46ce-8d66-b9bc156bb5ce/idle-04.png",
+          "codex/a1a33a28-457b-46ce-8d66-b9bc156bb5ce/idle-05.png"
+        ],
+        "fps": 12,
+        "loop": true
+      }
+    ],
+    "image": "codex/a1a33a28-457b-46ce-8d66-b9bc156bb5ce/image.png",
+    "manifest": "codex/a1a33a28-457b-46ce-8d66-b9bc156bb5ce/recipe.json",
+    "notes": "Jemné prostorově proměnlivé vlnění mraků v plynulé pěti­snímkové smyčce. Pohyb je omezen na vybranou oblohu a směrem k hranici výběru slábne. Kostel, komín a okolí zůstávají stabilní; všechny RGBA bajty mimo výběr i původní alfa jsou zachovány. Rozměry všech snímků jsou 1672 × 941. Kvůli délce pěti snímků při 12 fps je pohyb záměrně velmi jemný.",
+    "assets": [
+      "codex/a1a33a28-457b-46ce-8d66-b9bc156bb5ce/image.png",
+      "codex/a1a33a28-457b-46ce-8d66-b9bc156bb5ce/idle-01.png",
+      "codex/a1a33a28-457b-46ce-8d66-b9bc156bb5ce/idle-02.png",
+      "codex/a1a33a28-457b-46ce-8d66-b9bc156bb5ce/idle-03.png",
+      "codex/a1a33a28-457b-46ce-8d66-b9bc156bb5ce/idle-04.png",
+      "codex/a1a33a28-457b-46ce-8d66-b9bc156bb5ce/idle-05.png"
+    ]
+  },
+  "scripts": ["generate.py"],
+  "generatedManifest": {
+    "notes": "Jemné prostorově proměnlivé vlnění mraků v plynulé pěti­snímkové smyčce. Pohyb je omezen na vybranou oblohu a směrem k hranici výběru slábne. Kostel, komín a okolí zůstávají stabilní; všechny RGBA bajty mimo výběr i původní alfa jsou zachovány. Rozměry všech snímků jsou 1672 × 941. Kvůli délce pěti snímků při 12 fps je pohyb záměrně velmi jemný.",
+    "scripts": ["generate.py"],
+    "clips": [
+      {
+        "kind": "idle",
+        "label": "Jemné vlnění mraků",
+        "fps": 12,
+        "frames": [
+          "frame-01.png",
+          "frame-02.png",
+          "frame-03.png",
+          "frame-04.png",
+          "frame-05.png"
+        ]
+      }
+    ]
+  }
+}

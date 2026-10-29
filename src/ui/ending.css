@@ -1,0 +1,53 @@
+.ending-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  display: grid;
+  place-items: center;
+  padding: clamp(12px, 4vw, 44px);
+  overflow: auto;
+  background: linear-gradient(180deg, #121810b8, #11170ff2);
+  backdrop-filter: blur(3px);
+}
+.ending-panel {
+  width: min(640px, 100%);
+  max-height: 100%;
+  overflow: auto;
+  padding: clamp(18px, 4vw, 42px);
+  border: 1px solid #b79a61;
+  border-radius: 5px;
+  background: #20251fed;
+  color: #f6ead1;
+  text-align: center;
+  box-shadow: 0 20px 70px #0007;
+}
+.ending-panel h1 {
+  margin: 20px 0;
+  font-family: Georgia, serif;
+  font-size: clamp(25px, 4vw, 42px);
+}
+.ending-panel p {
+  white-space: pre-line;
+  font-size: clamp(14px, 2vw, 18px);
+  line-height: 1.65;
+}
+.ending-kicker,
+.ending-finish {
+  color: #cbb781;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.ending-finish {
+  display: block;
+  margin: 24px 0;
+}
+.ending-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+.ending-actions button {
+  min-height: 44px;
+}

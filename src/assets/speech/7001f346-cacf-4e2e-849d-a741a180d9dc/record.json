@@ -1,0 +1,15 @@
+{
+  "text": "Hej. Šofér si kupoval bagetu. Na mŕtvolu mal výborný apetít. Na smerovke mal veniec s nápisom ĽUBO, VRÁŤ DVE EURÁ.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "Iu5SuHOmMFnQrH4OjSZ3",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 9.44,
+  "audioSha256": "10e374e091c95267a8449b341005741a3bc8be1725099af28f668550fdb3dd22"
+}

@@ -1,0 +1,26 @@
+{
+  "context": {
+    "mode": "character",
+    "sceneId": "scene10",
+    "targetId": "layer1",
+    "source": "scene-art/2e411ba3-e3cd-482f-ac9b-33f6ce6a4bf5/image.png",
+    "label": "Jolanda",
+    "fingerprint": "[1677,938,{\"id\":\"layer1\",\"label\":\"Jolanda\",\"bounds\":{\"x\":244,\"y\":275,\"width\":443,\"height\":542},\"imageFit\":\"contain\",\"image\":\"scene-art/2e411ba3-e3cd-482f-ac9b-33f6ce6a4bf5/image.png\",\"onClick\":[],\"decorative\":true}]",
+    "placement": {
+      "bounds": {
+        "x": 244,
+        "y": 275,
+        "width": 443,
+        "height": 542
+      },
+      "imageFit": "contain"
+    },
+    "instruction": "Připrav přirozené mrknutí a odlišné tvary úst pro mluvení. Zachovej původní kresbu, obrysy a všechny pixely mimo oči a ústa."
+  },
+  "prompt": "Připrav přirozené mrknutí a odlišné tvary úst pro mluvení. Zachovej původní kresbu, obrysy a všechny pixely mimo oči a ústa.",
+  "task": "blink-talk",
+  "count": 5,
+  "fps": 12,
+  "width": 443,
+  "height": 542
+}

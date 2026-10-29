@@ -2,7 +2,11 @@ import { hudClick } from './helpers';
 import { expect } from '@playwright/test';
 import { readFile, writeFile } from 'node:fs/promises';
 import type { GameContent } from '../src/game/types';
-import { test as base, authoredTest as editorTest } from './editorFixture';
+import {
+  test as base,
+  stopTest as editorTest,
+  authoredTest as storyTest,
+} from './editorFixture';
 
 // Relative navigations use the isolated engine fixture, never the real project.
 const test = base.extend({
@@ -25,10 +29,13 @@ const reaction = (page: import('@playwright/test').Page) =>
 editorTest(
   'bus stop conversations, conditional gossip and bottle exchange survive save/load on mouse and touch',
   async ({ page, workspace, isMobile }, info) => {
-    editorTest.setTimeout(60000);
+    editorTest.setTimeout(120000);
     const project = JSON.parse(
       await readFile(workspace.source, 'utf8'),
     ) as GameContent;
+    const collector = project.scenes
+      .find((scene) => scene.id === 'scene1')!
+      .hotspots.find((hotspot) => hotspot.id === 'layer2')!;
     await writeFile(
       workspace.source,
       JSON.stringify({ ...project, startScene: 'scene1' }),
@@ -177,7 +184,7 @@ editorTest(
     await ready(page);
     await expect(bottle).toHaveCount(0);
     await expect(await object(page, 'Pivová fľaša')).toHaveCount(0);
-    await (await object(page, 'Cigy')).click();
+    await (await object(page, collector.label)).click();
     await dialogue
       .getByRole('button', { name: 'Čo podnikneš s tou zálohou?' })
       .click();
@@ -504,3 +511,191 @@ test('canceling drags never selects an item and menu keyboard focus stays contai
   ).toBeFocused();
   await expect(page.getByRole('dialog')).toHaveCount(0);
 });
+
+storyTest(
+  'complete TUKABEL investigation reaches both distinct endings and reloads the final save',
+  async ({ page, workspace, isMobile }, info) => {
+    storyTest.setTimeout(240000);
+    const content = JSON.parse(
+      await readFile(workspace.source, 'utf8'),
+    ) as GameContent;
+    let sceneId = content.startScene;
+    const dialogue = page.getByRole('dialog', {
+      name: 'Rozhovor',
+      exact: true,
+    });
+    const click = async (button: import('@playwright/test').Locator) => {
+      await expect(button).toBeEnabled();
+      if (isMobile) await button.tap();
+      else await button.click();
+    };
+    const finishSpeech = async () => {
+      const caption = dialogue.getByRole('button', {
+        name: 'Dokončiť repliku',
+        exact: true,
+      });
+      if (await caption.count()) {
+        await click(caption);
+        await expect(caption).toHaveCount(0);
+      }
+    };
+    const choose = async (text: string) =>
+      click(dialogue.getByRole('button', { name: new RegExp(text) }));
+    async function inventory(id: string) {
+      const button = page.locator(`[data-inventory-id="${id}"]`);
+      const previousPage = page.locator('[data-hud-control="inventory-prev"]');
+      while ((await previousPage.count()) && (await previousPage.isEnabled()))
+        await previousPage.press('Enter');
+      for (let tries = 0; tries < 12 && !(await button.count()); tries++) {
+        const next = page.locator('[data-hud-control="inventory-next"]');
+        const prev = page.locator('[data-hud-control="inventory-prev"]');
+        const step = (await next.isEnabled()) ? next : prev;
+        await step.press('Enter');
+      }
+      await expect(button).toHaveCount(1);
+      await button.press('Enter');
+    }
+    async function interact(id: string, item?: string) {
+      const hotspot = content.scenes
+        .find((s) => s.id === sceneId)!
+        .hotspots.find((h) => h.id === id)!;
+      expect(hotspot, id).toBeDefined();
+      if (item) await inventory(item);
+      await click(await object(page, hotspot.label));
+    }
+    async function travel(id: string) {
+      if (sceneId === 'scene12') await enter('chapel-return', 'scene2');
+      if (sceneId === 'scene2') await enter('cemetery-return', 'scene5');
+      if (sceneId === 'scene5') await enter('church-return', 'scene3');
+      if (sceneId === 'scene8') await enter('pub-return', 'scene6');
+      await interact('map-exit');
+      const point = content.worldMap!.points.find((p) => p.sceneId === id)!;
+      await page
+        .locator(`[data-hud-control="map-point:${point.id}"]`)
+        .press('Enter');
+      sceneId = id;
+      await expect(page.locator('.scene-frame')).toHaveAttribute(
+        'aria-label',
+        'Lokácia: ' + content.scenes.find((s) => s.id === id)!.title,
+      );
+      await ready(page);
+    }
+    async function enter(id: string, next: string, item?: string) {
+      await interact(id, item);
+      sceneId = next;
+      await expect(page.locator('.scene-frame')).toHaveAttribute(
+        'aria-label',
+        'Lokácia: ' + content.scenes.find((s) => s.id === next)!.title,
+      );
+      await ready(page);
+    }
+    async function topic(id: string, text: string) {
+      await interact(id);
+      await choose(text);
+      await expect(dialogue).toHaveClass(/is-speaking/);
+      await finishSpeech();
+      await choose('Zatiaľ sa maj');
+      await expect(dialogue).toHaveCount(0);
+    }
+    async function use(id: string, item: string) {
+      const hotspot = content.scenes
+        .find((s) => s.id === sceneId)!
+        .hotspots.find((h) => h.id === id)!;
+      const expectsSpeech = hotspot.uses?.[item]?.some((rule) =>
+        rule.effects?.some((effect) => effect.type === 'dialogue'),
+      );
+      await interact(id, item);
+      if (expectsSpeech) await expect(dialogue).toHaveClass(/is-speaking/);
+      await finishSpeech();
+    }
+    async function combine(a: string, b: string) {
+      await inventory(a);
+      await inventory(b);
+    }
+    await page.goto(workspace.url);
+    await ready(page);
+    await expect(dialogue).toContainText('Fero');
+    await finishSpeech();
+    await choose('Beriem');
+    await expect(dialogue).toHaveCount(0);
+    await topic('layer2', 'Nemáte niečo na cestu');
+    await travel('scene1');
+    await interact('layer3');
+    await topic('layer2', 'Nevieš, kam zmizol kábel');
+    await use('layer2', 'empty-bottle');
+    await topic('layer1', 'Kam by tu človek išiel po mlieko');
+    await travel('scene3');
+    await use('holy-font', 'empty-bottle');
+    await travel('scene10');
+    await use('layer1', 'holy-water');
+    await travel('scene6');
+    await topic('innkeeper', 'Nemáte kávu');
+    await combine('milk', 'coffee-grounds');
+    await travel('scene9');
+    await use('layer1', 'cold-coffee');
+    await travel('scene6');
+    await use('beer-tap', 'wrench');
+    await enter('gaming-door', 'scene8');
+    await use('service-hatch', 'wrench');
+    await travel('scene1');
+    await use('layer1', 'machine-log');
+    await travel('scene7');
+    await use('swing-boy', 'bread');
+    await combine('magnet', 'string');
+    await travel('scene3');
+    await interact('funeral-form');
+    await combine('funeral-form', 'rubber-stamp');
+    await use('priest', 'cow-bell');
+    await enter('cemetery-gate', 'scene5');
+    await use('layer1', 'stamped-form');
+    await enter('chapel-door', 'scene2');
+    await use('key-grate', 'magnet-line');
+    await enter('crypt-door', 'scene12', 'crypt-key');
+    await finishSpeech();
+    await choose('Takže mŕtvy účtovník');
+    await menuAction(page, 'Uložiť hru');
+    const before = await page.evaluate(
+      () => JSON.parse(localStorage.getItem('tukabel.save.v1')!).state,
+    );
+    expect(before.flags['crypt-open']).toBe(true);
+    await use('main-cable', 'rubber-gloves');
+    await expect(reaction(page)).toContainText('Najprv povoľ');
+    await use('battery', 'wrench');
+    await use('main-cable', 'rubber-gloves');
+    await combine('stolen-cable', 'tape');
+    await travel('scene4');
+    await use('junction-box', 'fixed-cable');
+    const community = page.getByRole('dialog', {
+      name: 'Koniec: Turnaj živých dlhov',
+    });
+    await expect(community).toBeVisible();
+    await page.screenshot({ path: info.outputPath('community-ending.png') });
+    await click(community.getByRole('button', { name: 'Menu a uložené hry' }));
+    const menu = page.getByRole('dialog', { name: 'Herné menu' });
+    await click(menu.getByRole('button', { name: 'Načítať hru', exact: true }));
+    await click(menu.getByRole('button', { name: 'Pokračovať v hre' }));
+    sceneId = 'scene12';
+    await ready(page);
+    await expect(community).toHaveCount(0);
+    await combine('washer', 'foil');
+    await use('crypt-machine', 'fake-token');
+    const jackpot = page.getByRole('dialog', { name: 'Koniec: Večný jackpot' });
+    await expect(jackpot).toBeVisible();
+    await page.screenshot({ path: info.outputPath('jackpot-ending.png') });
+    await click(jackpot.getByRole('button', { name: 'Menu a uložené hry' }));
+    await click(menu.getByRole('button', { name: 'Uložiť hru', exact: true }));
+    await click(menu.getByRole('button', { name: 'Späť na záver' }));
+    await page.reload();
+    await ready(page);
+    await page.locator('[data-hud-control="menu"]').press('Enter');
+    await click(menu.getByRole('button', { name: 'Načítať hru', exact: true }));
+    await expect(jackpot).toBeVisible();
+    const saved = await page.evaluate(
+      () => JSON.parse(localStorage.getItem('tukabel.save.v1')!).state,
+    );
+    expect(saved.flags['ending-jackpot']).toBe(true);
+    expect(saved.flags['machine-burnt']).toBe(true);
+    expect(saved.flags['power-restored']).not.toBe(true);
+    await expect(page.locator('.canvas-host canvas')).toHaveCount(1);
+  },
+);

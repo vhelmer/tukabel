@@ -1,0 +1,15 @@
+{
+  "text": "To isté čo s elektrinou, ale nikto nemôže dokázať, že som zaspal pri práci.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "iP95p4xoKVk53GoZ742B",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 5.44,
+  "audioSha256": "80d580f44f53ecb0bf20e7551ec5a8cd4d94a5757f689915a69c8645b8fe53ed"
+}

@@ -1,0 +1,96 @@
+{
+  "context": {
+    "mode": "scene",
+    "sceneId": "scene3",
+    "targetId": "",
+    "source": "scene-art/b1cd0ba5-ef22-407a-8c62-e8a0b0db202f/image.png",
+    "label": "Nový výřez",
+    "fingerprint": "[1672,941,\"scene-art/b1cd0ba5-ef22-407a-8c62-e8a0b0db202f/image.png\"]",
+    "placement": {
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1672,
+        "height": 941
+      },
+      "imageFit": "stretch"
+    },
+    "selection": [
+      {
+        "x": 1118.074,
+        "y": 228.044
+      },
+      {
+        "x": 1118.455,
+        "y": 184.64499999999998
+      },
+      {
+        "x": 1114.401,
+        "y": 180.101
+      },
+      {
+        "x": 1112.072,
+        "y": 171.66700000000003
+      },
+      {
+        "x": 1155.495,
+        "y": 163.45
+      },
+      {
+        "x": 1169.133,
+        "y": 180.349
+      },
+      {
+        "x": 1167.838,
+        "y": 185.23800000000003
+      },
+      {
+        "x": 1163.276,
+        "y": 185.23800000000003
+      },
+      {
+        "x": 1167.729,
+        "y": 261.587
+      },
+      {
+        "x": 1212.998,
+        "y": 291.179
+      },
+      {
+        "x": 1250.577,
+        "y": 323.349
+      },
+      {
+        "x": 1454.056,
+        "y": 282.485
+      },
+      {
+        "x": 1670.804,
+        "y": 266.379
+      },
+      {
+        "x": 1670.4899999999998,
+        "y": 4.223000000000013
+      },
+      {
+        "x": 1093.049,
+        "y": 2.559000000000026
+      },
+      {
+        "x": 957.612,
+        "y": 151.755
+      },
+      {
+        "x": 1016.984,
+        "y": 182.805
+      }
+    ],
+    "instruction": "Přidej jemný a plynulý pohyb mraků. Musí to být smyčka. Zachovej kreslený styl, umístění a pevné okraje."
+  },
+  "prompt": "Přidej jemný a plynulý pohyb mraků. Musí to být smyčka. Zachovej kreslený styl, umístění a pevné okraje.",
+  "task": "ambient",
+  "count": 5,
+  "fps": 12,
+  "width": 1672,
+  "height": 941
+}

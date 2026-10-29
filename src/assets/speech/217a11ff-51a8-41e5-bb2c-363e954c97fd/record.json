@@ -1,0 +1,15 @@
+{
+  "text": "Nie. Ľubo chcel požičať autobatériu. Na cintorín. Vraj mu tam chýba zážitková elektronika. Meď si doniesol vlastnú, furt zapojenú do celej osady.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "iP95p4xoKVk53GoZ742B",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 10.56,
+  "audioSha256": "fd4c98d76350852d063659006dffe210df75bb0760e97260bb1b2d0e082d69a5"
+}

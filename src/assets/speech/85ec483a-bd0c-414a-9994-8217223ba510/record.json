@@ -1,0 +1,15 @@
+{
+  "text": "Pýtal hnoj na bioplyn. Poslala som ho za Dingom po batériu. Nech mi tu aspoň niekto nekradne aj výsledok trávenia.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "e6RzI8kmgjn6nh36K9J3",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 7.76,
+  "audioSha256": "ea0974ccca79db12d835817cbc2516135781b5e35c5dad3ccc66f88eb12a2a9f"
+}

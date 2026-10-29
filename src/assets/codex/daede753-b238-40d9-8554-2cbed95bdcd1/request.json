@@ -1,0 +1,26 @@
+{
+  "context": {
+    "mode": "character",
+    "sceneId": "scene5",
+    "targetId": "layer1",
+    "source": "scene-art/13435c1e-cc90-44de-be3b-8e727c0a5890/cutout.png",
+    "label": "Nový výřez",
+    "fingerprint": "[1672,941,{\"id\":\"layer1\",\"label\":\"Nový výřez\",\"bounds\":{\"x\":534,\"y\":338,\"width\":343,\"height\":523},\"imageFit\":\"contain\",\"image\":\"scene-art/13435c1e-cc90-44de-be3b-8e727c0a5890/cutout.png\",\"onClick\":[],\"decorative\":true}]",
+    "placement": {
+      "bounds": {
+        "x": 534,
+        "y": 338,
+        "width": 343,
+        "height": 523
+      },
+      "imageFit": "contain"
+    },
+    "instruction": "Připrav přirozené mrknutí a odlišné tvary úst pro mluvení. Zachovej původní kresbu, obrysy a všechny pixely mimo oči a ústa."
+  },
+  "prompt": "Připrav přirozené mrknutí a odlišné tvary úst pro mluvení. Zachovej původní kresbu, obrysy a všechny pixely mimo oči a ústa.",
+  "task": "blink-talk",
+  "count": 5,
+  "fps": 12,
+  "width": 343,
+  "height": 523
+}

@@ -1,0 +1,15 @@
+{
+  "text": "Bývalý účtovník turnaja. Zomrel bez rozlúčky a s mojím hrncom. Ak vstane z mŕtvych bez neho, pochovám ho osobne.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "VnZ7lswb6C7FxwHfvIR6",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 10.24,
+  "audioSha256": "1844115486037b49a96aafcf52f318d8b504f34d2a17d5d73c52228b9308db8b"
+}

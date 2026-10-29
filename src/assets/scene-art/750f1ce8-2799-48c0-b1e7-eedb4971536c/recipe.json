@@ -1,0 +1,33 @@
+{
+  "version": 3,
+  "assetScale": 1,
+  "source": "imported/Kreslen--hrobn-k-na-stra-ideln-m-h-bitov--d107831e.png",
+  "sourceSha256": "a3836acf3e819a8d2e8487e722f114a012dab414fd7686309799a0f7fb5df50a",
+  "operation": "edit",
+  "selection": [
+    {
+      "x": 31,
+      "y": 206
+    },
+    {
+      "x": 366,
+      "y": 206
+    },
+    {
+      "x": 366,
+      "y": 537
+    },
+    {
+      "x": 31,
+      "y": 537
+    }
+  ],
+  "repairPadding": 0,
+  "repairFeather": 0,
+  "prompt": "Změn tuto část na zeď. Zachovej kreslený styl, perspektivu a světlo původní lokace.",
+  "providerPrompts": {
+    "background": "Edit only the selected area. Preserve the reference cartoon drawing style, perspective, lighting and composition outside the edit. Preserve the image framing. No UI, text labels or watermarks. User instructions: Změn tuto část na zeď. Zachovej kreslený styl, perspektivu a světlo původní lokace."
+  },
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "high"
+}

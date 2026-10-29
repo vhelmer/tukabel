@@ -1,0 +1,3065 @@
+{
+  "id": "tukabel-story-1",
+  "startScene": "scene1",
+  "initialMessage": "Si na zastávke. Rozhliadni sa a porozprávaj sa s miestnymi.",
+  "worldMap": {
+    "image": "imported/O-arpan--osada-s-kostolom-a-vrakoviskom-41826d11.png",
+    "width": 1448,
+    "height": 1086,
+    "points": [
+      {
+        "id": "place1",
+        "label": "Ferův dvůr",
+        "sceneId": "scene4",
+        "polygon": [
+          {
+            "x": 118.81299999999999,
+            "y": 422.613
+          },
+          {
+            "x": 438.294,
+            "y": 284.742
+          },
+          {
+            "x": 619.398,
+            "y": 408.091
+          },
+          {
+            "x": 667.548,
+            "y": 550.272
+          },
+          {
+            "x": 574.793,
+            "y": 651.053
+          },
+          {
+            "x": 415.392,
+            "y": 605.29
+          }
+        ],
+        "x": 393.1805,
+        "y": 467.89750000000004,
+        "unlockWhen": {
+          "all": []
+        }
+      },
+      {
+        "id": "place2",
+        "label": "Zastavka",
+        "sceneId": "scene1",
+        "polygon": [
+          {
+            "x": 977.557,
+            "y": 1071.09
+          },
+          {
+            "x": 858.2,
+            "y": 958.186
+          },
+          {
+            "x": 835.863,
+            "y": 927.348
+          },
+          {
+            "x": 1235.896,
+            "y": 869.668
+          },
+          {
+            "x": 1379.151,
+            "y": 1063.929
+          }
+        ],
+        "x": 1107.507,
+        "y": 970.3789999999999
+      },
+      {
+        "id": "place3",
+        "label": "Kostel",
+        "sceneId": "scene3",
+        "polygon": [
+          {
+            "x": 1422.11,
+            "y": 539.203
+          },
+          {
+            "x": 957.511,
+            "y": 248.842
+          },
+          {
+            "x": 1119.008,
+            "y": 165.481
+          },
+          {
+            "x": 1157.461,
+            "y": 124.924
+          },
+          {
+            "x": 1166.328,
+            "y": 56.716999999999985
+          },
+          {
+            "x": 1189.274,
+            "y": 10.781000000000006
+          },
+          {
+            "x": 1228.79,
+            "y": 60.17099999999999
+          },
+          {
+            "x": 1220.389,
+            "y": 91.58499999999998
+          },
+          {
+            "x": 1373.539,
+            "y": 17.665999999999997
+          },
+          {
+            "x": 1433.444,
+            "y": 18.17500000000001
+          }
+        ],
+        "x": 1195.4775,
+        "y": 274.992
+      },
+      {
+        "id": "place4",
+        "label": "Dětské hříště",
+        "sceneId": "scene7",
+        "polygon": [
+          {
+            "x": 21.717,
+            "y": 693.306
+          },
+          {
+            "x": 187.663,
+            "y": 652.627
+          },
+          {
+            "x": 598.766,
+            "y": 974.391
+          },
+          {
+            "x": 146.675,
+            "y": 1064.604
+          },
+          {
+            "x": 28.159,
+            "y": 1068.721
+          }
+        ],
+        "x": 310.2415,
+        "y": 860.674
+      },
+      {
+        "id": "place5",
+        "label": "Zběra",
+        "sceneId": "scene9",
+        "polygon": [
+          {
+            "x": 22.337,
+            "y": 308.448
+          },
+          {
+            "x": 160.998,
+            "y": 369.793
+          },
+          {
+            "x": 604.433,
+            "y": 194.449
+          },
+          {
+            "x": 454.891,
+            "y": 121.88
+          },
+          {
+            "x": 455.212,
+            "y": 65.473
+          },
+          {
+            "x": 425.425,
+            "y": 65.473
+          },
+          {
+            "x": 416.371,
+            "y": 84.102
+          },
+          {
+            "x": 257.675,
+            "y": 56.197
+          },
+          {
+            "x": 197.526,
+            "y": 73.93
+          },
+          {
+            "x": 141.749,
+            "y": 19.747
+          },
+          {
+            "x": 77.295,
+            "y": 83.848
+          },
+          {
+            "x": 10.106,
+            "y": 102.388
+          }
+        ],
+        "x": 307.2695,
+        "y": 194.76999999999998
+      }
+    ]
+  },
+  "flags": [
+    "tapeGiven",
+    "cableTaken",
+    "powered",
+    "completed",
+    "stop-bottle-taken",
+    "stop-bottle-returned",
+    "stop-heard-reservation",
+    "stop-read-timetable"
+  ],
+  "tasks": [],
+  "scenes": [
+    {
+      "id": "scene1",
+      "title": "Zastavka",
+      "width": 1280,
+      "height": 720,
+      "background": "scene-art/46b952e4-1806-465f-b393-87f58addee29/image.png",
+      "hotspots": [
+        {
+          "id": "stop-bench",
+          "label": "Lavička",
+          "bounds": {
+            "x": 396,
+            "y": 382,
+            "width": 233,
+            "height": 177
+          },
+          "polygon": [
+            {
+              "x": 397,
+              "y": 382
+            },
+            {
+              "x": 608,
+              "y": 382
+            },
+            {
+              "x": 597,
+              "y": 459
+            },
+            {
+              "x": 629,
+              "y": 470
+            },
+            {
+              "x": 628,
+              "y": 487
+            },
+            {
+              "x": 439,
+              "y": 487
+            },
+            {
+              "x": 438,
+              "y": 554
+            },
+            {
+              "x": 415,
+              "y": 559
+            },
+            {
+              "x": 417,
+              "y": 486
+            },
+            {
+              "x": 396,
+              "y": 481
+            }
+          ],
+          "onClick": [
+            {
+              "message": "Lavička má štyri dosky a tri diagnózy. Sadnúť si sem je súhlas s darovaním orgánov."
+            }
+          ]
+        },
+        {
+          "id": "stop-sign",
+          "label": "Značka zastávky",
+          "bounds": {
+            "x": 949,
+            "y": 46,
+            "width": 109,
+            "height": 151
+          },
+          "polygon": [
+            {
+              "x": 951,
+              "y": 46
+            },
+            {
+              "x": 1056,
+              "y": 54
+            },
+            {
+              "x": 1058,
+              "y": 197
+            },
+            {
+              "x": 949,
+              "y": 185
+            }
+          ],
+          "onClick": [
+            {
+              "message": "Autobus na obrázku. Najčastejšie pozorovaný druh autobusu v tejto obci."
+            }
+          ]
+        },
+        {
+          "id": "stop-timetable",
+          "label": "Cestovný poriadok",
+          "bounds": {
+            "x": 978,
+            "y": 224,
+            "width": 70,
+            "height": 150
+          },
+          "polygon": [
+            {
+              "x": 981,
+              "y": 224
+            },
+            {
+              "x": 1048,
+              "y": 233
+            },
+            {
+              "x": 1046,
+              "y": 374
+            },
+            {
+              "x": 978,
+              "y": 366
+            }
+          ],
+          "onClick": [
+            {
+              "message": "Odchod: 7:10. Príchod: podľa možností. Drobné písmo: „Dopravca nezodpovedá za zmeškané svadby, pohreby ani vlastný príchod.“",
+              "effects": [
+                {
+                  "type": "flag",
+                  "id": "stop-read-timetable",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "stop-bin",
+          "label": "Odpadkový kôš",
+          "bounds": {
+            "x": 901,
+            "y": 411,
+            "width": 95,
+            "height": 138
+          },
+          "polygon": [
+            {
+              "x": 901,
+              "y": 419
+            },
+            {
+              "x": 931,
+              "y": 411
+            },
+            {
+              "x": 953,
+              "y": 420
+            },
+            {
+              "x": 996,
+              "y": 432
+            },
+            {
+              "x": 983,
+              "y": 542
+            },
+            {
+              "x": 906,
+              "y": 549
+            }
+          ],
+          "onClick": [
+            {
+              "message": "Kôš na triedený odpad: fľaše, plechovky a posledné zvyšky optimizmu. Každé v inom štádiu rozkladu."
+            }
+          ],
+          "uses": {
+            "stop-bottle": [
+              {
+                "message": "Vyhodiť zálohovanú fľašu pred Cigym? To by bolo ako upáliť peniaze pred účtovníkom. Radšej mu ju ponúknem."
+              }
+            ]
+          }
+        },
+        {
+          "id": "stop-dog",
+          "label": "Pes",
+          "bounds": {
+            "x": 40,
+            "y": 381,
+            "width": 119,
+            "height": 80
+          },
+          "polygon": [
+            {
+              "x": 42,
+              "y": 394
+            },
+            {
+              "x": 74,
+              "y": 381
+            },
+            {
+              "x": 121,
+              "y": 386
+            },
+            {
+              "x": 143,
+              "y": 410
+            },
+            {
+              "x": 159,
+              "y": 420
+            },
+            {
+              "x": 151,
+              "y": 443
+            },
+            {
+              "x": 139,
+              "y": 444
+            },
+            {
+              "x": 147,
+              "y": 460
+            },
+            {
+              "x": 131,
+              "y": 461
+            },
+            {
+              "x": 114,
+              "y": 425
+            },
+            {
+              "x": 94,
+              "y": 426
+            },
+            {
+              "x": 84,
+              "y": 457
+            },
+            {
+              "x": 67,
+              "y": 459
+            },
+            {
+              "x": 70,
+              "y": 437
+            },
+            {
+              "x": 56,
+              "y": 424
+            },
+            {
+              "x": 47,
+              "y": 432
+            },
+            {
+              "x": 40,
+              "y": 424
+            }
+          ],
+          "onClick": [
+            {
+              "message": "Ten pes má lepší čuch na spoje než obecná aplikácia. Zatiaľ našiel iba včerajší obed."
+            }
+          ],
+          "uses": {
+            "stop-bottle": [
+              {
+                "message": "Pes potrebuje vodu, nie zálohový systém. Fľašu si nechám."
+              }
+            ]
+          }
+        },
+        {
+          "id": "stop-hen",
+          "label": "Sliepka",
+          "bounds": {
+            "x": 1121,
+            "y": 382,
+            "width": 35,
+            "height": 44
+          },
+          "polygon": [
+            {
+              "x": 1121,
+              "y": 398
+            },
+            {
+              "x": 1130,
+              "y": 396
+            },
+            {
+              "x": 1139,
+              "y": 382
+            },
+            {
+              "x": 1153,
+              "y": 384
+            },
+            {
+              "x": 1156,
+              "y": 400
+            },
+            {
+              "x": 1146,
+              "y": 415
+            },
+            {
+              "x": 1147,
+              "y": 426
+            },
+            {
+              "x": 1132,
+              "y": 426
+            },
+            {
+              "x": 1133,
+              "y": 416
+            },
+            {
+              "x": 1124,
+              "y": 413
+            }
+          ],
+          "onClick": [
+            {
+              "message": "Sliepka prešla cez cestu, lebo na tejto strane čakala na autobus. Konečne má ten vtip dôvod."
+            }
+          ],
+          "uses": {
+            "stop-bottle": [
+              {
+                "message": "Sliepka na mňa hľadí, akoby som práve predložil žiadosť o hypotéku. Beriem to ako nie."
+              }
+            ]
+          }
+        },
+        {
+          "id": "codex-711ffec6-5006-486e-9e8a-1fc7a69310f0-idle",
+          "label": "animace psa",
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 1280,
+            "height": 720
+          },
+          "imageFit": "stretch",
+          "image": "codex/711ffec6-5006-486e-9e8a-1fc7a69310f0/image.png",
+          "onClick": [],
+          "decorative": true,
+          "animation": {
+            "idle": "codex-711ffec6-5006-486e-9e8a-1fc7a69310f0-idle",
+            "idleLoop": true
+          }
+        },
+        {
+          "id": "codex-34ebe7ef-f7aa-4029-a64f-674cd6f64c1d-idle",
+          "label": "animace slepice",
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 1280,
+            "height": 720
+          },
+          "imageFit": "stretch",
+          "image": "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/image.png",
+          "onClick": [],
+          "decorative": true,
+          "animation": {
+            "idle": "codex-34ebe7ef-f7aa-4029-a64f-674cd6f64c1d-idle",
+            "idleLoop": true
+          }
+        },
+        {
+          "id": "codex-cb7cf353-21a5-4277-8af9-2a28b30d8cfe-idle",
+          "label": "animace kouř",
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 1280,
+            "height": 720
+          },
+          "imageFit": "stretch",
+          "image": "codex/cb7cf353-21a5-4277-8af9-2a28b30d8cfe/image.png",
+          "onClick": [],
+          "decorative": true,
+          "animation": {
+            "idle": "codex-cb7cf353-21a5-4277-8af9-2a28b30d8cfe-idle",
+            "idleLoop": true
+          }
+        },
+        {
+          "id": "layer5",
+          "label": "Slepice",
+          "bounds": {
+            "x": 1184.3062200956938,
+            "y": 386.0425531914894,
+            "width": 35.21531100478469,
+            "height": 41.361702127659576
+          },
+          "imageFit": "stretch",
+          "image": "scene-art/f1044951-67b1-4e2a-96d2-8c43b363909d/cutout.png",
+          "onClick": [],
+          "decorative": true,
+          "hidden": true
+        },
+        {
+          "id": "layer2",
+          "label": "Dežo",
+          "bounds": {
+            "x": 145.45454545454544,
+            "y": 145.53191489361706,
+            "width": 231.19617224880383,
+            "height": 469.531914893617
+          },
+          "imageFit": "stretch",
+          "image": "scene-art/e1aeba34-3a1e-4e00-afbd-8567204bee56/cutout.png",
+          "onClick": [
+            {
+              "effects": [
+                {
+                  "type": "dialogue",
+                  "id": "stop-cigy"
+                }
+              ]
+            }
+          ],
+          "decorative": false,
+          "animation": {
+            "blink": "codex-f377a7ca-8739-4147-9699-15b811cda5e2-blink",
+            "blinkIntervalMs": [3000, 7000],
+            "talk": "codex-f377a7ca-8739-4147-9699-15b811cda5e2-talk",
+            "dialogueId": "stop-cigy",
+            "voice": {
+              "voiceId": "Iu5SuHOmMFnQrH4OjSZ3",
+              "modelId": "eleven_v4",
+              "stability": 0.5,
+              "similarityBoost": 0.75,
+              "style": 0,
+              "speed": 1,
+              "useSpeakerBoost": true
+            },
+            "mouthShapes": {
+              "A": 4,
+              "B": 2,
+              "C": 1,
+              "D": 1,
+              "E": 3,
+              "F": 3,
+              "G": 2,
+              "H": 1,
+              "X": 4
+            }
+          },
+          "cursor": "talk",
+          "uses": {
+            "stop-bottle": [
+              {
+                "effects": [
+                  {
+                    "type": "removeItem",
+                    "id": "stop-bottle"
+                  },
+                  {
+                    "type": "flag",
+                    "id": "stop-bottle-returned",
+                    "value": true
+                  },
+                  {
+                    "type": "dialogue",
+                    "id": "stop-cigy-bottle"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "layer1",
+          "label": "Babka na zastávke",
+          "bounds": {
+            "x": 609.377990430622,
+            "y": 263.48936170212767,
+            "width": 254.16267942583733,
+            "height": 306.3829787234043
+          },
+          "imageFit": "stretch",
+          "image": "scene-art/fc7a51eb-3751-4baf-92fc-da0fc4a134bf/cutout.png",
+          "onClick": [
+            {
+              "effects": [
+                {
+                  "type": "dialogue",
+                  "id": "stop-granny"
+                }
+              ]
+            }
+          ],
+          "decorative": false,
+          "animation": {
+            "blink": "codex-6995881c-c7e6-4c98-a78a-fa6f89035ebe-blink",
+            "blinkIntervalMs": [3000, 7000],
+            "talk": "codex-6995881c-c7e6-4c98-a78a-fa6f89035ebe-talk",
+            "dialogueId": "stop-granny",
+            "voice": {
+              "voiceId": "VnZ7lswb6C7FxwHfvIR6",
+              "modelId": "eleven_v4",
+              "stability": 0.5,
+              "similarityBoost": 0.75,
+              "style": 0,
+              "speed": 1,
+              "useSpeakerBoost": true
+            },
+            "mouthShapes": {
+              "A": 4,
+              "B": 2,
+              "C": 1,
+              "D": 1,
+              "E": 3,
+              "F": 3,
+              "G": 2,
+              "H": 1,
+              "X": 4
+            }
+          },
+          "cursor": "talk",
+          "uses": {
+            "stop-bottle": [
+              {
+                "effects": [
+                  {
+                    "type": "dialogue",
+                    "id": "stop-granny-bottle"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "layer3",
+          "label": "Pivová fľaša",
+          "bounds": {
+            "x": 494.54545454545456,
+            "y": 543.8297872340424,
+            "width": 60.47846889952153,
+            "height": 68.17021276595744
+          },
+          "imageFit": "stretch",
+          "image": "scene-art/87328cca-3ac8-4e49-aeb0-9e708388a762/image.png",
+          "onClick": [
+            {
+              "message": "Prázdna. Takže ju ešte nezdanili. Fľašu si odložím; Cigy možno ocení aspoň zálohu.",
+              "effects": [
+                {
+                  "type": "flag",
+                  "id": "stop-bottle-taken",
+                  "value": true
+                },
+                {
+                  "type": "addItem",
+                  "id": "stop-bottle"
+                }
+              ]
+            }
+          ],
+          "decorative": false,
+          "visibleWhen": {
+            "not": {
+              "flag": "stop-bottle-taken"
+            }
+          },
+          "cursor": "interact"
+        },
+        {
+          "id": "layer4",
+          "label": "Psia nadielka",
+          "bounds": {
+            "x": 1024.3062200956938,
+            "y": 532.3404255319149,
+            "width": 55.88516746411483,
+            "height": 46.723404255319146
+          },
+          "imageFit": "stretch",
+          "image": "scene-art/72587f27-97ba-4639-9a5b-b39f67efda03/image.png",
+          "onClick": [
+            {
+              "message": "Jediný spoj na tejto zastávke, ktorý prišiel načas. A ešte aj na správne nástupište."
+            }
+          ],
+          "decorative": false
+        },
+        {
+          "id": "scene1-map-entry",
+          "label": "Mapa okolia",
+          "openMap": true,
+          "cursor": "exit",
+          "bounds": {
+            "x": 540,
+            "y": 630,
+            "width": 200,
+            "height": 90
+          },
+          "polygon": [
+            {
+              "x": 560,
+              "y": 630
+            },
+            {
+              "x": 720,
+              "y": 630
+            },
+            {
+              "x": 740,
+              "y": 720
+            },
+            {
+              "x": 540,
+              "y": 720
+            }
+          ],
+          "onClick": []
+        }
+      ]
+    },
+    {
+      "id": "scene4",
+      "title": "Ferův dvůr",
+      "width": 1448,
+      "height": 1086,
+      "background": "scene-art/bdd21a1f-23ff-4add-9d1f-52a349be2a66/image.png",
+      "hotspots": [
+        {
+          "id": "layer2",
+          "label": "Ferova žena",
+          "bounds": {
+            "x": 111,
+            "y": 229,
+            "width": 133,
+            "height": 201
+          },
+          "imageFit": "contain",
+          "image": "scene-art/baa7c0dd-9cba-4436-a27c-71697c3c5619/image.png",
+          "onClick": [],
+          "decorative": true,
+          "animation": {
+            "blink": "codex-63980e6b-7aa2-46ec-b833-97cad892dff7-blink",
+            "blinkIntervalMs": [3000, 7000],
+            "talk": "codex-63980e6b-7aa2-46ec-b833-97cad892dff7-talk"
+          }
+        },
+        {
+          "id": "layer1",
+          "label": "Fero",
+          "bounds": {
+            "x": 330,
+            "y": 343,
+            "width": 355,
+            "height": 580
+          },
+          "imageFit": "contain",
+          "image": "scene-art/2d60f8f0-ff05-48fb-90dc-0bffff272597/cutout.png",
+          "onClick": [],
+          "decorative": true,
+          "animation": {
+            "idle": "fero-head-scratch-loop",
+            "idleLoop": true,
+            "blink": "codex-07111c67-89c0-451b-9cb3-a598dec43b90-blink",
+            "blinkIntervalMs": [3000, 7000],
+            "talk": "codex-07111c67-89c0-451b-9cb3-a598dec43b90-talk"
+          }
+        }
+      ]
+    },
+    {
+      "id": "scene3",
+      "title": "Kostel",
+      "width": 1672,
+      "height": 941,
+      "background": "scene-art/b1cd0ba5-ef22-407a-8c62-e8a0b0db202f/image.png",
+      "hotspots": [
+        {
+          "id": "codex-aac4133c-0eba-4f67-9723-0b2536371e91-idle",
+          "label": "Nový výřez",
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 1672,
+            "height": 941
+          },
+          "imageFit": "stretch",
+          "image": "codex/aac4133c-0eba-4f67-9723-0b2536371e91/image.png",
+          "onClick": [],
+          "decorative": true,
+          "animation": {
+            "idle": "codex-aac4133c-0eba-4f67-9723-0b2536371e91-idle",
+            "idleLoop": true
+          }
+        },
+        {
+          "id": "priest",
+          "label": "Farár",
+          "bounds": {
+            "x": 448,
+            "y": 476,
+            "width": 157,
+            "height": 322
+          },
+          "imageFit": "contain",
+          "image": "scene-art/7e531d0a-465d-4cdb-843a-0e7ac148ae03/image.png",
+          "onClick": [],
+          "decorative": true,
+          "animation": {
+            "blink": "animation-fe17c3f8-f41b-48c4-a523-5a983f058ad6",
+            "talk": "animation-75d26b43-7cef-4010-a213-58988d04637f",
+            "blinkIntervalMs": [2800, 6500]
+          }
+        }
+      ]
+    },
+    {
+      "id": "scene5",
+      "title": "Hřbitov",
+      "width": 1672,
+      "height": 941,
+      "background": "scene-art/13435c1e-cc90-44de-be3b-8e727c0a5890/provider-restored.png",
+      "hotspots": [
+        {
+          "id": "layer1",
+          "label": "Nový výřez",
+          "bounds": {
+            "x": 534,
+            "y": 338,
+            "width": 343,
+            "height": 523
+          },
+          "imageFit": "contain",
+          "image": "scene-art/13435c1e-cc90-44de-be3b-8e727c0a5890/cutout.png",
+          "onClick": [],
+          "decorative": true,
+          "animation": {
+            "blink": "codex-daede753-b238-40d9-8554-2cbed95bdcd1-blink",
+            "blinkIntervalMs": [3000, 7000],
+            "talk": "codex-daede753-b238-40d9-8554-2cbed95bdcd1-talk"
+          }
+        }
+      ]
+    },
+    {
+      "id": "scene6",
+      "title": "Hospoda",
+      "width": 1672,
+      "height": 941,
+      "background": "imported/Rustik-ln--hospoda-bez-elekt-iny-5c40a6a5.png",
+      "hotspots": [
+        {
+          "id": "innkeeper",
+          "label": "Hostinský",
+          "bounds": {
+            "x": 202,
+            "y": 300,
+            "width": 249,
+            "height": 235
+          },
+          "imageFit": "contain",
+          "image": "scene-art/4bcdf3eb-0f64-4c48-9fde-9c1ce4ad62a3/image.png",
+          "onClick": [],
+          "decorative": true,
+          "animation": {
+            "blink": "animation-6f443452-2c1d-4af4-a51b-bc38966b79d4",
+            "talk": "animation-22d106ac-a8ef-4e30-b371-c6a9f1aad73c",
+            "blinkIntervalMs": [2800, 6500]
+          }
+        }
+      ]
+    },
+    {
+      "id": "scene7",
+      "title": "Dětské hříště",
+      "width": 1672,
+      "height": 941,
+      "background": "scene-art/4033f8aa-84dd-4395-ab06-5582a3742ca3/image.png",
+      "hotspots": [
+        {
+          "id": "swing-boy",
+          "label": "Chlapec pri hojdačke",
+          "bounds": {
+            "x": 402,
+            "y": 343,
+            "width": 133,
+            "height": 353
+          },
+          "imageFit": "contain",
+          "image": "scene-art/f0d7db85-3ef1-4989-9860-fbd71b808e38/image.png",
+          "onClick": [],
+          "decorative": true,
+          "animation": {
+            "blink": "animation-e0ad4935-dfa1-4868-8c9b-489e34236036",
+            "talk": "animation-bdfdd278-4a13-4e56-a7bc-02a206eb8046",
+            "blinkIntervalMs": [2800, 6500]
+          }
+        },
+        {
+          "id": "sand-girl",
+          "label": "Dievča v piesku",
+          "bounds": {
+            "x": 762,
+            "y": 526,
+            "width": 177,
+            "height": 243
+          },
+          "imageFit": "contain",
+          "image": "scene-art/005f7aa7-4599-4f92-adbd-93f3762765be/image.png",
+          "onClick": [],
+          "decorative": true,
+          "animation": {
+            "blink": "animation-78de4edb-eca9-4eb8-b801-3c07a0197bf9",
+            "talk": "animation-a2a56f09-2976-4a56-b930-5fd5e31e14da",
+            "blinkIntervalMs": [2800, 6500]
+          }
+        },
+        {
+          "id": "climbing-boy",
+          "label": "Chlapec na preliezačke",
+          "bounds": {
+            "x": 1320,
+            "y": 267,
+            "width": 204,
+            "height": 316
+          },
+          "onClick": [],
+          "decorative": true,
+          "imageFit": "contain",
+          "image": "scene-art/3d2c9975-f964-46ce-bfe3-25dc0710bbf1/image.png",
+          "animation": {
+            "blink": "animation-eafc2b2c-28c2-44ae-86f4-3dcf57949b4c",
+            "talk": "animation-5337155a-717d-48a0-b196-31831c5d6438",
+            "blinkIntervalMs": [2800, 6500]
+          }
+        }
+      ]
+    },
+    {
+      "id": "scene8",
+      "title": "Herna",
+      "width": 1672,
+      "height": 941,
+      "background": "scene-art/68c7e55d-4730-4419-876c-7c25f8eff8de/image.png",
+      "hotspots": []
+    },
+    {
+      "id": "scene2",
+      "title": "Kaplička",
+      "width": 1672,
+      "height": 941,
+      "background": "imported/Ponur--ch-traj-ca-kaplnka-pln--sviec-e7b337e1.png",
+      "hotspots": []
+    },
+    {
+      "id": "scene9",
+      "title": "Zběra",
+      "width": 1672,
+      "height": 941,
+      "background": "imported/Zb-ra--v-zapr--en--sb-rn--68536514.png",
+      "hotspots": [
+        {
+          "id": "layer1",
+          "label": "Dingo",
+          "bounds": {
+            "x": 410,
+            "y": 379,
+            "width": 409,
+            "height": 405
+          },
+          "imageFit": "contain",
+          "image": "scene-art/5f80ae25-c1b8-4d0f-bbd5-7b33398d005a/image.png",
+          "onClick": [],
+          "decorative": true,
+          "animation": {
+            "blink": "codex-ac7260f6-f478-4a5a-88f5-1ff652022b17-blink",
+            "blinkIntervalMs": [3000, 7000],
+            "talk": "codex-ac7260f6-f478-4a5a-88f5-1ff652022b17-talk"
+          }
+        }
+      ]
+    },
+    {
+      "id": "scene10",
+      "title": "Kravín",
+      "width": 1677,
+      "height": 938,
+      "background": "imported/Ponur--dv-r-pln--zv--at-db141b98.png",
+      "hotspots": [
+        {
+          "id": "layer1",
+          "label": "Jolanda",
+          "bounds": {
+            "x": 244,
+            "y": 275,
+            "width": 443,
+            "height": 542
+          },
+          "imageFit": "contain",
+          "image": "scene-art/2e411ba3-e3cd-482f-ac9b-33f6ce6a4bf5/image.png",
+          "onClick": [],
+          "decorative": true,
+          "animation": {
+            "blink": "codex-00f94ab3-5067-431f-bee1-45d196a84d4f-blink",
+            "blinkIntervalMs": [3000, 7000],
+            "talk": "codex-00f94ab3-5067-431f-bee1-45d196a84d4f-talk"
+          }
+        }
+      ]
+    },
+    {
+      "id": "scene11",
+      "title": "Ulička u ferového baráku",
+      "width": 1672,
+      "height": 941,
+      "background": "imported/Zanedban--uli-ka-s-rebr-kom-a-neporiadkom-c0e13b57.png",
+      "hotspots": []
+    },
+    {
+      "id": "scene12",
+      "title": "krypta",
+      "width": 1672,
+      "height": 941,
+      "background": "scene-art/72cfbf63-8339-4f62-ad44-b7cb7e77b77e/provider-restored.png",
+      "hotspots": [
+        {
+          "id": "layer1",
+          "label": "Nový výřez",
+          "bounds": {
+            "x": 878,
+            "y": 309,
+            "width": 375,
+            "height": 382
+          },
+          "imageFit": "contain",
+          "image": "scene-art/72cfbf63-8339-4f62-ad44-b7cb7e77b77e/cutout.png",
+          "onClick": [],
+          "decorative": true,
+          "animation": {
+            "blink": "codex-97a7c8b9-c72e-409b-9e50-4c4c3ce53160-blink",
+            "blinkIntervalMs": [3000, 7000],
+            "talk": "codex-97a7c8b9-c72e-409b-9e50-4c4c3ce53160-talk"
+          }
+        }
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "cable",
+      "label": "Poškodený kábel",
+      "description": "Prerušená izolácia. Pred zapojením ho treba opraviť páskou.",
+      "icon": "〰",
+      "image": "cursors/cable-icon.svg"
+    },
+    {
+      "id": "tape",
+      "label": "Izolačná páska",
+      "description": "Univerzálna odpoveď údržby. Skús ju spojiť s káblom.",
+      "icon": "◉",
+      "image": "cursors/tape-icon.svg"
+    },
+    {
+      "id": "fixedCable",
+      "label": "Opravený kábel",
+      "description": "Izolácia drží. Kábel môže ísť do skúšobného routera.",
+      "icon": "⌁",
+      "image": "cursors/cable-icon.svg"
+    },
+    {
+      "id": "stop-bottle",
+      "label": "Prázdna pivová fľaša",
+      "description": "Na dne ani kvapka, ale stále má hodnotu zálohy. Cigy bude vedieť, čo s ňou.",
+      "icon": "♧",
+      "image": "scene-art/87328cca-3ac8-4e49-aeb0-9e708388a762/image.png"
+    }
+  ],
+  "dialogues": [
+    {
+      "id": "stop-cigy",
+      "start": "menu",
+      "nodes": [
+        {
+          "id": "menu",
+          "speaker": "Cigy",
+          "actor": {
+            "sceneId": "scene1",
+            "hotspotId": "layer2"
+          },
+          "text": "[chuckles] Pýtaj sa, šéfe. Len mi nestúpaj na batoh. Je tam nosná konštrukcia môjho dôchodku.",
+          "choices": [
+            {
+              "id": "bag",
+              "text": "Čo vláčiš v tom batohu?",
+              "next": "iron"
+            },
+            {
+              "id": "bus",
+              "text": "Čakáš na autobus?",
+              "next": "bus"
+            },
+            {
+              "id": "granny",
+              "text": "Tá babka tu čaká dlho?",
+              "next": "granny"
+            },
+            {
+              "id": "bottle",
+              "text": "Nechceš túto prázdnu fľašu?",
+              "when": {
+                "item": "stop-bottle"
+              },
+              "effects": [
+                {
+                  "type": "removeItem",
+                  "id": "stop-bottle"
+                },
+                {
+                  "type": "flag",
+                  "id": "stop-bottle-returned",
+                  "value": true
+                }
+              ],
+              "next": "deposit"
+            },
+            {
+              "id": "thanks",
+              "text": "Čo podnikneš s tou zálohou?",
+              "when": {
+                "flag": "stop-bottle-returned"
+              },
+              "next": "investment"
+            },
+            {
+              "id": "leave",
+              "text": "Maj sa. Idem sa rozhliadnuť."
+            }
+          ],
+          "speech": {
+            "audio": "speech/33d5a93a-2010-4e4b-9daa-535768909e1c/audio.wav",
+            "text": "[chuckles] Pýtaj sa, šéfe. Len mi nestúpaj na batoh. Je tam nosná konštrukcia môjho dôchodku.",
+            "subtitles": {
+              "text": "Pýtaj sa, šéfe. Len mi nestúpaj na batoh. Je tam nosná konštrukcia môjho dôchodku.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 3.360987654320988,
+                  "text": "Pýtaj sa, šéfe. Len mi nestúpaj na batoh."
+                },
+                {
+                  "start": 3.360987654320988,
+                  "end": 6.64,
+                  "text": "Je tam nosná konštrukcia môjho dôchodku."
+                }
+              ]
+            },
+            "lipSync": "speech/72f8ce11-8a54-459d-ba05-075e70d9f5f4/track.lipsync.json"
+          }
+        },
+        {
+          "id": "iron",
+          "speaker": "Cigy",
+          "actor": {
+            "sceneId": "scene1",
+            "hotspotId": "layer2"
+          },
+          "text": "[proud] Železo. Kus zábradlia, dve pánty a niečo, čo bývalo rotopedom. Konečne ten stroj niekomu zlepší kondičku. Mne, kým ho odnesiem.",
+          "choices": [
+            {
+              "id": "origin",
+              "text": "A odkiaľ to železo máš?",
+              "next": "origin"
+            },
+            {
+              "id": "weight",
+              "text": "Nie je to trochu ťažké?",
+              "next": "weight"
+            },
+            {
+              "id": "back",
+              "text": "Ešte sa niečo spýtam.",
+              "next": "menu"
+            },
+            {
+              "id": "leave",
+              "text": "Maj sa. Idem sa rozhliadnuť."
+            }
+          ],
+          "speech": {
+            "audio": "speech/27258b2b-af68-4866-9a26-f96786b29b10/audio.wav",
+            "text": "[proud] Železo. Kus zábradlia, dve pánty a niečo, čo bývalo rotopedom. Konečne ten stroj niekomu zlepší kondičku. Mne, kým ho odnesiem.",
+            "subtitles": {
+              "text": "Železo. Kus zábradlia, dve pánty a niečo, čo bývalo rotopedom. Konečne ten stroj niekomu zlepší kondičku. Mne, kým ho odnesiem.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 4.801279999999999,
+                  "text": "Železo. Kus zábradlia, dve pánty a niečo, čo bývalo rotopedom."
+                },
+                {
+                  "start": 4.801279999999999,
+                  "end": 8.053759999999999,
+                  "text": "Konečne ten stroj niekomu zlepší kondičku."
+                },
+                {
+                  "start": 8.053759999999999,
+                  "end": 9.679999999999998,
+                  "text": "Mne, kým ho odnesiem."
+                }
+              ]
+            },
+            "lipSync": "speech/eb0ab2e8-0a83-4139-a4ca-680371ae0b07/track.lipsync.json"
+          }
+        },
+        {
+          "id": "origin",
+          "speaker": "Cigy",
+          "actor": {
+            "sceneId": "scene1",
+            "hotspotId": "layer2"
+          },
+          "text": "[whispers] Legálny zber. Každého kusu sa slušne spýtam, či chce odísť. Keď neodpovie, beriem to ako súhlas. [laughs] Obec tomu hovorí inventúrny rozdiel.",
+          "choices": [
+            {
+              "id": "back",
+              "text": "Ešte sa niečo spýtam.",
+              "next": "menu"
+            },
+            {
+              "id": "leave",
+              "text": "Maj sa. Idem sa rozhliadnuť."
+            }
+          ],
+          "speech": {
+            "audio": "speech/4439a575-58b6-4caa-9de5-e6de32c7376a/audio.wav",
+            "text": "[whispers] Legálny zber. Každého kusu sa slušne spýtam, či chce odísť. Keď neodpovie, beriem to ako súhlas. [laughs] Obec tomu hovorí inventúrny rozdiel.",
+            "subtitles": {
+              "text": "Legálny zber. Každého kusu sa slušne spýtam, či chce odísť. Keď neodpovie, beriem to ako súhlas. Obec tomu hovorí inventúrny rozdiel.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 5.00824427480916,
+                  "text": "Legálny zber. Každého kusu sa slušne spýtam, či chce odísť."
+                },
+                {
+                  "start": 5.00824427480916,
+                  "end": 8.06412213740458,
+                  "text": "Keď neodpovie, beriem to ako súhlas."
+                },
+                {
+                  "start": 8.06412213740458,
+                  "end": 11.12,
+                  "text": "Obec tomu hovorí inventúrny rozdiel."
+                }
+              ]
+            },
+            "lipSync": "speech/7202b652-475d-4dd8-bf43-add5dab9ea31/track.lipsync.json"
+          }
+        },
+        {
+          "id": "weight",
+          "speaker": "Cigy",
+          "actor": {
+            "sceneId": "scene1",
+            "hotspotId": "layer2"
+          },
+          "text": "[sighs] Ortopéd vravel, že mám chrbticu ako otáznik. Ja že výborne, aspoň sa jej môžem spýtať, kde sú prachy. Pozri, chudoba je jediná posilňovňa, čo ti platí za úraz.",
+          "choices": [
+            {
+              "id": "back",
+              "text": "Ešte sa niečo spýtam.",
+              "next": "menu"
+            },
+            {
+              "id": "leave",
+              "text": "Maj sa. Idem sa rozhliadnuť."
+            }
+          ],
+          "speech": {
+            "audio": "speech/efb4be7c-ebd2-486e-afe6-a5b1dfc44fa3/audio.wav",
+            "text": "[sighs] Ortopéd vravel, že mám chrbticu ako otáznik. Ja že výborne, aspoň sa jej môžem spýtať, kde sú prachy. Pozri, chudoba je jediná posilňovňa, čo ti platí za úraz.",
+            "subtitles": {
+              "text": "Ortopéd vravel, že mám chrbticu ako otáznik. Ja že výborne, aspoň sa jej môžem spýtať, kde sú prachy. Pozri, chudoba je jediná posilňovňa, čo ti platí za úraz.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 3.452738853503185,
+                  "text": "Ortopéd vravel, že mám chrbticu ako otáznik."
+                },
+                {
+                  "start": 3.452738853503185,
+                  "end": 7.8471337579617835,
+                  "text": "Ja že výborne, aspoň sa jej môžem spýtať, kde sú prachy."
+                },
+                {
+                  "start": 7.8471337579617835,
+                  "end": 12.32,
+                  "text": "Pozri, chudoba je jediná posilňovňa, čo ti platí za úraz."
+                }
+              ]
+            },
+            "lipSync": "speech/801a10cd-4618-4b43-89a6-10aba92ba2db/track.lipsync.json"
+          }
+        },
+        {
+          "id": "bus",
+          "speaker": "Cigy",
+          "actor": {
+            "sceneId": "scene1",
+            "hotspotId": "layer2"
+          },
+          "text": "[sarcastic] Nie, pestujem tu korene. Autobus mešká tak dlho, že mi na občianskom nesedí fotografia. Už som odvtedy dvakrát zostarol a raz sa vzdal.",
+          "choices": [
+            {
+              "id": "back",
+              "text": "Ešte sa niečo spýtam.",
+              "next": "menu"
+            },
+            {
+              "id": "leave",
+              "text": "Maj sa. Idem sa rozhliadnuť."
+            }
+          ],
+          "speech": {
+            "audio": "speech/6d36ae2b-91a7-4822-9192-d9b60b6366e8/audio.wav",
+            "text": "[sarcastic] Nie, pestujem tu korene. Autobus mešká tak dlho, že mi na občianskom nesedí fotografia. Už som odvtedy dvakrát zostarol a raz sa vzdal.",
+            "subtitles": {
+              "text": "Nie, pestujem tu korene. Autobus mešká tak dlho, že mi na občianskom nesedí fotografia. Už som odvtedy dvakrát zostarol a raz sa vzdal.",
+              "timing": "alignment",
+              "cues": [
+                {
+                  "start": 0.16,
+                  "end": 2.24,
+                  "text": "Nie, pestujem tu korene."
+                },
+                {
+                  "start": 2.48,
+                  "end": 6.48,
+                  "text": "Autobus mešká tak dlho, že mi na občianskom nesedí fotografia."
+                },
+                {
+                  "start": 6.56,
+                  "end": 9.84,
+                  "text": "Už som odvtedy dvakrát zostarol a raz sa vzdal."
+                }
+              ]
+            },
+            "alignment": "speech/6d36ae2b-91a7-4822-9192-d9b60b6366e8/alignment.json",
+            "lipSync": "speech/6692a4a0-04c2-4285-a2da-e21202416956/track.lipsync.json"
+          }
+        },
+        {
+          "id": "granny",
+          "speaker": "Cigy",
+          "actor": {
+            "sceneId": "scene1",
+            "hotspotId": "layer2"
+          },
+          "text": "[whispers] Tá tu nesedí. Tá drží rezerváciu na lavičke. Vravia, že vyberá nájom aj od holubov. Minule mi ponúkla posledné miesto… na cintoríne.",
+          "choices": [
+            {
+              "id": "reservation",
+              "text": "Spýtam sa jej na tú rezerváciu.",
+              "effects": [
+                {
+                  "type": "flag",
+                  "id": "stop-heard-reservation",
+                  "value": true
+                }
+              ],
+              "message": "Na tú babkinu rezerváciu sa ešte spýtam."
+            },
+            {
+              "id": "back",
+              "text": "Ešte sa niečo spýtam.",
+              "next": "menu"
+            },
+            {
+              "id": "leave",
+              "text": "Maj sa. Idem sa rozhliadnuť."
+            }
+          ],
+          "speech": {
+            "audio": "speech/33ec85ab-a1a1-4797-b5e3-2ead038e92f1/audio.wav",
+            "text": "[whispers] Tá tu nesedí. Tá drží rezerváciu na lavičke. Vravia, že vyberá nájom aj od holubov. Minule mi ponúkla posledné miesto… na cintoríne.",
+            "subtitles": {
+              "text": "Tá tu nesedí. Tá drží rezerváciu na lavičke. Vravia, že vyberá nájom aj od holubov. Minule mi ponúkla posledné miesto… na cintoríne.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 3.5200000000000005,
+                  "text": "Tá tu nesedí. Tá drží rezerváciu na lavičke."
+                },
+                {
+                  "start": 3.5200000000000005,
+                  "end": 6.5600000000000005,
+                  "text": "Vravia, že vyberá nájom aj od holubov."
+                },
+                {
+                  "start": 6.5600000000000005,
+                  "end": 9.280000000000001,
+                  "text": "Minule mi ponúkla posledné miesto…"
+                },
+                {
+                  "start": 9.280000000000001,
+                  "end": 10.32,
+                  "text": "na cintoríne."
+                }
+              ]
+            },
+            "lipSync": "speech/5488083d-ecfb-4577-8ea6-a035298b945b/track.lipsync.json"
+          }
+        },
+        {
+          "id": "deposit",
+          "speaker": "Cigy",
+          "actor": {
+            "sceneId": "scene1",
+            "hotspotId": "layer2"
+          },
+          "text": "[excited] Pätnásť centov! Konečne tekuté aktíva, ktoré netečú. [laughs] Vďaka, šéfe. Práve si zachránil môj penzijný fond pred osobným bankrotom.",
+          "choices": [
+            {
+              "id": "back",
+              "text": "Ešte sa niečo spýtam.",
+              "next": "menu"
+            },
+            {
+              "id": "leave",
+              "text": "Maj sa. Idem sa rozhliadnuť."
+            }
+          ],
+          "speech": {
+            "audio": "speech/c0019ca6-278e-4f29-843d-5142224fafa1/audio.wav",
+            "text": "[excited] Pätnásť centov! Konečne tekuté aktíva, ktoré netečú. [laughs] Vďaka, šéfe. Práve si zachránil môj penzijný fond pred osobným bankrotom.",
+            "subtitles": {
+              "text": "Pätnásť centov! Konečne tekuté aktíva, ktoré netečú. Vďaka, šéfe. Práve si zachránil môj penzijný fond pred osobným bankrotom.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 3.96032,
+                  "text": "Pätnásť centov! Konečne tekuté aktíva, ktoré netečú."
+                },
+                {
+                  "start": 3.96032,
+                  "end": 9.52,
+                  "text": "Vďaka, šéfe. Práve si zachránil môj penzijný fond pred osobným bankrotom."
+                }
+              ]
+            },
+            "lipSync": "speech/d9ac9703-2e2a-4d0c-bebe-8b8cd87e40dc/track.lipsync.json"
+          }
+        },
+        {
+          "id": "investment",
+          "speaker": "Cigy",
+          "actor": {
+            "sceneId": "scene1",
+            "hotspotId": "layer2"
+          },
+          "text": "[serious] Diverzifikujem. Desať centov na rožok a päť na pohreb. [sighs] Pri dnešných cenách ma budú musieť zložiť ako záhradnú stoličku.",
+          "choices": [
+            {
+              "id": "back",
+              "text": "Ešte sa niečo spýtam.",
+              "next": "menu"
+            },
+            {
+              "id": "leave",
+              "text": "Maj sa. Idem sa rozhliadnuť."
+            }
+          ],
+          "speech": {
+            "audio": "speech/0865ef0f-af34-4a88-b251-f5e45a028fe0/audio.wav",
+            "text": "[serious] Diverzifikujem. Desať centov na rožok a päť na pohreb. [sighs] Pri dnešných cenách ma budú musieť zložiť ako záhradnú stoličku.",
+            "subtitles": {
+              "text": "Diverzifikujem. Desať centov na rožok a päť na pohreb. Pri dnešných cenách ma budú musieť zložiť ako záhradnú stoličku.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 4.027118644067797,
+                  "text": "Diverzifikujem. Desať centov na rožok a päť na pohreb."
+                },
+                {
+                  "start": 4.027118644067797,
+                  "end": 8.8,
+                  "text": "Pri dnešných cenách ma budú musieť zložiť ako záhradnú stoličku."
+                }
+              ]
+            },
+            "lipSync": "speech/943e4480-598b-48ab-9288-f20b4219b111/track.lipsync.json"
+          }
+        }
+      ]
+    },
+    {
+      "id": "stop-granny",
+      "start": "menu",
+      "nodes": [
+        {
+          "id": "menu",
+          "speaker": "Babka",
+          "actor": {
+            "sceneId": "scene1",
+            "hotspotId": "layer1"
+          },
+          "text": "[sighs] No? Ak predávate lacný plyn, najprv sa pozrite, či ešte dýcham. Tí predošlí mi už vyplnili zmluvu.",
+          "choices": [
+            {
+              "id": "bus",
+              "text": "Kedy pôjde autobus?",
+              "next": "bus"
+            },
+            {
+              "id": "bag",
+              "text": "Čo máte v tej taške?",
+              "next": "bag"
+            },
+            {
+              "id": "cigy",
+              "text": "Čo hovoríte na Cigyho?",
+              "next": "cigy"
+            },
+            {
+              "id": "timetable",
+              "text": "V poriadku píšu, že za pohreby neručia.",
+              "when": {
+                "flag": "stop-read-timetable"
+              },
+              "next": "timetable"
+            },
+            {
+              "id": "reservation",
+              "text": "Cigy vravel niečo o rezervácii na cintoríne.",
+              "when": {
+                "flag": "stop-heard-reservation"
+              },
+              "next": "reservation"
+            },
+            {
+              "id": "advice",
+              "text": "Máte pre mňa nejakú životnú radu?",
+              "next": "advice"
+            },
+            {
+              "id": "leave",
+              "text": "Dovidenia. A pevné zdravie."
+            }
+          ],
+          "speech": {
+            "audio": "speech/f791b08d-96c6-4e00-9e59-ce86885df6be/audio.wav",
+            "text": "[sighs] No? Ak predávate lacný plyn, najprv sa pozrite, či ešte dýcham. Tí predošlí mi už vyplnili zmluvu.",
+            "subtitles": {
+              "text": "No? Ak predávate lacný plyn, najprv sa pozrite, či ešte dýcham. Tí predošlí mi už vyplnili zmluvu.",
+              "timing": "alignment",
+              "cues": [
+                {
+                  "start": 0.88,
+                  "end": 7.12,
+                  "text": "No? Ak predávate lacný plyn, najprv sa pozrite, či ešte dýcham."
+                },
+                {
+                  "start": 7.16,
+                  "end": 10.08,
+                  "text": "Tí predošlí mi už vyplnili zmluvu."
+                }
+              ]
+            },
+            "alignment": "speech/f791b08d-96c6-4e00-9e59-ce86885df6be/alignment.json",
+            "lipSync": "speech/c36aa2a8-1926-473c-88f6-dda19bb4d67d/track.lipsync.json"
+          }
+        },
+        {
+          "id": "bus",
+          "speaker": "Babka",
+          "actor": {
+            "sceneId": "scene1",
+            "hotspotId": "layer1"
+          },
+          "text": "[sarcastic] Keď som si sadala, mala som menštruáciu. Teraz mám zľavu pre seniorov. Tak si to, mladý pán, vypočítajte.",
+          "choices": [
+            {
+              "id": "walk",
+              "text": "Nešlo by to rýchlejšie pešo?",
+              "next": "walk"
+            },
+            {
+              "id": "back",
+              "text": "Ešte sa niečo spýtam.",
+              "next": "menu"
+            },
+            {
+              "id": "leave",
+              "text": "Maj sa. Idem sa rozhliadnuť."
+            }
+          ],
+          "speech": {
+            "audio": "speech/e270f430-f7a2-483a-b977-419599fcd492/audio.wav",
+            "text": "[sarcastic] Keď som si sadala, mala som menštruáciu. Teraz mám zľavu pre seniorov. Tak si to, mladý pán, vypočítajte.",
+            "subtitles": {
+              "text": "Keď som si sadala, mala som menštruáciu. Teraz mám zľavu pre seniorov. Tak si to, mladý pán, vypočítajte.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 3.3242718446601947,
+                  "text": "Keď som si sadala, mala som menštruáciu."
+                },
+                {
+                  "start": 3.3242718446601947,
+                  "end": 5.734368932038835,
+                  "text": "Teraz mám zľavu pre seniorov."
+                },
+                {
+                  "start": 5.734368932038835,
+                  "end": 8.56,
+                  "text": "Tak si to, mladý pán, vypočítajte."
+                }
+              ]
+            },
+            "lipSync": "speech/08bf5d36-0b14-4013-8214-c56a0345c7c7/track.lipsync.json"
+          }
+        },
+        {
+          "id": "walk",
+          "speaker": "Babka",
+          "actor": {
+            "sceneId": "scene1",
+            "hotspotId": "layer1"
+          },
+          "text": "[angry] A prísť o miesto?! To by sa tu hneď roztiahol nejaký mladý s kolobežkou a depresiou. Ja som si túto lavičku odsedela poctivo.",
+          "choices": [
+            {
+              "id": "back",
+              "text": "Ešte sa niečo spýtam.",
+              "next": "menu"
+            },
+            {
+              "id": "leave",
+              "text": "Maj sa. Idem sa rozhliadnuť."
+            }
+          ],
+          "speech": {
+            "audio": "speech/267b2d50-6e88-4877-9096-55d02c405ec2/audio.wav",
+            "text": "[angry] A prísť o miesto?! To by sa tu hneď roztiahol nejaký mladý s kolobežkou a depresiou. Ja som si túto lavičku odsedela poctivo.",
+            "subtitles": {
+              "text": "A prísť o miesto?! To by sa tu hneď roztiahol nejaký mladý s kolobežkou a depresiou. Ja som si túto lavičku odsedela poctivo.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 5.321935483870967,
+                  "text": "A prísť o miesto?! To by sa tu hneď roztiahol nejaký mladý s kolobežkou a"
+                },
+                {
+                  "start": 5.321935483870967,
+                  "end": 9.04,
+                  "text": "depresiou. Ja som si túto lavičku odsedela poctivo."
+                }
+              ]
+            },
+            "lipSync": "speech/feb6c9f6-df93-44a3-866e-9d7878b109f8/track.lipsync.json"
+          }
+        },
+        {
+          "id": "bag",
+          "speaker": "Babka",
+          "actor": {
+            "sceneId": "scene1",
+            "hotspotId": "layer1"
+          },
+          "text": "[whispers] Rožky, sviečky a urnu po mužovi. Nosím ho na výlety. [chuckles] Zaživa ma nikam nevzal, tak teraz nemá na výber.",
+          "choices": [
+            {
+              "id": "husband",
+              "text": "A páčia sa mu tie výlety?",
+              "next": "husband"
+            },
+            {
+              "id": "back",
+              "text": "Ešte sa niečo spýtam.",
+              "next": "menu"
+            },
+            {
+              "id": "leave",
+              "text": "Maj sa. Idem sa rozhliadnuť."
+            }
+          ],
+          "speech": {
+            "audio": "speech/f472ca9c-849b-4066-9881-d5ce39fccf05/audio.wav",
+            "text": "[whispers] Rožky, sviečky a urnu po mužovi. Nosím ho na výlety. [chuckles] Zaživa ma nikam nevzal, tak teraz nemá na výber.",
+            "subtitles": {
+              "text": "Rožky, sviečky a urnu po mužovi. Nosím ho na výlety. Zaživa ma nikam nevzal, tak teraz nemá na výber.",
+              "timing": "alignment",
+              "cues": [
+                {
+                  "start": 0.24,
+                  "end": 3.44,
+                  "text": "Rožky, sviečky a urnu po mužovi."
+                },
+                {
+                  "start": 3.84,
+                  "end": 10.24,
+                  "text": "Nosím ho na výlety. Zaživa ma nikam nevzal, tak teraz nemá na výber."
+                }
+              ]
+            },
+            "alignment": "speech/f472ca9c-849b-4066-9881-d5ce39fccf05/alignment.json",
+            "lipSync": "speech/7c0b42fb-63d0-4a13-a93c-a33edf79ea38/track.lipsync.json"
+          }
+        },
+        {
+          "id": "husband",
+          "speaker": "Babka",
+          "actor": {
+            "sceneId": "scene1",
+            "hotspotId": "layer1"
+          },
+          "text": "[deadpan] Nesťažuje sa. Prvýkrát za štyridsať rokov. Len na výtlkoch trochu hrká, ale to robil aj predtým.",
+          "choices": [
+            {
+              "id": "back",
+              "text": "Ešte sa niečo spýtam.",
+              "next": "menu"
+            },
+            {
+              "id": "leave",
+              "text": "Maj sa. Idem sa rozhliadnuť."
+            }
+          ],
+          "speech": {
+            "audio": "speech/e03e8bcb-04eb-4f78-aa8e-dad504d3294a/audio.wav",
+            "text": "[deadpan] Nesťažuje sa. Prvýkrát za štyridsať rokov. Len na výtlkoch trochu hrká, ale to robil aj predtým.",
+            "subtitles": {
+              "text": "Nesťažuje sa. Prvýkrát za štyridsať rokov. Len na výtlkoch trochu hrká, ale to robil aj predtým.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 3.678315789473684,
+                  "text": "Nesťažuje sa. Prvýkrát za štyridsať rokov."
+                },
+                {
+                  "start": 3.678315789473684,
+                  "end": 8.32,
+                  "text": "Len na výtlkoch trochu hrká, ale to robil aj predtým."
+                }
+              ]
+            },
+            "lipSync": "speech/d6db4114-434c-4ead-a3bf-227344a8c8f4/track.lipsync.json"
+          }
+        },
+        {
+          "id": "cigy",
+          "speaker": "Babka",
+          "actor": {
+            "sceneId": "scene1",
+            "hotspotId": "layer1"
+          },
+          "text": "[chuckles] Ten chlapec má srdce zo zlata. Dúfam. Lebo všetko ostatné už odniesol do zberu. Raz mi ponúkol, že ma odprevadí domov. Ja bývam oproti cintorínu. [whispers] Celú cestu pozeral na bránu.",
+          "choices": [
+            {
+              "id": "back",
+              "text": "Ešte sa niečo spýtam.",
+              "next": "menu"
+            },
+            {
+              "id": "leave",
+              "text": "Maj sa. Idem sa rozhliadnuť."
+            }
+          ],
+          "speech": {
+            "audio": "speech/9a4beceb-2546-4b56-a31b-5131e0178c88/audio.wav",
+            "text": "[chuckles] Ten chlapec má srdce zo zlata. Dúfam. Lebo všetko ostatné už odniesol do zberu. Raz mi ponúkol, že ma odprevadí domov. Ja bývam oproti cintorínu. [whispers] Celú cestu pozeral na bránu.",
+            "subtitles": {
+              "text": "Ten chlapec má srdce zo zlata. Dúfam. Lebo všetko ostatné už odniesol do zberu. Raz mi ponúkol, že ma odprevadí domov. Ja bývam oproti cintorínu. Celú cestu pozeral na bránu.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 2.9647058823529413,
+                  "text": "Ten chlapec má srdce zo zlata."
+                },
+                {
+                  "start": 2.9647058823529413,
+                  "end": 7.708235294117648,
+                  "text": "Dúfam. Lebo všetko ostatné už odniesol do zberu."
+                },
+                {
+                  "start": 7.708235294117648,
+                  "end": 11.463529411764707,
+                  "text": "Raz mi ponúkol, že ma odprevadí domov."
+                },
+                {
+                  "start": 11.463529411764707,
+                  "end": 14.03294117647059,
+                  "text": "Ja bývam oproti cintorínu."
+                },
+                {
+                  "start": 14.03294117647059,
+                  "end": 16.8,
+                  "text": "Celú cestu pozeral na bránu."
+                }
+              ]
+            },
+            "lipSync": "speech/25e545c1-a27a-4dee-b062-64bd5ea50690/track.lipsync.json"
+          }
+        },
+        {
+          "id": "timetable",
+          "speaker": "Babka",
+          "actor": {
+            "sceneId": "scene1",
+            "hotspotId": "layer1"
+          },
+          "text": "[angry] To dopísali kvôli mne. Raz som si sťažovala, že sme s nebožtíkom zmeškali jeho vlastný pohreb. Šofér povedal, že jeden z nás sa už aj tak neponáhľa.",
+          "choices": [
+            {
+              "id": "back",
+              "text": "Ešte sa niečo spýtam.",
+              "next": "menu"
+            },
+            {
+              "id": "leave",
+              "text": "Maj sa. Idem sa rozhliadnuť."
+            }
+          ],
+          "speech": {
+            "audio": "speech/107845da-613d-44fb-ad4e-14985fdecb97/audio.wav",
+            "text": "[angry] To dopísali kvôli mne. Raz som si sťažovala, že sme s nebožtíkom zmeškali jeho vlastný pohreb. Šofér povedal, že jeden z nás sa už aj tak neponáhľa.",
+            "subtitles": {
+              "text": "To dopísali kvôli mne. Raz som si sťažovala, že sme s nebožtíkom zmeškali jeho vlastný pohreb. Šofér povedal, že jeden z nás sa už aj tak neponáhľa.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 6.027755102040816,
+                  "text": "To dopísali kvôli mne. Raz som si sťažovala, že sme s nebožtíkom zmeškali jeho"
+                },
+                {
+                  "start": 6.027755102040816,
+                  "end": 11.36,
+                  "text": "vlastný pohreb. Šofér povedal, že jeden z nás sa už aj tak neponáhľa."
+                }
+              ]
+            },
+            "lipSync": "speech/9f19a0ca-664f-4138-ba21-9616be5f735b/track.lipsync.json"
+          }
+        },
+        {
+          "id": "reservation",
+          "speaker": "Babka",
+          "actor": {
+            "sceneId": "scene1",
+            "hotspotId": "layer1"
+          },
+          "text": "[laughs] Ale áno. Dvojhrob pri chodníku. Spodné lôžko už má muž, ja mám rezervované horné. A Cigymu som ponúkla brigádu. [whispers] Mal priniesť lopatu. On prišiel oceniť železný kríž.",
+          "choices": [
+            {
+              "id": "back",
+              "text": "Ešte sa niečo spýtam.",
+              "next": "menu"
+            },
+            {
+              "id": "leave",
+              "text": "Maj sa. Idem sa rozhliadnuť."
+            }
+          ],
+          "speech": {
+            "audio": "speech/796f1944-9869-4c84-ac03-b547aa796cd3/audio.wav",
+            "text": "[laughs] Ale áno. Dvojhrob pri chodníku. Spodné lôžko už má muž, ja mám rezervované horné. A Cigymu som ponúkla brigádu. [whispers] Mal priniesť lopatu. On prišiel oceniť železný kríž.",
+            "subtitles": {
+              "text": "Ale áno. Dvojhrob pri chodníku. Spodné lôžko už má muž, ja mám rezervované horné. A Cigymu som ponúkla brigádu. Mal priniesť lopatu. On prišiel oceniť železný kríž.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 3.3118012422360246,
+                  "text": "Ale áno. Dvojhrob pri chodníku."
+                },
+                {
+                  "start": 3.3118012422360246,
+                  "end": 8.546583850931677,
+                  "text": "Spodné lôžko už má muž, ja mám rezervované horné."
+                },
+                {
+                  "start": 8.546583850931677,
+                  "end": 11.64472049689441,
+                  "text": "A Cigymu som ponúkla brigádu."
+                },
+                {
+                  "start": 11.64472049689441,
+                  "end": 17.2,
+                  "text": "Mal priniesť lopatu. On prišiel oceniť železný kríž."
+                }
+              ]
+            },
+            "lipSync": "speech/c2e68b9a-a1e1-41b3-b361-dcc86421f177/track.lipsync.json"
+          }
+        },
+        {
+          "id": "advice",
+          "speaker": "Babka",
+          "actor": {
+            "sceneId": "scene1",
+            "hotspotId": "layer1"
+          },
+          "text": "[serious] Nikdy nečakajte na správny okamih. Môj muž čakal na lacnejšiu rakvu a nakoniec bol v akcii krematórium. [sighs] A pite vodu. Aspoň budete mať na čo nadávať, keď príde účet.",
+          "choices": [
+            {
+              "id": "back",
+              "text": "Ešte sa niečo spýtam.",
+              "next": "menu"
+            },
+            {
+              "id": "leave",
+              "text": "Maj sa. Idem sa rozhliadnuť."
+            }
+          ],
+          "speech": {
+            "audio": "speech/18d9c53d-eebb-4967-b174-d8d9b0ec2243/audio.wav",
+            "text": "[serious] Nikdy nečakajte na správny okamih. Môj muž čakal na lacnejšiu rakvu a nakoniec bol v akcii krematórium. [sighs] A pite vodu. Aspoň budete mať na čo nadávať, keď príde účet.",
+            "subtitles": {
+              "text": "Nikdy nečakajte na správny okamih. Môj muž čakal na lacnejšiu rakvu a nakoniec bol v akcii krematórium. A pite vodu. Aspoň budete mať na čo nadávať, keď príde účet.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 3.0558024691358026,
+                  "text": "Nikdy nečakajte na správny okamih."
+                },
+                {
+                  "start": 3.0558024691358026,
+                  "end": 9.167407407407408,
+                  "text": "Môj muž čakal na lacnejšiu rakvu a nakoniec bol v akcii krematórium."
+                },
+                {
+                  "start": 9.167407407407408,
+                  "end": 14.56,
+                  "text": "A pite vodu. Aspoň budete mať na čo nadávať, keď príde účet."
+                }
+              ]
+            },
+            "lipSync": "speech/cd1458a3-5b00-4ae4-b68c-8eb822ba6b6c/track.lipsync.json"
+          }
+        }
+      ]
+    },
+    {
+      "id": "stop-cigy-bottle",
+      "start": "thanks",
+      "entry": "speech",
+      "nodes": [
+        {
+          "id": "thanks",
+          "speaker": "Cigy",
+          "actor": {
+            "sceneId": "scene1",
+            "hotspotId": "layer2"
+          },
+          "text": "[excited] Pätnásť centov! Konečne tekuté aktíva, ktoré netečú. [laughs] Vďaka, šéfe. Práve si zachránil môj penzijný fond pred osobným bankrotom.",
+          "choices": [],
+          "speech": {
+            "audio": "speech/c0019ca6-278e-4f29-843d-5142224fafa1/audio.wav",
+            "text": "[excited] Pätnásť centov! Konečne tekuté aktíva, ktoré netečú. [laughs] Vďaka, šéfe. Práve si zachránil môj penzijný fond pred osobným bankrotom.",
+            "subtitles": {
+              "text": "Pätnásť centov! Konečne tekuté aktíva, ktoré netečú. Vďaka, šéfe. Práve si zachránil môj penzijný fond pred osobným bankrotom.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 3.96032,
+                  "text": "Pätnásť centov! Konečne tekuté aktíva, ktoré netečú."
+                },
+                {
+                  "start": 3.96032,
+                  "end": 9.52,
+                  "text": "Vďaka, šéfe. Práve si zachránil môj penzijný fond pred osobným bankrotom."
+                }
+              ]
+            },
+            "lipSync": "speech/d9ac9703-2e2a-4d0c-bebe-8b8cd87e40dc/track.lipsync.json"
+          }
+        }
+      ]
+    },
+    {
+      "id": "stop-granny-bottle",
+      "start": "refuse",
+      "entry": "speech",
+      "nodes": [
+        {
+          "id": "refuse",
+          "speaker": "Babka",
+          "actor": {
+            "sceneId": "scene1",
+            "hotspotId": "layer1"
+          },
+          "text": "[sarcastic] Prázdna? Mladý pán, urážať dôchodcu sa dá aj bez rekvizít. [sighs] Skús Cigyho, ten zbiera aj sklamania.",
+          "choices": [],
+          "speech": {
+            "audio": "speech/40bb9b5b-f289-4fc6-a0d2-3ff16c94948a/audio.wav",
+            "text": "[sarcastic] Prázdna? Mladý pán, urážať dôchodcu sa dá aj bez rekvizít. [sighs] Skús Cigyho, ten zbiera aj sklamania.",
+            "subtitles": {
+              "text": "Prázdna? Mladý pán, urážať dôchodcu sa dá aj bez rekvizít. Skús Cigyho, ten zbiera aj sklamania.",
+              "timing": "alignment",
+              "cues": [
+                {
+                  "start": 0.08,
+                  "end": 6,
+                  "text": "Prázdna? Mladý pán, urážať dôchodcu sa dá aj bez rekvizít."
+                },
+                {
+                  "start": 7.04,
+                  "end": 10.4,
+                  "text": "Skús Cigyho, ten zbiera aj sklamania."
+                }
+              ]
+            },
+            "alignment": "speech/40bb9b5b-f289-4fc6-a0d2-3ff16c94948a/alignment.json",
+            "lipSync": "speech/eb322a56-a442-4dd2-a068-84978baf6572/track.lipsync.json"
+          }
+        }
+      ]
+    }
+  ],
+  "combinations": [
+    {
+      "items": ["cable", "tape"],
+      "rules": [
+        {
+          "message": "Páska drží. Máš opravený kábel.",
+          "effects": [
+            {
+              "type": "removeItem",
+              "id": "cable"
+            },
+            {
+              "type": "removeItem",
+              "id": "tape"
+            },
+            {
+              "type": "addItem",
+              "id": "fixedCable"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "animations": [
+    {
+      "id": "woman-blink",
+      "label": "Mrknutie · Codex",
+      "source": "woman.png",
+      "kind": "blink",
+      "frames": [
+        "woman.png",
+        "animations/woman-blink/frame-02.png",
+        "animations/woman-blink/frame-03.png",
+        "animations/woman-blink/frame-02.png",
+        "woman.png"
+      ],
+      "fps": 14,
+      "durationsMs": [40, 60, 90, 80, 40],
+      "loop": false,
+      "region": {
+        "x": 394,
+        "y": 173,
+        "width": 100,
+        "height": 36
+      }
+    },
+    {
+      "id": "woman-talk",
+      "label": "Ústa · technická ukážka",
+      "source": "woman.png",
+      "kind": "talk",
+      "frames": [
+        "woman.png",
+        "animations/woman-talk/frame-02.png",
+        "animations/woman-talk/frame-03.png",
+        "animations/woman-talk/frame-02.png",
+        "woman.png"
+      ],
+      "fps": 12,
+      "durationsMs": [100, 80, 100, 70, 90],
+      "loop": true,
+      "region": {
+        "x": 429,
+        "y": 271,
+        "width": 58,
+        "height": 31
+      }
+    },
+    {
+      "id": "animation-0bc82fd4-ab49-48d7-bd26-b5ba8ac8d1db",
+      "label": "Rozprávanie",
+      "source": "woman.png",
+      "kind": "talk",
+      "fps": 14,
+      "frames": [
+        "animations/0bc82fd4-ab49-48d7-bd26-b5ba8ac8d1db/frame-001.png",
+        "animations/0bc82fd4-ab49-48d7-bd26-b5ba8ac8d1db/frame-002.png",
+        "animations/0bc82fd4-ab49-48d7-bd26-b5ba8ac8d1db/frame-003.png",
+        "animations/0bc82fd4-ab49-48d7-bd26-b5ba8ac8d1db/frame-004.png",
+        "animations/0bc82fd4-ab49-48d7-bd26-b5ba8ac8d1db/frame-005.png",
+        "animations/0bc82fd4-ab49-48d7-bd26-b5ba8ac8d1db/frame-006.png"
+      ],
+      "durationsMs": [
+        71.42857142857143, 71.42857142857143, 71.42857142857143,
+        71.42857142857143, 71.42857142857143, 71.42857142857143
+      ],
+      "loop": true,
+      "region": {
+        "x": 431,
+        "y": 257,
+        "width": 55,
+        "height": 51
+      }
+    },
+    {
+      "id": "codex-6995881c-c7e6-4c98-a78a-fa6f89035ebe-blink",
+      "source": "scene-art/fc7a51eb-3751-4baf-92fc-da0fc4a134bf/cutout.png",
+      "kind": "blink",
+      "label": "Přirozené mrknutí",
+      "frames": [
+        "codex/6995881c-c7e6-4c98-a78a-fa6f89035ebe/blink-01.png",
+        "codex/6995881c-c7e6-4c98-a78a-fa6f89035ebe/blink-02.png",
+        "codex/6995881c-c7e6-4c98-a78a-fa6f89035ebe/blink-03.png",
+        "codex/6995881c-c7e6-4c98-a78a-fa6f89035ebe/blink-04.png",
+        "codex/6995881c-c7e6-4c98-a78a-fa6f89035ebe/blink-05.png"
+      ],
+      "fps": 12,
+      "loop": false,
+      "region": {
+        "x": 126,
+        "y": 51,
+        "width": 65,
+        "height": 18
+      }
+    },
+    {
+      "id": "codex-6995881c-c7e6-4c98-a78a-fa6f89035ebe-talk",
+      "source": "scene-art/fc7a51eb-3751-4baf-92fc-da0fc4a134bf/cutout.png",
+      "kind": "talk",
+      "label": "Mluvení – úsměv, A, E, O, M",
+      "frames": [
+        "codex/6995881c-c7e6-4c98-a78a-fa6f89035ebe/talk-01.png",
+        "codex/6995881c-c7e6-4c98-a78a-fa6f89035ebe/talk-02.png",
+        "codex/6995881c-c7e6-4c98-a78a-fa6f89035ebe/talk-03.png",
+        "codex/6995881c-c7e6-4c98-a78a-fa6f89035ebe/talk-04.png",
+        "codex/6995881c-c7e6-4c98-a78a-fa6f89035ebe/talk-05.png"
+      ],
+      "fps": 12,
+      "loop": true,
+      "region": {
+        "x": 120,
+        "y": 74,
+        "width": 73,
+        "height": 28
+      }
+    },
+    {
+      "id": "codex-f377a7ca-8739-4147-9699-15b811cda5e2-blink",
+      "source": "scene-art/e1aeba34-3a1e-4e00-afbd-8567204bee56/cutout.png",
+      "kind": "blink",
+      "label": "Přirozené mrknutí",
+      "frames": [
+        "codex/f377a7ca-8739-4147-9699-15b811cda5e2/blink-01.png",
+        "codex/f377a7ca-8739-4147-9699-15b811cda5e2/blink-02.png",
+        "codex/f377a7ca-8739-4147-9699-15b811cda5e2/blink-03.png",
+        "codex/f377a7ca-8739-4147-9699-15b811cda5e2/blink-04.png",
+        "codex/f377a7ca-8739-4147-9699-15b811cda5e2/blink-05.png"
+      ],
+      "fps": 12,
+      "loop": false,
+      "region": {
+        "x": 195,
+        "y": 61,
+        "width": 79,
+        "height": 32
+      }
+    },
+    {
+      "id": "codex-f377a7ca-8739-4147-9699-15b811cda5e2-talk",
+      "source": "scene-art/e1aeba34-3a1e-4e00-afbd-8567204bee56/cutout.png",
+      "kind": "talk",
+      "label": "Mluvení – klid, A, E, O, M",
+      "frames": [
+        "codex/f377a7ca-8739-4147-9699-15b811cda5e2/talk-01.png",
+        "codex/f377a7ca-8739-4147-9699-15b811cda5e2/talk-02.png",
+        "codex/f377a7ca-8739-4147-9699-15b811cda5e2/talk-03.png",
+        "codex/f377a7ca-8739-4147-9699-15b811cda5e2/talk-04.png",
+        "codex/f377a7ca-8739-4147-9699-15b811cda5e2/talk-05.png"
+      ],
+      "fps": 12,
+      "loop": true,
+      "region": {
+        "x": 192,
+        "y": 93,
+        "width": 74,
+        "height": 35
+      }
+    },
+    {
+      "id": "codex-cb7cf353-21a5-4277-8af9-2a28b30d8cfe-idle",
+      "source": "codex/cb7cf353-21a5-4277-8af9-2a28b30d8cfe/image.png",
+      "kind": "idle",
+      "label": "Jemné vlnění kouře",
+      "frames": [
+        "codex/cb7cf353-21a5-4277-8af9-2a28b30d8cfe/idle-01.png",
+        "codex/cb7cf353-21a5-4277-8af9-2a28b30d8cfe/idle-02.png",
+        "codex/cb7cf353-21a5-4277-8af9-2a28b30d8cfe/idle-03.png",
+        "codex/cb7cf353-21a5-4277-8af9-2a28b30d8cfe/idle-04.png",
+        "codex/cb7cf353-21a5-4277-8af9-2a28b30d8cfe/idle-05.png"
+      ],
+      "fps": 12,
+      "loop": true
+    },
+    {
+      "id": "codex-34ebe7ef-f7aa-4029-a64f-674cd6f64c1d-idle",
+      "source": "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/image.png",
+      "kind": "idle",
+      "label": "Slepice – klidné dýchání a kývnutí",
+      "frames": [
+        "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/idle-01.png",
+        "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/idle-02.png",
+        "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/idle-03.png",
+        "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/idle-04.png",
+        "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/idle-05.png",
+        "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/idle-06.png",
+        "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/idle-07.png",
+        "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/idle-08.png",
+        "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/idle-09.png",
+        "codex/34ebe7ef-f7aa-4029-a64f-674cd6f64c1d/idle-10.png"
+      ],
+      "fps": 12,
+      "loop": true
+    },
+    {
+      "id": "codex-711ffec6-5006-486e-9e8a-1fc7a69310f0-idle",
+      "source": "codex/711ffec6-5006-486e-9e8a-1fc7a69310f0/image.png",
+      "kind": "idle",
+      "label": "Pes – klidné očichávání a pohyb ocasu",
+      "frames": [
+        "codex/711ffec6-5006-486e-9e8a-1fc7a69310f0/idle-01.png",
+        "codex/711ffec6-5006-486e-9e8a-1fc7a69310f0/idle-02.png",
+        "codex/711ffec6-5006-486e-9e8a-1fc7a69310f0/idle-03.png",
+        "codex/711ffec6-5006-486e-9e8a-1fc7a69310f0/idle-04.png",
+        "codex/711ffec6-5006-486e-9e8a-1fc7a69310f0/idle-05.png",
+        "codex/711ffec6-5006-486e-9e8a-1fc7a69310f0/idle-06.png",
+        "codex/711ffec6-5006-486e-9e8a-1fc7a69310f0/idle-07.png",
+        "codex/711ffec6-5006-486e-9e8a-1fc7a69310f0/idle-08.png",
+        "codex/711ffec6-5006-486e-9e8a-1fc7a69310f0/idle-09.png",
+        "codex/711ffec6-5006-486e-9e8a-1fc7a69310f0/idle-10.png"
+      ],
+      "fps": 12,
+      "loop": true
+    },
+    {
+      "id": "codex-a1f201b7-d39a-4790-b79b-0938552c5c15-idle",
+      "source": "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/image.png",
+      "kind": "idle",
+      "label": "Jemné vlnění mraků",
+      "frames": [
+        "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-01.png",
+        "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-02.png",
+        "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-03.png",
+        "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-04.png",
+        "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-05.png",
+        "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-06.png",
+        "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-07.png",
+        "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-08.png",
+        "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-09.png",
+        "codex/a1f201b7-d39a-4790-b79b-0938552c5c15/idle-10.png"
+      ],
+      "fps": 6,
+      "loop": true
+    },
+    {
+      "id": "codex-ddf0e886-2a73-4f45-91c0-f96f46f59806-blink",
+      "source": "scene-art/f309ec15-1048-46e2-b2ba-c9d163cf07fb/cutout.png",
+      "kind": "blink",
+      "label": "Přirozené mrknutí",
+      "frames": [
+        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/blink-01.png",
+        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/blink-02.png",
+        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/blink-03.png",
+        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/blink-04.png",
+        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/blink-05.png"
+      ],
+      "fps": 12,
+      "loop": false,
+      "region": {
+        "x": 51,
+        "y": 44,
+        "width": 52,
+        "height": 24
+      }
+    },
+    {
+      "id": "codex-ddf0e886-2a73-4f45-91c0-f96f46f59806-talk",
+      "source": "scene-art/f309ec15-1048-46e2-b2ba-c9d163cf07fb/cutout.png",
+      "kind": "talk",
+      "label": "Mluvení – pět tvarů úst",
+      "frames": [
+        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/talk-01.png",
+        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/talk-02.png",
+        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/talk-03.png",
+        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/talk-04.png",
+        "codex/ddf0e886-2a73-4f45-91c0-f96f46f59806/talk-05.png"
+      ],
+      "fps": 12,
+      "loop": true,
+      "region": {
+        "x": 48,
+        "y": 82,
+        "width": 38,
+        "height": 16
+      }
+    },
+    {
+      "id": "animation-67ffde01-cc5b-461d-8018-bb3371873413",
+      "label": "Poškrábání hlavy · vrstvená ruka",
+      "source": "characters/man-scratch/source.png",
+      "kind": "expression",
+      "fps": 16,
+      "frames": [
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-001.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-002.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-003.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-004.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-005.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-006.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-007.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-008.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-009.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-010.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-011.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-012.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-013.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-014.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-015.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-016.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-017.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-018.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-019.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-020.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-021.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-022.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-023.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-024.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-025.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-026.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-027.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-028.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-029.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-030.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-031.png",
+        "animations/67ffde01-cc5b-461d-8018-bb3371873413/frame-032.png"
+      ],
+      "loop": false
+    },
+    {
+      "id": "codex-63980e6b-7aa2-46ec-b833-97cad892dff7-blink",
+      "source": "scene-art/baa7c0dd-9cba-4436-a27c-71697c3c5619/image.png",
+      "kind": "blink",
+      "label": "Přirozené mrknutí",
+      "frames": [
+        "codex/63980e6b-7aa2-46ec-b833-97cad892dff7/blink-01.png",
+        "codex/63980e6b-7aa2-46ec-b833-97cad892dff7/blink-02.png",
+        "codex/63980e6b-7aa2-46ec-b833-97cad892dff7/blink-03.png",
+        "codex/63980e6b-7aa2-46ec-b833-97cad892dff7/blink-04.png",
+        "codex/63980e6b-7aa2-46ec-b833-97cad892dff7/blink-05.png"
+      ],
+      "fps": 12,
+      "loop": false,
+      "region": {
+        "x": 53,
+        "y": 44,
+        "width": 51,
+        "height": 27
+      }
+    },
+    {
+      "id": "codex-63980e6b-7aa2-46ec-b833-97cad892dff7-talk",
+      "source": "scene-art/baa7c0dd-9cba-4436-a27c-71697c3c5619/image.png",
+      "kind": "talk",
+      "label": "Mluvení – klid, E, A, O, M",
+      "frames": [
+        "codex/63980e6b-7aa2-46ec-b833-97cad892dff7/talk-01.png",
+        "codex/63980e6b-7aa2-46ec-b833-97cad892dff7/talk-02.png",
+        "codex/63980e6b-7aa2-46ec-b833-97cad892dff7/talk-03.png",
+        "codex/63980e6b-7aa2-46ec-b833-97cad892dff7/talk-04.png",
+        "codex/63980e6b-7aa2-46ec-b833-97cad892dff7/talk-05.png"
+      ],
+      "fps": 12,
+      "loop": true,
+      "region": {
+        "x": 53,
+        "y": 84,
+        "width": 34,
+        "height": 15
+      }
+    },
+    {
+      "id": "codex-07111c67-89c0-451b-9cb3-a598dec43b90-blink",
+      "source": "scene-art/2d60f8f0-ff05-48fb-90dc-0bffff272597/cutout.png",
+      "kind": "blink",
+      "label": "Přirozené mrknutí",
+      "frames": [
+        "codex/07111c67-89c0-451b-9cb3-a598dec43b90/blink-01.png",
+        "codex/07111c67-89c0-451b-9cb3-a598dec43b90/blink-02.png",
+        "codex/07111c67-89c0-451b-9cb3-a598dec43b90/blink-03.png",
+        "codex/07111c67-89c0-451b-9cb3-a598dec43b90/blink-04.png",
+        "codex/07111c67-89c0-451b-9cb3-a598dec43b90/blink-05.png"
+      ],
+      "fps": 12,
+      "loop": false,
+      "region": {
+        "x": 182,
+        "y": 44,
+        "width": 55,
+        "height": 36
+      }
+    },
+    {
+      "id": "codex-07111c67-89c0-451b-9cb3-a598dec43b90-talk",
+      "source": "scene-art/2d60f8f0-ff05-48fb-90dc-0bffff272597/cutout.png",
+      "kind": "talk",
+      "label": "Mluvení: klid, A, E, O, M",
+      "frames": [
+        "codex/07111c67-89c0-451b-9cb3-a598dec43b90/talk-01.png",
+        "codex/07111c67-89c0-451b-9cb3-a598dec43b90/talk-02.png",
+        "codex/07111c67-89c0-451b-9cb3-a598dec43b90/talk-03.png",
+        "codex/07111c67-89c0-451b-9cb3-a598dec43b90/talk-04.png",
+        "codex/07111c67-89c0-451b-9cb3-a598dec43b90/talk-05.png"
+      ],
+      "fps": 12,
+      "loop": true,
+      "region": {
+        "x": 184,
+        "y": 94,
+        "width": 68,
+        "height": 54
+      }
+    },
+    {
+      "id": "fero-head-scratch-loop",
+      "source": "scene-art/2d60f8f0-ff05-48fb-90dc-0bffff272597/cutout.png",
+      "kind": "idle",
+      "label": "Fero · škrabanie hlavy",
+      "frames": [
+        "animations/fero-head-scratch/frame-01.png",
+        "animations/fero-head-scratch/frame-02.png",
+        "animations/fero-head-scratch/frame-03.png",
+        "animations/fero-head-scratch/frame-04.png",
+        "animations/fero-head-scratch/frame-05.png",
+        "animations/fero-head-scratch/frame-06.png",
+        "animations/fero-head-scratch/frame-05.png",
+        "animations/fero-head-scratch/frame-04.png",
+        "animations/fero-head-scratch/frame-03.png",
+        "animations/fero-head-scratch/frame-02.png",
+        "animations/fero-head-scratch/frame-01.png"
+      ],
+      "fps": 10,
+      "loop": true
+    },
+    {
+      "id": "animation-fe17c3f8-f41b-48c4-a523-5a983f058ad6",
+      "label": "Farár · Mrknutie",
+      "source": "scene-art/7e531d0a-465d-4cdb-843a-0e7ac148ae03/image.png",
+      "kind": "blink",
+      "fps": 12,
+      "frames": [
+        "animations/fe17c3f8-f41b-48c4-a523-5a983f058ad6/frame-001.png",
+        "animations/fe17c3f8-f41b-48c4-a523-5a983f058ad6/frame-002.png",
+        "animations/fe17c3f8-f41b-48c4-a523-5a983f058ad6/frame-003.png",
+        "animations/fe17c3f8-f41b-48c4-a523-5a983f058ad6/frame-004.png",
+        "animations/fe17c3f8-f41b-48c4-a523-5a983f058ad6/frame-005.png"
+      ],
+      "loop": false,
+      "region": {
+        "x": 80,
+        "y": 23,
+        "width": 30,
+        "height": 13
+      },
+      "durationsMs": [35, 45, 65, 45, 35]
+    },
+    {
+      "id": "animation-75d26b43-7cef-4010-a213-58988d04637f",
+      "label": "Farár · Rozprávanie",
+      "source": "scene-art/7e531d0a-465d-4cdb-843a-0e7ac148ae03/image.png",
+      "kind": "talk",
+      "fps": 12,
+      "frames": [
+        "animations/75d26b43-7cef-4010-a213-58988d04637f/frame-001.png",
+        "animations/75d26b43-7cef-4010-a213-58988d04637f/frame-002.png",
+        "animations/75d26b43-7cef-4010-a213-58988d04637f/frame-003.png",
+        "animations/75d26b43-7cef-4010-a213-58988d04637f/frame-004.png",
+        "animations/75d26b43-7cef-4010-a213-58988d04637f/frame-005.png"
+      ],
+      "loop": true,
+      "region": {
+        "x": 87,
+        "y": 45,
+        "width": 19,
+        "height": 10
+      }
+    },
+    {
+      "id": "animation-9b874ab0-3093-4346-b4c7-c0b315638f32",
+      "label": "Hrobár · Mrknutie",
+      "source": "scene-art/469a3e1d-b98e-42df-97de-7388ef2f2659/image.png",
+      "kind": "blink",
+      "fps": 12,
+      "frames": [
+        "animations/9b874ab0-3093-4346-b4c7-c0b315638f32/frame-001.png",
+        "animations/9b874ab0-3093-4346-b4c7-c0b315638f32/frame-002.png",
+        "animations/9b874ab0-3093-4346-b4c7-c0b315638f32/frame-003.png",
+        "animations/9b874ab0-3093-4346-b4c7-c0b315638f32/frame-004.png",
+        "animations/9b874ab0-3093-4346-b4c7-c0b315638f32/frame-005.png"
+      ],
+      "loop": false,
+      "region": {
+        "x": 193,
+        "y": 26,
+        "width": 38,
+        "height": 32
+      },
+      "durationsMs": [35, 45, 65, 45, 35]
+    },
+    {
+      "id": "animation-20009640-57c0-402a-b546-4a050a47b51d",
+      "label": "Hrobár · Rozprávanie",
+      "source": "scene-art/469a3e1d-b98e-42df-97de-7388ef2f2659/image.png",
+      "kind": "talk",
+      "fps": 12,
+      "frames": [
+        "animations/20009640-57c0-402a-b546-4a050a47b51d/frame-001.png",
+        "animations/20009640-57c0-402a-b546-4a050a47b51d/frame-002.png",
+        "animations/20009640-57c0-402a-b546-4a050a47b51d/frame-003.png",
+        "animations/20009640-57c0-402a-b546-4a050a47b51d/frame-004.png",
+        "animations/20009640-57c0-402a-b546-4a050a47b51d/frame-005.png"
+      ],
+      "loop": true,
+      "region": {
+        "x": 173,
+        "y": 62,
+        "width": 43,
+        "height": 26
+      }
+    },
+    {
+      "id": "animation-6f443452-2c1d-4af4-a51b-bc38966b79d4",
+      "label": "Přirozené mrknutí",
+      "source": "scene-art/4bcdf3eb-0f64-4c48-9fde-9c1ce4ad62a3/image.png",
+      "kind": "blink",
+      "fps": 12,
+      "frames": [
+        "animations/6f443452-2c1d-4af4-a51b-bc38966b79d4/frame-001.png",
+        "animations/6f443452-2c1d-4af4-a51b-bc38966b79d4/frame-002.png",
+        "animations/6f443452-2c1d-4af4-a51b-bc38966b79d4/frame-003.png",
+        "animations/6f443452-2c1d-4af4-a51b-bc38966b79d4/frame-004.png",
+        "animations/6f443452-2c1d-4af4-a51b-bc38966b79d4/frame-005.png"
+      ],
+      "loop": false,
+      "region": {
+        "x": 144,
+        "y": 43,
+        "width": 40,
+        "height": 13
+      },
+      "durationsMs": [35, 45, 65, 45, 35]
+    },
+    {
+      "id": "animation-22d106ac-a8ef-4e30-b371-c6a9f1aad73c",
+      "label": "Jemné mluvení · původní kresba",
+      "source": "scene-art/4bcdf3eb-0f64-4c48-9fde-9c1ce4ad62a3/image.png",
+      "kind": "talk",
+      "fps": 12,
+      "frames": [
+        "animations/22d106ac-a8ef-4e30-b371-c6a9f1aad73c/frame-001.png",
+        "animations/22d106ac-a8ef-4e30-b371-c6a9f1aad73c/frame-002.png",
+        "animations/22d106ac-a8ef-4e30-b371-c6a9f1aad73c/frame-003.png",
+        "animations/22d106ac-a8ef-4e30-b371-c6a9f1aad73c/frame-004.png",
+        "animations/22d106ac-a8ef-4e30-b371-c6a9f1aad73c/frame-005.png"
+      ],
+      "loop": true,
+      "region": {
+        "x": 150,
+        "y": 78,
+        "width": 20,
+        "height": 12
+      }
+    },
+    {
+      "id": "animation-e0ad4935-dfa1-4868-8c9b-489e34236036",
+      "label": "Přirozené mrknutí",
+      "source": "scene-art/f0d7db85-3ef1-4989-9860-fbd71b808e38/image.png",
+      "kind": "blink",
+      "fps": 12,
+      "frames": [
+        "animations/e0ad4935-dfa1-4868-8c9b-489e34236036/frame-001.png",
+        "animations/e0ad4935-dfa1-4868-8c9b-489e34236036/frame-002.png",
+        "animations/e0ad4935-dfa1-4868-8c9b-489e34236036/frame-003.png",
+        "animations/e0ad4935-dfa1-4868-8c9b-489e34236036/frame-004.png",
+        "animations/e0ad4935-dfa1-4868-8c9b-489e34236036/frame-005.png"
+      ],
+      "loop": false,
+      "region": {
+        "x": 41,
+        "y": 49,
+        "width": 66,
+        "height": 18
+      },
+      "durationsMs": [35, 45, 65, 45, 35]
+    },
+    {
+      "id": "animation-bdfdd278-4a13-4e56-a7bc-02a206eb8046",
+      "label": "Jemné mluvení · původní kresba",
+      "source": "scene-art/f0d7db85-3ef1-4989-9860-fbd71b808e38/image.png",
+      "kind": "talk",
+      "fps": 12,
+      "frames": [
+        "animations/bdfdd278-4a13-4e56-a7bc-02a206eb8046/frame-001.png",
+        "animations/bdfdd278-4a13-4e56-a7bc-02a206eb8046/frame-002.png",
+        "animations/bdfdd278-4a13-4e56-a7bc-02a206eb8046/frame-003.png",
+        "animations/bdfdd278-4a13-4e56-a7bc-02a206eb8046/frame-004.png",
+        "animations/bdfdd278-4a13-4e56-a7bc-02a206eb8046/frame-005.png"
+      ],
+      "loop": true,
+      "region": {
+        "x": 48,
+        "y": 70,
+        "width": 51,
+        "height": 21
+      }
+    },
+    {
+      "id": "animation-78de4edb-eca9-4eb8-b801-3c07a0197bf9",
+      "label": "Dievčatko v piesku · mrkanie",
+      "source": "scene-art/005f7aa7-4599-4f92-adbd-93f3762765be/image.png",
+      "kind": "blink",
+      "fps": 12,
+      "frames": [
+        "animations/78de4edb-eca9-4eb8-b801-3c07a0197bf9/frame-001.png",
+        "animations/78de4edb-eca9-4eb8-b801-3c07a0197bf9/frame-002.png",
+        "animations/78de4edb-eca9-4eb8-b801-3c07a0197bf9/frame-003.png",
+        "animations/78de4edb-eca9-4eb8-b801-3c07a0197bf9/frame-004.png",
+        "animations/78de4edb-eca9-4eb8-b801-3c07a0197bf9/frame-005.png"
+      ],
+      "loop": false,
+      "region": {
+        "x": 27,
+        "y": 93,
+        "width": 72,
+        "height": 41
+      },
+      "durationsMs": [35, 45, 65, 45, 35]
+    },
+    {
+      "id": "animation-a2a56f09-2976-4a56-b930-5fd5e31e14da",
+      "label": "Dievčatko v piesku · rozprávanie",
+      "source": "scene-art/005f7aa7-4599-4f92-adbd-93f3762765be/image.png",
+      "kind": "talk",
+      "fps": 12,
+      "frames": [
+        "animations/a2a56f09-2976-4a56-b930-5fd5e31e14da/frame-001.png",
+        "animations/a2a56f09-2976-4a56-b930-5fd5e31e14da/frame-002.png",
+        "animations/a2a56f09-2976-4a56-b930-5fd5e31e14da/frame-003.png",
+        "animations/a2a56f09-2976-4a56-b930-5fd5e31e14da/frame-004.png",
+        "animations/a2a56f09-2976-4a56-b930-5fd5e31e14da/frame-005.png"
+      ],
+      "loop": true,
+      "region": {
+        "x": 48,
+        "y": 135,
+        "width": 51,
+        "height": 15
+      }
+    },
+    {
+      "id": "animation-eafc2b2c-28c2-44ae-86f4-3dcf57949b4c",
+      "label": "Chlapec na preliezačke · mrkanie",
+      "source": "scene-art/3d2c9975-f964-46ce-bfe3-25dc0710bbf1/image.png",
+      "kind": "blink",
+      "fps": 12,
+      "frames": [
+        "animations/eafc2b2c-28c2-44ae-86f4-3dcf57949b4c/frame-001.png",
+        "animations/eafc2b2c-28c2-44ae-86f4-3dcf57949b4c/frame-002.png",
+        "animations/eafc2b2c-28c2-44ae-86f4-3dcf57949b4c/frame-003.png",
+        "animations/eafc2b2c-28c2-44ae-86f4-3dcf57949b4c/frame-004.png",
+        "animations/eafc2b2c-28c2-44ae-86f4-3dcf57949b4c/frame-005.png"
+      ],
+      "loop": false,
+      "region": {
+        "x": 56,
+        "y": 40,
+        "width": 83,
+        "height": 37
+      },
+      "durationsMs": [35, 45, 65, 45, 35]
+    },
+    {
+      "id": "animation-5337155a-717d-48a0-b196-31831c5d6438",
+      "label": "Chlapec na preliezačke · rozprávanie",
+      "source": "scene-art/3d2c9975-f964-46ce-bfe3-25dc0710bbf1/image.png",
+      "kind": "talk",
+      "fps": 12,
+      "frames": [
+        "animations/5337155a-717d-48a0-b196-31831c5d6438/frame-001.png",
+        "animations/5337155a-717d-48a0-b196-31831c5d6438/frame-002.png",
+        "animations/5337155a-717d-48a0-b196-31831c5d6438/frame-003.png",
+        "animations/5337155a-717d-48a0-b196-31831c5d6438/frame-004.png",
+        "animations/5337155a-717d-48a0-b196-31831c5d6438/frame-005.png"
+      ],
+      "loop": true,
+      "region": {
+        "x": 64,
+        "y": 78,
+        "width": 83,
+        "height": 29
+      }
+    },
+    {
+      "id": "codex-daede753-b238-40d9-8554-2cbed95bdcd1-blink",
+      "source": "scene-art/13435c1e-cc90-44de-be3b-8e727c0a5890/cutout.png",
+      "kind": "blink",
+      "label": "Přirozené mrknutí",
+      "frames": [
+        "codex/daede753-b238-40d9-8554-2cbed95bdcd1/blink-01.png",
+        "codex/daede753-b238-40d9-8554-2cbed95bdcd1/blink-02.png",
+        "codex/daede753-b238-40d9-8554-2cbed95bdcd1/blink-03.png",
+        "codex/daede753-b238-40d9-8554-2cbed95bdcd1/blink-04.png",
+        "codex/daede753-b238-40d9-8554-2cbed95bdcd1/blink-05.png"
+      ],
+      "fps": 12,
+      "loop": false,
+      "region": {
+        "x": 216,
+        "y": 59,
+        "width": 50,
+        "height": 40
+      }
+    },
+    {
+      "id": "codex-daede753-b238-40d9-8554-2cbed95bdcd1-talk",
+      "source": "scene-art/13435c1e-cc90-44de-be3b-8e727c0a5890/cutout.png",
+      "kind": "talk",
+      "label": "Mluvení – pět poloh úst",
+      "frames": [
+        "codex/daede753-b238-40d9-8554-2cbed95bdcd1/talk-01.png",
+        "codex/daede753-b238-40d9-8554-2cbed95bdcd1/talk-02.png",
+        "codex/daede753-b238-40d9-8554-2cbed95bdcd1/talk-03.png",
+        "codex/daede753-b238-40d9-8554-2cbed95bdcd1/talk-04.png",
+        "codex/daede753-b238-40d9-8554-2cbed95bdcd1/talk-05.png"
+      ],
+      "fps": 12,
+      "loop": true,
+      "region": {
+        "x": 190,
+        "y": 100,
+        "width": 49,
+        "height": 35
+      }
+    },
+    {
+      "id": "codex-a1a33a28-457b-46ce-8d66-b9bc156bb5ce-idle",
+      "source": "codex/a1a33a28-457b-46ce-8d66-b9bc156bb5ce/image.png",
+      "kind": "idle",
+      "label": "Jemné vlnění mraků",
+      "frames": [
+        "codex/a1a33a28-457b-46ce-8d66-b9bc156bb5ce/idle-01.png",
+        "codex/a1a33a28-457b-46ce-8d66-b9bc156bb5ce/idle-02.png",
+        "codex/a1a33a28-457b-46ce-8d66-b9bc156bb5ce/idle-03.png",
+        "codex/a1a33a28-457b-46ce-8d66-b9bc156bb5ce/idle-04.png",
+        "codex/a1a33a28-457b-46ce-8d66-b9bc156bb5ce/idle-05.png"
+      ],
+      "fps": 12,
+      "loop": true
+    },
+    {
+      "id": "codex-aac4133c-0eba-4f67-9723-0b2536371e91-idle",
+      "source": "codex/aac4133c-0eba-4f67-9723-0b2536371e91/image.png",
+      "kind": "idle",
+      "label": "Jemné plynutí mraků",
+      "frames": [
+        "codex/aac4133c-0eba-4f67-9723-0b2536371e91/idle-01.png",
+        "codex/aac4133c-0eba-4f67-9723-0b2536371e91/idle-02.png",
+        "codex/aac4133c-0eba-4f67-9723-0b2536371e91/idle-03.png",
+        "codex/aac4133c-0eba-4f67-9723-0b2536371e91/idle-04.png",
+        "codex/aac4133c-0eba-4f67-9723-0b2536371e91/idle-05.png"
+      ],
+      "fps": 12,
+      "loop": true
+    },
+    {
+      "id": "codex-ac7260f6-f478-4a5a-88f5-1ff652022b17-blink",
+      "source": "scene-art/5f80ae25-c1b8-4d0f-bbd5-7b33398d005a/image.png",
+      "kind": "blink",
+      "label": "Přirozené mrknutí",
+      "frames": [
+        "codex/ac7260f6-f478-4a5a-88f5-1ff652022b17/blink-01.png",
+        "codex/ac7260f6-f478-4a5a-88f5-1ff652022b17/blink-02.png",
+        "codex/ac7260f6-f478-4a5a-88f5-1ff652022b17/blink-03.png",
+        "codex/ac7260f6-f478-4a5a-88f5-1ff652022b17/blink-04.png",
+        "codex/ac7260f6-f478-4a5a-88f5-1ff652022b17/blink-05.png"
+      ],
+      "fps": 12,
+      "loop": false,
+      "region": {
+        "x": 120,
+        "y": 47,
+        "width": 46,
+        "height": 15
+      }
+    },
+    {
+      "id": "codex-ac7260f6-f478-4a5a-88f5-1ff652022b17-talk",
+      "source": "scene-art/5f80ae25-c1b8-4d0f-bbd5-7b33398d005a/image.png",
+      "kind": "talk",
+      "label": "Mluvení – pět tvarů úst",
+      "frames": [
+        "codex/ac7260f6-f478-4a5a-88f5-1ff652022b17/talk-01.png",
+        "codex/ac7260f6-f478-4a5a-88f5-1ff652022b17/talk-02.png",
+        "codex/ac7260f6-f478-4a5a-88f5-1ff652022b17/talk-03.png",
+        "codex/ac7260f6-f478-4a5a-88f5-1ff652022b17/talk-04.png",
+        "codex/ac7260f6-f478-4a5a-88f5-1ff652022b17/talk-05.png"
+      ],
+      "fps": 12,
+      "loop": true,
+      "region": {
+        "x": 139,
+        "y": 76,
+        "width": 28,
+        "height": 10
+      }
+    },
+    {
+      "id": "codex-97a7c8b9-c72e-409b-9e50-4c4c3ce53160-blink",
+      "source": "scene-art/72cfbf63-8339-4f62-ad44-b7cb7e77b77e/cutout.png",
+      "kind": "blink",
+      "label": "Přirozené mrknutí",
+      "frames": [
+        "codex/97a7c8b9-c72e-409b-9e50-4c4c3ce53160/blink-01.png",
+        "codex/97a7c8b9-c72e-409b-9e50-4c4c3ce53160/blink-02.png",
+        "codex/97a7c8b9-c72e-409b-9e50-4c4c3ce53160/blink-03.png",
+        "codex/97a7c8b9-c72e-409b-9e50-4c4c3ce53160/blink-04.png",
+        "codex/97a7c8b9-c72e-409b-9e50-4c4c3ce53160/blink-05.png"
+      ],
+      "fps": 12,
+      "loop": false,
+      "region": {
+        "x": 133,
+        "y": 60,
+        "width": 41,
+        "height": 11
+      }
+    },
+    {
+      "id": "codex-97a7c8b9-c72e-409b-9e50-4c4c3ce53160-talk",
+      "source": "scene-art/72cfbf63-8339-4f62-ad44-b7cb7e77b77e/cutout.png",
+      "kind": "talk",
+      "label": "Mluvení – klid, A, E, O, M",
+      "frames": [
+        "codex/97a7c8b9-c72e-409b-9e50-4c4c3ce53160/talk-01.png",
+        "codex/97a7c8b9-c72e-409b-9e50-4c4c3ce53160/talk-02.png",
+        "codex/97a7c8b9-c72e-409b-9e50-4c4c3ce53160/talk-03.png",
+        "codex/97a7c8b9-c72e-409b-9e50-4c4c3ce53160/talk-04.png",
+        "codex/97a7c8b9-c72e-409b-9e50-4c4c3ce53160/talk-05.png"
+      ],
+      "fps": 12,
+      "loop": true,
+      "region": {
+        "x": 135,
+        "y": 85,
+        "width": 39,
+        "height": 19
+      }
+    },
+    {
+      "id": "codex-00f94ab3-5067-431f-bee1-45d196a84d4f-blink",
+      "source": "scene-art/2e411ba3-e3cd-482f-ac9b-33f6ce6a4bf5/image.png",
+      "kind": "blink",
+      "label": "Přirozené mrknutí",
+      "frames": [
+        "codex/00f94ab3-5067-431f-bee1-45d196a84d4f/blink-01.png",
+        "codex/00f94ab3-5067-431f-bee1-45d196a84d4f/blink-02.png",
+        "codex/00f94ab3-5067-431f-bee1-45d196a84d4f/blink-03.png",
+        "codex/00f94ab3-5067-431f-bee1-45d196a84d4f/blink-04.png",
+        "codex/00f94ab3-5067-431f-bee1-45d196a84d4f/blink-05.png"
+      ],
+      "fps": 12,
+      "loop": false,
+      "region": {
+        "x": 165,
+        "y": 88,
+        "width": 59,
+        "height": 13
+      }
+    },
+    {
+      "id": "codex-00f94ab3-5067-431f-bee1-45d196a84d4f-talk",
+      "source": "scene-art/2e411ba3-e3cd-482f-ac9b-33f6ce6a4bf5/image.png",
+      "kind": "talk",
+      "label": "Mluvení – klid, E, A, O, M",
+      "frames": [
+        "codex/00f94ab3-5067-431f-bee1-45d196a84d4f/talk-01.png",
+        "codex/00f94ab3-5067-431f-bee1-45d196a84d4f/talk-02.png",
+        "codex/00f94ab3-5067-431f-bee1-45d196a84d4f/talk-03.png",
+        "codex/00f94ab3-5067-431f-bee1-45d196a84d4f/talk-04.png",
+        "codex/00f94ab3-5067-431f-bee1-45d196a84d4f/talk-05.png"
+      ],
+      "fps": 12,
+      "loop": true,
+      "region": {
+        "x": 174,
+        "y": 130,
+        "width": 40,
+        "height": 22
+      }
+    }
+  ]
+}

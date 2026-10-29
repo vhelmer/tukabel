@@ -124,6 +124,8 @@ export function validateProject(
     !object(value, 'project', [
       'id',
       'startScene',
+      'startDialogue',
+      'endings',
       'initialMessage',
       'flags',
       'scenes',
@@ -138,6 +140,34 @@ export function validateProject(
     return errors;
   for (const key of ['id', 'startScene', 'initialMessage'])
     string(value[key], key);
+  optionalString(value, 'startDialogue', 'project');
+  function ambient(input: unknown, path: string) {
+    if (input === undefined) return;
+    if (
+      typeof input !== 'string' ||
+      !/^[a-zA-Z0-9_-]+(?:\/[a-zA-Z0-9_-]+)*\.wav$/.test(input)
+    )
+      errors.push(`${path}: expected local WAV asset ID`);
+    else if (assets && !assets.includes(input))
+      errors.push(`${path}: missing asset "${input}"`);
+  }
+  if (value.endings !== undefined)
+    list(value.endings, 'endings', (ending, path) => {
+      if (!object(ending, path, ['id', 'when', 'title', 'text', 'ambient']))
+        return;
+      for (const key of ['id', 'title', 'text']) {
+        string(ending[key], `${path}.${key}`);
+        if (
+          typeof ending[key] === 'string' &&
+          (!ending[key].trim() || ending[key].length > 4000)
+        )
+          errors.push(`${path}.${key}: expected 1–4000 characters`);
+      }
+      if (ending.when === undefined)
+        errors.push(`${path}.when: expected condition`);
+      condition(ending.when, `${path}.when`);
+      ambient(ending.ambient, `${path}.ambient`);
+    });
   list(value.flags, 'flags', string);
   if (
     value.worldMap !== undefined &&
@@ -210,6 +240,7 @@ export function validateProject(
         'height',
         'background',
         'backgroundHidden',
+        'ambient',
         'hotspots',
       ])
     )
@@ -219,6 +250,7 @@ export function validateProject(
     number(scene.width, `${path}.width`);
     number(scene.height, `${path}.height`);
     asset(scene.background, `${path}.background`);
+    ambient(scene.ambient, `${path}.ambient`);
     if (
       scene.backgroundHidden !== undefined &&
       typeof scene.backgroundHidden !== 'boolean'
@@ -584,6 +616,7 @@ export function validateProject(
   for (const id of [
     content.id,
     ...content.flags,
+    ...(content.endings ?? []).map((ending) => ending.id),
     ...(content.worldMap?.points ?? []).map((point) => point.id),
     ...(content.animations ?? []).map((animation) => animation.id),
     ...content.items.map((item) => item.id),

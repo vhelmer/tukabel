@@ -1,0 +1,15 @@
+{
+  "text": "Keď mi niekto opraví pípu. Matica sa pretáča. Potrebujem francúzsky kľúč, nie ďalšiu modlitbu na páku.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "N2lVS1w4EtoT3dr4eOWO",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 8.16,
+  "audioSha256": "03a52249b65e22243ae1ae71faed3963f4cee405f962b7bf9bd622da44068369"
+}

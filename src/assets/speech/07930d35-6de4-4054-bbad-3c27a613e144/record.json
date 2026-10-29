@@ -1,0 +1,15 @@
+{
+  "text": "Rudo! Niekto nám ukradol hlavný elektrický kábel. Celá osada je bez prúdu a majstrovstvá v automatoch v riti. Nájdi ho a máš štartovné zadarmo. Vyšetruj, len mi pri tom nezožer rodinu.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "pqHfZKP75CvOlQylNhV4",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 13.92,
+  "audioSha256": "96669c30629b3705c7feef0a5de18c0cf7c1e95323792c9f08b4f15d431d16f0"
+}

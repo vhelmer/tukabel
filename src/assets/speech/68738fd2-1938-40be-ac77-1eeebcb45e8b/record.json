@@ -1,0 +1,15 @@
+{
+  "text": "Mám. Ale nedávam ju hocikomu, kto chce byť mŕtvy. Dones dôkaz, že Ľubo po pohrebe ešte niečo reklamoval. Skús servisný denník z herne.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "VnZ7lswb6C7FxwHfvIR6",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 11.2,
+  "audioSha256": "87ddb5d31ffcab7f5ced4b150f5576d43287c565947f201077a815b2da5194af"
+}

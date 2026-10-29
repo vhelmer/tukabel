@@ -1,0 +1,15 @@
+{
+  "text": "Krava nemá krst a poisťovňa neuzná vyššiu moc. Dones svätenú vodu v nejakej fľaši. Mlieko aj zvonec dostaneš, len nech to je papierovo čisté.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "e6RzI8kmgjn6nh36K9J3",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 10.64,
+  "audioSha256": "d63a8847e489148d3a7b2d59317c7aab5adc6388a2e736edeeeb515afa4c9f6b"
+}

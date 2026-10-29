@@ -1,0 +1,117 @@
+{
+  "version": 3,
+  "assetScale": 1,
+  "cutoutFrame": {
+    "x": 244,
+    "y": 275,
+    "width": 443,
+    "height": 542,
+    "sourceWidth": 1677,
+    "sourceHeight": 938
+  },
+  "cutoutFull": "cutout-full.png",
+  "source": "imported/Ponur--dv-r-pln--zv--at-db141b98.png",
+  "sourceSha256": "6848ce65f51732ed4d6c69788a25d61447bdab2b18d29901a0b77822b3ba5ff9",
+  "operation": "cutout",
+  "selection": [
+    {
+      "x": 311.63200000000006,
+      "y": 826.208
+    },
+    {
+      "x": 293.53600000000006,
+      "y": 686.157
+    },
+    {
+      "x": 214.21000000000004,
+      "y": 669.529
+    },
+    {
+      "x": 230.29200000000003,
+      "y": 568.982
+    },
+    {
+      "x": 263.4549999999999,
+      "y": 395.154
+    },
+    {
+      "x": 290.751,
+      "y": 352.833
+    },
+    {
+      "x": 356.872,
+      "y": 242.316
+    },
+    {
+      "x": 495.2,
+      "y": 243.378
+    },
+    {
+      "x": 522.678,
+      "y": 400.088
+    },
+    {
+      "x": 590.735,
+      "y": 512.583
+    },
+    {
+      "x": 620.087,
+      "y": 608.985
+    },
+    {
+      "x": 672.615,
+      "y": 724.023
+    },
+    {
+      "x": 717.029,
+      "y": 766.271
+    },
+    {
+      "x": 702.453,
+      "y": 838.897
+    },
+    {
+      "x": 578.361,
+      "y": 844.808
+    },
+    {
+      "x": 536.35,
+      "y": 832.592
+    },
+    {
+      "x": 521.464,
+      "y": 732.191
+    },
+    {
+      "x": 489.478,
+      "y": 742.944
+    },
+    {
+      "x": 479.671,
+      "y": 843.297
+    },
+    {
+      "x": 413.714,
+      "y": 894.514
+    },
+    {
+      "x": 344.953,
+      "y": 877.966
+    }
+  ],
+  "objectMask": {
+    "file": "object-mask.png",
+    "method": "sam3",
+    "refineEdges": true,
+    "detailPass": false,
+    "pixelOwnership": "alpha",
+    "matting": {
+      "method": "vitmatte",
+      "radius": 4,
+      "decontaminate": true
+    },
+    "ownershipMask": "ownership-mask.png"
+  },
+  "repairPadding": 0,
+  "repairFeather": 0
+}

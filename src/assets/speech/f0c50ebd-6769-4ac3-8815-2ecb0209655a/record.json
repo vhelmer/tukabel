@@ -1,0 +1,15 @@
+{
+  "text": "Osada má kolektívne nešťastie. Ja mám individuálnu batériu. To je trh, Rudo. Neťahaj kábel pod napätím, nech mi tu nepribudne konkurencia v truhle.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "pNInz6obpgDQGcFmaJgB",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 10.56,
+  "audioSha256": "4fa3fb225898c5e2ef28bd2f55c92fb7db43eb4277d6a50ce6cf147890fc61c7"
+}

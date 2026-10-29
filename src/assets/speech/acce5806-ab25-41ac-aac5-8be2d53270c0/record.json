@@ -1,0 +1,15 @@
+{
+  "text": "Spodok obrázka, veľký detektív. Tam je mapa. Do hrobu sa chodí cez bránu, nie cez menu.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "TX3LPaxmHKxFdv7VOQHJ",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 6.88,
+  "audioSha256": "aaf6cb99d3a748e86a4839fc487ad17f96cb7b2c896ed3c024f6216736c4218d"
+}

@@ -1,0 +1,15 @@
+{
+  "text": "Ľubo. Ráno pohreb, večer reklamácia jackpotu. Myslel som, že to robí jeho pozostalý. Mali rovnaké ponožky.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "N2lVS1w4EtoT3dr4eOWO",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 8.8,
+  "audioSha256": "d1c9255adfdd1b819cfb02028c6b9894816f90b7aea38df529622d27f0658e73"
+}

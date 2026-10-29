@@ -1,0 +1,15 @@
+{
+  "text": "Spadol mi do mreže v kaplnke. Nie je hlboko. Niečo magnetické na špagáte ho vytiahne, rukou tam netlač. Tá mreža vyhrala tri rozvody.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "CwhRBWXzGAHq8TQ4Fs17",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 10,
+  "audioSha256": "81cdeb85a51f75ef10288f8d5e449fdfae4dcf3af92ae2a2fe1a86f9762d58ab"
+}

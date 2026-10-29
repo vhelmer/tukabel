@@ -1,7 +1,8 @@
 # TUKABEL: Záhada strateného kábla
 
-Prohlížečová point-and-click adventura a lokální vizuální editor pro třídenní
-AI hackathon. TypeScript + React + Vite + PixiJS 8. Herní obsah i assety jsou v Gitu.
+Krátká dokončitelná prohlížečová point-and-click adventura s černým humorem,
+dvěma konci a lokálním vizuálním editorem. TypeScript + React + Vite + PixiJS 8.
+Herní obsah i všechny potřebné assety jsou v Gitu.
 Produkční hra je statická aplikace bez backendu; editor zapisuje pouze při lokálním vývoji.
 
 ## Spuštění a kontrola
@@ -820,49 +821,81 @@ Stejné herní okno používá i **Otestovat odsud** v Dev Mode.
   Načítá se až na požádání a obnovuje nabídku aktuálního dialogového uzlu. Nová hra slot nemaže.
   Poškozené, nekompatibilní či nedostupné úložiště nepřepíše aktuální postup.
 
-Aktuální hra začíná na zastávce (`scene1`) a obsahuje sedm lokací: zastávku,
-Ferův dvůr (`scene4`), kostel (`scene3`), hřbitov (`scene5`), hospodu (`scene6`),
-hřiště (`scene7`) a hernu (`scene8`). Zkušební lokace `workshop`, `courtyard`,
-`animation-lab` a původní úvodní `scene2` jsou z autorského projektu odstraněné.
-Příběh a propojení zbývajících lokací jsou rozpracované; chůze postavy zatím chybí.
-Animace, dabing a lip-sync lze přiřadit v editoru podle návodu níže.
+Aktuální příběh (`tukabel-complete-1`) začíná automatickým rozhovorem s Ferem
+na **Ferovom dvore**. Rudo pátrá po hlavním kabelu osady za štartovné na turnaj
+zdarma. Obsahuje 12 lokací, 13 animovaných mluvících postav, 23 předmětů,
+propojené hádanky, deník a dvě odlišná zakončení. Staré uložené technické ukázky
+mají jiné ID obsahu a nepřepisují novou hru.
 
-Deset postav je v samostatných vrstvách: Cigy a babka na zastávce, Fero a jeho
-žena na dvoře, farář, hrobár, hostinský a tři děti na hřišti. Všechny mají
-nezávislé mrkání a mluvení; nové postavy zatím nemají dialog ani dabing.
-Původní postavy zachovávají své hlasy, mapy úst i Ferovo škrábání hlavy.
-Nové výřezy používají původní RGB a nativní masku SAM3, aby AI neměnila proporce
-ani barvy. Opravená pozadí používají maskovanou kompozici. OpenAI transparentní
-alternativy a opravy jsou dohledatelné přes `preparation.json` u výřezu; každá
-generace archivuje zdroj, polygon, masku, výstup a recept. Lokální PNG animace
-jsou importované existujícím studiem a obsahují reprodukovatelný `generate.py`,
-zdroj, audit a přehled snímků v příslušném adresáři `src/assets/animations/`.
+Z mapy jsou přímo dostupné pouze **Kostol, Zastávka, Ulička, Ferov dvor,
+Krčma, Detské ihrisko, Zberňa a Kravín**. Po přijetí případu má hráč několik
+otevřených stop; zberňu prozradí Dežo a kravín Etela. Zbývající cesty jsou
+**Kostol → Cintorín → Kaplnka → Krypta**, **Krčma → Herňa** a
+**Ferov dvor → Ulička**; všechny mají také cestu zpět. Mapa se otevírá
+hoverem/kliknutím na spodní polygonový východ venkovní scény, bez zkratky M.
+Stejné východy i objekty jsou přístupné seznamem **Objekty** a klávesnicí.
 
-Technická hádanka s kabelem zůstává pouze v testovacím
-`tests/fixtures/demo-project.json`: správce → dotaz na opravu → vyžádat pásku →
-ukončit rozhovor → sebrat kabel u židle → páska na kabel → opravený kabel na router →
-dveře do dvora → tabule. Testy ji spouštějí v dočasné kopii projektu.
+Všech 45 skutečně hraných replik má místní ElevenLabs WAV a skutečný Rhubarb
+lip-sync; 13 hlasů je přiřazeno postavám. Nabídky témat nejsou zbytečně dabované.
+Kliknutí/tapnutí na titulek nebo Enter/mezerník dokončí repliku a okamžitě
+zastaví ústa. Jedna replika má přesné provider alignment, 44 mají výslovně
+odhadované časování titulků; pohyb úst vždy čte skutečné audio. Celková délka
+nahrávek je 7:05. Hra při přehrávání nepotřebuje žádný token ani síťovou službu.
+Stávající mrkání, lokální obličejové oblasti a Ferova smyčka škrábání zůstávají.
 
-Ve scéně **Zastavka (`scene1`)** jsou slovenské větvené rozhovory s Cigym
-a babkou, komentáře k předmětům a zálohovaná pivní láhev: seber ji a nabídni
-Cigymu přetažením nebo dialogovou volbou. Přečtení jízdního řádu a Cigyho
-drb otevřou další témata u babky. Jde o výchozí lokaci nové hry; v Dev Mode ji lze
-spustit také přes **Otestovat odsud**.
-Dialogy `stop-cigy` / `stop-granny` obsahují ElevenLabs tagy; titulky je odstraňují.
-Všech 17 uzlů má místní dabing Eleven v4 a Rhubarb phonetic časování. U obou
-postav je pět póz úst namapovaných na Rhubarb A–H/X: A/X → 4 (zavřeno),
-B/G → 2, C/D/H → 1, E/F → 3 (kulaté). Čísla jsou nulové indexy; příbuzné tvary
-sdílejí dostupnou pózu. Mrkání zůstává nezávislé. Titulky používají zarovnání
-poskytovatele, pokud ho vrátil; ostatní repliky mají označený odhad.
+Pozadí zberny a kravína mají zhasnuté žárovky. V kryptě svítí pouze automat
+napájený samostatnou autobaterií; její odpojení zastaví neón. Kahan v herně
+a svíčky fungují bez proudu. Místní smyčky větru, ptáků, vrzání a kapání a
+krátké efekty sebrání/kombinace/cesty se aktivují až po gestu hráče. V menu je
+**Zvuk prostredia**; menu, skrytí stránky a odmount audio uklidí/pozastaví.
+Smyčky lze reprodukovat bez API příkazem `python3 scripts/generate-ambience.py`.
 
-Předání láhve přetažením spustí Cigyho dabované poděkování; babka ji s dabovanou
-reakcí odmítne a nechá v inventáři. Pro vlastní reakci vytvoř dialog a v
-**Dialogy → Začátek dialogu** zvol **Přehrát úvodní repliku automaticky**
-(`entry: "speech"`). Nastav herce, text a případný dabing; prázdné odpovědi
-znamenají návrat do hry po konci/přeskočení repliky. V pravidle použití předmětu
-pak přidej **Otevřít dialog** s tímto ID. Efekty odebrání předmětu a příznaků
-patří k přijetí, při odmítnutí je vynech. S odpověďmi může reakce pokračovat
-normálním rozhovorem; běžné dialogy dál začínají nabídkou témat.
+### Kompletní průchod (spoilery)
+
+Pořadí několika větví lze prohodit. Následující postup ukazuje obě zakončení;
+hra po nevhodném použití zásadní předměty nespotřebuje.
+
+| Hádanka            | Řešení a podmínka                                                                                                                                                                                         |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Zahájení pátrání   | Dokonči Ferovu úvodní repliku a přijmi případ. Margitu požádej o zásoby: dá rožok a izolačnú pásku.                                                                                                       |
+| Dežův magnet       | Na zastávce seber prázdnou fľašu a ukaž ji Dežovi. Dostaneš magnet a láhev si necháš. Zeptej se ho na kabel: odemkne zberňu.                                                                              |
+| Jolanda a zvonění  | Etely se zeptej na mléko, tím odemkne kravín. U kostela použij láhev na pumpu so svätenou vodou. Dej vodu Jolandě: získáš mlieko a kravský zvonec.                                                        |
+| Probuzení Dinga    | V krčmě požádej Karola o mletou kávu. Zkombinuj ji s mlékem na studené kravučíno a dej Dingovi v zberni. Vydá francúzsky kľúč, gumené rukavice a vrátí prázdnou láhev. Proto lze magnet získat i později. |
+| Zavřená herna      | Použij kľúč na pokazenú pípu v krčmě. Karol odemkne schody a vydá zlatou fóliu. Vejdi do herne a klíčem otevři servisný kryt: najdeš denník s Ľubovým servisem po datu jeho pohřbu.                       |
+| Úředně mrtvý       | Dones denník Etele. Dostaneš pečiatku. Z kostelní nástěnky seber prázdny úmrtný list a zkombinuj s pečiatkou. Razítko zůstává použitelné.                                                                 |
+| Cintorín a kaplnka | Dej Bonifácovi kravský zvonec: otevře bránu cintorína. Milanovi ukaž svůj opečiatkovaný úmrtný list: pustí tě do kaplnky.                                                                                 |
+| Klíč od krypty     | Na ihrisku dej Špľuchovi rožok. Dostaneš špagát a podložku. Magnet + špagát vytvoří magnet na špagáte. Použij jej na kľúč pod mrežou v kaplnce; získaný kľúč odemkne kryptu.                              |
+| Odhalení           | Ľubo fingoval smrt před věřiteli a ukradl hlavní kabel pro vlastní automat na Dingově autobaterii. Dokonči jeho repliku. **Teď ručně ulož hru**, pokud chceš vidět oba konce bez nového průchodu.         |
+
+**Konec „Turnaj živých dlhov“:** Klíčem odpoj autobatériu. Rukavicemi seber
+ukradnutý hlavný kábel; bez odpojení ho hrdina odmítne vzít. Kábel + páska
+vytvoří opravený hlavný kábel. Vrať se přes kaplnku, cintorín a kostol na mapu,
+navštiv Ferov dvor a použij kabel na rozvodnú skriňu. Elektřina se skutečně
+obnoví, na dvoře se rozsvítí a objeví turnajový transparent. Následuje epilog.
+
+**Konec „Večný jackpot“:** Zkombinuj podložku se zlatou fólií. Podvodný žetón
+použij v kryptě na **živý** automat, dokud je připojená baterie. Nastane zkrat,
+automat i kabel zčernají, Ľubo uteče, vypadnou bezcenné podložky a osada zůstane
+bez proudu. Pokud jsi jen odpojil baterii a kabel ještě nevzal, volná svorka
+umožňuje baterii znovu připojit. Získáním kabelu se zavážeš k obnově; starší save
+před finále umožní změnit rozhodnutí. Druhý konec není jen jiná replika.
+
+V obou epilozích zůstává dostupné **Menu a uložené hry** a **Nová hra**.
+Uložení po konci zachová jeho stav; načtení před finále umožní dohrát jinak.
+Ruční slot se novou hrou nemaže. Vlastní generace zůstávají archivované v UUID
+adresářích, žádné původní obrazové/animované podklady se nepřepisují. Nové
+předměty a stavové rekvizity jsou ve `src/assets/story/` a jdou snadno nahradit
+lokálními obrázky přes Dev Mode při zachování jejich pravidel a ID.
+
+**Praktická omezení:** dvě vypnutá pozadí používají lokální maskované krytí
+žárovky a světelného halo; automatická kontrola zamítla externí obrazový upload,
+takže se nic neodeslalo. Realistické ruchy nejsou nahrané: jde o jemné původní
+syntetické atmosféry. Čas titulků 44 replik lze ručně zpřesnit v editoru;
+žádná z těchto částí nebrání dokončení hry.
+
+Původní technická hádanka a staré zastávkové dialogy zůstávají jen v izolovaných
+`tests/fixtures/demo-project.json` a `tests/fixtures/stop-demo-project.json`;
+nepatří do příběhové hry ani jejího buildu.
 
 ## Obsah a architektura
 
@@ -876,6 +909,10 @@ normálním rozhovorem; běžné dialogy dál začínají nabídkou témat.
 - `src/game/validateContent.ts` — ID, odkazy, rozměry, pořadí pravidel, duplicity.
 - `src/game/state.ts` — původní čistý reducer; stejná pravidla v náhledu i produkci.
 - `src/game/storage.ts` — save/load postupu; nikdy neukládá definice obsahu.
+- Volitelné `startDialogue` spouští autorský úvod; `endings` odvozuje epilogy přes
+  stejné podmínky z uložených flags. Žádný druhý ending/progress stav.
+- `SceneDefinition.ambient`, `src/ui/useSceneAudio.ts` a `EndingPanel.tsx` — lokální
+  zvukové prostředí, lifecycle a finální modal. API ani dabingové kredity se za hry nevolají.
 - `src/game/createScene.ts` — Pixi pozadí, sprity, hotspoty a stavové indikátory.
 - `src/game/characterVisual.ts` — skládání lokálních animačních oblastí bez změny
   zarovnání nebo násobení průhlednosti; `animation.ts` řídí nezávislé hodiny.
@@ -1040,8 +1077,9 @@ tím nejsou omezené. Mapa logiky ukazuje podmínky odemčení i efekty.
 pole zůstávají čitelné: dopočítá se startovní/aktuální scéna a jen odemčení
 doložitelné současnými podmínkami. Neznámá a duplicitní ID se odmítají.
 Otevření mapy ani focus nepatří do save. Reducer kontroluje odemčení i zákaz
-mapové cesty nezávisle na UI. Aktuální mapa obsahuje zastávku (`scene1`);
-mapové odemykání dalších lokací pokrývají samostatné testovací projekty.
+mapové cesty nezávisle na UI. Aktuální mapa obsahuje osm venkovních lokací;
+postupně je odemyká přijetí případu a informace o zberni a kravínu. Herňa,
+cintorín, kaplnka a krypta zůstávají dostupné pouze autorskými přechody.
 
 ## Deník úkolů a tvorba obsahu
 
@@ -1071,7 +1109,9 @@ spotřebuje předmět nebo zneplatní podmínka. Splnění se nevrací zpět. Do
 dosud nezapsaného úkolu jej ukáže rovnou přeškrtnutý. Pořadí seznamu určuje pořadí
 definic v editoru. Testovací demo postupně sleduje router, pásku a cestu za
 odemčené dveře; jeho tři úkoly jsou pouze v `tests/fixtures/demo-project.json`.
-Aktuální příběhový projekt zatím vlastní úkoly nedefinuje.
+Aktuální příběh má sedm vlastních úkolů: kabel, Dingo, herna, cintorín,
+úmrtní doklad, krypta a obnova proudu. Podmínky reagují i na spotřebované
+předměty přes trvalé příznaky; dokončený zápis se nevrací zpět.
 
 **GameState.tasks** ukládá pouze ID a hodnotu **active/completed**. Hráčský save
 je dál verze 1: starší pozice bez deníku lze načíst a aktuální příznaky/předměty
@@ -1100,8 +1140,9 @@ a chyby assetů. Engine a editorové regrese používají archivované demo ze
 `tests/fixtures/demo-project.json` pouze v **dočasných kopiích zdrojů**.
 Fixture obsahuje tři bývalé zkušební lokace; není součástí herního buildu.
 Kontroly skutečného obsahu používají `authoredTest` z `tests/editorFixture.ts`:
-zastávku s rozhovory a předáním láhve a Ferovu idle smyčku. Pravidlová kontrola
-hlídá sedm příběhových lokací a výchozí `scene1`. Editorové testy kreslí, přesouvají,
+celý příběh včetně obou konců, save/load a Ferovu idle smyčku. Starý nahraný
+zastávkový rozhovor používá oddělený `stopTest`. Pravidlová kontrola hlídá
+dvanáct lokací, výchozí `scene4`, řešitelnost i alternativní pořadí úloh. Editorové testy kreslí, přesouvají,
 importují obrázek, vytvářejí dialogy, kontrolují JSON na disku, reload, konflikt
 a odmítnutí neplatného zápisu. Reálný projekt ani produkci nemění. Produkční test
 ověřuje nepřítomnost editoru i zápisového API. Screenshoty/trace jsou v ignorovaném
@@ -1440,8 +1481,8 @@ odmítá přepsat existující výstup. Potřebuje izolované prostředí
 (cesty lze nastavit přes `ARM_STUDY_PYTHON` / `IMAGE_GEN_CLI`).
 Záznam modelu, promptu a SHA-256 vstupů/výstupu je v `generation.json`; žádné klíče.
 
-Import této animace pocházel z odstraněné úvodní scény `scene2`; aktuální hra
-jej nepřehrává. Archivované snímky mají společný ořez 391 × 626 a zdrojový offset
+Import této animace pocházel z původní odstraněné úvodní scény; aktuální hra
+jej nepřehrává. ID `scene2` je nyní přidělené kaplnce. Archivované snímky mají společný ořez 391 × 626 a zdrojový offset
 `[2,11]`. Podklady zůstávají v `src/assets/characters/man-scratch/` pro další použití;
 při opětovném přiřazení se vazba a interval upravují běžně v Animacích.
 

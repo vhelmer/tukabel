@@ -1,0 +1,15 @@
+{
+  "text": "Plán úniku. Z ihriska sa dá uniknúť len tak, že vyrastieš. Ten pohrebák šiel ku kostolu, ak riešiš dospelácke problémy.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "9Nd358gE1qQp0pDh8FgP",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 9.2,
+  "audioSha256": "0145d0537eff3ce71bc31bace2bbaa27201e3c2ba17f072e2a93b28f06461280"
+}

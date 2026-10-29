@@ -1,0 +1,33 @@
+{
+  "version": 3,
+  "assetScale": 1,
+  "source": "imported/Zabudnut--pivni-n--her-a---astia-7b7b3a1f.png",
+  "sourceSha256": "e1f8d0c7449d65d61ebc3844f7e92e1efc5a2b08504130474225378951004f64",
+  "operation": "edit",
+  "selection": [
+    {
+      "x": 0,
+      "y": 614
+    },
+    {
+      "x": 833,
+      "y": 614
+    },
+    {
+      "x": 833,
+      "y": 938
+    },
+    {
+      "x": 0,
+      "y": 938
+    }
+  ],
+  "repairPadding": 0,
+  "repairFeather": 0,
+  "prompt": "Odstran stul. Zachovej kreslený styl, perspektivu a světlo původní lokace.",
+  "providerPrompts": {
+    "background": "Edit only the selected area. Preserve the reference cartoon drawing style, perspective, lighting and composition outside the edit. Preserve the image framing. No UI, text labels or watermarks. User instructions: Odstran stul. Zachovej kreslený styl, perspektivu a světlo původní lokace."
+  },
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "high"
+}

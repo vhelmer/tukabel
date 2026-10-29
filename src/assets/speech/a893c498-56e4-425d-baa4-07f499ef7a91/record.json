@@ -1,0 +1,15 @@
+{
+  "text": "Tu máš rožok a pásku. Rožok nedávaj do rozvodu. Je tvrdší než izolácia, ale priťahuje mravce.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "bF7C2fCv7Zf30iT84wZ1",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 7.68,
+  "audioSha256": "915518f7dce5002bc32dd790fa9c688247fddfc4cb3a018ecc4b16fe96dcd22b"
+}

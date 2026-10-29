@@ -1,0 +1,15 @@
+{
+  "text": "Podložka a zlatý obal. Ale otec hovorí, že skrat je tiež výhra. Ak si poistený.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "9Nd358gE1qQp0pDh8FgP",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 6.4,
+  "audioSha256": "425539a0953c9828df9d794fc5a20174a30563e699e960ba4cd39e34e9172a1b"
+}

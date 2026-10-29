@@ -25,12 +25,17 @@ export function assetUrl(id: string): string {
 export function resolveAssets(content: GameContent): GameContent {
   return {
     ...content,
+    endings: content.endings?.map((ending) => ({
+      ...ending,
+      ambient: ending.ambient ? assetUrl(ending.ambient) : undefined,
+    })),
     worldMap: content.worldMap
       ? { ...content.worldMap, image: assetUrl(content.worldMap.image) }
       : undefined,
     scenes: content.scenes.map((scene) => ({
       ...scene,
       background: assetUrl(scene.background),
+      ambient: scene.ambient ? assetUrl(scene.ambient) : undefined,
       hotspots: scene.hotspots.map((hotspot) => ({
         ...hotspot,
         image: hotspot.image ? assetUrl(hotspot.image) : undefined,

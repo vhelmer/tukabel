@@ -5,7 +5,7 @@ import path from 'node:path';
 import sharp from 'sharp';
 import type { Hotspot, SceneDefinition, GameContent } from '../src/game/types';
 import { authoredTest as test } from './editorFixture';
-import { ready } from './helpers';
+import { ready, finishLine } from './helpers';
 
 async function sampleActor(
   page: Page,
@@ -95,6 +95,17 @@ test('Fero keeps scratching his head in a continuous idle loop without moving hi
   );
   await page.goto(workspace.url);
   await ready(page);
+  if (content.startDialogue) {
+    const intro = content.dialogues.find(
+      (d) => d.id === content.startDialogue,
+    )!;
+    const start = intro.nodes.find((node) => node.id === intro.start)!;
+    const accept = start.choices.find((choice) => choice.id === 'accept')!;
+    expect(accept).toBeDefined();
+    await finishLine(page);
+    await page.getByRole('button', { name: accept.text, exact: true }).click();
+    await expect(page.locator('.dialogue-panel')).toHaveCount(0);
+  }
   await page.mouse.move(0, 0);
   const first = await sampleActor(page, scene, fero, sourceSize);
   await expect

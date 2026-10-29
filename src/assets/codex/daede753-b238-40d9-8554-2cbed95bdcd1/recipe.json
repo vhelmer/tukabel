@@ -1,0 +1,124 @@
+{
+  "version": 1,
+  "provider": "codex-cli",
+  "model": "gpt-6.1-sol",
+  "effort": "high",
+  "context": {
+    "mode": "character",
+    "sceneId": "scene5",
+    "targetId": "layer1",
+    "source": "scene-art/13435c1e-cc90-44de-be3b-8e727c0a5890/cutout.png",
+    "label": "Nový výřez",
+    "fingerprint": "[1672,941,{\"id\":\"layer1\",\"label\":\"Nový výřez\",\"bounds\":{\"x\":534,\"y\":338,\"width\":343,\"height\":523},\"imageFit\":\"contain\",\"image\":\"scene-art/13435c1e-cc90-44de-be3b-8e727c0a5890/cutout.png\",\"onClick\":[],\"decorative\":true}]",
+    "placement": {
+      "bounds": {
+        "x": 534,
+        "y": 338,
+        "width": 343,
+        "height": 523
+      },
+      "imageFit": "contain"
+    },
+    "instruction": "Připrav přirozené mrknutí a odlišné tvary úst pro mluvení. Zachovej původní kresbu, obrysy a všechny pixely mimo oči a ústa."
+  },
+  "prompt": "Připrav přirozené mrknutí a odlišné tvary úst pro mluvení. Zachovej původní kresbu, obrysy a všechny pixely mimo oči a ústa.",
+  "task": "blink-talk",
+  "count": 5,
+  "fps": 12,
+  "sourceSha256": "d28196209593c88b7fa3e68c81aea4246afe829ab38bf5e91010b03e4aee058d",
+  "width": 343,
+  "height": 523,
+  "result": {
+    "source": "scene-art/13435c1e-cc90-44de-be3b-8e727c0a5890/cutout.png",
+    "sourceSha256": "d28196209593c88b7fa3e68c81aea4246afe829ab38bf5e91010b03e4aee058d",
+    "clips": [
+      {
+        "id": "codex-daede753-b238-40d9-8554-2cbed95bdcd1-blink",
+        "source": "scene-art/13435c1e-cc90-44de-be3b-8e727c0a5890/cutout.png",
+        "kind": "blink",
+        "label": "Přirozené mrknutí",
+        "frames": [
+          "codex/daede753-b238-40d9-8554-2cbed95bdcd1/blink-01.png",
+          "codex/daede753-b238-40d9-8554-2cbed95bdcd1/blink-02.png",
+          "codex/daede753-b238-40d9-8554-2cbed95bdcd1/blink-03.png",
+          "codex/daede753-b238-40d9-8554-2cbed95bdcd1/blink-04.png",
+          "codex/daede753-b238-40d9-8554-2cbed95bdcd1/blink-05.png"
+        ],
+        "fps": 12,
+        "loop": false,
+        "region": {
+          "x": 216,
+          "y": 59,
+          "width": 50,
+          "height": 40
+        }
+      },
+      {
+        "id": "codex-daede753-b238-40d9-8554-2cbed95bdcd1-talk",
+        "source": "scene-art/13435c1e-cc90-44de-be3b-8e727c0a5890/cutout.png",
+        "kind": "talk",
+        "label": "Mluvení – pět poloh úst",
+        "frames": [
+          "codex/daede753-b238-40d9-8554-2cbed95bdcd1/talk-01.png",
+          "codex/daede753-b238-40d9-8554-2cbed95bdcd1/talk-02.png",
+          "codex/daede753-b238-40d9-8554-2cbed95bdcd1/talk-03.png",
+          "codex/daede753-b238-40d9-8554-2cbed95bdcd1/talk-04.png",
+          "codex/daede753-b238-40d9-8554-2cbed95bdcd1/talk-05.png"
+        ],
+        "fps": 12,
+        "loop": true,
+        "region": {
+          "x": 190,
+          "y": 100,
+          "width": 49,
+          "height": 35
+        }
+      }
+    ],
+    "manifest": "codex/daede753-b238-40d9-8554-2cbed95bdcd1/recipe.json",
+    "notes": "Dva zarovnané klipy po pěti snímcích při 12 fps. Mrknutí používá horní a dolní víčka bez zmenšování očí; první a poslední snímek jsou přesnou kopií zdroje. Mluvení obsahuje původní neutrální polohu, otevřenou, zaoblenou, úzkou a téměř zavřenou polohu úst. Zachována původní kresba zubů i cigareta. Alfa je ve všech snímcích beze změny a všechny pixely mimo lokální masky očí a úst jsou totožné se zdrojem. Oblasti změn se nepřekrývají. Omezení: drobné detaily úst jsou omezené původním rozlišením.",
+    "assets": [
+      "codex/daede753-b238-40d9-8554-2cbed95bdcd1/blink-01.png",
+      "codex/daede753-b238-40d9-8554-2cbed95bdcd1/blink-02.png",
+      "codex/daede753-b238-40d9-8554-2cbed95bdcd1/blink-03.png",
+      "codex/daede753-b238-40d9-8554-2cbed95bdcd1/blink-04.png",
+      "codex/daede753-b238-40d9-8554-2cbed95bdcd1/blink-05.png",
+      "codex/daede753-b238-40d9-8554-2cbed95bdcd1/talk-01.png",
+      "codex/daede753-b238-40d9-8554-2cbed95bdcd1/talk-02.png",
+      "codex/daede753-b238-40d9-8554-2cbed95bdcd1/talk-03.png",
+      "codex/daede753-b238-40d9-8554-2cbed95bdcd1/talk-04.png",
+      "codex/daede753-b238-40d9-8554-2cbed95bdcd1/talk-05.png"
+    ]
+  },
+  "scripts": ["generate.py"],
+  "generatedManifest": {
+    "notes": "Dva zarovnané klipy po pěti snímcích při 12 fps. Mrknutí používá horní a dolní víčka bez zmenšování očí; první a poslední snímek jsou přesnou kopií zdroje. Mluvení obsahuje původní neutrální polohu, otevřenou, zaoblenou, úzkou a téměř zavřenou polohu úst. Zachována původní kresba zubů i cigareta. Alfa je ve všech snímcích beze změny a všechny pixely mimo lokální masky očí a úst jsou totožné se zdrojem. Oblasti změn se nepřekrývají. Omezení: drobné detaily úst jsou omezené původním rozlišením.",
+    "scripts": ["generate.py"],
+    "clips": [
+      {
+        "kind": "blink",
+        "label": "Přirozené mrknutí",
+        "fps": 12,
+        "frames": [
+          "blink-01.png",
+          "blink-02.png",
+          "blink-03.png",
+          "blink-04.png",
+          "blink-05.png"
+        ]
+      },
+      {
+        "kind": "talk",
+        "label": "Mluvení – pět poloh úst",
+        "fps": 12,
+        "frames": [
+          "talk-01.png",
+          "talk-02.png",
+          "talk-03.png",
+          "talk-04.png",
+          "talk-05.png"
+        ]
+      }
+    ]
+  }
+}

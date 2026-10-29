@@ -1,0 +1,15 @@
+{
+  "text": "Ľubo Šťastný. Potom vraj zomrel. Ideálne načasovanie: dlhy zdedila urna a výhru nikto nevrátil.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "pqHfZKP75CvOlQylNhV4",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 9.2,
+  "audioSha256": "96c63a83e58e79d7f47967cb1e5d58ec631b70ef5c67856d955b7f3eac1a5604"
+}

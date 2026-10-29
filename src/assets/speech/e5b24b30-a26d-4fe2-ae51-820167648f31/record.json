@@ -1,0 +1,15 @@
+{
+  "text": "V mene Otca, Syna a poistnej udalosti. Krava je vybavená. Do fľaše ti nalejem mlieko a zvonec ber tiež. Bez elektriny nás tu aj tak počuť až príliš.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "e6RzI8kmgjn6nh36K9J3",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 11.92,
+  "audioSha256": "1acc500f06ae88a6b343300cd6e6258c480e361ccb8612f70cb4e9203b1926e6"
+}

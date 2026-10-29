@@ -1,0 +1,15 @@
+{
+  "text": "V noci tu šiel biely pohrebák. Z kufra mu trčal kábel. Myslela som, že zasa niekto zakopáva nabíjačku.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "bF7C2fCv7Zf30iT84wZ1",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 7.6,
+  "audioSha256": "2eb5ff8812c7f56ce56392753b192fc96c823bdc1cad5753fc5acef72aa96ca7"
+}

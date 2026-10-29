@@ -1,0 +1,15 @@
+{
+  "text": "Z pohrebáku trčal ako chvost. Ten pán tvrdil, že je to nabíjačka na dušu. Ani u nás doma takú nemáme.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "TX3LPaxmHKxFdv7VOQHJ",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 7.36,
+  "audioSha256": "a157e9deb3f4839477f6a4ba47b4e47aa51d60f625e7c6fe03ad370e3338447e"
+}

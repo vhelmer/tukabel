@@ -1,0 +1,15 @@
+{
+  "text": "Umrel. Len splátky to neuznali. Zobral som hlavný kábel, pripojil autobatériu a mám súkromné majstrovstvá. Mŕtveho nemôžu diskvalifikovať.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "pNInz6obpgDQGcFmaJgB",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 11.04,
+  "audioSha256": "8eee546d74c7eb29c4b97b01a1d9b9d920595c81ead98a2c978ae501c55f5442"
+}

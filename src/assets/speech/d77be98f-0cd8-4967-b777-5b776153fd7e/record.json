@@ -1,0 +1,15 @@
+{
+  "text": "Bránu otvorím, keď bude čím zvoniť. Elektrický zvon nehrá a mne po treťom ding-dongu krvácala dôstojnosť. Jolanda má na krave poriadny zvonec.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "JBFqnCBsd6RMkjVDRZzb",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 10.64,
+  "audioSha256": "45a029b622ed59978ee86b679d3403d92096ef752e9430581f067ed28e66e41c"
+}

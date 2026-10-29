@@ -1,0 +1,25 @@
+{
+  "version": 3,
+  "source": "imported/Zb-ra--v-zapr--en--sb-rn--68536514.png",
+  "sourceSha256": "b6300e6f2748decbc38339e965aaf70a5f9bfccd72626c890c0bf909b993ce98",
+  "operation": "local-vector-overlay",
+  "purpose": "Zhasnutí elektrické žárovky; místní SVG bez externí služby",
+  "aiRequested": true,
+  "aiExecuted": false,
+  "aiBlockedReason": "Automatic approval review rejected external scene payload upload because the user had not specifically authorized sending it to OpenAI.",
+  "image": "image.png",
+  "overlay": "overlay.svg",
+  "overlayPlacement": {
+    "left": 875,
+    "top": 150,
+    "width": 180,
+    "height": 160
+  },
+  "width": 1672,
+  "height": 941,
+  "reconstruction": {
+    "changedPixels": 20202,
+    "unexpectedPixels": 0
+  },
+  "notes": "Původní dřevo zůstává pod mírným lokálním stínem; nahrazena pouze kresba světelného vlákna a skla. Mimo nenulovou alfu překryvu jsou RGBA pixely přesně původní."
+}

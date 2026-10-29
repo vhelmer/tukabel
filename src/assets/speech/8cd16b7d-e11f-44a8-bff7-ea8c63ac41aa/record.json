@@ -1,0 +1,15 @@
+{
+  "text": "Naposledy opravil zvonček tak, že som otvorila dvere a sused dostal výpoveď. Teraz už iba škriabe hlavu.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "bF7C2fCv7Zf30iT84wZ1",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 7.52,
+  "audioSha256": "92cd8dbc0d88606114e9f8b3346c5b725cdca2f5411093ed7bf2483cf9828ef4"
+}

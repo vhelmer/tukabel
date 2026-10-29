@@ -2,9 +2,9 @@ import { test, expect } from '@playwright/test';
 import { preview } from 'vite';
 import { readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
-import { initialState } from '../src/game/state';
+import { initialState, reduceGame } from '../src/game/state';
 import type { GameContent } from '../src/game/types';
-import { ready, object, menuAction } from './helpers';
+import { ready, object, menuAction, finishLine } from './helpers';
 
 test('production serves a static game without editor code or write endpoints', async ({
   page,
@@ -45,21 +45,33 @@ test('production serves a static game without editor code or write endpoints', a
           )
         )
           return [];
-        return [{ choice, scene, actor }];
+        return [{ choice, scene, actor, dialogue }];
       });
     })[0];
     expect(spoken).toBeDefined();
+    // Accept the authored opening: clearing dialogue alone leaves the case
+    // unopened, so talking to Fero correctly repeats his initial briefing.
+    const start = initialState(project);
+    const accepted = project.startDialogue
+      ? reduceGame(project, start, { type: 'choose', choiceId: 'accept' })
+      : start;
+    expect(accepted.dialogue).toBeNull();
     await page.evaluate(
       (save) => localStorage.setItem('tukabel.save.v1', JSON.stringify(save)),
       {
         version: 1,
         contentId: project.id,
-        state: { ...initialState(project), sceneId: spoken!.scene.id },
+        state: {
+          ...accepted,
+          sceneId: spoken!.scene.id,
+          dialogue: null,
+        },
       },
     );
     await menuAction(page, 'Načítať hru');
     await ready(page);
     await (await object(page, spoken!.actor.label)).click();
+    if (spoken!.dialogue.entry === 'speech') await finishLine(page);
     await page
       .getByRole('button', { name: spoken!.choice.text, exact: true })
       .click();

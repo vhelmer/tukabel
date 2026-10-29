@@ -1,0 +1,15 @@
+{
+  "text": "Za Jolandou do kravína. Krava ju živí a prasa jej robí audítora. Vraj potrebuje svätenú vodu. Kostol ju dáva zadarmo, ešte nemajú terminál.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "VnZ7lswb6C7FxwHfvIR6",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 12.8,
+  "audioSha256": "f9c98f816e5b4d0702eecda13b696407e665acfbe1c372a2f2ebcecdde5c2ebc"
+}

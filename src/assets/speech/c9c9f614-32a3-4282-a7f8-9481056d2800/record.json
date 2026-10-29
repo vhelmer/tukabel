@@ -1,0 +1,15 @@
+{
+  "text": "Keď niečo nesedí, zje to. Robí to rovnako ako obec, iba bez pečiatky.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "e6RzI8kmgjn6nh36K9J3",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 5.52,
+  "audioSha256": "1d03b9f9cf59c1d7725f696d8f5c47983b8761b24bd96f99b04cb3f23c54ac3c"
+}

@@ -201,6 +201,7 @@ export interface SceneDefinition {
   readonly height: number;
   readonly background: string;
   readonly backgroundHidden?: boolean;
+  readonly ambient?: string;
   readonly hotspots: readonly Hotspot[];
 }
 
@@ -238,9 +239,19 @@ export interface DialogueDefinition {
   readonly nodes: readonly DialogueNode[];
 }
 
+export interface EndingDefinition {
+  readonly id: string;
+  readonly when: Condition;
+  readonly title: string;
+  readonly text: string;
+  readonly ambient?: string;
+}
+
 export interface GameContent {
   readonly id: string;
   readonly startScene: string;
+  readonly startDialogue?: string;
+  readonly endings?: readonly EndingDefinition[];
   readonly initialMessage: string;
   readonly flags: readonly string[];
   readonly scenes: readonly SceneDefinition[];

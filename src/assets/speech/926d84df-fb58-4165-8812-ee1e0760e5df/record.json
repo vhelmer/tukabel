@@ -1,0 +1,15 @@
+{
+  "text": "Prekvapenie, Rudo. Pohreb bol kvôli dlhom. Kábel som vzal kvôli jackpotu. Tento automat živí Dingova autobatéria. Vy môžete sedieť potme, ja mám konečne nulovú konkurenciu.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "pNInz6obpgDQGcFmaJgB",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 13.36,
+  "audioSha256": "59a18fddcb54ba0aaad954366a36997314e4384a4b6077c438dc02fcf2f3cd9b"
+}

@@ -9,7 +9,7 @@ import type {
 import { useDialogueAudio } from './DialogueAudio';
 import { useConversation } from './useConversation';
 import { subtitleText } from '../game/subtitles';
-import { canTravel, getDialogueNode } from '../game/state';
+import { canTravel, getDialogueNode, getEnding } from '../game/state';
 import { reduceGame } from '../game/state';
 import { SceneCursor } from './SceneCursor';
 import type { HudController, InventoryPointer } from '../game/createHud';
@@ -21,6 +21,8 @@ import { rotatedBounds } from '../game/transforms';
 import { saveGame, loadGame } from '../game/storage';
 import { GameCanvas } from './GameCanvas';
 import { DialoguePanel } from './DialoguePanel';
+import { EndingPanel } from './EndingPanel';
+import { useSceneAudio } from './useSceneAudio';
 
 type Target = { type: 'item'; id: string } | { type: 'hotspot'; id: string };
 interface Drag {
@@ -53,7 +55,8 @@ export function GameWindow({
   const [journal, setJournal] = useState(false);
   const [mapOpen, setMapOpen] = useState(false);
   const mapTravelLock = useRef(false);
-  const modalOpen = menu || journal || mapOpen;
+  const ending = getEnding(content, state);
+  const modalOpen = menu || journal || mapOpen || Boolean(ending);
   const hudController = useRef<HudController | null>(null);
   const registerHud = useCallback((controller: HudController | null) => {
     hudController.current = controller;
@@ -99,6 +102,14 @@ export function GameWindow({
     return () => observer.disconnect();
   }, []);
   const scene = content.scenes.find((entry) => entry.id === state.sceneId)!;
+  const {
+    enabled: soundEnabled,
+    toggle: toggleSound,
+    playEffect,
+  } = useSceneAudio(
+    ending ? ending.ambient : scene.ambient,
+    menu || journal || mapOpen,
+  );
   const dialogueNode = getDialogueNode(content, state);
   const voiceActor = dialogueNode?.actor
     ? content.scenes
@@ -132,6 +143,7 @@ export function GameWindow({
   );
   const dispatch = useCallback(
     (action: GameAction) => {
+      if (ending) return;
       if (action.type === 'interact' && !state.dialogue) {
         const scene = content.scenes.find(
           (entry) => entry.id === state.sceneId,
@@ -156,6 +168,9 @@ export function GameWindow({
       const added = next.inventory.filter(
         (id) => !state.inventory.includes(id),
       );
+      if (next.sceneId !== state.sceneId) playEffect('travel');
+      else if (added.length)
+        playEffect(action.type === 'combine' ? 'combine' : 'pickup');
       const rootBox = viewport.current?.getBoundingClientRect();
       const viewBox = viewport.current
         ? sceneViewportRect(viewport.current)
@@ -176,37 +191,48 @@ export function GameWindow({
           viewBox.height / location.height,
         );
         const origin = actor?.bounds;
-        const width = origin ? origin.width * scale : 56;
-        const height = origin ? origin.height * scale : 56;
+        const collected = Boolean(
+          actor?.image && !matches(next, actor.visibleWhen),
+        );
+        const width = collected ? origin!.width * scale : 56;
+        const height = collected ? origin!.height * scale : 56;
+        const originX = origin
+          ? origin.x + (collected ? 0 : origin.width / 2)
+          : location.width / 2;
+        const originY = origin
+          ? origin.y + (collected ? 0 : origin.height / 2)
+          : location.height * 0.6;
         const x =
           viewBox.x -
           rootBox.x +
           (viewBox.width - location.width * scale) / 2 +
-          (origin?.x ?? location.width / 2) * scale;
+          originX * scale -
+          (origin && !collected ? width / 2 : 0);
         const y =
           viewBox.y -
           rootBox.y +
           (viewBox.height - location.height * scale) / 2 +
-          (origin?.y ?? location.height * 0.6) * scale;
+          originY * scale -
+          (origin && !collected ? height / 2 : 0);
         for (const id of added) {
           const item = content.items.find((i) => i.id === id)!;
           const sx = viewport.current!.clientWidth / rootBox.width;
           const sy = viewport.current!.clientHeight / rootBox.height;
           hudController.current?.pickup({
             itemId: id,
-            image: actor?.image ?? item.image,
+            image: collected ? actor!.image : item.image,
             icon: item.icon,
             x: x * sx,
             y: y * sy,
             width: width * sx,
             height: height * sy,
-            rotation: actor?.rotation ?? 0,
+            rotation: collected ? (actor?.rotation ?? 0) : 0,
           });
         }
       }
       dispatchGame(action);
     },
-    [dispatchGame, content, state],
+    [dispatchGame, content, state, ending, playEffect],
   );
   const conversation = useConversation(content, state, dispatch, modalOpen);
   const { reset: resetConversation } = conversation;
@@ -214,7 +240,7 @@ export function GameWindow({
     dialogueNode,
     voiceActor?.animation,
     modalOpen,
-    conversation.phase === 'speech',
+    !ending && conversation.phase === 'speech',
     true,
     conversation.utteranceKey,
     { compact: true, onComplete: conversation.finish },
@@ -224,7 +250,9 @@ export function GameWindow({
     [],
   );
   const speechPlayback =
-    conversation.phase === 'speech' ? dialogueAudio.clock : silentPlayback;
+    !ending && conversation.phase === 'speech'
+      ? dialogueAudio.clock
+      : silentPlayback;
   const act = useCallback(
     (hotspot: Hotspot) => {
       if (
@@ -399,6 +427,7 @@ export function GameWindow({
   const dragItem = content.items.find((entry) => entry.id === drag?.id);
   function clearUI() {
     resetConversation();
+    setMapOpen(false);
     finishDrag();
     setSelectedItem(null);
     setHovered(null);
@@ -407,6 +436,7 @@ export function GameWindow({
   }
 
   function hudAction(id: string, pointer: boolean) {
+    if (ending && id !== 'menu') return;
     if (id.startsWith('item:')) {
       if (state.dialogue || modalOpen) return;
       const itemId = id.slice(5);
@@ -502,30 +532,32 @@ export function GameWindow({
       }}
     >
       <div className="play-area" ref={viewport}>
-        <GameCanvas
-          scene={scene}
-          state={state}
-          animations={content.animations}
-          animationTrigger={animationTrigger}
-          speechPlayback={speechPlayback}
-          onPickerReady={registerPicker}
-          hud={{
-            content,
-            state,
-            selectedItem: selected,
-            drag,
-            journal,
-            map: mapOpen,
-            menu,
-            objectsOpen,
-          }}
-          onHudReady={registerHud}
-          onHudAction={hudAction}
-          onItemDown={startDrag}
-          onHover={setHovered}
-          onInteract={act}
-          blocked={modalOpen || Boolean(drag?.active)}
-        />
+        <div inert={Boolean(ending)}>
+          <GameCanvas
+            scene={scene}
+            state={state}
+            animations={content.animations}
+            animationTrigger={animationTrigger}
+            speechPlayback={speechPlayback}
+            onPickerReady={registerPicker}
+            hud={{
+              content,
+              state,
+              selectedItem: selected,
+              drag,
+              journal,
+              map: mapOpen,
+              menu: menu || Boolean(ending),
+              objectsOpen,
+            }}
+            onHudReady={registerHud}
+            onHudAction={hudAction}
+            onItemDown={startDrag}
+            onHover={setHovered}
+            onInteract={act}
+            blocked={modalOpen || Boolean(drag?.active)}
+          />
+        </div>
         {currentHover && !state.dialogue && !modalOpen && (
           <div
             className="scene-label"
@@ -553,7 +585,7 @@ export function GameWindow({
             {currentHover.label}
           </div>
         )}
-        {!state.dialogue && !mapOpen && Boolean(state.message) && (
+        {!ending && !state.dialogue && !mapOpen && Boolean(state.message) && (
           <div
             className="reaction"
             role="status"
@@ -564,7 +596,7 @@ export function GameWindow({
             <p key={state.message}>{state.message}</p>
           </div>
         )}
-        {state.dialogue && (
+        {!ending && state.dialogue && (
           <DialoguePanel
             conversation={conversation}
             audio={dialogueAudio.controls}
@@ -592,6 +624,16 @@ export function GameWindow({
               </button>
             ))}
           </div>
+        )}
+        {ending && !menu && (
+          <EndingPanel
+            ending={ending}
+            onMenu={() => setMenu(true)}
+            onReset={() => {
+              reset();
+              clearUI();
+            }}
+          />
         )}
         {menu && (
           <div className="menu-overlay">
@@ -637,6 +679,7 @@ export function GameWindow({
                   if (result.ok) {
                     restore(result.value);
                     clearUI();
+                    if (getEnding(content, result.value)) setMenu(false);
                   }
                   setStorageMessage(
                     result.ok ? 'Uložená hra je načítaná.' : result.message,
@@ -658,6 +701,9 @@ export function GameWindow({
               >
                 Nová hra
               </button>
+              <button onClick={toggleSound} aria-pressed={soundEnabled}>
+                Zvuk prostredia: {soundEnabled ? 'zapnutý' : 'vypnutý'}
+              </button>
               <p role="status" aria-label="Ukladanie">
                 {storageMessage}
               </p>
@@ -667,7 +713,7 @@ export function GameWindow({
                   focusHud('menu');
                 }}
               >
-                Pokračovať v hre
+                {ending ? 'Späť na záver' : 'Pokračovať v hre'}
               </button>
             </section>
           </div>

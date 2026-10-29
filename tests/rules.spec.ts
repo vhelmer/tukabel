@@ -18,19 +18,24 @@ import {
   isInsideScene,
 } from '../src/game/transforms';
 
-test('authored story preserves seven locations, starts at the bus stop and excludes retired scenes', () => {
+test('authored story preserves twelve locations and starts at Fero’s yard', () => {
   const project = JSON.parse(
     readFileSync('src/game/content/project.json', 'utf8'),
   ) as GameContent;
-  expect(project.startScene).toBe('scene1');
+  expect(project.startScene).toBe('scene4');
   expect(project.scenes.map((scene) => scene.id).sort()).toEqual([
     'scene1',
+    'scene10',
+    'scene11',
+    'scene12',
+    'scene2',
     'scene3',
     'scene4',
     'scene5',
     'scene6',
     'scene7',
     'scene8',
+    'scene9',
   ]);
   const fero = project.scenes
     .find((scene) => scene.id === 'scene4')!
@@ -46,7 +51,7 @@ test('authored story preserves seven locations, starts at the bus stop and exclu
 
 test('bus stop bottle trades through dialogue or use exactly once and tagged actors have valid independent animation bindings', () => {
   const project = JSON.parse(
-    readFileSync('src/game/content/project.json', 'utf8'),
+    readFileSync('tests/fixtures/stop-demo-project.json', 'utf8'),
   ) as GameContent;
   const scene = project.scenes.find((s) => s.id === 'scene1')!;
   for (const method of ['choice', 'use']) {
@@ -114,7 +119,7 @@ test('bus stop bottle trades through dialogue or use exactly once and tagged act
 
 test('automatic dialogue entry is validated without changing the default choice-first conversations', () => {
   const project = JSON.parse(
-    readFileSync('src/game/content/project.json', 'utf8'),
+    readFileSync('tests/fixtures/stop-demo-project.json', 'utf8'),
   ) as GameContent;
   const reaction = project.dialogues.find((d) => d.id === 'stop-cigy-bottle')!;
   expect(reaction.entry).toBe('speech');

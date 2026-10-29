@@ -1,0 +1,15 @@
+{
+  "text": "Špagát a podložku. Za rožok. Kŕmime nimi domácu tehlu, je alergická na granule.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "2ST3sI2j7fz4A5oXjnbA",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 6.16,
+  "audioSha256": "c5b60453279f86e16e8479f59cb51ecf6e7659dd11b83c827fc1edbb57dd247f"
+}

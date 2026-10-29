@@ -1,0 +1,15 @@
+{
+  "text": "Vratná fľaša! Aspoň niečo tu má budúcnosť. Magnet je tvoj, fľašu si nechaj. Ešte sa ti zíde na tekuté dôkazy.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "Iu5SuHOmMFnQrH4OjSZ3",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 8.48,
+  "audioSha256": "4fa0a894e1f95570f8dce3d534267c40e3e65f6d3528e38117174813f4623a0a"
+}

@@ -8,6 +8,9 @@ import type {
 } from './types';
 
 export function initialState(content: GameContent): GameState {
+  const opening = content.dialogues.find(
+    (dialogue) => dialogue.id === content.startDialogue,
+  );
   return syncLocations(
     content,
     syncTasks(content, {
@@ -16,7 +19,7 @@ export function initialState(content: GameContent): GameState {
       inventory: [],
       flags: {},
       tasks: {},
-      dialogue: null,
+      dialogue: opening ? { id: opening.id, nodeId: opening.start } : null,
       message: content.initialMessage,
     }),
   );
@@ -30,6 +33,10 @@ export function matches(state: GameState, condition?: Condition): boolean {
   if ('all' in condition)
     return condition.all.every((child) => matches(state, child));
   return !matches(state, condition.not);
+}
+
+export function getEnding(content: GameContent, state: GameState) {
+  return content.endings?.find((ending) => matches(state, ending.when));
 }
 
 // Journal entries latch once discovered/completed, even if an item is consumed
@@ -249,6 +256,7 @@ export function reduceGame(
   state: GameState,
   action: GameAction,
 ): GameState {
+  if (getEnding(content, state)) return state;
   const next = reduceAction(content, state, action);
   return next === state
     ? state

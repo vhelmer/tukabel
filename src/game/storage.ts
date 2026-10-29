@@ -19,7 +19,7 @@ export function decodeSave(
       data.version !== SAVE_VERSION ||
       data.contentId !== content.id
     )
-      return { ok: false, message: 'Uložená hra patrí inej verzii ukážky.' };
+      return { ok: false, message: 'Uložená hra patrí inej verzii hry.' };
     const state = data.state;
     if (
       !isRecord(state) ||

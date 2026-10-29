@@ -1,0 +1,124 @@
+{
+  "version": 1,
+  "provider": "codex-cli",
+  "model": "gpt-6.1-sol",
+  "effort": "high",
+  "context": {
+    "mode": "character",
+    "sceneId": "scene9",
+    "targetId": "layer1",
+    "source": "scene-art/5f80ae25-c1b8-4d0f-bbd5-7b33398d005a/image.png",
+    "label": "Dingo",
+    "fingerprint": "[1672,941,{\"id\":\"layer1\",\"label\":\"Dingo\",\"bounds\":{\"x\":410,\"y\":379,\"width\":409,\"height\":405},\"imageFit\":\"contain\",\"image\":\"scene-art/5f80ae25-c1b8-4d0f-bbd5-7b33398d005a/image.png\",\"onClick\":[],\"decorative\":true}]",
+    "placement": {
+      "bounds": {
+        "x": 410,
+        "y": 379,
+        "width": 409,
+        "height": 405
+      },
+      "imageFit": "contain"
+    },
+    "instruction": "Připrav přirozené mrknutí a odlišné tvary úst pro mluvení. Zachovej původní kresbu, obrysy a všechny pixely mimo oči a ústa."
+  },
+  "prompt": "Připrav přirozené mrknutí a odlišné tvary úst pro mluvení. Zachovej původní kresbu, obrysy a všechny pixely mimo oči a ústa.",
+  "task": "blink-talk",
+  "count": 5,
+  "fps": 12,
+  "sourceSha256": "405948d563de0d269a099eb8a3e3f5a7c9fb80f2207a7b81a07a19d29656bfc3",
+  "width": 409,
+  "height": 405,
+  "result": {
+    "source": "scene-art/5f80ae25-c1b8-4d0f-bbd5-7b33398d005a/image.png",
+    "sourceSha256": "405948d563de0d269a099eb8a3e3f5a7c9fb80f2207a7b81a07a19d29656bfc3",
+    "clips": [
+      {
+        "id": "codex-ac7260f6-f478-4a5a-88f5-1ff652022b17-blink",
+        "source": "scene-art/5f80ae25-c1b8-4d0f-bbd5-7b33398d005a/image.png",
+        "kind": "blink",
+        "label": "Přirozené mrknutí",
+        "frames": [
+          "codex/ac7260f6-f478-4a5a-88f5-1ff652022b17/blink-01.png",
+          "codex/ac7260f6-f478-4a5a-88f5-1ff652022b17/blink-02.png",
+          "codex/ac7260f6-f478-4a5a-88f5-1ff652022b17/blink-03.png",
+          "codex/ac7260f6-f478-4a5a-88f5-1ff652022b17/blink-04.png",
+          "codex/ac7260f6-f478-4a5a-88f5-1ff652022b17/blink-05.png"
+        ],
+        "fps": 12,
+        "loop": false,
+        "region": {
+          "x": 120,
+          "y": 47,
+          "width": 46,
+          "height": 15
+        }
+      },
+      {
+        "id": "codex-ac7260f6-f478-4a5a-88f5-1ff652022b17-talk",
+        "source": "scene-art/5f80ae25-c1b8-4d0f-bbd5-7b33398d005a/image.png",
+        "kind": "talk",
+        "label": "Mluvení – pět tvarů úst",
+        "frames": [
+          "codex/ac7260f6-f478-4a5a-88f5-1ff652022b17/talk-01.png",
+          "codex/ac7260f6-f478-4a5a-88f5-1ff652022b17/talk-02.png",
+          "codex/ac7260f6-f478-4a5a-88f5-1ff652022b17/talk-03.png",
+          "codex/ac7260f6-f478-4a5a-88f5-1ff652022b17/talk-04.png",
+          "codex/ac7260f6-f478-4a5a-88f5-1ff652022b17/talk-05.png"
+        ],
+        "fps": 12,
+        "loop": true,
+        "region": {
+          "x": 139,
+          "y": 76,
+          "width": 28,
+          "height": 10
+        }
+      }
+    ],
+    "manifest": "codex/ac7260f6-f478-4a5a-88f5-1ff652022b17/recipe.json",
+    "notes": "Dva zarovnané klipy po pěti snímcích při 12 fps. Mrknutí používá anatomická víčka bez deformace očí; první a poslední snímek jsou pixelově shodné se zdrojem. Mluvení obsahuje původní neutrální ústa a čtyři odlišné tvary E, A, O a sevřené M. Knír a malá velikost kresby omezují rozsah otevření úst. Oči a ústa mají nepřekrývající se oblasti změn. Všechny původní hodnoty alfa a všechny RGBA pixely mimo upravené oblasti jsou zachovány. Přiložen kontaktní přehled; vše reprodukuje lokální skript generate.py z source.png.",
+    "assets": [
+      "codex/ac7260f6-f478-4a5a-88f5-1ff652022b17/blink-01.png",
+      "codex/ac7260f6-f478-4a5a-88f5-1ff652022b17/blink-02.png",
+      "codex/ac7260f6-f478-4a5a-88f5-1ff652022b17/blink-03.png",
+      "codex/ac7260f6-f478-4a5a-88f5-1ff652022b17/blink-04.png",
+      "codex/ac7260f6-f478-4a5a-88f5-1ff652022b17/blink-05.png",
+      "codex/ac7260f6-f478-4a5a-88f5-1ff652022b17/talk-01.png",
+      "codex/ac7260f6-f478-4a5a-88f5-1ff652022b17/talk-02.png",
+      "codex/ac7260f6-f478-4a5a-88f5-1ff652022b17/talk-03.png",
+      "codex/ac7260f6-f478-4a5a-88f5-1ff652022b17/talk-04.png",
+      "codex/ac7260f6-f478-4a5a-88f5-1ff652022b17/talk-05.png"
+    ]
+  },
+  "scripts": ["generate.py"],
+  "generatedManifest": {
+    "notes": "Dva zarovnané klipy po pěti snímcích při 12 fps. Mrknutí používá anatomická víčka bez deformace očí; první a poslední snímek jsou pixelově shodné se zdrojem. Mluvení obsahuje původní neutrální ústa a čtyři odlišné tvary E, A, O a sevřené M. Knír a malá velikost kresby omezují rozsah otevření úst. Oči a ústa mají nepřekrývající se oblasti změn. Všechny původní hodnoty alfa a všechny RGBA pixely mimo upravené oblasti jsou zachovány. Přiložen kontaktní přehled; vše reprodukuje lokální skript generate.py z source.png.",
+    "scripts": ["generate.py"],
+    "clips": [
+      {
+        "kind": "blink",
+        "label": "Přirozené mrknutí",
+        "fps": 12,
+        "frames": [
+          "blink-01.png",
+          "blink-02.png",
+          "blink-03.png",
+          "blink-04.png",
+          "blink-05.png"
+        ]
+      },
+      {
+        "kind": "talk",
+        "label": "Mluvení – pět tvarů úst",
+        "fps": 12,
+        "frames": [
+          "talk-01.png",
+          "talk-02.png",
+          "talk-03.png",
+          "talk-04.png",
+          "talk-05.png"
+        ]
+      }
+    ]
+  }
+}

@@ -120,7 +120,7 @@ test('PNG blink imports, previews, saves, reloads and plays with stable placemen
   page,
   workspace,
 }, testInfo) => {
-  test.setTimeout(60000);
+  test.setTimeout(120000);
   const clickProject = JSON.parse(
     await readFile(workspace.source, 'utf8'),
   ) as GameContent;

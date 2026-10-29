@@ -1,0 +1,26 @@
+{
+  "context": {
+    "mode": "character",
+    "sceneId": "scene9",
+    "targetId": "layer1",
+    "source": "scene-art/5f80ae25-c1b8-4d0f-bbd5-7b33398d005a/image.png",
+    "label": "Dingo",
+    "fingerprint": "[1672,941,{\"id\":\"layer1\",\"label\":\"Dingo\",\"bounds\":{\"x\":410,\"y\":379,\"width\":409,\"height\":405},\"imageFit\":\"contain\",\"image\":\"scene-art/5f80ae25-c1b8-4d0f-bbd5-7b33398d005a/image.png\",\"onClick\":[],\"decorative\":true}]",
+    "placement": {
+      "bounds": {
+        "x": 410,
+        "y": 379,
+        "width": 409,
+        "height": 405
+      },
+      "imageFit": "contain"
+    },
+    "instruction": "Připrav přirozené mrknutí a odlišné tvary úst pro mluvení. Zachovej původní kresbu, obrysy a všechny pixely mimo oči a ústa."
+  },
+  "prompt": "Připrav přirozené mrknutí a odlišné tvary úst pro mluvení. Zachovej původní kresbu, obrysy a všechny pixely mimo oči a ústa.",
+  "task": "blink-talk",
+  "count": 5,
+  "fps": 12,
+  "width": 409,
+  "height": 405
+}

@@ -1,0 +1,15 @@
+{
+  "text": "Výborné. Chutí to ako moja posledná šanca. Tu máš kľúč a gumené rukavice. A vraciam fľašu. Pri svorke batérie najprv povoľ maticu, až potom sa hraj na elektrikára.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "iP95p4xoKVk53GoZ742B",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 12.16,
+  "audioSha256": "43f3b72c9501e7f9cc89be0ae33a7f0c9e973a26d5c36b05e58d89871f7b5b77"
+}

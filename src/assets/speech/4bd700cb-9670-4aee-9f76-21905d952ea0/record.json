@@ -1,0 +1,15 @@
+{
+  "text": "Pumpa naľavo. Naber do vlastnej fľaše. Posvätil som celý prívod, takže aj obecné WC má konečne duchovný rozmer.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "JBFqnCBsd6RMkjVDRZzb",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 8.8,
+  "audioSha256": "441aa9008931a65e5df39be68ed884b1825f6e7dbcdc9febf09c61dfad5a91a3"
+}

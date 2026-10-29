@@ -1,0 +1,15 @@
+{
+  "text": "Pravý žetón nemám. Všetky som prehral sám so sebou. Ale keď to cinkne, je jedno, z čoho to je. Čo by sa asi tak mohlo posrať?",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "pNInz6obpgDQGcFmaJgB",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 9.12,
+  "audioSha256": "87909fb21f035a4381ec239befc746c086b588715e453fc4972d379354c64162"
+}

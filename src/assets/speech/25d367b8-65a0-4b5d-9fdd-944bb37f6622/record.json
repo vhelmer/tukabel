@@ -1,0 +1,15 @@
+{
+  "text": "Toto je poctivý rožok. Tehla konečne niečo rozhryzie. Tu máš špagát a podložku. Keď ju zabalíš do zlatého, vyzerá presne ako žetón.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "2ST3sI2j7fz4A5oXjnbA",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 9.52,
+  "audioSha256": "2a6f8c2f7df4dabb685d1fd5f861e10f88007ef1e624f3357343491da82f0542"
+}

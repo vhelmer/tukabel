@@ -1,0 +1,209 @@
+{
+  "version": 3,
+  "assetScale": 1,
+  "alphaCutoff": 1,
+  "extraction": {
+    "method": "openai",
+    "target": {
+      "x": 869,
+      "y": 285,
+      "width": 407,
+      "height": 406
+    },
+    "inputCrop": {
+      "left": 820,
+      "top": 236,
+      "width": 505,
+      "height": 504
+    },
+    "guideMethod": "polygon",
+    "fit": "contain",
+    "anchor": "bottom-center",
+    "provider": "extraction-returned.png",
+    "input": "extraction-input.png",
+    "guide": "extraction-guide.png",
+    "pixelExact": false
+  },
+  "preview": "preview.png",
+  "cutoutFrame": {
+    "x": 878,
+    "y": 309,
+    "width": 375,
+    "height": 382,
+    "sourceWidth": 1672,
+    "sourceHeight": 941
+  },
+  "cutoutFull": "cutout-full.png",
+  "backgrounds": {
+    "restored": "provider-restored.png",
+    "masked": "image.png"
+  },
+  "defaultBackground": "restored",
+  "source": "imported/G-tick--kryptov--tr-n-a-neonov--automat-4c3918ab.png",
+  "sourceSha256": "62af99a1bc8a720466c4cf015849d729b5cf9a5d56086d0de6f5dd826d706a93",
+  "operation": "extract",
+  "selection": [
+    {
+      "x": 951.259,
+      "y": 686.873
+    },
+    {
+      "x": 990.575,
+      "y": 572.382
+    },
+    {
+      "x": 927.85,
+      "y": 554.612
+    },
+    {
+      "x": 901.199,
+      "y": 508.17
+    },
+    {
+      "x": 868.817,
+      "y": 495.506
+    },
+    {
+      "x": 967.1840000000001,
+      "y": 402.228
+    },
+    {
+      "x": 967.1840000000001,
+      "y": 328.147
+    },
+    {
+      "x": 952.415,
+      "y": 296.365
+    },
+    {
+      "x": 1087.683,
+      "y": 284.79599999999994
+    },
+    {
+      "x": 1084.488,
+      "y": 379.412
+    },
+    {
+      "x": 1208.744,
+      "y": 336.63
+    },
+    {
+      "x": 1208.908,
+      "y": 487.77399999999994
+    },
+    {
+      "x": 1275.8310000000001,
+      "y": 624.76
+    },
+    {
+      "x": 1257.184,
+      "y": 690.539
+    },
+    {
+      "x": 1119.375,
+      "y": 688.821
+    }
+  ],
+  "objectMask": {
+    "file": "object-mask.png",
+    "method": "polygon",
+    "pixelOwnership": "binary"
+  },
+  "repairPadding": 12,
+  "repairFeather": 2,
+  "debug": {
+    "files": {
+      "original": "scene-art/e292f077-0a1b-4707-9e20-fc7dbc6c9bad/source.png",
+      "objectMask": "scene-art/e292f077-0a1b-4707-9e20-fc7dbc6c9bad/object-mask.png",
+      "expandedMask": "scene-art/e292f077-0a1b-4707-9e20-fc7dbc6c9bad/expanded-mask.png",
+      "blendMask": "scene-art/e292f077-0a1b-4707-9e20-fc7dbc6c9bad/repair-mask.png",
+      "input": "scene-art/e292f077-0a1b-4707-9e20-fc7dbc6c9bad/provider-input.png",
+      "apiMask": "scene-art/e292f077-0a1b-4707-9e20-fc7dbc6c9bad/provider-mask.png",
+      "roundTrip": "scene-art/e292f077-0a1b-4707-9e20-fc7dbc6c9bad/round-trip.png",
+      "returned": "scene-art/e292f077-0a1b-4707-9e20-fc7dbc6c9bad/provider-returned.png",
+      "restored": "scene-art/e292f077-0a1b-4707-9e20-fc7dbc6c9bad/provider-restored.png",
+      "final": "scene-art/e292f077-0a1b-4707-9e20-fc7dbc6c9bad/image.png",
+      "difference": "scene-art/e292f077-0a1b-4707-9e20-fc7dbc6c9bad/provider-difference.png"
+    },
+    "geometry": {
+      "context": {
+        "x": 0,
+        "y": 0,
+        "width": 1672,
+        "height": 941
+      },
+      "canvas": {
+        "width": 1536,
+        "height": 1024
+      },
+      "content": {
+        "width": 1536,
+        "height": 864,
+        "left": 0,
+        "top": 80
+      },
+      "returned": {
+        "width": 1536,
+        "height": 1024
+      }
+    },
+    "metrics": {
+      "objectPixels": 104406,
+      "expandedPixels": 151629,
+      "featherPixels": 2252,
+      "feather": 2,
+      "padding": 12,
+      "lostObjectPixels": 0,
+      "roundTripMae": 3.662,
+      "contextMae": 5.593,
+      "seamMae": 11.162,
+      "outsideChanges": 0,
+      "boundaryMaxWeight": 0
+    },
+    "warnings": [
+      "Samotné škálování mění detaily. Porovnej kontrolní návrat bez AI s originálem.",
+      "Model změnil i chráněný kontext. Rozdíl oproti kontrolnímu návratu může vysvětlit barevný šev; color matching se nepoužívá."
+    ]
+  },
+  "pipeline": {
+    "context": "full-source-letterbox",
+    "expansion": "square-radius-native-pixels",
+    "imageResampling": "lanczos3",
+    "maskDownsampling": "conservative-pixel-footprints",
+    "feather": "inward-smoothstep-chamfer",
+    "composition": "premultiplied-interpolation-to-straight-rgba"
+  },
+  "repairMask": "repair-mask.png",
+  "prompt": "Odstraň označený objekt a přirozeně dokresli pozadí za ním ve stejném výtvarném stylu.",
+  "providerPrompts": {
+    "background": "Remove the selected object completely, including thin protrusions, outline strokes, contact shadows and detached remnants within the repair mask. Change only the missing background inside the repair mask and reconstruct continuous scenery and line work using adjacent untouched pixels as the color and lighting reference. Preserve the original palette, brightness, contrast, saturation, color temperature, shadows, texture, dirt and wear. Do not relight, brighten, darken, recolor, apply color grading or exposure/white-balance correction to the scene. Do not add highlights or haze. Preserve every existing detail outside the repair mask. Do not leave a duplicate or a silhouette. Preserve the reference cartoon drawing style, perspective, lighting and composition outside the edit. Preserve the image framing. No UI, text labels or watermarks. User instructions: Odstraň označený objekt a přirozeně dokresli pozadí za ním ve stejném výtvarném stylu.",
+    "extraction": "Extract ONLY the existing object highlighted in pink in image 2 from the unmodified image 1. This is background removal, not a redraw or enhancement. Remove all surrounding scenery and background. Return one complete isolated object on genuine transparent alpha, including holes and fine edges. Preserve the original RGB colors, brightness, luminance, contrast, saturation, exposure, white balance, color temperature, shadows and highlights of image 1. Preserve its exact identity, pose, proportions, outline, texture, dirt, stains and wear. Do not brighten or darken the subject, relight it, whiten clothing, clean stains, repaint, beautify, sharpen or normalize its colors. Do not replace shaded or dirty colors with cleaner or lighter versions. Keep subject interior colors unchanged; only change background alpha and decontaminate mixed edge pixels when necessary. Do not include the pink guide, floor, contact shadow, extra objects, text, UI, or a checkerboard. Center the complete object with at least 8% transparent margin on every side. Do not crop any part. Image 2 is a selection guide only: use image 1 as the sole color reference and never copy the pink tint."
+  },
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "high",
+  "derivedFrom": "scene-art/e292f077-0a1b-4707-9e20-fc7dbc6c9bad/recipe.json",
+  "derivedProviderSha256": "bbe0267ca715a714617b384c071908c8d2ba516f1f0eee02ebd68b44258afe78",
+  "alignment": {
+    "method": "features",
+    "matches": 194,
+    "inliers": 167,
+    "inlierRatio": 0.8608247422680413,
+    "medianError": 1.047837082547393,
+    "p90Error": 1.8890445973468077,
+    "coverageX": 0.7523530105064655,
+    "coverageY": 0.801268928433642,
+    "matrix": [
+      0.4014296505074414, 0.0025059604882314186, 853.3539587187149,
+      -0.0025059604882314186, 0.4014296505074414, 295.49545041963006
+    ],
+    "frame": {
+      "x": 878,
+      "y": 309,
+      "width": 375,
+      "height": 382,
+      "sourceWidth": 1672,
+      "sourceHeight": 941
+    }
+  },
+  "alignmentMatches": "alignment-matches.png"
+}

@@ -1,0 +1,15 @@
+{
+  "text": "Len s vlastným úmrtným listom. Živí mi tam nechávajú odtlačky a potom mám nadčasy. Papier pri kostole, pečiatku dáva Etela.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "CwhRBWXzGAHq8TQ4Fs17",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 9.76,
+  "audioSha256": "9ea137c0f7221b3356766c56f1463583b787cbb4f49498dc5c09bb77ea150a77"
+}

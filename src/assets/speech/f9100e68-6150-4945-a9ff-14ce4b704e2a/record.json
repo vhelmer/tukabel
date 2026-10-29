@@ -1,0 +1,15 @@
+{
+  "text": "Pochovali sme skrinku od televízora. Tvrdil, že chce ekologický pohreb. Potom mi z truhly zazvonil telefón a objednal si taxík.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "CwhRBWXzGAHq8TQ4Fs17",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 8.88,
+  "audioSha256": "436c4a9e5e8c8105ea80cbf5fe5c4ba386ea1073f77599abd6d4ca58e52926e8"
+}

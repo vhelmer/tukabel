@@ -1,0 +1,113 @@
+{
+  "version": 3,
+  "assetScale": 1,
+  "cutoutFrame": {
+    "x": 410,
+    "y": 379,
+    "width": 409,
+    "height": 405,
+    "sourceWidth": 1672,
+    "sourceHeight": 941
+  },
+  "cutoutFull": "cutout-full.png",
+  "source": "imported/Zb-ra--v-zapr--en--sb-rn--68536514.png",
+  "sourceSha256": "b6300e6f2748decbc38339e965aaf70a5f9bfccd72626c890c0bf909b993ce98",
+  "operation": "cutout",
+  "selection": [
+    {
+      "x": 670.983,
+      "y": 816.913
+    },
+    {
+      "x": 566.378,
+      "y": 644.109
+    },
+    {
+      "x": 510.285,
+      "y": 624.022
+    },
+    {
+      "x": 459.831,
+      "y": 581.881
+    },
+    {
+      "x": 389.205,
+      "y": 573.628
+    },
+    {
+      "x": 416.317,
+      "y": 494.423
+    },
+    {
+      "x": 469.415,
+      "y": 452.04
+    },
+    {
+      "x": 477.6070000000001,
+      "y": 370.82
+    },
+    {
+      "x": 560.927,
+      "y": 355.646
+    },
+    {
+      "x": 620.365,
+      "y": 425.618
+    },
+    {
+      "x": 666.3599999999999,
+      "y": 405.053
+    },
+    {
+      "x": 692.479,
+      "y": 368.957
+    },
+    {
+      "x": 751.0289999999999,
+      "y": 341.573
+    },
+    {
+      "x": 771.8900000000001,
+      "y": 419.26
+    },
+    {
+      "x": 744.047,
+      "y": 483.865
+    },
+    {
+      "x": 724.395,
+      "y": 538.7
+    },
+    {
+      "x": 793.46,
+      "y": 532.056
+    },
+    {
+      "x": 843.442,
+      "y": 585.154
+    },
+    {
+      "x": 864.056,
+      "y": 655.054
+    },
+    {
+      "x": 881.85,
+      "y": 768.2680000000001
+    }
+  ],
+  "objectMask": {
+    "file": "object-mask.png",
+    "method": "sam3",
+    "refineEdges": true,
+    "detailPass": false,
+    "pixelOwnership": "alpha",
+    "matting": {
+      "method": "vitmatte",
+      "radius": 4,
+      "decontaminate": true
+    },
+    "ownershipMask": "ownership-mask.png"
+  },
+  "repairPadding": 0,
+  "repairFeather": 0
+}

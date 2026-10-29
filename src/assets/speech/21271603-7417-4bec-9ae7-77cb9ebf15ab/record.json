@@ -1,0 +1,15 @@
+{
+  "text": "Mletú. Elektrina nejde, kanvica je teraz drahá váza. Zmiešaj ju s mliekom. Dingo to vypije studené, má žalúdok zo zberu.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "N2lVS1w4EtoT3dr4eOWO",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 9.44,
+  "audioSha256": "289f6b6ddc8d73d36b765161a6920ee5e994d46a8459b9581d3005083deab240"
+}

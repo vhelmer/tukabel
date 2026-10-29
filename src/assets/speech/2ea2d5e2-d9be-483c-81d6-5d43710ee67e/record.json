@@ -1,0 +1,15 @@
+{
+  "text": "Hej, viezol toho pána, čo má byť pod zemou. Doviezol si aj automat. Asi nechce, aby ho deti otravovali pri práci.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "2ST3sI2j7fz4A5oXjnbA",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 7.36,
+  "audioSha256": "ecf4d2f5555063867507df3ff6124c4a6436627b8c8c53fdd72ee530b0e534e0"
+}

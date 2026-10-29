@@ -1,0 +1,124 @@
+{
+  "version": 1,
+  "provider": "codex-cli",
+  "model": "gpt-6.1-sol",
+  "effort": "high",
+  "context": {
+    "mode": "character",
+    "sceneId": "scene10",
+    "targetId": "layer1",
+    "source": "scene-art/2e411ba3-e3cd-482f-ac9b-33f6ce6a4bf5/image.png",
+    "label": "Jolanda",
+    "fingerprint": "[1677,938,{\"id\":\"layer1\",\"label\":\"Jolanda\",\"bounds\":{\"x\":244,\"y\":275,\"width\":443,\"height\":542},\"imageFit\":\"contain\",\"image\":\"scene-art/2e411ba3-e3cd-482f-ac9b-33f6ce6a4bf5/image.png\",\"onClick\":[],\"decorative\":true}]",
+    "placement": {
+      "bounds": {
+        "x": 244,
+        "y": 275,
+        "width": 443,
+        "height": 542
+      },
+      "imageFit": "contain"
+    },
+    "instruction": "Připrav přirozené mrknutí a odlišné tvary úst pro mluvení. Zachovej původní kresbu, obrysy a všechny pixely mimo oči a ústa."
+  },
+  "prompt": "Připrav přirozené mrknutí a odlišné tvary úst pro mluvení. Zachovej původní kresbu, obrysy a všechny pixely mimo oči a ústa.",
+  "task": "blink-talk",
+  "count": 5,
+  "fps": 12,
+  "sourceSha256": "c1867db1fca39b36c6c85520be8c8b522957e86e5dbb920ae54e6722c7acc1f6",
+  "width": 443,
+  "height": 542,
+  "result": {
+    "source": "scene-art/2e411ba3-e3cd-482f-ac9b-33f6ce6a4bf5/image.png",
+    "sourceSha256": "c1867db1fca39b36c6c85520be8c8b522957e86e5dbb920ae54e6722c7acc1f6",
+    "clips": [
+      {
+        "id": "codex-00f94ab3-5067-431f-bee1-45d196a84d4f-blink",
+        "source": "scene-art/2e411ba3-e3cd-482f-ac9b-33f6ce6a4bf5/image.png",
+        "kind": "blink",
+        "label": "Přirozené mrknutí",
+        "frames": [
+          "codex/00f94ab3-5067-431f-bee1-45d196a84d4f/blink-01.png",
+          "codex/00f94ab3-5067-431f-bee1-45d196a84d4f/blink-02.png",
+          "codex/00f94ab3-5067-431f-bee1-45d196a84d4f/blink-03.png",
+          "codex/00f94ab3-5067-431f-bee1-45d196a84d4f/blink-04.png",
+          "codex/00f94ab3-5067-431f-bee1-45d196a84d4f/blink-05.png"
+        ],
+        "fps": 12,
+        "loop": false,
+        "region": {
+          "x": 165,
+          "y": 88,
+          "width": 59,
+          "height": 13
+        }
+      },
+      {
+        "id": "codex-00f94ab3-5067-431f-bee1-45d196a84d4f-talk",
+        "source": "scene-art/2e411ba3-e3cd-482f-ac9b-33f6ce6a4bf5/image.png",
+        "kind": "talk",
+        "label": "Mluvení – klid, E, A, O, M",
+        "frames": [
+          "codex/00f94ab3-5067-431f-bee1-45d196a84d4f/talk-01.png",
+          "codex/00f94ab3-5067-431f-bee1-45d196a84d4f/talk-02.png",
+          "codex/00f94ab3-5067-431f-bee1-45d196a84d4f/talk-03.png",
+          "codex/00f94ab3-5067-431f-bee1-45d196a84d4f/talk-04.png",
+          "codex/00f94ab3-5067-431f-bee1-45d196a84d4f/talk-05.png"
+        ],
+        "fps": 12,
+        "loop": true,
+        "region": {
+          "x": 174,
+          "y": 130,
+          "width": 40,
+          "height": 22
+        }
+      }
+    ],
+    "manifest": "codex/00f94ab3-5067-431f-bee1-45d196a84d4f/recipe.json",
+    "notes": "Dva zarovnané klipy po pěti snímcích při 12 fps. Mrknutí postupně překrývá oči anatomickými víčky; první a poslední snímek přesně odpovídají zdroji. Mluvení obsahuje pět různých poloh: klid, E, A, O a sevřené M. Koutek s cigaretou zůstává ukotvený, proto jsou pohyby rtů mírně asymetrické a otevření omezené. Rozlišení 443 × 542, původní alfa i veškeré pixely mimo lokální oblasti očí a úst jsou zachovány. Obdélníky změn obou klipů se nepřekrývají. Vytvořeno lokálně pomocí Pillow.",
+    "assets": [
+      "codex/00f94ab3-5067-431f-bee1-45d196a84d4f/blink-01.png",
+      "codex/00f94ab3-5067-431f-bee1-45d196a84d4f/blink-02.png",
+      "codex/00f94ab3-5067-431f-bee1-45d196a84d4f/blink-03.png",
+      "codex/00f94ab3-5067-431f-bee1-45d196a84d4f/blink-04.png",
+      "codex/00f94ab3-5067-431f-bee1-45d196a84d4f/blink-05.png",
+      "codex/00f94ab3-5067-431f-bee1-45d196a84d4f/talk-01.png",
+      "codex/00f94ab3-5067-431f-bee1-45d196a84d4f/talk-02.png",
+      "codex/00f94ab3-5067-431f-bee1-45d196a84d4f/talk-03.png",
+      "codex/00f94ab3-5067-431f-bee1-45d196a84d4f/talk-04.png",
+      "codex/00f94ab3-5067-431f-bee1-45d196a84d4f/talk-05.png"
+    ]
+  },
+  "scripts": ["generate.py"],
+  "generatedManifest": {
+    "notes": "Dva zarovnané klipy po pěti snímcích při 12 fps. Mrknutí postupně překrývá oči anatomickými víčky; první a poslední snímek přesně odpovídají zdroji. Mluvení obsahuje pět různých poloh: klid, E, A, O a sevřené M. Koutek s cigaretou zůstává ukotvený, proto jsou pohyby rtů mírně asymetrické a otevření omezené. Rozlišení 443 × 542, původní alfa i veškeré pixely mimo lokální oblasti očí a úst jsou zachovány. Obdélníky změn obou klipů se nepřekrývají. Vytvořeno lokálně pomocí Pillow.",
+    "scripts": ["generate.py"],
+    "clips": [
+      {
+        "kind": "blink",
+        "label": "Přirozené mrknutí",
+        "fps": 12,
+        "frames": [
+          "blink-01.png",
+          "blink-02.png",
+          "blink-03.png",
+          "blink-04.png",
+          "blink-05.png"
+        ]
+      },
+      {
+        "kind": "talk",
+        "label": "Mluvení – klid, E, A, O, M",
+        "fps": 12,
+        "frames": [
+          "talk-01.png",
+          "talk-02.png",
+          "talk-03.png",
+          "talk-04.png",
+          "talk-05.png"
+        ]
+      }
+    ]
+  }
+}

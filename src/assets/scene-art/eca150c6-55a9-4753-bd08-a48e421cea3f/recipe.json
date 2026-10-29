@@ -1,0 +1,25 @@
+{
+  "version": 3,
+  "source": "imported/Ponur--dv-r-pln--zv--at-db141b98.png",
+  "sourceSha256": "6848ce65f51732ed4d6c69788a25d61447bdab2b18d29901a0b77822b3ba5ff9",
+  "operation": "local-vector-overlay",
+  "purpose": "Zhasnutí elektrické žárovky; místní SVG bez externí služby",
+  "aiRequested": true,
+  "aiExecuted": false,
+  "aiBlockedReason": "Automatic approval review rejected external scene payload upload because the user had not specifically authorized sending it to OpenAI.",
+  "image": "image.png",
+  "overlay": "overlay.svg",
+  "overlayPlacement": {
+    "left": 515,
+    "top": 151,
+    "width": 180,
+    "height": 160
+  },
+  "width": 1677,
+  "height": 938,
+  "reconstruction": {
+    "changedPixels": 20529,
+    "unexpectedPixels": 0
+  },
+  "notes": "Původní dřevo zůstává pod mírným lokálním stínem; nahrazena pouze kresba světelného vlákna a skla. Mimo nenulovou alfu překryvu jsou RGBA pixely přesně původní."
+}

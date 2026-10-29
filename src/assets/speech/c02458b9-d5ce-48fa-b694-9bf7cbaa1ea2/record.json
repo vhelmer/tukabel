@@ -1,0 +1,15 @@
+{
+  "text": "Na moje živé deti. Teda na tie, čo sa ešte neodsťahovali. Všetky predĺžené záruky mám na teba.",
+  "provider": "elevenlabs",
+  "voice": {
+    "voiceId": "pqHfZKP75CvOlQylNhV4",
+    "modelId": "eleven_v4",
+    "stability": 0.5,
+    "similarityBoost": 0.75,
+    "style": 0,
+    "speed": 1,
+    "useSpeakerBoost": true
+  },
+  "duration": 7.92,
+  "audioSha256": "605cca348ccd94f97e4ea7c4a7f26fa4420301129aa87311b4ecb186dfe4e893"
+}
