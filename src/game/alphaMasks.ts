@@ -16,6 +16,8 @@ export function loadAlphaMask(url: string): Promise<AlphaMask> {
   }
   const pending = new Promise<AlphaMask>((resolve, reject) => {
     const image = new Image();
+    // Release HD assets may come from another origin; reading pixels needs CORS.
+    image.crossOrigin = 'anonymous';
     image.onload = () => {
       const canvas = document.createElement('canvas');
       try {

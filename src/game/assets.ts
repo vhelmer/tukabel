@@ -1,4 +1,5 @@
 import { files } from './assetFiles';
+export { assetSource, regions as animationRegions } from './assetFiles';
 import type { GameContent } from './types';
 
 export const assetIds = Object.keys(files).sort();
