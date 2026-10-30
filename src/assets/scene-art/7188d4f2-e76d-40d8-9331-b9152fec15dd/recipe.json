@@ -1,0 +1,121 @@
+{
+  "version": 3,
+  "assetScale": 1,
+  "cutoutFrame": {
+    "x": 899,
+    "y": 635,
+    "width": 27,
+    "height": 54,
+    "sourceWidth": 1672,
+    "sourceHeight": 941
+  },
+  "cutoutFull": "cutout-full.png",
+  "backgrounds": {
+    "restored": "provider-restored.png",
+    "masked": "image.png"
+  },
+  "defaultBackground": "restored",
+  "source": "scene-art/11d6ec4c-2034-407f-a4cb-acab6ff1e1cd/image.png",
+  "sourceSha256": "b783c50caab719e04b0d6c89caaec96f46d5b4d160e9340f80268d5c8e6c2252",
+  "operation": "extract",
+  "selection": [
+    {
+      "x": 901.526,
+      "y": 682.684
+    },
+    {
+      "x": 899.342,
+      "y": 636.815
+    },
+    {
+      "x": 922.276,
+      "y": 634.631
+    },
+    {
+      "x": 925.5520000000001,
+      "y": 689.236
+    }
+  ],
+  "objectMask": {
+    "file": "object-mask.png",
+    "method": "polygon",
+    "pixelOwnership": "binary"
+  },
+  "repairPadding": 12,
+  "repairFeather": 2,
+  "debug": {
+    "files": {
+      "original": "scene-art/7188d4f2-e76d-40d8-9331-b9152fec15dd/source.png",
+      "objectMask": "scene-art/7188d4f2-e76d-40d8-9331-b9152fec15dd/object-mask.png",
+      "expandedMask": "scene-art/7188d4f2-e76d-40d8-9331-b9152fec15dd/expanded-mask.png",
+      "blendMask": "scene-art/7188d4f2-e76d-40d8-9331-b9152fec15dd/repair-mask.png",
+      "input": "scene-art/7188d4f2-e76d-40d8-9331-b9152fec15dd/provider-input.png",
+      "apiMask": "scene-art/7188d4f2-e76d-40d8-9331-b9152fec15dd/provider-mask.png",
+      "roundTrip": "scene-art/7188d4f2-e76d-40d8-9331-b9152fec15dd/round-trip.png",
+      "returned": "scene-art/7188d4f2-e76d-40d8-9331-b9152fec15dd/provider-returned.png",
+      "restored": "scene-art/7188d4f2-e76d-40d8-9331-b9152fec15dd/provider-restored.png",
+      "final": "scene-art/7188d4f2-e76d-40d8-9331-b9152fec15dd/image.png",
+      "difference": "scene-art/7188d4f2-e76d-40d8-9331-b9152fec15dd/provider-difference.png"
+    },
+    "geometry": {
+      "context": {
+        "x": 0,
+        "y": 0,
+        "width": 1672,
+        "height": 941
+      },
+      "canvas": {
+        "width": 1536,
+        "height": 1024
+      },
+      "content": {
+        "width": 1536,
+        "height": 864,
+        "left": 0,
+        "top": 80
+      },
+      "returned": {
+        "width": 1536,
+        "height": 1024
+      }
+    },
+    "metrics": {
+      "objectPixels": 1172,
+      "expandedPixels": 7722,
+      "featherPixels": 365,
+      "feather": 2,
+      "padding": 12,
+      "lostObjectPixels": 0,
+      "roundTripMae": 1.703,
+      "contextMae": 6.444,
+      "seamMae": 9.072,
+      "outsideChanges": 0,
+      "boundaryMaxWeight": 0
+    },
+    "warnings": [
+      "Samotné škálování mění detaily. Porovnej kontrolní návrat bez AI s originálem.",
+      "Model změnil i chráněný kontext. Rozdíl oproti kontrolnímu návratu může vysvětlit barevný šev; color matching se nepoužívá."
+    ]
+  },
+  "pipeline": {
+    "context": "full-source-letterbox",
+    "expansion": "square-radius-native-pixels",
+    "imageResampling": "lanczos3",
+    "maskDownsampling": "conservative-pixel-footprints",
+    "feather": "inward-smoothstep-chamfer",
+    "composition": "premultiplied-interpolation-to-straight-rgba"
+  },
+  "repairMask": "repair-mask.png",
+  "reconstruction": {
+    "changedPixels": 6185,
+    "selectedPixels": 1172,
+    "cleanupPixels": 6185,
+    "unexpectedPixels": 0
+  },
+  "prompt": "Odstraň klíč z mříže a přirozeně dokresli pozadí za ním ve stejném výtvarném stylu.",
+  "providerPrompts": {
+    "background": "Remove the selected object completely, including thin protrusions, outline strokes, contact shadows and detached remnants within the repair mask. Change only the missing background inside the repair mask and reconstruct continuous scenery and line work using adjacent untouched pixels as the color and lighting reference. Preserve the original palette, brightness, contrast, saturation, color temperature, shadows, texture, dirt and wear. Do not relight, brighten, darken, recolor, apply color grading or exposure/white-balance correction to the scene. Do not add highlights or haze. Preserve every existing detail outside the repair mask. Do not leave a duplicate or a silhouette. Preserve the reference cartoon drawing style, perspective, lighting and composition outside the edit. Preserve the image framing. No UI, text labels or watermarks. User instructions: Odstraň klíč z mříže a přirozeně dokresli pozadí za ním ve stejném výtvarném stylu."
+  },
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "high"
+}
