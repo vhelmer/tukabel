@@ -24,7 +24,8 @@
     "compare:matting": "node experiments/object-matting/compare.mjs",
     "setup:sam3": "node scripts/setup-sam3.mjs",
     "speech:regenerate": "node scripts/regenerate-speech.mjs",
-    "build:release": "npm run typecheck && node scripts/build-release.mjs --budget 5"
+    "build:release": "npm run typecheck && node scripts/build-release.mjs --budget 5",
+    "release:upload": "node scripts/upload-release.mjs"
   },
   "dependencies": {
     "pixi.js": "^8.22.0",
@@ -32,6 +33,7 @@
     "react-dom": "^19.3.1"
   },
   "devDependencies": {
+    "@aws-sdk/client-s3": "^3.1160.0",
     "@breezystack/lamejs": "^1.2.7",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.64.1",

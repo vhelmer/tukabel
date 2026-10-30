@@ -17,7 +17,8 @@ malé funkční změny, konkrétní obsah a minimum režie. Hra běží jen v pr
   Škáluj celou scénu, nikoli jednotlivé hotspoty podle velikosti obrazovky.
 - Assety drž lokálně v `src/assets/` a importuj přes Vite. SVG jde upravovat kódem;
   pro finální kreslená pozadí lze použít generované PNG/WebP. Bez ručních editorů,
-  vzdálených CDN a kopírování cizích herních assetů.
+  vzdálených CDN a kopírování cizích herních assetů. Výjimka: release build smí
+  načíst volitelnou HD kopii z S3 (`--remote`), hra ale musí plně fungovat ze zipu.
 - Nepoužívané generace uklízej přes `npm run assets:clean` (audit), poté
   `-- --apply`. Zachovej aktuální i commitovaný obsah, kódové odkazy, úplné
   používané generace a tranzitivní podklady receptů. Čerstvé výstupy jsou hodinu

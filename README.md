@@ -54,6 +54,31 @@ odhad velikosti zipu pro každý zkoušený preset.
   výstupy kódování se cachují v ignorované `.release/cache/` (první běh AVIF
   trvá několik minut).
 
+#### Volitelná HD sada na S3
+
+Zip zůstává samostatně hratelný; HD sada (preset 0) je jen vylepšení:
+
+```sh
+node scripts/build-release.mjs --budget 5 \
+  --remote https://<bucket>.s3.<region>.amazonaws.com/tukabel/
+npm run release:upload   # AWS_ACCESS_KEY_ID/SECRET, AWS_BUCKET z .env.local
+```
+
+- Build uloží HD soubory pod obsahovými hashi do `.release/remote/<build>/`
+  i s `manifest.json` (soubory + oblasti animací v HD pixelech). Adresa
+  `…/tukabel/<build>/` je zapečená do bundlu, nový build tedy nikdy nepřepíše
+  starý.
+- Hra při startu (top-level await v `assetFiles`) zkusí stáhnout manifest
+  s timeoutem 2,5 s. Při úspěchu jede celá z HD sady, jinak celá ze zipu;
+  sady se nemíchají, protože snímky animací sdílí pixely zdroje. `?assets=local`
+  vynutí sadu ze zipu. Statické importy (cutscéna, minihra) jsou vždy lokální.
+- Bucket musí vracet CORS `Access-Control-Allow-Origin` pro `GET`: Pixi i hudba
+  čtou přes `fetch` a alfa masky čtou pixely (`crossOrigin = 'anonymous'`).
+- Upload zapisuje jen pod `tukabel/<build>/` jako `public-read` s immutable
+  cache, nic nemaže, existující soubory přeskočí a manifest nahraje poslední.
+  Region si zjistí z bucketu. Přímé S3 je HTTP/1.1, první scéna (~80 souborů)
+  se tak načítá zhruba 3–5 s; CloudFront s HTTP/2 by to zkrátil.
+
 ## Dev Mode: tvorba → test → Git
 
 1. V lokální aplikaci přepni **Dev Mode**. Editor načte aktuální zdroj a jeho revizi.
