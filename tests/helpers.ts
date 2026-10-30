@@ -43,27 +43,132 @@ export async function pointInScene(page: Page, x: number, y: number) {
     .evaluate((canvas) => ({
       width: canvas.clientWidth,
       height: canvas.clientHeight,
+      frame: canvas.parentElement?.dataset.sceneWidth
+        ? {
+            x: Number(canvas.parentElement.dataset.sceneX),
+            y: Number(canvas.parentElement.dataset.sceneY),
+            width: Number(canvas.parentElement.dataset.sceneWidth),
+            height: Number(canvas.parentElement.dataset.sceneHeight),
+          }
+        : null,
     }));
   const area = gameViewport(dimensions.width, dimensions.height);
-  const scale = Math.min(area.width / 1280, area.height / 720);
+  const fit = Math.min(area.width / 1280, area.height / 720);
+  const frame = dimensions.frame ?? {
+    x: (area.width - 1280 * fit) / 2,
+    y: area.y + (area.height - 720 * fit) / 2,
+    width: 1280 * fit,
+    height: 720 * fit,
+  };
+  const scale = frame.width / 1280;
   return {
-    x:
-      box.x +
-      (((area.width - 1280 * scale) / 2 + x * scale) * box.width) /
-        dimensions.width,
-    y:
-      box.y +
-      ((area.y + (area.height - 720 * scale) / 2 + y * scale) * box.height) /
-        dimensions.height,
+    x: box.x + ((frame.x + x * scale) * box.width) / dimensions.width,
+    y: box.y + ((frame.y + y * scale) * box.height) / dimensions.height,
   };
 }
+// Actions reveal their target through real scrolling. Pure coordinate sampling
+// above deliberately keeps the camera still (e.g. screenshot/scale assertions).
+export async function revealPointInScene(page: Page, x: number, y: number) {
+  for (let attempt = 0; attempt < 12; attempt++) {
+    const point = await pointInScene(page, x, y);
+    const canvas = page.locator('.canvas-host canvas');
+    const box = (await canvas.boundingBox())!;
+    const view = await canvas.evaluate((node) => ({
+      w: node.clientWidth,
+      h: node.clientHeight,
+      x: Number(node.parentElement!.dataset.sceneX),
+      y: Number(node.parentElement!.dataset.sceneY),
+      width: Number(node.parentElement!.dataset.sceneWidth),
+      height: Number(node.parentElement!.dataset.sceneHeight),
+    }));
+    if (!Number.isFinite(view.width)) return point;
+    let dx =
+      Math.max(box.x + 24, Math.min(box.x + box.width - 24, point.x)) - point.x;
+    let dy =
+      Math.max(box.y + 110, Math.min(box.y + box.height - 24, point.y)) -
+      point.y;
+    if (view.width <= view.w) dx = 0;
+    if (view.height <= view.h) dy = 0;
+    dx = Math.max(-box.width * 0.4, Math.min(box.width * 0.4, dx));
+    dy = Math.max(-box.height * 0.4, Math.min(box.height * 0.4, dy));
+    // Touch gestures have a deliberate drag threshold; a small remaining
+    // margin is already visible and must not trigger another sub-threshold drag.
+    if (Math.abs(dx) < 16 && Math.abs(dy) < 16) return point;
+    const expectedX =
+      view.width <= view.w
+        ? view.x
+        : Math.max(
+            Math.min(0, view.w - view.width),
+            Math.min(0, view.x + (dx * view.w) / box.width),
+          );
+    const expectedY =
+      view.height <= view.h
+        ? view.y
+        : Math.max(
+            view.h - view.height,
+            Math.min(0, view.y + (dy * view.h) / box.height),
+          );
+    if (
+      Math.abs(expectedX - view.x) < 0.5 &&
+      Math.abs(expectedY - view.y) < 0.5
+    )
+      return point;
+    const start = {
+      x: box.x + box.width / 2,
+      y: box.y + Math.max(115, box.height * 0.55),
+    };
+    if (await page.evaluate(() => matchMedia('(pointer: coarse)').matches)) {
+      const session = await page.context().newCDPSession(page);
+      try {
+        await session.send('Input.dispatchTouchEvent', {
+          type: 'touchStart',
+          touchPoints: [{ ...start, id: 1 }],
+        });
+        for (let step = 1; step <= 6; step++)
+          await session.send('Input.dispatchTouchEvent', {
+            type: 'touchMove',
+            touchPoints: [
+              {
+                x: start.x + (dx * step) / 6,
+                y: start.y + (dy * step) / 6,
+                id: 1,
+              },
+            ],
+          });
+        await session.send('Input.dispatchTouchEvent', {
+          type: 'touchEnd',
+          touchPoints: [],
+        });
+      } finally {
+        await session.detach();
+      }
+    } else {
+      await page.mouse.move(start.x, start.y);
+      await page.mouse.wheel(-dx, -dy);
+    }
+    const horizontal = Math.abs(expectedX - view.x) > 0.5;
+    const previous = horizontal ? view.x : view.y;
+    const expected = horizontal ? expectedX : expectedY;
+    const moved = expect.poll(async () =>
+      Number(
+        await page
+          .locator('.canvas-host')
+          .getAttribute(horizontal ? 'data-scene-x' : 'data-scene-y'),
+      ),
+    );
+    if (expected > previous) await moved.toBeGreaterThan(previous + 0.5);
+    else await moved.toBeLessThan(previous - 0.5);
+  }
+  return pointInScene(page, x, y);
+}
+
 export async function activate(
   page: Page,
   x: number,
   y: number,
   touch = false,
 ) {
-  const point = await pointInScene(page, x, y);
+  const point = await revealPointInScene(page, x, y);
   if (touch) await page.touchscreen.tap(point.x, point.y);
   else await page.mouse.click(point.x, point.y);
 }

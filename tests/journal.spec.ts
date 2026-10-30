@@ -10,6 +10,7 @@ import {
   menuAction,
   object,
   pointInScene,
+  revealPointInScene,
   ready,
 } from './helpers';
 import type { GameContent } from '../src/game/types';
@@ -100,7 +101,12 @@ test('upper HUD supports real drags; journal discovers and strikes tasks through
     name: 'Opravený kábel',
     exact: true,
   });
-  await dragItem(page, fixed, await pointInScene(page, 440, 480), isMobile);
+  await dragItem(
+    page,
+    fixed,
+    await revealPointInScene(page, 440, 480),
+    isMobile,
+  );
   journal = await openJournal(page, isMobile);
   await expect(
     journal.locator('[data-task-id="power-router"]'),

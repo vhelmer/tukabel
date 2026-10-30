@@ -238,8 +238,29 @@ export function createScene(
     }
     region.on('pointerover', () => hover(hotspot));
     region.on('pointerout', () => hover(null));
-    region.on('pointertap', (event) => {
-      if (event.button === 0) callbacks.onInteract(hotspot);
+    let pressed: { id: number; x: number; y: number } | null = null;
+    region.on('pointerdown', (event: FederatedPointerEvent) => {
+      pressed =
+        event.button === 0
+          ? { id: event.pointerId, x: event.clientX, y: event.clientY }
+          : null;
+    });
+    region.on('pointercancel', () => {
+      pressed = null;
+    });
+    region.on('pointerupoutside', () => {
+      pressed = null;
+    });
+    region.on('pointertap', (event: FederatedPointerEvent) => {
+      const start = pressed;
+      pressed = null;
+      if (
+        start &&
+        start.id === event.pointerId &&
+        event.button === 0 &&
+        Math.hypot(event.clientX - start.x, event.clientY - start.y) <= 7
+      )
+        callbacks.onInteract(hotspot);
     });
     regions.set(hotspot.id, region);
     root.addChild(region);

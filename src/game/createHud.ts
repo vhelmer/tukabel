@@ -103,6 +103,7 @@ export function createHud(
   const effects = root.addChild(new Container());
   effects.eventMode = 'none';
   let snapshot = initial;
+  let sceneAnchor: Bounds | undefined;
   let width = 1,
     height = 1;
   let inventoryPage = 0,
@@ -494,7 +495,7 @@ export function createHud(
     const scene = snapshot.content.scenes.find(
       (s) => s.id === snapshot.state.sceneId,
     )!;
-    const frame = sceneFrame(width, height, scene);
+    const frame = sceneAnchor ?? sceneFrame(width, height, scene);
     if (snapshot.map && snapshot.content.worldMap) {
       shelfBounds = null;
       layout = {
@@ -727,7 +728,7 @@ export function createHud(
     const scene = snapshot.content.scenes.find(
       (s) => s.id === snapshot.state.sceneId,
     )!;
-    const frame = sceneFrame(width, height, scene);
+    const frame = sceneAnchor ?? sceneFrame(width, height, scene);
     const b = {
       x: frame.x + 6,
       y: frame.y + 6,
@@ -1121,7 +1122,8 @@ export function createHud(
     get active() {
       return flights.length > 0 || shadeAlpha !== shadeTarget;
     },
-    resize(w: number, h: number) {
+    resize(w: number, h: number, anchor?: Bounds) {
+      sceneAnchor = anchor;
       width = w;
       height = h;
       rebuild();

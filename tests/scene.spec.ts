@@ -20,7 +20,7 @@ import {
   getTape,
   menuAction,
   object,
-  pointInScene,
+  revealPointInScene,
   ready,
 } from './helpers';
 
@@ -125,7 +125,12 @@ editorTest(
     await expect(bottle).toBeVisible();
     await activate(page, 525, 578, isMobile);
     await expect(bottle).toHaveCount(1);
-    await dragItem(page, bottle, await pointInScene(page, 730, 430), isMobile);
+    await dragItem(
+      page,
+      bottle,
+      await revealPointInScene(page, 730, 430),
+      isMobile,
+    );
     await expect(dialogue).toHaveClass(/is-speaking/);
     await expect(dialogue).toContainText('Prázdna?');
     await expect(dialogue.locator('audio')).toHaveCount(1);
@@ -142,7 +147,12 @@ editorTest(
       .getByRole('button', { name: 'Dokončiť repliku', exact: true })
       .click();
     await expect(dialogue).toHaveCount(0);
-    await dragItem(page, bottle, await pointInScene(page, 250, 400), isMobile);
+    await dragItem(
+      page,
+      bottle,
+      await revealPointInScene(page, 250, 400),
+      isMobile,
+    );
     await expect(dialogue).toHaveClass(/is-speaking/);
     await expect(dialogue).toContainText('Pätnásť centov');
     await expect(dialogue.locator('audio')).toHaveCount(1);
@@ -197,6 +207,8 @@ test('complete adventure supports real inventory drags, scene drops, transitions
   page,
   isMobile,
 }, testInfo) => {
+  // Mobile panning adds real input steps to this full save/load playthrough.
+  test.setTimeout(120000);
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto('/');
@@ -206,7 +218,7 @@ test('complete adventure supports real inventory drags, scene drops, transitions
   await activate(page, 1220, 440, isMobile);
   await expect(reaction(page)).toContainText('Zamknuté');
   if (!isMobile) {
-    const point = await pointInScene(page, 440, 480);
+    const point = await revealPointInScene(page, 440, 480);
     await page.mouse.move(point.x, point.y);
     await expect(page.locator('.scene-label')).toContainText('Router');
   }
@@ -216,7 +228,12 @@ test('complete adventure supports real inventory drags, scene drops, transitions
     exact: true,
   });
   await expect(cable).toBeVisible();
-  await dragItem(page, cable, await pointInScene(page, 440, 480), isMobile);
+  await dragItem(
+    page,
+    cable,
+    await revealPointInScene(page, 440, 480),
+    isMobile,
+  );
   await expect(reaction(page)).toContainText('Najprv ho opravím páskou');
   await expect(cable).toBeVisible();
   await getTape(page);
@@ -243,10 +260,20 @@ test('complete adventure supports real inventory drags, scene drops, transitions
   await expect(fixed).toBeVisible();
   await expect(cable).toHaveCount(0);
   await expect(tape).toHaveCount(0);
-  await dragItem(page, fixed, await pointInScene(page, 1090, 375), isMobile);
+  await dragItem(
+    page,
+    fixed,
+    await revealPointInScene(page, 1090, 375),
+    isMobile,
+  );
   await expect(reaction(page)).toContainText('Toto tu nepomôže');
   await expect(fixed).toBeVisible();
-  await dragItem(page, fixed, await pointInScene(page, 440, 480), isMobile);
+  await dragItem(
+    page,
+    fixed,
+    await revealPointInScene(page, 440, 480),
+    isMobile,
+  );
   await expect(reaction(page)).toContainText('Zapojené!');
   await expect(fixed).toHaveCount(0);
   expect(await original!.evaluate((element) => element.isConnected)).toBe(true);

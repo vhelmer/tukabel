@@ -14,6 +14,14 @@ import type {
   InventoryPointer,
 } from '../game/createHud';
 import { gameViewport } from '../game/hudLayout';
+import { attachScenePan } from '../game/scenePan';
+import {
+  gameSceneView,
+  panSceneView,
+  revealInView,
+  visibleSceneFrame,
+} from '../game/sceneView';
+import type { SceneView, SceneViewController } from '../game/sceneView';
 import { hudArt } from '../game/hudArt';
 import { HudAccessibility } from './HudAccessibility';
 import type {
@@ -41,6 +49,9 @@ interface GameCanvasProps extends SceneCallbacks {
   onHudReady?: (controller: HudController | null) => void;
   onReady?: (sceneId: string) => void;
   onError?: () => void;
+  pannable?: boolean;
+  onViewChange?: (view: SceneView, sceneId: string) => void;
+  onViewReady?: (controller: SceneViewController | null) => void;
 }
 
 const noAnimations: readonly AnimationDefinition[] = [];
@@ -66,7 +77,12 @@ function MountedCanvas({
   onHudReady,
   onReady,
   onError,
+  pannable = false,
+  onViewChange,
+  onViewReady,
 }: GameCanvasProps) {
+  const [camera, setCamera] = useState<SceneView | null>(null);
+  const [panned, setPanned] = useState(false);
   const hudRef = useRef<ReturnType<typeof createHud> | null>(null);
   const hudSnapshot = useRef(hud);
   useLayoutEffect(() => {
@@ -93,10 +109,22 @@ function MountedCanvas({
     currentState.current = { state, blocked, animationPreview, speechPlayback };
   }, [state, blocked, animationPreview, speechPlayback]);
   const lastTrigger = useRef(0);
-  const callbacks = useRef({ onHover, onInteract, onHudAction, onItemDown });
+  const callbacks = useRef({
+    onHover,
+    onInteract,
+    onHudAction,
+    onItemDown,
+    onViewChange,
+  });
   useEffect(() => {
-    callbacks.current = { onHover, onInteract, onHudAction, onItemDown };
-  }, [onHover, onInteract, onHudAction, onItemDown]);
+    callbacks.current = {
+      onHover,
+      onInteract,
+      onHudAction,
+      onItemDown,
+      onViewChange,
+    };
+  }, [onHover, onInteract, onHudAction, onItemDown, onViewChange]);
   const playbackRef = useRef<(() => void) | null>(null);
   const hostRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<ReturnType<typeof createScene> | null>(null);
@@ -115,8 +143,16 @@ function MountedCanvas({
     let hudPublished = false;
     let observer: ResizeObserver | undefined;
     let stopPlayback: (() => void) | undefined;
+    let pan: ReturnType<typeof attachScenePan> | undefined;
+    let viewPublished = false;
+    let view: SceneView | undefined;
 
     const destroy = () => {
+      pan?.destroy();
+      if (viewPublished) {
+        onViewReady?.(null);
+        viewPublished = false;
+      }
       if (pickerPublished) {
         onPickerReady?.(null);
         pickerPublished = false;
@@ -263,7 +299,9 @@ function MountedCanvas({
           texture,
           {
             onHover: (hotspot) => callbacks.current.onHover(hotspot),
-            onInteract: (hotspot) => callbacks.current.onInteract(hotspot),
+            onInteract: (hotspot) => {
+              if (!pan?.suppressTap) callbacks.current.onInteract(hotspot);
+            },
           },
           () => app.render(),
           textures,
@@ -342,7 +380,7 @@ function MountedCanvas({
           mountedScene.hoverAt(
             pointer &&
               !mountedHud?.controller.blocksPointer(pointer.x, pointer.y)
-              ? scenePoint(sceneRect(), scene, pointer.x, pointer.y)
+              ? scenePoint(sceneRect(), scene, pointer.x, pointer.y, view)
               : null,
           );
         const sceneRect = () => app.canvas.getBoundingClientRect();
@@ -374,15 +412,83 @@ function MountedCanvas({
         app.canvas.setAttribute('aria-hidden', 'true');
         host.appendChild(app.canvas);
 
+        const applyView = (next: SceneView) => {
+          view = next;
+          mountedScene.resize(
+            next.frame.width,
+            next.frame.height,
+            next.frame.x,
+            next.frame.y,
+          );
+          setCamera(next);
+          callbacks.current.onViewChange?.(next, scene.id);
+          syncPointer();
+        };
+        const isBlocked = () =>
+          Boolean(
+            currentState.current.blocked ||
+            currentState.current.state.dialogue ||
+            hudSnapshot.current?.menu ||
+            hudSnapshot.current?.journal ||
+            hudSnapshot.current?.map,
+          );
         const resize = () => {
           const width = Math.max(1, host.clientWidth);
           const height = Math.max(1, host.clientHeight);
           app.renderer.resize(width, height);
-          const area = gameViewport(width, height);
-          mountedScene.resize(area.width, area.height, area.x, area.y);
-          mountedHud?.resize(width, height);
-          syncPointer();
+          if (pannable) {
+            let next = gameSceneView(width, height, scene);
+            if (view) {
+              const focusX = (view.width / 2 - view.frame.x) / view.frame.width;
+              const focusY =
+                (view.height / 2 - view.frame.y) / view.frame.height;
+              next = gameSceneView(width, height, scene, {
+                x: (0.5 - focusX) * next.frame.width,
+                y: (0.5 - focusY) * next.frame.height,
+              });
+            }
+            applyView(next);
+            mountedHud?.resize(width, height, visibleSceneFrame(next));
+          } else {
+            const area = gameViewport(width, height);
+            mountedScene.resize(area.width, area.height, area.x, area.y);
+            mountedHud?.resize(width, height);
+            syncPointer();
+          }
         };
+        if (pannable) {
+          pan = attachScenePan(app.canvas, {
+            canPan: () =>
+              Boolean(
+                view &&
+                (view.frame.width > view.width + 0.5 ||
+                  view.frame.height > view.height + 0.5),
+              ),
+            blocked: isBlocked,
+            blocksPointer: (x, y) =>
+              mountedHud?.controller.blocksPointer(x, y) ?? false,
+            horizontalOnly: () =>
+              Boolean(view && view.frame.height <= view.height),
+            pan: (delta) => {
+              if (!view) return;
+              const rect = sceneRect();
+              applyView(
+                panSceneView(view, scene, {
+                  x: (delta.x * view.width) / rect.width,
+                  y: (delta.y * view.height) / rect.height,
+                }),
+              );
+              setPanned(true);
+            },
+          });
+          onViewReady?.({
+            reveal(bounds) {
+              if (view && !isBlocked())
+                applyView(revealInView(view, scene, bounds));
+            },
+          });
+          viewPublished = true;
+        }
         observer = new ResizeObserver(resize);
         observer.observe(host);
         resize();
@@ -413,6 +519,8 @@ function MountedCanvas({
     onHudReady,
     onReady,
     onError,
+    pannable,
+    onViewReady,
   ]);
 
   useEffect(() => {
@@ -443,14 +551,38 @@ function MountedCanvas({
   }, [animationTrigger, status, scene.id]);
 
   return (
-    <div className="scene-frame" aria-label={`Lokácia: ${scene.title}`}>
+    <div
+      className="scene-frame"
+      aria-label={`Lokácia: ${scene.title}`}
+      tabIndex={pannable ? 0 : undefined}
+      aria-description={
+        pannable
+          ? 'Obraz posunieš potiahnutím, kolieskom alebo šípkami.'
+          : undefined
+      }
+    >
       <div
         className="canvas-host"
         ref={hostRef}
+        data-scene-x={camera?.frame.x}
+        data-scene-y={camera?.frame.y}
+        data-scene-width={camera?.frame.width}
+        data-scene-height={camera?.frame.height}
         data-dragging={effects.dragging}
         data-pickups={effects.pickups}
         data-pickup-image={effects.pickupImage}
       />
+      {pannable &&
+        camera &&
+        !panned &&
+        !blocked &&
+        !state.dialogue &&
+        (camera.frame.width > camera.width ||
+          camera.frame.height > camera.height) && (
+          <span className="scene-pan-hint" aria-hidden="true">
+            ↔ Potiahni scénu pre posun
+          </span>
+        )}
       {hud && hudLayout && (
         <HudAccessibility
           layout={hudLayout}

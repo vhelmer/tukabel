@@ -9,10 +9,30 @@ import type { GameContent } from '../src/game/types';
 async function fullScenePixels(page: Page) {
   const canvas = page.locator('.canvas-host canvas');
   const box = (await canvas.boundingBox())!;
-  // Independently derive contain-fit from the WHOLE canvas, with no HUD margin.
-  const scale = Math.min(box.width / 1280, box.height / 720);
-  const left = (box.width - 1280 * scale) / 2;
-  const top = (box.height - 720 * scale) / 2;
+  const geometry = await canvas.evaluate((node) => ({
+    width: node.clientWidth,
+    height: node.clientHeight,
+    x: Number(node.parentElement!.dataset.sceneX),
+    y: Number(node.parentElement!.dataset.sceneY),
+    imageWidth: Number(node.parentElement!.dataset.sceneWidth),
+  }));
+  const units = box.width / geometry.width;
+  const scale = (geometry.imageWidth / 1280) * units;
+  expect(scale).toBeCloseTo(
+    Math.max(
+      Math.min(geometry.width / 1280, geometry.height / 720),
+      960 / 1280,
+    ) * units,
+    3,
+  );
+  const left = geometry.x * units,
+    top = geometry.y * units;
+  const visible = {
+    left: Math.max(0, left),
+    right: Math.min(box.width, left + 1280 * scale),
+    top: Math.max(0, top),
+    bottom: Math.min(box.height, top + 720 * scale),
+  };
   const { data, info } = await sharp(
     await canvas.screenshot({
       animations: 'disabled',
@@ -23,13 +43,23 @@ async function fullScenePixels(page: Page) {
     .raw()
     .toBuffer({ resolveWithObject: true });
   const ratio = info.width / box.width;
-  for (const [x, y, color] of [
-    [900, 6, [208, 143, 76]],
-    [900, 400, [56, 100, 122]],
-    [900, 714, [87, 163, 114]],
-  ] as const) {
-    const px = Math.floor((left + x * scale) * ratio),
-      py = Math.floor((top + y * scale) * ratio);
+  // The whole viewport stays available to the scene. Sample visible rows;
+  // the original top/bottom stripes may be outside a cropped mobile view.
+  const sampleX = (visible.left + visible.right) / 2;
+  for (const screenY of [
+    visible.top + 2,
+    (visible.top + visible.bottom) / 2,
+    visible.bottom - 3,
+  ]) {
+    const worldY = (screenY - top) / scale;
+    const color =
+      worldY < 16
+        ? [208, 143, 76]
+        : worldY >= 704
+          ? [87, 163, 114]
+          : [56, 100, 122];
+    const px = Math.floor(sampleX * ratio),
+      py = Math.floor(screenY * ratio);
     const offset = (py * info.width + px) * 3;
     color.forEach((channel, i) =>
       expect(Math.abs(data[offset + i]! - channel)).toBeLessThanOrEqual(2),
@@ -42,13 +72,13 @@ async function fullScenePixels(page: Page) {
     .getByRole('button', { name: /^Denník/ })
     .boundingBox())!;
   for (const control of [shelf, book]) {
-    expect(control.y).toBeGreaterThanOrEqual(box.y + top);
+    expect(control.y).toBeGreaterThanOrEqual(box.y + visible.top);
     expect(control.y + control.height).toBeLessThanOrEqual(
-      box.y + top + 720 * scale,
+      box.y + visible.bottom,
     );
-    expect(control.x).toBeGreaterThanOrEqual(box.x + left);
+    expect(control.x).toBeGreaterThanOrEqual(box.x + visible.left);
     expect(control.x + control.width).toBeLessThanOrEqual(
-      box.x + left + 1280 * scale,
+      box.x + visible.right,
     );
   }
 }

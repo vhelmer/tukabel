@@ -13,7 +13,9 @@ import { canTravel, getDialogueNode, getEnding } from '../game/state';
 import { reduceGame } from '../game/state';
 import { SceneCursor } from './SceneCursor';
 import type { HudController, InventoryPointer } from '../game/createHud';
-import { gameViewport, sceneViewportRect } from '../game/hudLayout';
+import { sceneViewportRect } from '../game/hudLayout';
+import { gameSceneView } from '../game/sceneView';
+import type { SceneView, SceneViewController } from '../game/sceneView';
 import { matches } from '../game/state';
 import { scenePoint } from '../game/coordinates';
 import type { ScenePicker } from '../game/hitTest';
@@ -166,6 +168,22 @@ export function GameWindow({
     inScene: boolean;
   } | null>(null);
   const viewport = useRef<HTMLDivElement>(null);
+  const viewRef = useRef<{ view: SceneView; sceneId: string } | null>(null);
+  const viewController = useRef<SceneViewController | null>(null);
+  const [sceneView, setSceneView] = useState<{
+    view: SceneView;
+    sceneId: string;
+  } | null>(null);
+  const registerView = useCallback((view: SceneView, sceneId: string) => {
+    viewRef.current = { view, sceneId };
+    setSceneView({ view, sceneId });
+  }, []);
+  const registerViewController = useCallback(
+    (controller: SceneViewController | null) => {
+      viewController.current = controller;
+    },
+    [],
+  );
   const picker = useRef<ScenePicker | null>(null);
   const registerPicker = useCallback((next: ScenePicker | null) => {
     picker.current = next;
@@ -275,10 +293,15 @@ export function GameWindow({
           action.type === 'interact'
             ? location.hotspots.find((h) => h.id === action.hotspotId)
             : undefined;
-        const scale = Math.min(
-          viewBox.width / location.width,
-          viewBox.height / location.height,
-        );
+        const frame =
+          viewRef.current?.sceneId === location.id
+            ? viewRef.current.view.frame
+            : gameSceneView(
+                viewport.current!.clientWidth,
+                viewport.current!.clientHeight,
+                location,
+              ).frame;
+        const scale = frame.width / location.width;
         const origin = actor?.bounds;
         const collected = Boolean(
           actor?.image && !matches(next, actor.visibleWhen),
@@ -292,29 +315,19 @@ export function GameWindow({
           ? origin.y + (collected ? 0 : origin.height / 2)
           : location.height * 0.6;
         const x =
-          viewBox.x -
-          rootBox.x +
-          (viewBox.width - location.width * scale) / 2 +
-          originX * scale -
-          (origin && !collected ? width / 2 : 0);
+          frame.x + originX * scale - (origin && !collected ? width / 2 : 0);
         const y =
-          viewBox.y -
-          rootBox.y +
-          (viewBox.height - location.height * scale) / 2 +
-          originY * scale -
-          (origin && !collected ? height / 2 : 0);
+          frame.y + originY * scale - (origin && !collected ? height / 2 : 0);
         for (const id of added) {
           const item = content.items.find((i) => i.id === id)!;
-          const sx = viewport.current!.clientWidth / rootBox.width;
-          const sy = viewport.current!.clientHeight / rootBox.height;
           hudController.current?.pickup({
             itemId: id,
             image: collected ? actor!.image : item.image,
             icon: item.icon,
-            x: x * sx,
-            y: y * sy,
-            width: width * sx,
-            height: height * sy,
+            x,
+            y,
+            width,
+            height,
             rotation: collected ? (actor?.rotation ?? 0) : 0,
           });
         }
@@ -442,6 +455,9 @@ export function GameWindow({
         scene,
         event.clientX,
         event.clientY,
+        viewRef.current?.sceneId === scene.id
+          ? viewRef.current.view
+          : undefined,
       );
       const hotspot = point && picker.current?.(point);
       return hotspot ? { type: 'hotspot', id: hotspot.id } : null;
@@ -584,14 +600,13 @@ export function GameWindow({
       setMenu((value) => !value);
     }
   }
-  const sceneArea = gameViewport(areaSize.width, areaSize.height);
-  const sceneScale = Math.min(
-    areaSize.width / scene.width,
-    sceneArea.height / scene.height,
-  );
-  const sceneLeft = (areaSize.width - scene.width * sceneScale) / 2;
-  const sceneTop =
-    sceneArea.y + (sceneArea.height - scene.height * sceneScale) / 2;
+  const frame =
+    sceneView?.sceneId === scene.id
+      ? sceneView.view.frame
+      : gameSceneView(areaSize.width, areaSize.height, scene).frame;
+  const sceneScale = frame.width / scene.width;
+  const sceneLeft = frame.x;
+  const sceneTop = frame.y;
   const labelPadding = Math.min(150, areaSize.width / 2);
   const interactiveHover =
     currentHover &&
@@ -627,6 +642,9 @@ export function GameWindow({
                 scene,
                 event.clientX,
                 event.clientY,
+                viewRef.current?.sceneId === scene.id
+                  ? viewRef.current.view
+                  : undefined,
               ),
             ),
         });
@@ -644,6 +662,9 @@ export function GameWindow({
         <div inert={Boolean(ending)}>
           <GameCanvas
             scene={scene}
+            pannable
+            onViewChange={registerView}
+            onViewReady={registerViewController}
             state={state}
             animations={content.animations}
             animationTrigger={animationTrigger}
@@ -766,7 +787,12 @@ export function GameWindow({
                   onClick={(event) => {
                     if (event.detail === 0) act(hotspot);
                   }}
-                  onFocus={() => setHovered(hotspot)}
+                  onFocus={() => {
+                    viewController.current?.reveal(
+                      rotatedBounds(hotspot.bounds, hotspot.rotation),
+                    );
+                    setHovered(hotspot);
+                  }}
                   onBlur={() => setHovered(null)}
                   onKeyDown={(event) => {
                     if (

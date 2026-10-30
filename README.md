@@ -792,6 +792,16 @@ endpointy `/__tukabel/editor/jobs` neobsahuje.
 
 ## Game Mode
 
+Scéna má při hraní minimální šířku **960 CSS pixelů**. Když se do okna nevejde,
+zobrazuje se větší výřez, který lze posunout tažením prstem nebo levým tlačítkem
+myši, kolečkem/trackpadem a klávesovými šipkami po zaměření scény. Tažení přes
+objekt nespouští kliknutí; předměty z inventáře se nadále přetahují na cíle.
+Inventář a jeho šipky, deník, menu a titulky zůstávají uvnitř viditelného okna.
+Při klávesnicovém výběru se objekt mimo výřez přisune do pohledu. Posun je pouze
+stav zobrazení: neukládá se do pozice, při změně lokace se vystředí a při změně
+velikosti okna se zachová střed pohledu s omezením na okraje. Editorové náhledy
+samostatného canvasu nadále používají původní contain-fit bez ořezu.
+
 Scéna využívá celý canvas se zachováním poměru stran. Přímo přes její horní část
 PixiJS vykresluje inventář jako kreslenou dřevěnou přihrádkovou bedýnku, ikonku potrhaného
 zápisníku a malou cedulku **Menu** (tři čárky). Seznam odhalující objekty ve scéně
@@ -1104,6 +1114,7 @@ zůstaly zachované.
   mix a efekty vybraných pravidel. `EndingPanel.tsx` zobrazuje finální modal.
   API ani dabingové kredity se za hry nevolají.
 - `src/game/createScene.ts` — Pixi pozadí, sprity, hotspoty a stavové indikátory.
+- `src/game/sceneView.ts`, `scenePan.ts` — společný výřez scény a pointer/scroll ovládání; `coordinates.ts` převádí stejný pohled pro hover a inventární dropy.
 - `src/game/characterVisual.ts` — skládání lokálních animačních oblastí bez změny
   zarovnání nebo násobení průhlednosti; `animation.ts` řídí nezávislé hodiny.
 - `src/game/transforms.ts` — společné proporce, natočení a geometrie rámů.

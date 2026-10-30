@@ -1076,3 +1076,46 @@ test('JSON accepts explicit placeholder art and rejects nonboolean flags', () =>
     'placeholder: expected boolean',
   );
 });
+
+test('scene pointers use the panned image frame, CSS scaling and clipped viewport', async () => {
+  const { scenePoint } = await import('../src/game/coordinates');
+  const rect = { left: 10, top: 20, width: 800, height: 1400 };
+  const scene = { width: 1280, height: 720 };
+  const view = {
+    width: 400,
+    height: 700,
+    frame: { x: -280, y: 80, width: 960, height: 540 },
+  };
+  expect(scenePoint(rect, scene, 210, 280, view)).toEqual({
+    x: 380 / 0.75,
+    y: 50 / 0.75,
+  });
+  expect(scenePoint(rect, scene, 0, 280, view)).toBeNull();
+  expect(scenePoint(rect, scene, 210, 40, view)).toBeNull();
+});
+
+test('a game view keeps a readable minimum size, clamps both axes and reveals world targets', async () => {
+  const { gameSceneView, revealInView, visibleSceneFrame } =
+    await import('../src/game/sceneView');
+  const scene = { width: 1280, height: 720 };
+  const initial = gameSceneView(400, 300, scene);
+  expect(initial.frame).toEqual({ x: -280, y: -120, width: 960, height: 540 });
+  expect(visibleSceneFrame(initial)).toEqual({
+    x: 0,
+    y: 0,
+    width: 400,
+    height: 300,
+  });
+  expect(gameSceneView(400, 300, scene, { x: 10000, y: -10000 }).frame).toEqual(
+    { x: 0, y: -240, width: 960, height: 540 },
+  );
+  expect(
+    revealInView(initial, scene, { x: 0, y: 0, width: 60, height: 60 }).frame,
+  ).toEqual({ x: 0, y: 0, width: 960, height: 540 });
+  expect(gameSceneView(1280, 720, scene).frame).toEqual({
+    x: 0,
+    y: 0,
+    width: 1280,
+    height: 720,
+  });
+});
