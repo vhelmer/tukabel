@@ -128,10 +128,5 @@ test('every location has local music, ambience stays separate, and sparse cues m
     id: 'ending-jackpot',
     value: true,
   });
-  expect(electrical[0]!.when).toEqual({
-    all: [
-      { not: { flag: 'battery-isolated' } },
-      { not: { flag: 'cable-recovered' } },
-    ],
-  });
+  expect(electrical[0]!.when).toEqual({ not: { flag: 'cable-recovered' } });
 });

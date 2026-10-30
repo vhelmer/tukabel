@@ -1,0 +1,21 @@
+{
+  "version": 3,
+  "operation": "cable-pickup-background",
+  "source": "scene-art/d7b1a54c-db52-447b-a058-e3f7b985ffae/image.png",
+  "sourceSha256": "6f165c345820a070ef1833c065d162c093a41179a45ef9b66fc2264318bdb9e2",
+  "provider": "built-in image_gen",
+  "providerOutput": "provider-returned.png",
+  "prompt": "Use case: precise-object-edit. Edit target: attached full background of our 2D point-and-click adventure, 1672 by 941 pixels. Produce the identical background at the same framing and geometry, with just ONE change: remove the thin BLACK jumper power cable that connects the black crocodile clip on the front lower RIGHT of the slot machine to the battery's RIGHT terminal. This black cable follows a long U loop rightward from the slot machine down across the stone steps then left back to the battery. Remove its two black/copper clips as well, fill only its occupied pixels with continuous stone steps, rug, machine panel, and battery top as appropriate. KEEP the red jumper cable entirely unchanged, keep ALL the thick multicolored bundled wiring on the left wall unchanged. Keep the battery, machine and its red crown and illuminated reels, candles, statues, masonry, rug, background objects, perspective, lighting, texture, and original cartoon style unchanged. No new objects, no changes to the scene composition, no crop, no zoom, no text, no watermark. We will use only the narrowly masked former black cable area from this result, so match the source pixel positions extremely accurately.",
+  "repairPath": "M713.559 718.952 L676.882 710.633 L691.421 664.166 L764.073 681.107 L822.611 753.021 L853.988 746.112 L906.487 716.459 L896.316 659.737 L825.769 540.218 L822.139 499.505 L853.062 502.857 L944.689 681.893 L949.039 729.062 L893.581 786.002 L826.211 807.33 L754.417 718.42 Z",
+  "repairStrokeWidth": 18,
+  "bounds": {
+    "x": 666,
+    "y": 488,
+    "width": 294,
+    "height": 330
+  },
+  "background": "background.svg",
+  "cutout": "cable.svg",
+  "notes": "Background preserves the original outside the SVG repair mask. Cable restores original pixels inside the same mask; its scene polygon remains unchanged. SVG embedding keeps every image local and self-contained.",
+  "maskRendering": "crispEdges"
+}

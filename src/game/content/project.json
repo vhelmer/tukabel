@@ -2598,7 +2598,7 @@
       "title": "Krypta",
       "width": 1672,
       "height": 941,
-      "background": "scene-art/d7b1a54c-db52-447b-a058-e3f7b985ffae/image.png",
+      "background": "scene-art/895e7500-e61d-4696-9920-601698846820/background.svg",
       "hotspots": [
         {
           "id": "layer1",
@@ -2650,16 +2650,11 @@
         {
           "id": "machine-off",
           "label": "Odpojený automat",
-          "bounds": { "x": 644, "y": 146, "width": 222, "height": 496 },
+          "bounds": { "x": 632, "y": 146, "width": 234, "height": 498 },
           "onClick": [],
           "decorative": true,
           "image": "story/dark-machine.svg",
-          "visibleWhen": {
-            "all": [
-              { "flag": "battery-isolated" },
-              { "not": { "flag": "machine-burnt" } }
-            ]
-          }
+          "visibleWhen": { "flag": "cable-recovered" }
         },
         {
           "id": "crypt-machine",
@@ -2669,10 +2664,6 @@
             {
               "when": { "flag": "cable-recovered" },
               "message": "Bez hlavného kábla to už nezapojím. Túto skriňu na moje peniaze som konečne vyradil z prevádzky."
-            },
-            {
-              "when": { "flag": "battery-isolated" },
-              "message": "Zhasol. Bez batérie je to konečne iba skriňa na cudzie peniaze."
             },
             {
               "message": "Automat beží z autobatérie. Na čele ZARUČENÁ VÝHRA; záruka sa už odlupuje."
@@ -2685,12 +2676,7 @@
                 "message": "Kábel som odniesol. Ten žetón tu už nezahrá, iba by som ho stratil v diere. Rozhodol som sa vrátiť prúd osade."
               },
               {
-                "when": {
-                  "all": [
-                    { "not": { "flag": "battery-isolated" } },
-                    { "not": { "flag": "cable-recovered" } }
-                  ]
-                },
+                "when": { "not": { "flag": "cable-recovered" } },
                 "message": "Alobal sa zachytil v kontaktoch. Automat zakvílil, batéria zasyčala a zemiaková mena práve zrušila elektrinu.",
                 "effects": [
                   { "type": "removeItem", "id": "fake-token" },
@@ -2699,9 +2685,6 @@
                   { "type": "dialogue", "id": "lubo-ending" }
                 ],
                 "sound": "soundtrack/elevenlabs-village-20261029/sfx-jackpot.wav"
-              },
-              {
-                "message": "Automat je odpojený. Kým je kábel na mieste, môžem vrátiť svorku. Alebo ho konečne bezpečne odniesť."
               }
             ]
           }
@@ -2729,41 +2712,17 @@
           "onClick": [
             {
               "when": { "flag": "cable-recovered" },
-              "message": "Batéria je odpojená a kábel už mám. Druhýkrát ho z toho nevytiahnem, ani keby som si zaželal jackpot."
+              "message": "Bez čierneho kábla batéria automat neutiahne. Ľubovi zostal aspoň drahý podstavec pod sklamanie."
             },
             {
-              "message": "Autobatéria má na boku DINGO — VRÁTIŤ NABITÚ. Kŕmi iba tento automat. Na mínusovej svorke vidím maticu."
+              "message": "Dingova autobatéria živí iba Ľubov automat. Čierny kábel môžem vytiahnuť rovno aj s koncovkou. Ľubo potom bude musieť parazitovať na niekom živom."
             }
-          ],
-          "uses": {
-            "wrench": [
-              {
-                "when": { "flag": "cable-recovered" },
-                "message": "Svorka je dole a kábel mám v rukách. Kľúč si odložím, kým si niečo neodmontujem z hlavy."
-              },
-              {
-                "when": { "not": { "flag": "battery-isolated" } },
-                "message": "Mínusová svorka je odpojená a automat zhasol. Zostala iba dobrá elektrina. Kábel môžem zobrať v rukaviciach; kým ho nevezmem, viem svorku ešte vrátiť.",
-                "effects": [
-                  { "type": "flag", "id": "battery-isolated", "value": true }
-                ],
-                "sound": "soundtrack/elevenlabs-village-20261029/sfx-tools.wav"
-              },
-              {
-                "message": "Batéria je odpojená. Teraz môžem kábel bezpečne zobrať v rukaviciach."
-              }
-            ]
-          }
+          ]
         },
         {
           "id": "object3",
           "label": "Ukradnutý hlavný kábel",
-          "bounds": {
-            "x": 676.882,
-            "y": 499.505,
-            "width": 272.15700000000004,
-            "height": 307.82500000000005
-          },
+          "bounds": { "x": 666, "y": 488, "width": 294, "height": 330 },
           "polygon": [
             { "x": 713.559, "y": 718.952 },
             { "x": 676.882, "y": 710.633 },
@@ -2784,11 +2743,14 @@
           ],
           "onClick": [
             {
-              "when": { "flag": "battery-isolated" },
-              "message": "Batéria je odpojená. Kábel teraz môžem vytiahnuť v rukaviciach, nech sa neporežem o opláštenie."
-            },
-            {
-              "message": "Hlavný kábel osady. Vedie z batérie priamo do automatu; nechcem ho vyťahovať pod napätím."
+              "message": "Vytiahol som kábel aj s koncovkou. Automat zhasol a Ľubovi zomrel jediný platiaci kamarát. Poškodený koniec oblepím páskou a vrátim do Ferovej rozvodnej skrine.",
+              "effects": [
+                { "type": "flag", "id": "cable-recovered", "value": true },
+                { "type": "addItem", "id": "stolen-cable" },
+                { "type": "removeItem", "id": "wrench" },
+                { "type": "removeItem", "id": "rubber-gloves" }
+              ],
+              "sound": "soundtrack/elevenlabs-village-20261029/sfx-tools.wav"
             }
           ],
           "visibleWhen": {
@@ -2800,20 +2762,20 @@
           "uses": {
             "rubber-gloves": [
               {
-                "when": { "flag": "battery-isolated" },
-                "message": "Kábel som zobral, automat už nepripojím. Dobre, prehrám až na oficiálnom turnaji. Teraz oblepiť koniec páskou a naspäť do Ferovej skrine.",
+                "message": "Vytiahol som kábel aj s koncovkou. Automat zhasol a Ľubovi zomrel jediný platiaci kamarát. Poškodený koniec oblepím páskou a vrátim do Ferovej rozvodnej skrine.",
                 "effects": [
                   { "type": "flag", "id": "cable-recovered", "value": true },
                   { "type": "addItem", "id": "stolen-cable" },
                   { "type": "removeItem", "id": "wrench" },
                   { "type": "removeItem", "id": "rubber-gloves" }
-                ]
-              },
-              {
-                "message": "Pod napätím sa toho nechytím. Najprv kľúčom povoliť mínusovú svorku; Darwin si počká."
+                ],
+                "sound": "soundtrack/elevenlabs-village-20261029/sfx-tools.wav"
               }
             ]
-          }
+          },
+          "cursor": "interact",
+          "image": "scene-art/895e7500-e61d-4696-9920-601698846820/cable.svg",
+          "imageFit": "stretch"
         }
       ],
       "ambient": "ambience/crypt.wav",
@@ -4878,7 +4840,7 @@
           "id": "power",
           "speaker": "Ľubo Šťastný",
           "actor": { "sceneId": "scene12", "hotspotId": "layer1" },
-          "text": "Povoľ kľúčom mínusovú svorku, potom môžeš kábel zobrať v rukaviciach. Živého ťa pri automate nechcem mať na svedomí. Keď mi ho vezmeš, končím; radšej si zahraj, do riti!",
+          "text": "Ten čierny kábel vytiahneš rovno aj s koncovkou. Automat zhasne a môžeš ho odniesť Ferovi. Ale potom už žiadna posledná hra, do riti! Rozmysli si, či chceš zachrániť turnaj, alebo si tu so mnou založiť rodinnú hrobku.",
           "choices": [
             {
               "id": "fraud",
@@ -4909,8 +4871,7 @@
               "when": { "flag": "cable-recovered" }
             },
             { "id": "leave", "text": "Idem sa rozhodnúť bez mozgu." }
-          ],
-          "subtitle": "Povoľ kľúčom mínusovú svorku, potom môžeš kábel zobrať v rukaviciach. Živého ťa pri automate nechcem mať na svedomí. Keď mi ho vezmeš, končím; radšej si zahraj, do riti!"
+          ]
         },
         {
           "id": "bribe",

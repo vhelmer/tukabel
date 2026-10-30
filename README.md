@@ -877,7 +877,7 @@ ruční slot samo nemaže ani nepřepisuje.
 
 Scénář je dospělá morbidní groteska: Bonifác vysvěcuje výhernost automatů,
 Milan zkouší zákazníkům vlastní pohřby, Jolanda vede kult pojištěného vemena a
-Rudo považuje odpojení mínusu za odstranění špatné elektřiny. **Eržika** nahradila
+Rudo může hlavní kabel vytáhnout rovnou i s koncovkou; tím vypne automat. **Eržika** nahradila
 Margitu. Nemá dialogový strom: pět samostatných krátkých nadávek se střídá při
 opakovaných kliknutích, bez volby odpovědi. Pořadí drží běžné uložené příznaky.
 Kolíček je samostatný předmět na dvoře; izolačka leží pod žebříkem
@@ -928,7 +928,7 @@ zůstaly zachované. Tato revize nevolá ElevenLabs ani jinou generaci dabingu.
 Větve lze řešit v jiném pořadí. Nesprávné kombinace neodebírají zásadní
 předměty. Předmět po posledním skutečném použití z inventáře zmizí (nůžky, pečiatka,
 servisní deník, magnet na špagáte, klíč s rukavicemi po sebrání kabelu); francouzský
-klíč do té doby zůstává i pro opětovné odpojení baterie.
+klíč do té doby zůstává pro opravu pípy a otevření servisního krytu.
 
 | Hádanka              | Řešení a podmínka                                                                                                                                                                                                                                                                                                                                                                      |
 | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -943,17 +943,18 @@ klíč do té doby zůstává i pro opětovné odpojení baterie.
 | Klíč od krypty       | Magnet + špagát vytvoří magnet na špagáte. V kaplnce jím vylov klíč pod mříží. Klíčem odemkni kryptu a dokonči Ľubovu úvodní repliku.                                                                                                                                                                                                                                                  |
 | Odhalení a volba     | Ľubo fingoval smrt kvůli dluhům a ukradl hlavní kabel pro soukromý automat na Dingově autobaterii. Před definitivní volbou ručně ulož hru, pokud chceš projít oba konce bez opakování pátrání.                                                                                                                                                                                         |
 
-**Obnovení proudu:** Klíčem odpoj autobatériu. Rukavicemi seber kabel; bez
-odpojení jej Rudo odmítne. Už sebrání kabelu znamená volbu návratu proudu,
-na což hra výslovně upozorní. Kábel + izolačka vytvoří opravený kabel.
-Vrať se k Ferovi a použij jej na rozvodnú skriňu. Rozsvítí se dvůr, objeví se
-turnajový transparent a proběhne epilog: živý Ľubo dostane účet za vlastní pohřeb.
+**Obnovení proudu:** Klikni přímo na černý hlavní kabel. Rudo ho vytáhne i s
+koncovkou a automat zhasne; baterie už nemá samostatnou hádanku se svorkou.
+Sebrání kabelu znamená definitivní volbu návratu proudu. Kábel + izolačka vytvoří
+opravený kabel. Vrať se k Ferovi a použij jej na rozvodnú skriňu. Rozsvítí se dvůr,
+objeví se turnajový transparent, Fero pronese závěrečnou repliku a následuje epilog.
 
-**Jackpot:** Bramboru odstřiženou z výherní medaile obal zlatou fólií z herny. Podvodný žetón
-použij v kryptě na automat, dokud je zapojená baterie a kabel jsi nevzal.
-Zkrat spálí automat i kabel, Ľubo uteče a vyvalí se bezcenné podložky.
-Osada zůstane potmě a následuje druhý epilog. Po pouhém odpojení baterie lze
-svorku znovu připojit; žeton se při použití na vypnutý automat nespotřebuje.
+**Jackpot:** Bramboru odstřiženou z výherní medaile obal zlatou fólií z herny.
+Podvodný žetón použij v kryptě na automat, dokud jsi nevzal kabel. Zkrat spálí
+automat i kabel, Ľubo pronese závěrečnou repliku a následuje druhý epilog.
+Po sebrání kabelu automat žeton odmítne a ponechá ho v inventáři.
+Starý příznak `battery-isolated` se už nepoužívá, ale zůstává registrovaný kvůli
+načítání dřívějších pozic; žádná větev jím není blokovaná.
 Uloženou pozici před volbou lze načíst i po konci; nová hra ruční slot nemaže.
 Po vložení falešného žetonu nejdřív promluví Ľubo; po vrácení opraveného
 kabelu do rozvodné skříně promluví Fero. Obě reakce jsou jednorázové dialogy
@@ -1028,7 +1029,7 @@ aktuálně namluvených replik tohoto nového scénáře. Hraní nepotřebuje AP
 
 Pozadí a atmosféry zůstaly lokální. Zberňa a kravín mají zhasnuté žárovky;
 ruční klystír, odpustkový automat, pípa a houpačka nepotřebují proud.
-V kryptě napájí světelný automat jediná autobaterie, jejíž odpojení neón zastaví.
+V kryptě napájí světelný automat jediná autobaterie; vytažením hlavního kabelu automat zhasne.
 Svíčky a petrolejka fungují bez sítě. Místní ruchy se zapnou až po gestu hráče,
 menu i skrytá stránka je pozastaví.
 

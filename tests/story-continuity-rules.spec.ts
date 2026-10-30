@@ -400,7 +400,7 @@ test('Nika and Ľubo offer item-specific topics only while the referenced object
   }
 });
 
-test('taking the isolated cable preserves the restoration decision through later uses and save/load', async () => {
+test('taking the cable directly preserves the restoration decision through later uses and save/load', async () => {
   const content = await read();
   const start = acceptedCase(content);
   let state: GameState = {
@@ -409,22 +409,20 @@ test('taking the isolated cable preserves the restoration decision through later
     unlockedScenes: [...start.unlockedScenes, 'scene12'],
     inventory: ['wrench', 'rubber-gloves', 'fake-token'],
   };
+  const crypt = content.scenes.find((scene) => scene.id === 'scene12')!;
+  const cable = crypt.hotspots.find((hotspot) =>
+    hotspot.onClick.some((rule) =>
+      rule.effects?.some(
+        (effect) => effect.type === 'addItem' && effect.id === 'stolen-cable',
+      ),
+    ),
+  )!;
+  const battery = crypt.hotspots.find(
+    (hotspot) => hotspot.label === 'Autobatéria',
+  )!;
   state = reduceGame(content, state, {
     type: 'interact',
-    hotspotId: 'battery',
-    itemId: 'wrench',
-  });
-  expect(state.flags['battery-isolated']).toBe(true);
-  state = reduceGame(content, state, {
-    type: 'interact',
-    hotspotId: 'crypt-machine',
-  });
-  expect(state.message).toMatch(/zhas|vypnut|odpojen|bez batéri/iu);
-  expect(state.message).not.toMatch(/beží/iu);
-  state = reduceGame(content, state, {
-    type: 'interact',
-    hotspotId: 'main-cable',
-    itemId: 'rubber-gloves',
+    hotspotId: cable.id,
   });
   expect(state.flags['cable-recovered']).toBe(true);
   expect(state.inventory).toContain('stolen-cable');
@@ -438,21 +436,30 @@ test('taking the isolated cable preserves the restoration decision through later
   expect(saved.value).toEqual(recovered);
   state = saved.value;
   for (const action of [
-    { type: 'interact', hotspotId: 'battery', itemId: 'wrench' },
+    { type: 'interact', hotspotId: battery.id },
     { type: 'interact', hotspotId: 'crypt-machine', itemId: 'fake-token' },
-    { type: 'interact', hotspotId: 'battery-reconnect' },
+    { type: 'interact', hotspotId: cable.id },
   ] as const) {
     state = reduceGame(content, state, action);
     expect(state.inventory).toEqual(recovered.inventory);
     expect(state.flags).toEqual(recovered.flags);
-    expect(state.flags['battery-isolated']).toBe(true);
+    expect(state.flags['battery-isolated']).not.toBe(true);
     expect(state.flags['ending-jackpot']).not.toBe(true);
     expect(state.flags['ending-community']).not.toBe(true);
   }
-  const reconnect = content.scenes
-    .find((scene) => scene.id === 'scene12')!
-    .hotspots.find((hotspot) => hotspot.id === 'battery-reconnect')!;
-  expect(matches(state, reconnect.visibleWhen)).toBe(false);
+  expect(matches(state, cable.visibleWhen)).toBe(false);
+  expect(
+    matches(
+      state,
+      crypt.hotspots.find((hotspot) => hotspot.id === 'machine-off')!
+        .visibleWhen,
+    ),
+  ).toBe(true);
+  state = reduceGame(content, state, {
+    type: 'interact',
+    hotspotId: 'crypt-machine',
+  });
+  expect(state.message).toMatch(/bez hlavného kábla/iu);
   state = reduceGame(content, state, { type: 'interact', hotspotId: 'layer1' });
   expect(state.dialogue?.id).toBe('villain-chat');
   const choices = availableChoices(content, state).map((choice) => choice.id);

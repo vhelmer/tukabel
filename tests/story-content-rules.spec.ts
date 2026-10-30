@@ -38,6 +38,11 @@ const propEffects: Record<string, Pick<Effect, 'type' | 'id'>> = {
   'foil-wrapper': { type: 'addItem', id: 'foil' },
   'absolution-machine': { type: 'flag', id: 'bell-installed' },
   coffin: { type: 'flag', id: 'coffin-certified' },
+  'milking-bucket': { type: 'addItem', id: 'milk' },
+  'cow-bell-hook': { type: 'addItem', id: 'cow-bell' },
+  resuscitator: { type: 'flag', id: 'dingo-awake' },
+  'tool-chest': { type: 'addItem', id: 'wrench' },
+  'main-cable': { type: 'addItem', id: 'stolen-cable' },
 };
 function hasPropEffect(hotspot: Hotspot, alias: string) {
   const wanted = propEffects[alias];
@@ -250,19 +255,12 @@ test('the authored game completes through restoration and saves both before and 
   const content = await read(),
     p = solveToCrypt(content);
   const before = p.state;
-  p.use('main-cable', 'rubber-gloves');
-  expect(p.state.inventory).not.toContain('stolen-cable');
-  expect(p.state.inventory).toContain('rubber-gloves');
-  p.use('battery', 'wrench');
-  p.use('battery-reconnect');
-  expect(p.state.flags['battery-isolated']).toBe(false);
-  p.use('battery', 'wrench');
-  p.use('main-cable', 'rubber-gloves');
+  p.use('main-cable');
   expect(p.state.inventory).toContain('stolen-cable');
+  expect(p.state.flags['cable-recovered']).toBe(true);
+  expect(p.state.flags['battery-isolated']).not.toBe(true);
   expect(p.state.inventory).not.toContain('wrench');
   expect(p.state.inventory).not.toContain('rubber-gloves');
-  p.use('battery-reconnect');
-  expect(p.state.flags['battery-isolated']).toBe(true);
   p.combine('stolen-cable', 'tape');
   p.travel('scene4');
   p.use('junction-box', 'fixed-cable');
@@ -288,11 +286,6 @@ test('late scrap exchange remains solvable and a forged token causes the physica
     p = solveToCrypt(content, true);
   p.combine('potato', 'foil');
   expect(p.state.inventory).toContain('fake-token');
-  p.use('battery', 'wrench');
-  p.use('crypt-machine', 'fake-token');
-  expect(p.state.inventory).toContain('fake-token');
-  expect(p.state.flags['ending-jackpot']).not.toBe(true);
-  p.use('battery-reconnect');
   p.use('crypt-machine', 'fake-token');
   expect(p.state.flags['ending-jackpot']).toBe(true);
   expect(p.state.dialogue?.id).toBe('lubo-ending');
@@ -749,4 +742,50 @@ test('chocolate foil is a unique pickup inside the gaming room unlocked by repai
   p.state = deserializeSave(content, serializeSave(content, p.state));
   p.use('foil-wrapper');
   expect(p.state.inventory.filter((id) => id === 'foil')).toHaveLength(1);
+});
+
+test('a direct cable pickup works without tools and an older battery flag does not block the token ending', async () => {
+  const content = await read();
+  const crypt = content.scenes.find((scene) => scene.id === 'scene12')!;
+  const p = player(content);
+  p.state = {
+    ...p.state,
+    sceneId: crypt.id,
+    dialogue: null,
+    inventory: ['fake-token'],
+  };
+  p.use('main-cable');
+  expect(p.state.inventory).toEqual(['fake-token', 'stolen-cable']);
+  expect(p.state.flags['cable-recovered']).toBe(true);
+  expect(
+    matches(
+      p.state,
+      crypt.hotspots.find((h) => h.id === 'machine-off')!.visibleWhen,
+    ),
+  ).toBe(true);
+  expect(
+    matches(
+      p.state,
+      crypt.hotspots.find(
+        (h) => h.id === propId(content, crypt.id, 'main-cable'),
+      )!.visibleWhen,
+    ),
+  ).toBe(false);
+  p.use('main-cable');
+  expect(p.state.inventory.filter((id) => id === 'stolen-cable')).toHaveLength(
+    1,
+  );
+  p.use('crypt-machine', 'fake-token');
+  expect(p.state.inventory).toContain('fake-token');
+  expect(p.state.flags['ending-jackpot']).not.toBe(true);
+  p.state = {
+    ...initialState(content),
+    sceneId: crypt.id,
+    dialogue: null,
+    inventory: ['fake-token'],
+    flags: { 'battery-isolated': true },
+  };
+  p.use('crypt-machine', 'fake-token');
+  expect(p.state.dialogue?.id).toBe('lubo-ending');
+  expect(p.state.flags['ending-jackpot']).toBe(true);
 });

@@ -581,6 +581,11 @@ storyTest(
         'foil-wrapper': { type: 'addItem', id: 'foil' },
         'absolution-machine': { type: 'flag', id: 'bell-installed' },
         coffin: { type: 'flag', id: 'coffin-certified' },
+        'milking-bucket': { type: 'addItem', id: 'milk' },
+        'cow-bell-hook': { type: 'addItem', id: 'cow-bell' },
+        resuscitator: { type: 'flag', id: 'dingo-awake' },
+        'tool-chest': { type: 'addItem', id: 'wrench' },
+        'main-cable': { type: 'addItem', id: 'stolen-cable' },
       };
       const wanted = propEffects[id];
       const hotspot =
@@ -772,11 +777,10 @@ storyTest(
     await choose('crypt-intro', 'investigate');
     await menuAction(page, 'Uložiť hru');
     expect((await readSaved()).flags['crypt-open']).toBe(true);
-    await use('main-cable', 'rubber-gloves');
-    await use('battery', 'wrench');
-    await interact('battery-reconnect');
-    await use('battery', 'wrench');
-    await use('main-cable', 'rubber-gloves');
+    await interact('main-cable');
+    await page.screenshot({
+      path: info.outputPath('cable-taken-machine-off.png'),
+    });
     await combine('stolen-cable', 'tape');
     await travel('scene4');
     await interact('junction-box', 'fixed-cable');
