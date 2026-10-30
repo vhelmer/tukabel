@@ -41,6 +41,9 @@ const PRESETS = [
   [0.85, 45, 56, true, 32, 32],
   [0.75, 40, 48, true, 32, 24],
   [0.6, 35, 40, true, 24, 24],
+  // Fallback-only quality once an HD remote carries the real presentation.
+  [0.55, 32, 32, true, 16, 16],
+  [0.5, 30, 32, true, 16, 12],
 ].map(([scale, quality, stereo, downmix, ambient, speech]) => ({
   scale, quality, stereo, downmix, ambient, speech,
 }));
@@ -105,22 +108,25 @@ const used = new Set();
   } else if (value && typeof value === 'object')
     Object.values(value).forEach(walk);
 })(release);
-// Statically imported WAVs and rasters are swapped for their encodes by the
-// Vite plugin as well. Code may depend on their pixels, so rasters keep size.
+// Statically imported or globbed WAVs and rasters are swapped for their
+// encodes by the Vite plugin as well. Code may depend on their pixels, so
+// rasters keep size. The content glob (assetFiles.ts) is replaced, not scanned.
 const staticAssets = [];
+const contentGlob = path.join(root, 'src/game/assetFiles.ts');
 (function scan(dir) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const file = path.join(dir, entry.name);
     if (entry.isDirectory()) {
       if (entry.name !== 'editor') scan(file);
-    } else if (/\.tsx?$/.test(entry.name)) {
+    } else if (/\.tsx?$/.test(entry.name) && file !== contentGlob) {
       const text = fs.readFileSync(file, 'utf8');
       for (const [, spec] of text.matchAll(
-        /from '((?:\.\.?\/)+assets\/[^']+\.(?:wav|png|jpe?g|webp))'/g,
-      )) {
-        const id = path.relative(assetsDir, path.resolve(dir, spec));
-        if (!staticAssets.includes(id)) staticAssets.push(id);
-      }
+        /'((?:\.\.?\/)+assets\/[^']+\.(?:wav|png|jpe?g|webp))'/g,
+      ))
+        for (const match of fs.globSync(path.resolve(dir, spec))) {
+          const id = path.relative(assetsDir, match);
+          if (!staticAssets.includes(id)) staticAssets.push(id);
+        }
     }
   }
 })(path.join(root, 'src'));

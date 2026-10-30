@@ -31,7 +31,8 @@ Běžný `dist/` balí celé `src/assets` (všechny generace a archivy). `build:
 (`scripts/build-release.mjs` + `vite.release.config.ts`) vydá jen frontend hry
 a vybere nejkvalitnější preset, jehož zip se vejde do 5 MB (limit odevzdání).
 Jiný limit: `node scripts/build-release.mjs --budget 8`; konkrétní preset bez
-limitu: `--preset 0` (nejlepší) až `--preset 5` (nejmenší). Výpis ukazuje
+limitu: `--preset 0` (nejlepší) až `--preset 7` (nejmenší; presety 6–7 mají
+kvalitu jen pro zálohu vedle HD sady, např. dabing 12–16 kbps). Výpis ukazuje
 odhad velikosti zipu pro každý zkoušený preset.
 
 - Do buildu jdou jen soubory, na které odkazuje `project.json`, a statické importy
@@ -43,8 +44,9 @@ odhad velikosti zipu pro každý zkoušený preset.
   přepočítá na nové pixely. Snímky použité jen regionálními klipy (oči, ústa)
   mají mimo region průhlednost, protože se jinde nekreslí ani netestují.
   SVG s vloženým rastrem se rasterizuje, ostatní SVG zůstávají vektorová.
-  Staticky importované rastry (cutscéna, minihra) počítají v pixelech originálu,
-  proto se jen překódují ve stejném rozlišení.
+  Staticky importované nebo `import.meta.glob` načítané rastry a WAV (cutscéna,
+  minihra a její hlášky) se také překódují; rastry ve stejném rozlišení, protože
+  kód počítá v pixelech originálu.
 - WAV se převede na MP3 (`@breezystack/lamejs`, bez FFmpeg) s LAME Info tagem;
   prohlížeč podle něj ořízne encoder delay/padding, takže smyčky hudby zůstanou
   bez mezery a lip-sync na `currentTime` sedí. Když LAME pro nízký bitrate zvolí
