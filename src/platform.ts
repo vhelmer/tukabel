@@ -22,14 +22,9 @@ export async function startPlatform(mount: (session: number) => void) {
   if (import.meta.env.DEV || window.parent === window) return false;
   await game.init();
   // The games origin is opaque: localStorage throws, so the manual save slot
-  // lives in the player's cloud store, preloaded once for the sync save API.
+  // lives in the player's cloud store, read on every Play (the shell opens the
+  // play session, which the store needs, only then) for the sync save API.
   let saved: string | null = null;
-  try {
-    const value = await game.store.player.get<string>(STORE_KEY);
-    saved = typeof value === 'string' ? value : null;
-  } catch {
-    saved = null;
-  }
   setSaveStorage({
     getItem: (key) => (key === SAVE_KEY ? saved : null),
     setItem: (key, value) => {
@@ -60,9 +55,15 @@ export async function startPlatform(mount: (session: number) => void) {
     },
     onPause: (listener) => game.onPause(listener),
   };
-  game.onStart(() => {
+  game.onStart(async () => {
     startedAt = performance.now();
     finished = false;
+    try {
+      const value = await game.store.player.get<string>(STORE_KEY);
+      saved = typeof value === 'string' ? value : null;
+    } catch {
+      saved = null;
+    }
     mount(++session);
   });
   game.ready();
