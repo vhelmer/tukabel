@@ -9,3 +9,7 @@ experiments/woman-blink/output/
 
 # Volitelné lokální Python prostředí a modely.
 .local-tools
+
+# Stažená dokumentace Azet Games (azg docs pull) a lokální worktree agentů.
+.azg
+.claude/worktrees
