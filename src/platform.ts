@@ -55,16 +55,28 @@ export async function startPlatform(mount: (session: number) => void) {
     },
     onPause: (listener) => game.onPause(listener),
   };
-  game.onStart(async () => {
+  // The shell opens the play session right after Play, so an immediate read
+  // may fail or come back empty; the menu is used much later, so retry quietly.
+  async function readSave(play: number) {
+    for (const delay of [0, 1500, 4000, 8000]) {
+      await new Promise((resolve) => setTimeout(resolve, delay));
+      if (play !== session || saved !== null) return;
+      try {
+        const value = await game.store.player.get<string>(STORE_KEY);
+        if (typeof value === 'string' && play === session && saved === null) {
+          saved = value;
+          return;
+        }
+      } catch {
+        // Try again after the next delay.
+      }
+    }
+  }
+  game.onStart(() => {
     startedAt = performance.now();
     finished = false;
-    try {
-      const value = await game.store.player.get<string>(STORE_KEY);
-      saved = typeof value === 'string' ? value : null;
-    } catch {
-      saved = null;
-    }
     mount(++session);
+    void readSave(session);
   });
   game.ready();
   return true;
