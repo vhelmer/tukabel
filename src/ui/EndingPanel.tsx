@@ -6,10 +6,12 @@ export function EndingPanel({
   ending,
   onMenu,
   onReset,
+  onFinish,
 }: {
   ending: EndingDefinition;
   onMenu: () => void;
   onReset: () => void;
+  onFinish?: () => void;
 }) {
   const panel = useRef<HTMLElement>(null);
   useEffect(() => {
@@ -42,7 +44,11 @@ export function EndingPanel({
         <p>{ending.text}</p>
         <div className="ending-actions">
           <button onClick={onMenu}>Menu a uložené hry</button>
-          <button onClick={onReset}>Nová hra</button>
+          {onFinish ? (
+            <button onClick={onFinish}>Dokončiť hru</button>
+          ) : (
+            <button onClick={onReset}>Nová hra</button>
+          )}
         </div>
       </section>
     </div>

@@ -26,9 +26,11 @@
     "speech:regenerate": "node scripts/regenerate-speech.mjs",
     "build:release": "npm run typecheck && node scripts/build-release.mjs --budget 5",
     "release:upload": "node scripts/upload-release.mjs",
-    "release:cloudfront": "node scripts/setup-cloudfront.mjs"
+    "release:cloudfront": "node scripts/setup-cloudfront.mjs",
+    "build:azet": "npm run typecheck && node scripts/build-release.mjs --budget 20"
   },
   "dependencies": {
+    "@azet/games-sdk": "file:vendor/azet-games-sdk-1.10.0.tgz",
     "pixi.js": "^8.22.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"

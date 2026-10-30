@@ -2,6 +2,13 @@ import type { GameContent, GameState } from './types';
 import { syncLocations, syncTasks } from './state';
 
 export const SAVE_KEY = 'tukabel.save.v1';
+
+type SaveStorage = Pick<Storage, 'getItem' | 'setItem'>;
+// The Azet Games shell forbids localStorage; it swaps in its cloud store.
+let saveStorage: SaveStorage | null = null;
+export function setSaveStorage(storage: SaveStorage) {
+  saveStorage = storage;
+}
 const SAVE_VERSION = 1;
 
 type Result<T> = { ok: true; value: T } | { ok: false; message: string };
@@ -113,7 +120,7 @@ export function saveGame(
   storage?: Pick<Storage, 'setItem'>,
 ): Result<null> {
   try {
-    (storage ?? window.localStorage).setItem(
+    (storage ?? saveStorage ?? window.localStorage).setItem(
       SAVE_KEY,
       JSON.stringify({ version: SAVE_VERSION, contentId: content.id, state }),
     );
@@ -132,7 +139,9 @@ export function loadGame(
   storage?: Pick<Storage, 'getItem'>,
 ): Result<GameState> {
   try {
-    const raw = (storage ?? window.localStorage).getItem(SAVE_KEY);
+    const raw = (storage ?? saveStorage ?? window.localStorage).getItem(
+      SAVE_KEY,
+    );
     return raw === null
       ? { ok: false, message: 'Zatiaľ nemáš uloženú hru.' }
       : decodeSave(raw, content);
