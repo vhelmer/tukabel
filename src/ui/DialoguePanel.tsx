@@ -1,6 +1,7 @@
 import { useEffect, useRef, type ReactNode } from 'react';
 import { subtitleText } from '../game/subtitles';
 import type { useConversation } from './useConversation';
+import { t } from '../game/i18n';
 
 export function DialoguePanel({
   conversation,
@@ -68,15 +69,15 @@ export function DialoguePanel({
             key={conversation.utteranceKey}
             type="button"
             className="dialogue-caption"
-            aria-label={
-              needsAudioGesture ? 'Spustiť dabing' : 'Dokončiť repliku'
-            }
+            aria-label={t(
+              needsAudioGesture ? 'Spustiť dabing' : 'Dokončiť repliku',
+            )}
             aria-describedby="dialogue-text"
-            title={
+            title={t(
               needsAudioGesture
                 ? 'Kliknutím alebo dotykom spustíš dabing'
-                : 'Kliknutím alebo dotykom dokončíš repliku'
-            }
+                : 'Kliknutím alebo dotykom dokončíš repliku',
+            )}
             disabled={!ready}
             onClick={onAdvance}
           >
@@ -88,14 +89,14 @@ export function DialoguePanel({
           {audio}
         </>
       ) : (
-        <div className="dialogue-choices" aria-label="Možnosti rozhovoru">
+        <div className="dialogue-choices" aria-label={t('Možnosti rozhovoru')}>
           {conversation.intro ? (
             <button
               className="dialogue-choice"
               disabled={!ready}
               onClick={conversation.start}
             >
-              Porozprávať sa.
+              {t('Porozprávať sa.')}
             </button>
           ) : (
             choices.map((choice, index) => (

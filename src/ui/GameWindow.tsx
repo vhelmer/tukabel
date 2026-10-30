@@ -22,6 +22,7 @@ import type { ScenePicker } from '../game/hitTest';
 import { rotatedBounds } from '../game/transforms';
 import { saveGame, loadGame } from '../game/storage';
 import { platform } from '../platform';
+import { languages, t, type Language } from '../game/i18n';
 import { GameCanvas } from './GameCanvas';
 import { DialoguePanel } from './DialoguePanel';
 import { EndingPanel } from './EndingPanel';
@@ -52,8 +53,12 @@ export function GameWindow({
   restore,
   reset,
   openingSequence = 0,
+  language,
+  onLanguage,
 }: {
   content: GameContent;
+  language: Language;
+  onLanguage: (language: Language) => void;
   state: GameState;
   dispatch: (action: GameAction) => void;
   restore: (state: GameState) => void;
@@ -143,7 +148,7 @@ export function GameWindow({
     if (!showReaction || menu || journal) return;
     const timer = window.setTimeout(
       () => setExpiredReaction(reactionKey),
-      reactionDuration(state.message),
+      reactionDuration(t(state.message)),
     );
     return () => window.clearTimeout(timer);
   }, [showReaction, menu, journal, reactionKey, state.message]);
@@ -624,7 +629,7 @@ export function GameWindow({
     <section
       ref={gameRef}
       className={`game-window ${pointer?.inScene && (interactiveHover || selected) && !modalOpen && !state.dialogue ? 'has-scene-cursor' : ''} ${drag?.active ? 'is-dragging' : ''} ${journal ? 'is-journal-open' : ''}`}
-      aria-label="Herné okno"
+      aria-label={t('Herné okno')}
       aria-busy={openingPending && !sceneFailed}
       onPointerMove={(event) => {
         if (event.pointerType === 'touch') return;
@@ -724,11 +729,11 @@ export function GameWindow({
           <div
             className="reaction"
             role="status"
-            aria-label="Reakcia"
+            aria-label={t('Reakcia')}
             aria-live="polite"
             aria-atomic="true"
           >
-            <p key={reactionKey}>{state.message}</p>
+            <p key={reactionKey}>{t(state.message)}</p>
           </div>
         )}
         {!openingPending && !ending && state.dialogue && (
@@ -754,7 +759,7 @@ export function GameWindow({
             className="minigame-overlay"
             role="dialog"
             aria-modal="true"
-            aria-label="Šuter k čiare"
+            aria-label={t('Šuter k čiare')}
           >
             <SuterKCiare
               onFinish={(result) =>
@@ -768,7 +773,10 @@ export function GameWindow({
           </div>
         )}
         {!state.dialogue && !modalOpen && (
-          <div className="scene-accessibility" aria-label="Ovládanie scény">
+          <div
+            className="scene-accessibility"
+            aria-label={t('Ovládanie scény')}
+          >
             {hotspots
               .filter(
                 (hotspot) =>
@@ -828,7 +836,7 @@ export function GameWindow({
             <section
               className="game-menu"
               role="dialog"
-              aria-label="Herné menu"
+              aria-label={t('Herné menu')}
               aria-modal="true"
               onKeyDown={(event) => {
                 if (event.key !== 'Tab') return;
@@ -847,7 +855,7 @@ export function GameWindow({
                 }
               }}
             >
-              <h2>Pauza na kávu</h2>
+              <h2>{t('Pauza na kávu')}</h2>
               <button
                 autoFocus
                 onClick={() => {
@@ -861,7 +869,7 @@ export function GameWindow({
                   );
                 }}
               >
-                Uložiť hru
+                {t('Uložiť hru')}
               </button>
               <button
                 onClick={() => {
@@ -876,7 +884,7 @@ export function GameWindow({
                   );
                 }}
               >
-                Načítať hru
+                {t('Načítať hru')}
               </button>
               <button
                 onClick={() => {
@@ -889,13 +897,33 @@ export function GameWindow({
                   focusHud('menu');
                 }}
               >
-                Nová hra
+                {t('Nová hra')}
               </button>
               <button onClick={toggleSound} aria-pressed={soundEnabled}>
-                Zvuk prostredia: {soundEnabled ? 'zapnutý' : 'vypnutý'}
+                {t(
+                  soundEnabled
+                    ? 'Zvuk prostredia: zapnutý'
+                    : 'Zvuk prostredia: vypnutý',
+                )}
               </button>
-              <p role="status" aria-label="Ukladanie">
-                {storageMessage}
+              <div
+                className="language-switch"
+                role="group"
+                aria-label={t('Jazyk')}
+              >
+                {languages.map((option) => (
+                  <button
+                    key={option.id}
+                    lang={option.id}
+                    aria-pressed={language === option.id}
+                    onClick={() => onLanguage(option.id)}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+              <p role="status" aria-label={t('Ukladanie')}>
+                {t(storageMessage)}
               </p>
               <button
                 onClick={() => {
@@ -903,7 +931,7 @@ export function GameWindow({
                   focusHud('menu');
                 }}
               >
-                {ending ? 'Späť na záver' : 'Pokračovať v hre'}
+                {t(ending ? 'Späť na záver' : 'Pokračovať v hre')}
               </button>
             </section>
           </div>

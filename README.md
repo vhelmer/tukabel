@@ -1325,6 +1325,27 @@ pravidel výchozího slovesa do `onClick`. `uses` i podmínky a efekty se neměn
 Animační vazby dřívějšího `onInteract` převeď na `onClick` / `onUse`.
 Uložený hráčský postup zůstává kompatibilní, protože ID a herní příznaky se nemění.
 
+## Jazyky (slovenština / thajština)
+
+Herní menu přepíná **Slovenčina / ไทย**; výchozí je slovenština, volba se pamatuje
+v `localStorage` (`tukabel.language`) a nepatří do save. `src/game/i18n.ts` drží
+jazyk, `t()` pro texty v kódu a `localizeContent()` pro zobrazovanou kopii obsahu.
+
+- Překlad je slovník `src/game/content/translations/th.json`: **přesný slovenský
+  text → thajský text** (obsah i UI, `{place}`-placeholdery, `**tučně**` v minihře).
+  Reducer, příznaky a save zůstávají slovenské; reakce (`state.message`) se překládají
+  až při zobrazení, takže přepnutí jazyka platí hned i pro načtené pozice.
+- Dabing a lip-sync zůstávají slovenské. `localizeContent` mění jen `subtitle`,
+  nikdy `node.text` / `speech` (jinak by audio bylo „zastaralé“). Thajské titulky mají
+  odhadnuté časování přes délku nahrávky; `subtitleChunks` a Pixi (`textWrap.ts`) dělí
+  thajštinu po slovech přes `Intl.Segmenter`.
+- Písmo Noto Sans Thai (`@fontsource/noto-sans-thai`, jen thajský subset) je lokální
+  fallback ve všech stackách; před vykreslením Pixi se načte (`loadLanguageFont`).
+- Změněný slovenský text v editoru překlad ztratí a ukáže slovenštinu.
+  `npm run validate:content` vypíše chybějící překlady jako varování;
+  `tests/i18n-rules.spec.ts` hlídá úplné pokrytí obsahu a `tests/language.spec.ts`
+  přepnutí v prohlížeči. Nový text v kódu obal `t('…')` a doplň do `th.json`.
+
 ## Interaktivní mapa lokací
 
 Mapa se kreslí v Pixi uvnitř stejného herního okna. Otevírá ji běžný hotspot

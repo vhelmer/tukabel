@@ -7,6 +7,7 @@ import type {
   LipSyncTrack,
   SceneSpeechPlayback,
 } from '../game/types';
+import { t } from '../game/i18n';
 
 // The audio element is the only clock. Pixi reads currentTime directly, including
 // seeks, without a React render or a separate accumulating animation timer.
@@ -191,18 +192,20 @@ export function useDialogueAudio(
         />
         {!options.compact && (
           <button type="button" onClick={skip}>
-            Preskočiť dabing
+            {t('Preskočiť dabing')}
           </button>
         )}
         {options.compact
           ? unavailable && (
               <p role="status">
-                {needsGesture
-                  ? 'Klikni na titulky a spustíš dabing.'
-                  : 'Dabing nie je dostupný. Pokračuj kliknutím na titulky.'}
+                {t(
+                  needsGesture
+                    ? 'Klikni na titulky a spustíš dabing.'
+                    : 'Dabing nie je dostupný. Pokračuj kliknutím na titulky.',
+                )}
               </p>
             )
-          : status && <p role="status">{status}</p>}
+          : status && <p role="status">{t(status)}</p>}
       </div>
     ) : null;
   return {

@@ -35,6 +35,7 @@ import {
   simulateThrow,
   type ThrowInput,
 } from './physics.ts';
+import { t as translate } from '../../game/i18n';
 
 export const WIDTH = 1280;
 export const HEIGHT = 720;
@@ -44,7 +45,7 @@ const PX_PER_CM = (1000 - ORIGIN_X) / LINE_X;
 const LINE_SLANT = 0.1; // the scratched line leans into the distance
 const MAX_DRAG = 240;
 const LANE_OFFSETS = [-8, 6, 14, -14, 0, 18];
-const FONT = '"Trebuchet MS", system-ui, sans-serif';
+const FONT = '"Trebuchet MS", "Noto Sans Thai", system-ui, sans-serif';
 // TUKABEL palette: ink, plum panel, gold edge, cream paper
 const INK = 0x2a1d17;
 const PANEL = 0x291e24;
@@ -154,7 +155,9 @@ export async function createGame(
   caption.anchor.set(0.5, 0);
   caption.position.set(WIDTH / 2, 18);
   const hint = new Text({
-    text: 'Chyť myšou, potiahni DOZADU a pusť.  Dĺžka = sila, sklon = výška.',
+    text: translate(
+      'Chyť myšou, potiahni DOZADU a pusť.  Dĺžka = sila, sklon = výška.',
+    ),
     style: {
       fontFamily: FONT,
       fontSize: 19,
@@ -187,7 +190,7 @@ export async function createGame(
       icon.position.set(22, y + 14);
       board.addChild(icon);
       const label = new Text({
-        text: who === 'player' ? 'Ty' : NAMES[OPPONENT],
+        text: translate(who === 'player' ? 'Ty' : NAMES[OPPONENT]),
         style: {
           fontFamily: FONT,
           fontSize: 19,
@@ -269,7 +272,12 @@ export async function createGame(
       2.2 + text.length * 0.04,
       (recorded?.seconds ?? 0) + 0.5,
     );
-    events.onSay?.(speaker, NAMES[speaker], text, seconds);
+    events.onSay?.(
+      speaker,
+      translate(NAMES[speaker]),
+      translate(text),
+      seconds,
+    );
     if (recorded) voice.play(recorded.url);
     else
       sfx.babble(
@@ -444,7 +452,13 @@ export async function createGame(
     renderAim(keyboardAim);
     host.setAttribute(
       'aria-label',
-      `Mierenie: ${Math.round(keyboardAim.angle)}°, ${Math.round(powerOf(keyboardAim) * 100)} %. Šípky hore a dole menia uhol, vľavo a vpravo silu. Enter alebo medzerník hodí šuter.`,
+      translate(
+        'Mierenie: {angle}°, {power} %. Šípky hore a dole menia uhol, vľavo a vpravo silu. Enter alebo medzerník hodí šuter.',
+        {
+          angle: Math.round(keyboardAim.angle),
+          power: Math.round(powerOf(keyboardAim) * 100),
+        },
+      ),
     );
   }
 
@@ -665,7 +679,7 @@ export async function createGame(
     const alive = () => !destroyed && myRun === run;
     const throws: ThrowRecord[] = [];
     let playerThrows = 0;
-    caption.text = 'Šuter k čiare';
+    caption.text = translate('Šuter k čiare');
     drawBoard(throws, 0);
     await cue('intro');
     for (let turn = 0; turn < TURN_ORDER.length; turn++) {
@@ -675,7 +689,10 @@ export async function createGame(
       const laneY = LANE_Y + LANE_OFFSETS[turn]!;
       let input: ThrowInput;
       if (who === 'player') {
-        caption.text = `Tvoj hod ${playerThrows + 1}/${STONES_EACH}`;
+        caption.text = translate('Tvoj hod {current}/{total}', {
+          current: playerThrows + 1,
+          total: STONES_EACH,
+        });
         if (playerThrows > 0 && Math.random() < 0.4 && !voice.speaking)
           void cue('yourTurn');
         hint.visible = playerThrows === 0;
@@ -684,7 +701,9 @@ export async function createGame(
         ghost = input;
         playerThrows++;
       } else {
-        caption.text = `Hádže ${NAMES[OPPONENT]}`;
+        caption.text = translate('Hádže {name}', {
+          name: translate(NAMES[OPPONENT]),
+        });
         await wait(0.3);
         input = planOpponentThrow(throws);
         await opponentAim(input);
@@ -702,14 +721,15 @@ export async function createGame(
     if (!alive()) return;
     const result = matchResult(throws);
     drawBoard(throws, -1);
-    caption.text =
+    caption.text = translate(
       result.outcome === 'win'
         ? 'Vyhral si!'
         : result.outcome === 'lose'
           ? 'Prehral si.'
           : result.outcome === 'draw'
             ? 'Remíza'
-            : 'Nikto netrafil';
+            : 'Nikto netrafil',
+    );
     sfx.whistle();
     await wait(0.5);
     if (result.outcome === 'win') sfx.win();

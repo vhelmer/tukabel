@@ -19,7 +19,7 @@
 }
 .ending-panel h1 {
   margin: 0 0 24px;
-  font-family: Georgia, serif;
+  font-family: Georgia, 'Noto Sans Thai', serif;
   font-size: clamp(36px, 8vw, 84px);
   letter-spacing: 0.14em;
   text-transform: uppercase;

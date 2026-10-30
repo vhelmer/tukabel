@@ -7,6 +7,7 @@ import { NAMES, OPPONENT } from './lines.ts';
 import type { MatchResult } from './match.ts';
 import playgroundUrl from '../../assets/minigames/suter-k-ciare/playground.webp';
 import './suterKCiare.css';
+import { t } from '../../game/i18n';
 
 export interface SuterKCiareProps {
   /** Called once per finished match (also after "Ešte raz"). */
@@ -36,6 +37,13 @@ const VERDICTS: Record<MatchResult['outcome'], string> = {
   draw: 'Rovnako dobrí. Alebo rovnako zlí. Nika vám kreslí medailu.',
   nobody: 'Všetky šutre v žihľave. Čiara zostala nedotknutá ako panna.',
 };
+
+/** `**bold**` marks emphasis inside one translated sentence. */
+function rich(text: string) {
+  return text
+    .split('**')
+    .map((part, index) => (index % 2 ? <b key={index}>{part}</b> : part));
+}
 
 export function SuterKCiare({ onFinish, onExit, autoStart }: SuterKCiareProps) {
   const hostRef = useRef<HTMLDivElement>(null);
@@ -99,7 +107,7 @@ export function SuterKCiare({ onFinish, onExit, autoStart }: SuterKCiareProps) {
         className="skc-stage"
         ref={hostRef}
         role="application"
-        aria-label="Mierenie hodu"
+        aria-label={t('Mierenie hodu')}
         aria-hidden={!started || Boolean(result)}
         tabIndex={started && !result ? 0 : -1}
       />
@@ -115,26 +123,35 @@ export function SuterKCiare({ onFinish, onExit, autoStart }: SuterKCiareProps) {
           style={{ backgroundImage: `url(${playgroundUrl})` }}
         >
           <div className="skc-card">
-            <h1>Šuter k čiare</h1>
+            <h1>{t('Šuter k čiare')}</h1>
             <p>
-              Hoď šuter <b>čo najbližšie k čiare</b>, ale <b>neprehoď ju</b>. Ty
-              aj {NAMES[OPPONENT]} máte po tri šutre, platí najlepší platný hod.
+              {rich(
+                t(
+                  'Hoď šuter **čo najbližšie k čiare**, ale **neprehoď ju**. Ty aj {name} máte po tri šutre, platí najlepší platný hod.',
+                  { name: t(NAMES[OPPONENT]) },
+                ),
+              )}
             </p>
             <p className="skc-how">
-              Chyť myšou kdekoľvek, <b>potiahni dozadu</b> ako prak a pusť.
+              {rich(
+                t('Chyť myšou kdekoľvek, **potiahni dozadu** ako prak a pusť.'),
+              )}
               <br />
-              Dĺžka ťahu je sila, sklon je výška. Nízky hod sa dlho šúcha,
-              vysoký zastane skôr.
+              {t(
+                'Dĺžka ťahu je sila, sklon je výška. Nízky hod sa dlho šúcha, vysoký zastane skôr.',
+              )}
               <br />
-              Klávesnica: <b>↑ ↓ uhol, ← → sila</b>, Shift mení hodnoty
-              rýchlejšie.
-              <b> Enter alebo medzerník</b> hodí šuter.
+              {rich(
+                t(
+                  'Klávesnica: **↑ ↓ uhol, ← → sila**, Shift mení hodnoty rýchlejšie. **Enter alebo medzerník** hodí šuter.',
+                ),
+              )}
             </p>
             <div className="skc-buttons">
-              <button onClick={start}>Hádzať</button>
+              <button onClick={start}>{t('Hádzať')}</button>
               {onExit && (
                 <button className="skc-secondary" onClick={onExit}>
-                  Späť
+                  {t('Späť')}
                 </button>
               )}
             </div>
@@ -144,25 +161,25 @@ export function SuterKCiare({ onFinish, onExit, autoStart }: SuterKCiareProps) {
       {result && (
         <div className="skc-overlay">
           <div className="skc-card">
-            <h1>{TITLES[result.outcome]}</h1>
-            <p>{VERDICTS[result.outcome]}</p>
+            <h1>{t(TITLES[result.outcome])}</h1>
+            <p>{t(VERDICTS[result.outcome])}</p>
             <table>
               <tbody>
                 <tr>
-                  <th>Ty</th>
+                  <th>{t('Ty')}</th>
                   <td>{formatDistance(result.playerBest)}</td>
                 </tr>
                 <tr>
-                  <th>{NAMES[OPPONENT]}</th>
+                  <th>{t(NAMES[OPPONENT])}</th>
                   <td>{formatDistance(result.opponentBest)}</td>
                 </tr>
               </tbody>
             </table>
             <div className="skc-buttons">
-              <button onClick={again}>Ešte raz</button>
+              <button onClick={again}>{t('Ešte raz')}</button>
               {onExit && (
                 <button className="skc-secondary" onClick={onExit}>
-                  Späť
+                  {t('Späť')}
                 </button>
               )}
             </div>

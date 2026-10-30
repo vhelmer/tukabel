@@ -5,6 +5,7 @@ import switchUrl from '../assets/cutscenes/blackout/switch.mp3';
 import electricityUrl from '../assets/cutscenes/blackout/electricity.mp3';
 import voiceUrl from '../assets/cutscenes/blackout/voice.mp3';
 import './cutscene.css';
+import { t } from '../game/i18n';
 
 // Village-wide blackout: Voronoi districts flicker and die out in a cascade
 // from a random fault, timed to the switch and electricity recordings.
@@ -270,12 +271,12 @@ export function BlackoutCutscene({ onFinish }: { onFinish: () => void }) {
       className={`cutscene ${leaving ? 'is-leaving' : ''}`}
       role="dialog"
       aria-modal="true"
-      aria-label="Úvod: výpadok prúdu"
+      aria-label={t('Úvod: výpadok prúdu')}
     >
       <canvas ref={canvasRef} aria-hidden="true" />
       {phase === 'gesture' && (
         <button className="cutscene-start" onClick={() => startRef.current?.()}>
-          ▶ Spustiť úvod
+          ▶ {t('Spustiť úvod')}
         </button>
       )}
       <button
@@ -287,7 +288,7 @@ export function BlackoutCutscene({ onFinish }: { onFinish: () => void }) {
           onFinish();
         }}
       >
-        Preskočiť ›
+        {t('Preskočiť')} ›
       </button>
     </div>
   );

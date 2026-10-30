@@ -183,7 +183,7 @@ export function createScene(
       const label = new Text({
         text: hotspot.label,
         style: {
-          fontFamily: 'Arial, sans-serif',
+          fontFamily: 'Arial, "Noto Sans Thai", sans-serif',
           fontSize: 24,
           fontWeight: 'bold',
           fill: 0xf6edda,

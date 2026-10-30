@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import type { HudController, HudLayout, HudState } from '../game/createHud';
+import { t } from '../game/i18n';
 
 // Semantic/keyboard mirror only: every visible pixel and all pointer interactions
 // belong to Pixi. These transparent controls never intercept canvas pointers.
@@ -95,7 +96,7 @@ export function HudAccessibility({
       {panel ? (
         <section
           role="dialog"
-          aria-label={layout.map ? 'Mapa lokácií' : 'Denník úloh'}
+          aria-label={t(layout.map ? 'Mapa lokácií' : 'Denník úloh')}
           aria-modal="true"
           style={{
             position: 'absolute',
@@ -123,11 +124,11 @@ export function HudAccessibility({
         >
           {controls}
           {layout.map ? (
-            <h2>Mapa okolia</h2>
+            <h2>{t('Mapa okolia')}</h2>
           ) : (
             <>
-              <h2>Môj pochybný plán</h2>
-              <ul aria-label="Zapísané úlohy">
+              <h2>{t('Môj pochybný plán')}</h2>
+              <ul aria-label={t('Zapísané úlohy')}>
                 {(hud.content.tasks ?? [])
                   .filter((task) => Object.hasOwn(hud.state.tasks, task.id))
                   .map((task) => (
@@ -137,9 +138,11 @@ export function HudAccessibility({
                       data-status={hud.state.tasks[task.id]}
                     >
                       <span className="sr-only">
-                        {hud.state.tasks[task.id] === 'completed'
-                          ? 'Splnené: '
-                          : 'Aktívne: '}
+                        {t(
+                          hud.state.tasks[task.id] === 'completed'
+                            ? 'Splnené:'
+                            : 'Aktívne:',
+                        )}{' '}
                       </span>
                       {hud.state.tasks[task.id] === 'completed' ? (
                         <s>{task.text}</s>
@@ -150,7 +153,7 @@ export function HudAccessibility({
                   ))}
               </ul>
               {!Object.keys(hud.state.tasks).length && (
-                <p>Zatiaľ nemám nič zapísané.</p>
+                <p>{t('Zatiaľ nemám nič zapísané.')}</p>
               )}
             </>
           )}
@@ -158,7 +161,7 @@ export function HudAccessibility({
       ) : (
         <div
           role="group"
-          aria-label="Inventár"
+          aria-label={t('Inventár')}
           aria-disabled={Boolean(
             hud.state.dialogue || hud.menu || hud.journal || hud.map,
           )}

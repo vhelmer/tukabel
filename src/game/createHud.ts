@@ -18,6 +18,7 @@ import { worldMapPolygon } from './worldMap';
 import type { Point } from './transforms';
 import { hudArt } from './hudArt';
 import type { AlphaMask } from './hitTest';
+import { t } from './i18n';
 
 export interface InventoryPointer {
   pointerId: number;
@@ -147,7 +148,7 @@ export function createHud(
     const view = new Text({
       text: value,
       style: {
-        fontFamily: 'Georgia, serif',
+        fontFamily: 'Georgia, "Noto Sans Thai", serif',
         fontSize: size,
         fill: color,
         fontWeight: 'bold',
@@ -567,7 +568,7 @@ export function createHud(
     button(
       {
         id: 'journal',
-        label: 'Denník ' + active,
+        label: t('Denník {count}', { count: active }),
         bounds: notebook,
         expanded: snapshot.journal,
       },
@@ -589,7 +590,7 @@ export function createHud(
     button(
       {
         id: 'menu',
-        label: 'Menu',
+        label: t('Menu'),
         bounds: { x: toolsX, y: toolsY, width: 44, height: 48 },
         expanded: snapshot.menu,
       },
@@ -626,7 +627,7 @@ export function createHud(
       button(
         {
           id: 'inventory-prev',
-          label: 'Predchádzajúce predmety',
+          label: t('Predchádzajúce predmety'),
           bounds: {
             x: inventory.x + leading,
             y: slotY + slotSize / 2 - 24,
@@ -641,7 +642,7 @@ export function createHud(
       button(
         {
           id: 'inventory-next',
-          label: 'Ďalšie predmety',
+          label: t('Ďalšie predmety'),
           bounds: {
             x: inventory.x + inventoryWidth - 36,
             y: slotY + slotSize / 2 - 24,
@@ -784,11 +785,11 @@ export function createHud(
     mapShade.alpha = 0;
     layout.controls = [];
     layout.map = b;
-    text(panels, 'Mapa okolia', b.x + 14, b.y + 10, 20);
+    text(panels, t('Mapa okolia'), b.x + 14, b.y + 10, 20);
     button(
       {
         id: 'map-close',
-        label: 'Zavrieť mapu',
+        label: t('Zavrieť mapu'),
         bounds: { x: b.x + b.width - 48, y: b.y + 3, width: 44, height: 40 },
       },
       '×',
@@ -798,12 +799,12 @@ export function createHud(
       const unlocked = snapshot.state.unlockedScenes.includes(point.sceneId);
       const current = point.sceneId === snapshot.state.sceneId;
       const label = current
-        ? `Tu si: ${point.label}`
+        ? t('Tu si: {place}', { place: point.label })
         : !unlocked
-          ? `Zamknuté: ${point.label}`
+          ? t('Zamknuté: {place}', { place: point.label })
           : point.fastTravel === false
-            ? `Iba prechodom: ${point.label}`
-            : `Cestovať: ${point.label}`;
+            ? t('Iba prechodom: {place}', { place: point.label })
+            : t('Cestovať: {place}', { place: point.label });
       const polygon = worldMapPolygon(point, map).map((p) => ({
         x: imageFrame.x + p.x * scale,
         y: imageFrame.y + p.y * scale,
@@ -826,7 +827,9 @@ export function createHud(
     }
     text(
       panels,
-      'Zamknuté miesta a miesta iba prechodom nie sú dostupné na rýchlu cestu.',
+      t(
+        'Zamknuté miesta a miesta iba prechodom nie sú dostupné na rýchlu cestu.',
+      ),
       b.x + 12,
       b.y + b.height - 35,
       Math.max(9, Math.min(12, b.width / 65)),
@@ -864,7 +867,7 @@ export function createHud(
     paper.on('pointertap', (e) => e.stopPropagation());
     text(
       panels,
-      'ZÁPISKY PRE PRÍPAD AMNÉZIE',
+      t('ZÁPISKY PRE PRÍPAD AMNÉZIE'),
       left,
       b.y + bh * 0.065,
       Math.max(7, Math.min(10, bw / 48)),
@@ -872,7 +875,7 @@ export function createHud(
     );
     const title = text(
       panels,
-      'Môj pochybný plán',
+      t('Môj pochybný plán'),
       left,
       b.y + bh * 0.11,
       Math.min(28, bw / 17),
@@ -886,10 +889,10 @@ export function createHud(
     text(
       panels,
       remaining
-        ? 'Ešte vybaviť: ' + remaining
+        ? t('Ešte vybaviť: {count}', { count: remaining })
         : Object.keys(snapshot.state.tasks).length
-          ? 'Všetko odškrtnuté. Zatiaľ.'
-          : 'Čakám na prvý dobrý nápad.',
+          ? t('Všetko odškrtnuté. Zatiaľ.')
+          : t('Čakám na prvý dobrý nápad.'),
       left,
       b.y + bh * 0.19,
       Math.min(12, bw / 28),
@@ -899,7 +902,7 @@ export function createHud(
     button(
       {
         id: 'journal-close',
-        label: 'Zavrieť denník',
+        label: t('Zavrieť denník'),
         bounds: { x: right - 40, y: b.y + bh * 0.08, width: 40, height: 44 },
       },
       '×',
@@ -920,7 +923,7 @@ export function createHud(
     if (!entries.length)
       text(
         page,
-        'Zatiaľ nemám nič zapísané.\nTo je samo osebe podozrivé.',
+        t('Zatiaľ nemám nič zapísané.\nTo je samo osebe podozrivé.'),
         left + 4,
         rowY + 12,
         fontSize,
@@ -973,7 +976,7 @@ export function createHud(
       button(
         {
           id: 'journal-up',
-          label: 'Posunúť denník nahor',
+          label: t('Posunúť denník nahor'),
           bounds: { x: right - 94, y: b.y + bh * 0.85, width: 44, height: 44 },
           disabled: journalScroll === 0,
         },
@@ -983,7 +986,7 @@ export function createHud(
       button(
         {
           id: 'journal-down',
-          label: 'Posunúť denník nadol',
+          label: t('Posunúť denník nadol'),
           bounds: { x: right - 44, y: b.y + bh * 0.85, width: 44, height: 44 },
           disabled: journalScroll >= journalMaxScroll,
         },
@@ -994,7 +997,7 @@ export function createHud(
     if (bw > 370 || journalMaxScroll === 0)
       text(
         panels,
-        'Nestratiť. Nezjesť. Nezabudnúť.',
+        t('Nestratiť. Nezjesť. Nezabudnúť.'),
         left,
         b.y + bh * 0.9,
         bw < 370 ? 8 : 10,

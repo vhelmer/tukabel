@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import type { EndingDefinition } from '../game/types';
 import './ending.css';
+import { t } from '../game/i18n';
 
 export function EndingPanel({
   ending,
@@ -43,11 +44,11 @@ export function EndingPanel({
         <h1>Koniec</h1>
         <p>{ending.text}</p>
         <div className="ending-actions">
-          <button onClick={onMenu}>Menu a uložené hry</button>
+          <button onClick={onMenu}>{t('Menu a uložené hry')}</button>
           {onFinish ? (
-            <button onClick={onFinish}>Dokončiť hru</button>
+            <button onClick={onFinish}>{t('Dokončiť hru')}</button>
           ) : (
-            <button onClick={onReset}>Nová hra</button>
+            <button onClick={onReset}>{t('Nová hra')}</button>
           )}
         </div>
       </section>

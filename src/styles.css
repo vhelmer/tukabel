@@ -1,5 +1,5 @@
 :root {
-  font-family: 'Trebuchet MS', system-ui, sans-serif;
+  font-family: 'Trebuchet MS', 'Noto Sans Thai', system-ui, sans-serif;
   color: #f4eedc;
   background: #101b19;
   font-synthesis: none;
@@ -247,6 +247,24 @@ button[aria-pressed='true'] {
 .game-menu h2 {
   margin: 0 0 8px;
   font-size: 21px;
+}
+.language-switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.language-switch button {
+  min-height: 44px;
+  border: 2px solid #aa8057;
+  border-radius: 6px;
+  background: #2c2226;
+  color: #fff0c9;
+  font: inherit;
+  font-weight: 700;
+}
+.language-switch button[aria-pressed='true'] {
+  background: #825b3c;
+  border-color: #f0c87e;
 }
 .game-menu p {
   color: var(--muted);

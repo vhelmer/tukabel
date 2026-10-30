@@ -33,6 +33,7 @@ import type {
   SceneCallbacks,
   SceneDefinition,
 } from '../game/types';
+import { t } from '../game/i18n';
 
 interface GameCanvasProps extends SceneCallbacks {
   scene: SceneDefinition;
@@ -553,11 +554,11 @@ function MountedCanvas({
   return (
     <div
       className="scene-frame"
-      aria-label={`Lokácia: ${scene.title}`}
+      aria-label={t('Lokácia: {place}', { place: scene.title })}
       tabIndex={pannable ? 0 : undefined}
       aria-description={
         pannable
-          ? 'Obraz posunieš potiahnutím, kolieskom alebo šípkami.'
+          ? t('Obraz posunieš potiahnutím, kolieskom alebo šípkami.')
           : undefined
       }
     >
@@ -580,7 +581,7 @@ function MountedCanvas({
         (camera.frame.width > camera.width ||
           camera.frame.height > camera.height) && (
           <span className="scene-pan-hint" aria-hidden="true">
-            ↔ Potiahni scénu pre posun
+            ↔ {t('Potiahni scénu pre posun')}
           </span>
         )}
       {hud && hudLayout && (
@@ -592,15 +593,17 @@ function MountedCanvas({
       )}
       {status === 'loading' && (
         <div className="scene-notice" role="status">
-          Pripravujem lokáciu…
+          {t('Pripravujem lokáciu…')}
         </div>
       )}
       {status === 'error' && (
         <div className="scene-notice" role="alert">
-          <strong>Scénu sa nepodarilo načítať.</strong>
-          <span>Skús obnovenie stránky a prehliadač s podporou WebGL.</span>
+          <strong>{t('Scénu sa nepodarilo načítať.')}</strong>
+          <span>
+            {t('Skús obnovenie stránky a prehliadač s podporou WebGL.')}
+          </span>
           <button onClick={() => window.location.reload()}>
-            Obnoviť stránku
+            {t('Obnoviť stránku')}
           </button>
         </div>
       )}

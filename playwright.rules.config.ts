@@ -25,6 +25,7 @@ export default defineConfig({
     'remote-segmentation-rules.spec.ts',
     'codex-rules.spec.ts',
     'test-start-rules.spec.ts',
+    'i18n-rules.spec.ts',
   ],
   reporter: 'list',
 });

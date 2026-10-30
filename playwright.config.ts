@@ -23,6 +23,7 @@ export default defineConfig({
     'object-mask-rules.spec.ts',
     'remote-segmentation-rules.spec.ts',
     'codex-rules.spec.ts',
+    'i18n-rules.spec.ts',
   ],
   // Isolated integration workflows include PNG processing and several reloads.
   timeout: 60000,

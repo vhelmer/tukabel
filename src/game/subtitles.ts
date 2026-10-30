@@ -115,21 +115,39 @@ export function subtitleTrackIssue(
 }
 
 // Prefer punctuation, keep whole words, and bound the amount of text on screen.
+// Thai writes a phrase without spaces, so long Thai runs split at words.
+const thaiWords =
+  typeof Intl.Segmenter === 'function'
+    ? new Intl.Segmenter('th', { granularity: 'word' })
+    : null;
+function subtitleWords(text: string) {
+  return text
+    .trim()
+    .split(/\s+/u)
+    .filter(Boolean)
+    .flatMap((word) =>
+      word.length > 24 && thaiWords && /[\u0E00-\u0E7F]/u.test(word)
+        ? [...thaiWords.segment(word)].map((part, index) => ({
+            text: part.segment,
+            gap: index ? '' : ' ',
+          }))
+        : [{ text: word, gap: ' ' }],
+    );
+}
 export function subtitleChunks(text: string): string[] {
-  const words = text.trim().split(/\s+/u).filter(Boolean),
-    chunks: string[] = [];
+  const chunks: string[] = [];
   let current = '';
-  for (const word of words) {
+  for (const { text: word, gap } of subtitleWords(text)) {
     if (
       current &&
-      (current.length + word.length + 1 > 78 ||
-        (current.length >= 24 && /[.!?…]["”»)]?$/u.test(current)) ||
-        (current.length >= 50 && /[,;:]["”»)]?$/u.test(current)))
+      (current.length + word.length + gap.length > 78 ||
+        (gap && current.length >= 24 && /[.!?…]["”»)]?$/u.test(current)) ||
+        (gap && current.length >= 50 && /[,;:]["”»)]?$/u.test(current)))
     ) {
       chunks.push(current);
       current = '';
     }
-    current += (current ? ' ' : '') + word;
+    current += (current ? gap : '') + word;
   }
   if (current) chunks.push(current);
   return chunks;

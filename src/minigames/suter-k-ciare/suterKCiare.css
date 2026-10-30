@@ -6,7 +6,7 @@
   height: 100%;
   overflow: hidden;
   background: #18131b;
-  font-family: 'Trebuchet MS', system-ui, sans-serif;
+  font-family: 'Trebuchet MS', 'Noto Sans Thai', system-ui, sans-serif;
   color: #f4eedc;
   user-select: none;
 }

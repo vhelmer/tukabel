@@ -1,6 +1,14 @@
 import { lazy, Suspense, useCallback, useMemo, useState } from 'react';
 import { content } from './game/content';
 import { resolveAssets } from './game/assets';
+import {
+  currentLanguage,
+  loadLanguageFont,
+  localizeContent,
+  saveLanguage,
+  setLanguage,
+  type Language,
+} from './game/i18n';
 import { initialState, reduceGame, syncLocations } from './game/state';
 import { validateProject } from './game/validateProject';
 import type { GameAction, GameContent, GameState } from './game/types';
@@ -22,6 +30,18 @@ export function App() {
     () => resolveAssets(playDocument),
     [playDocument],
   );
+  const [language, setLanguageState] = useState(currentLanguage);
+  // The reducer keeps Slovak content; only what the player reads is translated.
+  const displayContent = useMemo(
+    () => localizeContent(gameContent, language),
+    [gameContent, language],
+  );
+  const changeLanguage = useCallback(async (next: Language) => {
+    await loadLanguageFont(next);
+    setLanguage(next);
+    saveLanguage(next);
+    setLanguageState(next);
+  }, []);
   const dispatch = useCallback(
     (action: GameAction) =>
       setState((previous) => reduceGame(gameContent, previous, action)),
@@ -91,7 +111,9 @@ export function App() {
       {mode === 'game' && (
         <GameWindow
           openingSequence={gameSession}
-          content={gameContent}
+          content={displayContent}
+          language={language}
+          onLanguage={changeLanguage}
           state={state}
           dispatch={dispatch}
           restore={(saved: GameState) => setState(saved)}
