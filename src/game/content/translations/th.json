@@ -538,5 +538,14 @@
   "Spusti dabing tlačidlom Prehrať.": "กดปุ่ม เล่น เพื่อเล่นเสียงพากย์",
   "Pokračuj tlačidlom Prehrať.": "กดปุ่ม เล่น เพื่อไปต่อ",
   "Dabing sa nepodarilo prehrať. Text zostáva dostupný.": "เล่นเสียงพากย์ไม่สำเร็จ ยังอ่านข้อความได้อยู่",
-  "Reakcia": "ปฏิกิริยา"
+  "Reakcia": "ปฏิกิริยา",
+  "Hlavný kábel je bezpečne odpojený, ale koniec má poškodenú izoláciu. To ešte opravím; dovtedy ho môžem vrátiť aj Ľubovi do automatu.": "สายไฟหลักถอดออกมาอย่างปลอดภัยแล้ว แต่ปลายสายฉนวนแตก เดี๋ยวฉันค่อยซ่อม ระหว่างนี้จะเสียบคืนตู้เกมของลูโบก็ยังได้",
+  "Zlatý obal ": "ห่อสีทอง ",
+  "Bez hlavného kábla automat nebeží. Túto skriňu na moje peniaze som vyradil z prevádzky. Kým kábel neoblepím, môžem ho sem ešte vrátiť.": "ไม่มีสายไฟหลัก ตู้เกมก็ไม่ทำงาน ตู้ดูดเงินฉันใบนี้ฉันปลดระวางไปเรียบร้อย ตราบใดที่ยังไม่พันเทปสาย ฉันก็ยังเอามันมาคืนตรงนี้ได้",
+  "Zastrčil som koncovku späť do automatu a svorku nasadil na batériu. Matica je ešte povolená, takže automat zatiaľ spí. Kľúčom ho prebudím.": "เสียบหัวสายกลับเข้าตู้เกมแล้ว หนีบขั้วแบตเรียบร้อย แต่น็อตยังหลวมอยู่ ตู้เลยยังหลับ เดี๋ยวเอาประแจปลุกมันเอง",
+  "Tento kábel som už oblepil pre Fera. Patrí do rozvodnej skrine, nie do Ľubovej kasičky.": "สายนี้ฉันพันเทปไว้ให้เฟโรแล้ว ที่ของมันคือตู้ไฟ ไม่ใช่กระปุกออมสินของลูโบ",
+  "Bez kábla automat nebeží a žetón by iba prepadol do diery. Kým kábel neoblepím, môžem ho sem ešte vrátiť.": "ไม่มีสาย ตู้เกมก็ไม่ทำงาน เหรียญโทเคนก็จะร่วงลงรูไปเปล่า ๆ ตราบใดที่ยังไม่พันเทปสาย ฉันก็ยังเอามาคืนตรงนี้ได้",
+  "Bez čierneho kábla batéria automat neutiahne. Ľubovi zostal aspoň drahý podstavec pod sklamanie. Kým kábel neoblepím, môžem ho ešte vrátiť na svorku.": "ไม่มีสายดำ แบตก็ลากตู้เกมไม่ไหว อย่างน้อยลูโบก็ยังเหลือแท่นวางความผิดหวังราคาแพงไว้ดูต่างหน้า ตราบใดที่ยังไม่พันเทปสาย ฉันก็ยังหนีบมันคืนขั้วได้",
+  "Vytiahol som kábel aj s koncovkou. Poškodený koniec oblepím páskou a vrátim do Ferovej rozvodnej skrine. Kým ho neoblepím, ešte si to môžem rozmyslieť.": "ดึงสายออกมาพร้อมหัวเสียบเลย ปลายที่เสียเดี๋ยวพันเทปแล้วเอาไปคืนตู้ไฟของเฟโร ตราบใดที่ยังไม่พันเทป ฉันก็ยังเปลี่ยนใจได้",
+  "Poškodený koniec je zaizolovaný. Teraz ho môžem vrátiť do Ferovej rozvodnej skrine. Kľúč a rukavice už nepotrebujem, odložím ich.": "พันฉนวนปลายที่เสียเรียบร้อย ทีนี้เอาไปคืนตู้ไฟของเฟโรได้แล้ว ประแจกับถุงมือไม่ต้องใช้แล้ว เก็บไปละกัน"
 }
