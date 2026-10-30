@@ -345,7 +345,7 @@ test('the sleeping cow keeps its eyes shut and stops blinking after travel and l
     (a) => a.kind === 'blink' && a.frames.at(-2)?.includes('4e928ce3'),
   )!;
   const blinking = farm.find((h) => h.animation?.blink === clip.id)!;
-  const sleeping = farm.find((h) => h.image === clip.frames[3])!;
+  const sleeping = farm.find((h) => h.image === clip.frames[2])!;
   expect(sleeping.animation).toBeUndefined();
   expect(sleeping.bounds).toEqual(blinking.bounds);
   const shown = (h: Hotspot) => !h.hidden && matches(p.state, h.visibleWhen);

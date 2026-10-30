@@ -2264,7 +2264,7 @@
           "label": "Krava spí",
           "bounds": { "x": 622, "y": 301, "width": 191, "height": 161 },
           "imageFit": "contain",
-          "image": "codex/4e928ce3-2c0f-4338-8e50-5737e2b9ef76/blink-04.png",
+          "image": "codex/4e928ce3-2c0f-4338-8e50-5737e2b9ef76/blink-03.png",
           "onClick": [],
           "decorative": true,
           "visibleWhen": { "flag": "cow-asleep" }
