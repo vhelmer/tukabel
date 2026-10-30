@@ -1,0 +1,156 @@
+{
+  "version": 1,
+  "operation": "voice-retirement-verification",
+  "provider": "elevenlabs",
+  "verifiedAt": "2026-10-30T01:11:13.777Z",
+  "projectId": "tukabel-potato-prize-3",
+  "actor": { "sceneId": "scene7", "hotspotId": "swing-boy" },
+  "voiceId": "QjlCD1k8X7bEBCXezj33",
+  "designRegistration": "speech/fa1a14b2-14eb-4940-a9f2-fa3989166100/registration.json",
+  "registrationSha256": "691253b0183ce0ec30fd43abd57fb59d3bf9bdcdaa39dfcb3006d9d2beb507cf",
+  "registration": {
+    "version": 1,
+    "operation": "voice-registration",
+    "provider": "elevenlabs",
+    "designManifest": "speech/315e4bb8-5be3-4abe-868a-0c54a7dfde73/design.json",
+    "designSha256": "4b801baaa720706b1e0a49827a5ef7928dc63b7e3a501cfb5ee5e44925817d7e",
+    "generatedVoiceId": "QjlCD1k8X7bEBCXezj33",
+    "previewIndex": 0,
+    "voiceId": "QjlCD1k8X7bEBCXezj33",
+    "name": "TUKABEL · Špľuch",
+    "description": "Adult male cartoon voice actor performing a bratty playground troublemaker for an adult animated horror-comedy. Exaggerated high-pitched, nasal, croaky squeal with a raspy crack, like a grown man squeezing his voice into a squeaky brat, in the spirit of crude adult TV cartoons. Cocky, impatient, snotty delivery with sudden shrieks of excitement and little snorts. Native Slovak speaker, clearly articulated Slovak words, every word understandable despite the bizarre pitch. Clean dry studio recording, no music or background."
+  },
+  "lines": [
+    {
+      "dialogueId": "boy-chat",
+      "nodeId": "trade",
+      "actor": { "sceneId": "scene7", "hotspotId": "swing-boy" },
+      "text": "Naša medaila BRAMBORA NA ŠPAGÁTU. Prvé miesto dostane štvrté, nech si nezvyká na úspech. Zadarmo ju nedám. Pri čiare v hline ma poraz v hádzaní a je tvoja. Uzol zalepil Béla; bez nožníc skôr rozviažeš vlastné črevá.",
+      "textSha256": "68384c73b06dd3703633bf3f09741d953d8178b2947e2b52b6d259444502251d",
+      "audio": "speech/963d094e-dd6d-42c1-9d6b-3fdc2ae033a8/audio.wav",
+      "audioSha256": "4ba36047400590781b9c41e0a1f8e12de4c3e6e29fa24175bca283fe3865cd3c",
+      "duration": 16.72,
+      "rms": 2841.9140511284927,
+      "peak": 25736,
+      "lipSync": "speech/a507d34f-97d6-471a-9ef2-4606c64f1212/track.lipsync.json",
+      "lipSyncSha256": "c510058a1f60f89086088fcfa5e7d10e4dde04cea4f8605a3f07643f28943789",
+      "subtitles": {
+        "text": "Naša medaila BRAMBORA NA ŠPAGÁTU. Prvé miesto dostane štvrté, nech si nezvyká na úspech. Zadarmo ju nedám. Pri čiare v hline ma poraz v hádzaní a je tvoja. Uzol zalepil Béla; bez nožníc skôr rozviažeš vlastné črevá.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 2.6026415094339623,
+            "text": "Naša medaila BRAMBORA NA ŠPAGÁTU."
+          },
+          {
+            "start": 2.6026415094339623,
+            "end": 6.861509433962263,
+            "text": "Prvé miesto dostane štvrté, nech si nezvyká na úspech."
+          },
+          {
+            "start": 6.861509433962263,
+            "end": 12.066792452830189,
+            "text": "Zadarmo ju nedám. Pri čiare v hline ma poraz v hádzaní a je tvoja."
+          },
+          {
+            "start": 12.066792452830189,
+            "end": 16.72,
+            "text": "Uzol zalepil Béla; bez nožníc skôr rozviažeš vlastné črevá."
+          }
+        ]
+      },
+      "record": "speech/963d094e-dd6d-42c1-9d6b-3fdc2ae033a8/record.json",
+      "recordSha256": "e23865fab829a932ec6f4ffd4c3dbfec4eaa4fccc5ff80aa1417840bf39edb94"
+    },
+    {
+      "dialogueId": "boy-chat",
+      "nodeId": "van",
+      "actor": { "sceneId": "scene7", "hotspotId": "swing-boy" },
+      "text": "Šiel tu pohrebák ku kostolu. Vzadu mu búchala bedňa a trčal kábel. Šofér nadával ako živý, ale tvár som nevidel. Mama mi na mŕtvych dovolí čumieť až po večeri.",
+      "textSha256": "71e7ba1f6767dbd90e36ed7d4ccc3f34bda962961d62c1bec94a71c6d18fdf83",
+      "audio": "speech/79d83108-59a6-48b9-b501-b8dfa049a0d5/audio.wav",
+      "audioSha256": "038d35be86dc20610ffa1a4cc9a102cbf906c9e90c2885e90c1850e766ace2ff",
+      "duration": 11.92,
+      "rms": 2562.7936315828656,
+      "peak": 22332,
+      "lipSync": "speech/b0a0f42b-3fb9-4b0a-9501-7f302429610f/track.lipsync.json",
+      "lipSyncSha256": "39c8d61218ee683aa41aa7fe675cca5723682c7ed8ff55a7e8cb329cc05c751e",
+      "subtitles": {
+        "text": "Šiel tu pohrebák ku kostolu. Vzadu mu búchala bedňa a trčal kábel. Šofér nadával ako živý, ale tvár som nevidel. Mama mi na mŕtvych dovolí čumieť až po večeri.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 2.1394871794871793,
+            "text": "Šiel tu pohrebák ku kostolu."
+          },
+          {
+            "start": 2.1394871794871793,
+            "end": 4.966666666666667,
+            "text": "Vzadu mu búchala bedňa a trčal kábel."
+          },
+          {
+            "start": 4.966666666666667,
+            "end": 8.405128205128205,
+            "text": "Šofér nadával ako živý, ale tvár som nevidel."
+          },
+          {
+            "start": 8.405128205128205,
+            "end": 11.92,
+            "text": "Mama mi na mŕtvych dovolí čumieť až po večeri."
+          }
+        ]
+      },
+      "record": "speech/79d83108-59a6-48b9-b501-b8dfa049a0d5/record.json",
+      "recordSha256": "6c91cdbe200012ad3a681cf561cfc409438aebb2a300bda49a19c75d16169810"
+    },
+    {
+      "dialogueId": "boy-prize",
+      "nodeId": "line",
+      "actor": { "sceneId": "scene7", "hotspotId": "swing-boy" },
+      "text": "Tu máš bramboru na špagáte. Porazil si decko, hrdina. Keď si ju zavesíš na krk, vyzeráš ako obesený obed. Ten zalepený uzol odstrihni nožnicami; špagát je kvalitnejší než celá tvoja výhra.",
+      "textSha256": "179afed75ba5061f6dcc2d46086d00e73bb53459c761edec2bf3f1882a7bbe36",
+      "audio": "speech/a3ddb80c-028c-465b-adcd-5219980d4207/audio.wav",
+      "audioSha256": "a5fa6c809c571130ad7401259ff094843b061cb186e7e61729aee72d8df05eab",
+      "duration": 14.08,
+      "rms": 2611.3916130523708,
+      "peak": 21974,
+      "lipSync": "speech/07c8fcd3-ba8a-49da-9f4a-d038bebc0e9b/track.lipsync.json",
+      "lipSyncSha256": "b49b84b0fac9e4889c48b708172a250ba07681a6fa93320e7524fbe93d1745b7",
+      "subtitles": {
+        "text": "Tu máš bramboru na špagáte. Porazil si decko, hrdina. Keď si ju zavesíš na krk, vyzeráš ako obesený obed. Ten zalepený uzol odstrihni nožnicami; špagát je kvalitnejší než celá tvoja výhra.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 2.0660869565217395,
+            "text": "Tu máš bramboru na špagáte."
+          },
+          {
+            "start": 2.0660869565217395,
+            "end": 3.979130434782609,
+            "text": "Porazil si decko, hrdina."
+          },
+          {
+            "start": 3.979130434782609,
+            "end": 7.881739130434783,
+            "text": "Keď si ju zavesíš na krk, vyzeráš ako obesený obed."
+          },
+          {
+            "start": 7.881739130434783,
+            "end": 13.62086956521739,
+            "text": "Ten zalepený uzol odstrihni nožnicami; špagát je kvalitnejší než celá tvoja"
+          },
+          {
+            "start": 13.62086956521739,
+            "end": 14.079999999999998,
+            "text": "výhra."
+          }
+        ]
+      },
+      "record": "speech/a3ddb80c-028c-465b-adcd-5219980d4207/record.json",
+      "recordSha256": "b883744f16c7bf89e9fa13f510bbbaaeb2762d8727f61ea72d136d6761bab12c"
+    }
+  ]
+}

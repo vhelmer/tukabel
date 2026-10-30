@@ -1,0 +1,19 @@
+{
+  "text": "Naša medaila BRAMBORA NA ŠPAGÁTU. Prvé miesto dostane štvrté, nech si nezvyká na úspech. Zadarmo ju nedám. Pri čiare v hline ma poraz v hádzaní a je tvoja. Uzol zalepil Béla; bez nožníc skôr rozviažeš vlastné črevá.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "QjlCD1k8X7bEBCXezj33",
+    "designRegistration": "speech/fa1a14b2-14eb-4940-a9f2-fa3989166100/registration.json",
+    "slot": "rotating",
+    "designPrompt": "Adult male cartoon voice actor performing a bratty playground troublemaker for an adult animated horror-comedy. Exaggerated high-pitched, nasal, croaky squeal with a raspy crack, like a grown man squeezing his voice into a squeaky brat, in the spirit of crude adult TV cartoons. Cocky, impatient, snotty delivery with sudden shrieks of excitement and little snorts. Native Slovak speaker, clearly articulated Slovak words, every word understandable despite the bizarre pitch. Clean dry studio recording, no music or background."
+  },
+  "languageCode": "sk",
+  "duration": 16.72,
+  "audioSha256": "4ba36047400590781b9c41e0a1f8e12de4c3e6e29fa24175bca283fe3865cd3c"
+}

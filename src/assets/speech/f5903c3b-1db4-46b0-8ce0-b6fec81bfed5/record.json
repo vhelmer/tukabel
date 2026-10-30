@@ -1,0 +1,18 @@
+{
+  "text": "Studenú kávu z mlieka a mletej nalej do lievika a šliapni na pedál. Klystír na ručný pohon; žalúdok mi už vypovedal zmluvu. Potom vstanem z popruhu a pustím ťa k truhlici s náradím.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "OAHw71DTm0tFvJJU4HGL",
+    "designRegistration": "speech/06c88758-c6d1-4d4b-aecd-6bbf0f668e0d/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 14.32,
+  "audioSha256": "b2a6372bceb3f197b1952c910c070efa0cf5bb4e485ebacd90d8c480ab83aaae"
+}

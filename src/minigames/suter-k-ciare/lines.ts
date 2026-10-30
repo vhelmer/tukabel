@@ -86,7 +86,12 @@ export const LINES: Record<Cue, Line[]> = {
   nobody: [['bela', 'Nikto netrafil. Idem radšej spadnúť z preliezačky.']],
 };
 
-export function pickLine(cue: Cue, rng: () => number = Math.random): Line {
+/** Returns the line plus its index, which keys the recorded voice. */
+export function pickLine(
+  cue: Cue,
+  rng: () => number = Math.random,
+): [Speaker, string, number] {
   const options = LINES[cue];
-  return options[Math.floor(rng() * options.length)]!;
+  const index = Math.floor(rng() * options.length);
+  return [...options[index]!, index];
 }

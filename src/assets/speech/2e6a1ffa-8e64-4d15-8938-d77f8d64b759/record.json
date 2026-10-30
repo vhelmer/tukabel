@@ -1,0 +1,19 @@
+{
+  "text": "Popri plote sa vrátiš na cestu k domom a krčme. Ak tam nájdeš rebrík, pošli ho sem. Hore som vyšiel ako človek, dolu už pôjdem ako poistná udalosť.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "DyIdTI8oWFiulpU3HRMH",
+    "designRegistration": "speech/8fd85477-c6ad-4b01-91eb-e0091a07b692/registration.json",
+    "slot": "rotating",
+    "designPrompt": "Adult male cartoon voice actor performing a timid little daredevil perched on top of a climbing frame, for an adult animated horror-comedy. Very high, wobbly, squeaky voice that cracks and warbles, breathless nervous giggles, then sudden overconfident squeals, in the spirit of crude adult TV cartoons. Comically deformed but intelligible Slovak, native speaker, clear consonants and every word understandable. Clean dry studio recording, no music or background."
+  },
+  "languageCode": "sk",
+  "duration": 11.92,
+  "audioSha256": "5c746adae11d16b86d2194eb41653d46edd01cf9c2c49ebd0452ee1fbc06c54a"
+}

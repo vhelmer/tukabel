@@ -1,0 +1,18 @@
+{
+  "text": "Najprv ju pokrsti svätenou vodou, inak ti zožerie aj tlačivo. Za krst ti nechám mlieko aj starý zvonec. Potom ju úradným čítaním uspi, nech nekope.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "Jfvw40qotTOck51vIvrm",
+    "designRegistration": "speech/1a89f747-49e0-424b-9c61-6e4fc151c0c1/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 12.48,
+  "audioSha256": "9e1523dadd64325f3fea1719a7f6bad0bf9f764ef04037ca64dc76ce81f0248f"
+}

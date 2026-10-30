@@ -1,0 +1,18 @@
+{
+  "text": "Poisťovňa chce pokrstenú kravu, svine. Prines na ňu svätenú vodu a môžeš si vziať mlieko aj starý zvonec. Potom ju uspi úradným čítaním; pri dojení kope a z obojka ma už raz poslala do piče.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "Jfvw40qotTOck51vIvrm",
+    "designRegistration": "speech/1a89f747-49e0-424b-9c61-6e4fc151c0c1/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 15.84,
+  "audioSha256": "3883bbe8c0f8b28f8457c328a4928d79a260d1a9f9896d60a9aca85a701bc1f6"
+}

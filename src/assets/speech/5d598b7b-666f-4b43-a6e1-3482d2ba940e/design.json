@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "operation": "voice-design",
+  "provider": "elevenlabs",
+  "model": "eleven_ttv_v3",
+  "description": "Adult male cartoon voice actor performing a timid little daredevil perched on top of a climbing frame, for an adult animated horror-comedy. Very high, wobbly, squeaky voice that cracks and warbles, breathless nervous giggles, then sudden overconfident squeals, in the spirit of crude adult TV cartoons. Comically deformed but intelligible Slovak, native speaker, clear consonants and every word understandable. Clean dry studio recording, no music or background.",
+  "text": "Z bieleho pohrebáka trčal kábel. Chlap vravel, že je to chvost neviditeľného psa. Hodili sme mu piškótu. Zožral ju sám; psa som odvtedy prestal hľadať. Popri plote sa vrátiš na cestu k domom a krčme. Ak tam nájdeš rebrík, pošli ho sem. Hore som vyšiel ako človek, dolu už pôjdem ako poistná udalosť.",
+  "textSha256": "bb40dc51fe3b61569d347693a87cb29465f3d7a2357bc299d4087a460fee584f",
+  "seed": 1893484523,
+  "guidanceScale": 5,
+  "outputFormat": "mp3_44100_128",
+  "previews": [
+    {
+      "audio": "preview-1.mp3",
+      "generatedVoiceId": "DyIdTI8oWFiulpU3HRMH",
+      "duration": 26.2035625,
+      "audioSha256": "b40d76ae7c2a823bc4968a68bbf72d321ad12690ded0f078f817d9d52720a272"
+    },
+    {
+      "audio": "preview-2.mp3",
+      "generatedVoiceId": "XPN430o1rh58ilGmu4pP",
+      "duration": 26.1251875,
+      "audioSha256": "84010f274eabf603355ee02fdb2e0be10b37c7b4c91e952b54e4b57f862409d3"
+    },
+    {
+      "audio": "preview-3.mp3",
+      "generatedVoiceId": "N6iEqA4zhxS7UGr7NjDf",
+      "duration": 29.23375,
+      "audioSha256": "afb99202309db34705354de05b1b89490376764cbb0b6cc9aaa8a6352d9476a9"
+    }
+  ]
+}

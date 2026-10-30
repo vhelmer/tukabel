@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "operation": "voice-design",
+  "provider": "elevenlabs",
+  "model": "eleven_ttv_v3",
+  "description": "Adult female cartoon voice actress performing a bossy know-it-all playground girl for an adult animated horror-comedy. Exaggerated high, sharp, shrill and slightly squeaky nasal tone with a smug sing-song lilt and deadpan sarcastic punchlines, in the spirit of crude adult TV cartoons. Fast confident delivery. Native Slovak speaker, precise articulation, every word understandable. Clearly different from a raspy brat and a timid wobbly voice. Clean dry studio recording, no music or background.",
+  "text": "Tieto čiary sú kolesá pohrebáka. Šiel ku kostolu, tak som mu nakreslila odbočku do žihľavy. Chlap ju ignoroval. Nula bodov za spoluprácu, hajzel. Je vysušená a okrúhla ako žetón. Obaľ ju zlatým obalom od čokolády. Karolovi hráči ich nechávajú pri automatoch v starej herni. Len pozor: alobal sa môže zachytiť v kontaktoch. Ocko tak raz vyhral hasičov.",
+  "textSha256": "801b5d741789984a0444bc8c4e4c47455dd59bfd50612ad902c939d1219da882",
+  "seed": 1520748605,
+  "guidanceScale": 5,
+  "outputFormat": "mp3_44100_128",
+  "previews": [
+    {
+      "audio": "preview-1.mp3",
+      "generatedVoiceId": "qeIj9I3uCRmajGyrxeZc",
+      "duration": 29.4688125,
+      "audioSha256": "fad25b20a0e1eaa750bea10db0218854aefa86b021607ee47c274415482cce6e"
+    },
+    {
+      "audio": "preview-2.mp3",
+      "generatedVoiceId": "9qnOH5HgYoYI4bH2U9PQ",
+      "duration": 31.3235625,
+      "audioSha256": "7cf81cce354b416918dfeedf3c3d585f02f2ed9e6457ae81a4c5e6f3e0f0c24a"
+    },
+    {
+      "audio": "preview-3.mp3",
+      "generatedVoiceId": "mN34XsmK7q9JmczwrHDy",
+      "duration": 32.2116875,
+      "audioSha256": "784a4e6ae7dd403b0a2316035acdb13af34b7793c8bd6cbc2669f21a3bd909db"
+    }
+  ]
+}

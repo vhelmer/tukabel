@@ -1,0 +1,18 @@
+{
+  "text": "Vedel som, že si číslo, Rudo. Ale že rovno číslo na urne! Odpálil si automat, kábel aj baterku. Choď to vysvetliť Ferovi; ja si zatiaľ obnovím úmrtný list.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "Cs0q9bNTpnXhVCnLNXGI",
+    "designRegistration": "speech/21f9abba-7505-4707-a9f6-afdfaf7fc065/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 11.2,
+  "audioSha256": "947926d86971c4e544a9f13899d516de414d1def2782b91827192629d249b9f6"
+}

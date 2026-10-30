@@ -1,0 +1,18 @@
+{
+  "text": "Kradnú sa vence, tak bránu zamykám a kľúč nosím na krku. Odbehnem iba na jackpot. Ten môj ručný automat už ani necinkne. Vysvätil som tri sedmičky, ale výhru si Pán nechal, lakomý kokot.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "Dm506FEP6AkprXTsWzmW",
+    "designRegistration": "speech/2f047eb2-01cd-4bc9-99ad-daf933cb9dd4/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 14.24,
+  "audioSha256": "39db224594bb9df3a24028edbc207c1a64c80dd381c99b1e5dbefe33ee3919d6"
+}

@@ -14,6 +14,7 @@ import {
 import playgroundUrl from '../../assets/minigames/suter-k-ciare/playground.webp';
 import { sfx } from './audio.ts';
 import { NAMES, OPPONENT, pickLine, type Cue, type Speaker } from './lines.ts';
+import { createVoicePlayer, voiceLine } from './voice.ts';
 import {
   matchResult,
   planOpponentThrow,
@@ -115,6 +116,7 @@ export async function createGame(
   app.canvas.style.touchAction = 'none';
 
   let destroyed = false;
+  const voice = createVoicePlayer();
   let run = 0;
   const tweens = new Set<Tween>();
   const setPhase = (phase: GamePhase) => (host.dataset.phase = phase);
@@ -261,10 +263,20 @@ export async function createGame(
 
   // ---------- remarks ----------
   function cue(c: Cue) {
-    const [speaker, text] = pickLine(c);
-    const seconds = 2.2 + text.length * 0.04;
+    const [speaker, text, index] = pickLine(c);
+    const recorded = voiceLine(c, index, text);
+    const seconds = Math.max(
+      2.2 + text.length * 0.04,
+      (recorded?.seconds ?? 0) + 0.5,
+    );
     events.onSay?.(speaker, NAMES[speaker], text, seconds);
-    sfx.babble(VOICES[speaker], Math.min(9, 3 + Math.round(text.length / 10)));
+    if (recorded) voice.play(recorded.url);
+    else
+      sfx.babble(
+        VOICES[speaker],
+        Math.min(9, 3 + Math.round(text.length / 10)),
+      );
+    // The match keeps its pace; a recorded remark finishes over the next aim.
     return wait(0.7 + text.length * 0.02);
   }
 
@@ -664,7 +676,8 @@ export async function createGame(
       let input: ThrowInput;
       if (who === 'player') {
         caption.text = `Tvoj hod ${playerThrows + 1}/${STONES_EACH}`;
-        if (playerThrows > 0 && Math.random() < 0.4) void cue('yourTurn');
+        if (playerThrows > 0 && Math.random() < 0.4 && !voice.speaking)
+          void cue('yourTurn');
         hint.visible = playerThrows === 0;
         input = await playerAim();
         hint.visible = false;
@@ -731,12 +744,14 @@ export async function createGame(
   return {
     restart() {
       run++;
+      voice.stop();
       reset();
       void runMatch();
     },
     destroy() {
       destroyed = true;
       run++;
+      voice.destroy();
       tweens.clear();
       observer.disconnect();
       host.removeEventListener('keydown', onAimKey);

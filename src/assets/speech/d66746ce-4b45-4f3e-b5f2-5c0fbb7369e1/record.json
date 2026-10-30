@@ -1,0 +1,18 @@
+{
+  "text": "Ty nemáš v hlave seno. To by aspoň niekto zožral.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "l1irIuUP5mHtvmn3ALC9",
+    "designRegistration": "speech/17e93d2a-1feb-43fd-a209-fe8011d6faf9/registration.json",
+    "slot": "rotating"
+  },
+  "languageCode": "sk",
+  "duration": 3.6,
+  "audioSha256": "c773e5af2d2b24f746401c547a71c6dc91c2bf4ccf7694109dbb3be1774459f9"
+}

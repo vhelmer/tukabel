@@ -1,0 +1,237 @@
+{
+  "version": 1,
+  "operation": "voice-retirement-verification",
+  "provider": "elevenlabs",
+  "verifiedAt": "2026-10-30T01:10:09.963Z",
+  "projectId": "tukabel-potato-prize-3",
+  "actor": { "sceneId": "scene6", "hotspotId": "innkeeper" },
+  "voiceId": "oos3VRpD3WwsoKNF0MKb",
+  "designRegistration": "speech/f666ea54-844d-4e48-b87e-35e0531dbb11/registration.json",
+  "registrationSha256": "c9f6edaa8ced8cc285a974b7c64ecbf6d4e63c1e5459e0db067d12fae2a1a122",
+  "registration": {
+    "version": 1,
+    "operation": "voice-registration",
+    "provider": "elevenlabs",
+    "designManifest": "speech/a1ae64de-9438-4f2c-931f-c9763a968006/design.json",
+    "designSha256": "3ba96ba9c9a1e850968d6f23ddeba8f8ee888c635c022fb008433a0cdaf5146d",
+    "generatedVoiceId": "oos3VRpD3WwsoKNF0MKb",
+    "previewIndex": 0,
+    "voiceId": "oos3VRpD3WwsoKNF0MKb",
+    "name": "TUKABEL · Karol Odmerka",
+    "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Male, late forties. A beer-soaked publican with an upper-middle register shredded by a lifetime of shouting across a pub. Harsh hoarse sandpaper rasp, scratchy wheeze, coarse forward nasal resonance and strained buzzy vowels. Loud argumentative rhythmic jabs, sarcastic upward scoops, rough breath at the end of clauses and sudden indignant bursts. He is audibly half-cut but every word remains understandable; no long mumbling or random hiccup noises. A damaged loud tenor, quite unlike a booming deep bass. Colloquial Slovak. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts."
+  },
+  "lines": [
+    {
+      "dialogueId": "innkeeper-chat",
+      "nodeId": "grounds",
+      "actor": { "sceneId": "scene6", "hotspotId": "innkeeper" },
+      "text": "Mletú kávu ti dám. Bez prúdu ju zaleješ aj studeným mliekom, len bude chrumkať. Ja ju tak nepijem; na zákazníkov mám jemnejšie jedy.",
+      "textSha256": "30309d589f12b33c9d59304b01414f0b0560d83e7fa340cfbbb38c32b6409b33",
+      "audio": "speech/cf072c86-1726-4589-848a-9ffae614ef67/audio.wav",
+      "audioSha256": "5062ed3864a27c2844a2fc7bbaca34fc75d608950c9d85559c0627ed7ef1657f",
+      "duration": 9.92,
+      "rms": 3557.072068509514,
+      "peak": 21941,
+      "lipSync": "speech/8f020287-feff-476d-85b0-c2f80d8c97b9/track.lipsync.json",
+      "lipSyncSha256": "f269e476b94e7c86fbbed5c66fcde54233e123b4c979e9cd0be10aa3587cf78a",
+      "subtitles": {
+        "text": "Mletú kávu ti dám. Bez prúdu ju zaleješ aj studeným mliekom, len bude chrumkať. Ja ju tak nepijem; na zákazníkov mám jemnejšie jedy.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 4.54351145038168,
+            "text": "Mletú kávu ti dám. Bez prúdu ju zaleješ aj studeným mliekom,"
+          },
+          {
+            "start": 4.54351145038168,
+            "end": 9.92,
+            "text": "len bude chrumkať. Ja ju tak nepijem; na zákazníkov mám jemnejšie jedy."
+          }
+        ]
+      },
+      "record": "speech/cf072c86-1726-4589-848a-9ffae614ef67/record.json",
+      "recordSha256": "5667894671ab8a1b1bc3675825636ea2259c2a8e199fceb3fff5541e7e95690e"
+    },
+    {
+      "dialogueId": "innkeeper-chat",
+      "nodeId": "gaming",
+      "actor": { "sceneId": "scene6", "hotspotId": "innkeeper" },
+      "text": "Za schodmi mám drahšie haraburdy než tu. Najprv mi dotiahni maticu pípy kľúčom a vypusť tú starú penu do krígľov. Potom otvorím. Kto pomôže s hnojom, môže sa hrabať aj v majetku.",
+      "textSha256": "e0f773d3ea98d153b9d55521b7aa55ea69a2a8b317b5f299043f1825609952c7",
+      "audio": "speech/a4a7121d-8973-4a6c-afca-a7057797be29/audio.wav",
+      "audioSha256": "09a8d8d8eb747b91358c799324fed97ed5e1384d0ec3ba37125e815671d7ded6",
+      "duration": 13.2,
+      "rms": 3440.8170573898474,
+      "peak": 23196,
+      "lipSync": "speech/bfc282b7-6087-47f8-9c4d-c4ef23f0ed35/track.lipsync.json",
+      "lipSyncSha256": "f6db65b6ba82383cf114267ed18ff16ffe7b667c670c3b75af723c7765b3bcd9",
+      "subtitles": {
+        "text": "Za schodmi mám drahšie haraburdy než tu. Najprv mi dotiahni maticu pípy kľúčom a vypusť tú starú penu do krígľov. Potom otvorím. Kto pomôže s hnojom, môže sa hrabať aj v majetku.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 3,
+            "text": "Za schodmi mám drahšie haraburdy než tu."
+          },
+          {
+            "start": 3,
+            "end": 8.399999999999999,
+            "text": "Najprv mi dotiahni maticu pípy kľúčom a vypusť tú starú penu do krígľov."
+          },
+          {
+            "start": 8.399999999999999,
+            "end": 13.2,
+            "text": "Potom otvorím. Kto pomôže s hnojom, môže sa hrabať aj v majetku."
+          }
+        ]
+      },
+      "record": "speech/a4a7121d-8973-4a6c-afca-a7057797be29/record.json",
+      "recordSha256": "cf4f83e896d3483c2ad4b75be6c90b6255f4b04ccefb608b456b4ffbc778207e"
+    },
+    {
+      "dialogueId": "innkeeper-chat",
+      "nodeId": "lubo",
+      "actor": { "sceneId": "scene6", "hotspotId": "innkeeper" },
+      "text": "Po pohrebe šampióna Ľuba mi prišla reklamácia s jeho podpisom. Buď má peklo poštu, alebo niekto ojebáva aj mŕtvych. Záznam je pod servisným krytom v herni. Pípa má prednosť, vyšetrovanie počká.",
+      "textSha256": "8e7a5ba8e69dd84d7f3411e54b3b4f1bff9afc60023aa943ff50003bcb2f1152",
+      "audio": "speech/1b6e1a8d-79c8-49fd-a33f-ea2cecf7a50b/audio.wav",
+      "audioSha256": "352611300435e274b4e5bc25edb6f75e98cbf60215d615a99542699a2d2b1f8b",
+      "duration": 14.88,
+      "rms": 3476.258543860265,
+      "peak": 21046,
+      "lipSync": "speech/15477f1e-4b08-4c97-a453-bf880c5f879c/track.lipsync.json",
+      "lipSyncSha256": "6b784ff9ad8b0d231b8dd7c026587db54bbd4bb94e3486e45b0baa80be8893e5",
+      "subtitles": {
+        "text": "Po pohrebe šampióna Ľuba mi prišla reklamácia s jeho podpisom. Buď má peklo poštu, alebo niekto ojebáva aj mŕtvych. Záznam je pod servisným krytom v herni. Pípa má prednosť, vyšetrovanie počká.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 4.855578947368421,
+            "text": "Po pohrebe šampióna Ľuba mi prišla reklamácia s jeho podpisom."
+          },
+          {
+            "start": 4.855578947368421,
+            "end": 8.928,
+            "text": "Buď má peklo poštu, alebo niekto ojebáva aj mŕtvych."
+          },
+          {
+            "start": 8.928,
+            "end": 11.982315789473684,
+            "text": "Záznam je pod servisným krytom v herni."
+          },
+          {
+            "start": 11.982315789473684,
+            "end": 14.88,
+            "text": "Pípa má prednosť, vyšetrovanie počká."
+          }
+        ]
+      },
+      "record": "speech/1b6e1a8d-79c8-49fd-a33f-ea2cecf7a50b/record.json",
+      "recordSha256": "e79dc95e8cb1c866f3a61b4775566e5c5100fda558b1b79ad7fb547940833a7b"
+    },
+    {
+      "dialogueId": "innkeeper-chat",
+      "nodeId": "gaming-open",
+      "actor": { "sceneId": "scene6", "hotspotId": "innkeeper" },
+      "text": "Otvorené máš. Hrabať sa môžeš, zapaľovať nie. Na prázdnu herňu mám poistku iba proti výhre.",
+      "textSha256": "1d95277115d201b36a5f541976d087a97c793d1164bc3802aea8f63e8072b1df",
+      "audio": "speech/983f4968-1ef1-4fb0-a659-81ee4715395c/audio.wav",
+      "audioSha256": "ac47b765dbad44e3c5a5c41a6a45c966c06b221ee9e560d0b9dfb7c8b21a3884",
+      "duration": 7.6,
+      "rms": 3478.2557800287286,
+      "peak": 21308,
+      "lipSync": "speech/eb5cc9c9-3139-444f-ab27-ef72c9c51171/track.lipsync.json",
+      "lipSyncSha256": "da3bc61153d6a0555485d80d2867b23ad3661b6283345a6b8c5416a0aad6f5a4",
+      "subtitles": {
+        "text": "Otvorené máš. Hrabať sa môžeš, zapaľovať nie. Na prázdnu herňu mám poistku iba proti výhre.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 3.8,
+            "text": "Otvorené máš. Hrabať sa môžeš, zapaľovať nie."
+          },
+          {
+            "start": 3.8,
+            "end": 7.6,
+            "text": "Na prázdnu herňu mám poistku iba proti výhre."
+          }
+        ]
+      },
+      "record": "speech/983f4968-1ef1-4fb0-a659-81ee4715395c/record.json",
+      "recordSha256": "c5c7cb7b240bcd0fdfe534bcd77fae25ec15117909a288e21747f56767f68cf1"
+    },
+    {
+      "dialogueId": "karol-guards-gaming",
+      "nodeId": "line",
+      "actor": { "sceneId": "scene6", "hotspotId": "innkeeper" },
+      "text": "Najprv dotiahni maticu pípy a vypusť ten hnus do krígľov. Potom ti otvorím herňu. Bez roboty mi budeš len zavadzať na drahších schodoch.",
+      "textSha256": "aaa06debe9f8c3f6d87952fad9429f5fc7b9809216806010764d9a1ea30a9558",
+      "audio": "speech/8fa1a123-a245-4b8f-88f0-d4a7f575a1bc/audio.wav",
+      "audioSha256": "440beed265cdc5a7f9942c85373cf49d45383ac86e8456c20c3a8191e16b693f",
+      "duration": 9.44,
+      "rms": 3894.9870856669595,
+      "peak": 22425,
+      "lipSync": "speech/0ea2729e-e9f8-4464-a3b1-f61cae042d17/track.lipsync.json",
+      "lipSyncSha256": "904900bd0aebb67a3688e7878d950c5873c995917090b0066a31399829479300",
+      "subtitles": {
+        "text": "Najprv dotiahni maticu pípy a vypusť ten hnus do krígľov. Potom ti otvorím herňu. Bez roboty mi budeš len zavadzať na drahších schodoch.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 3.9857777777777774,
+            "text": "Najprv dotiahni maticu pípy a vypusť ten hnus do krígľov."
+          },
+          {
+            "start": 3.9857777777777774,
+            "end": 9.44,
+            "text": "Potom ti otvorím herňu. Bez roboty mi budeš len zavadzať na drahších schodoch."
+          }
+        ]
+      },
+      "record": "speech/8fa1a123-a245-4b8f-88f0-d4a7f575a1bc/record.json",
+      "recordSha256": "9281d5b6f38fbe85348484406361b091aacee0eaa50c568478887272b4d6e4ba"
+    },
+    {
+      "dialogueId": "karol-opens-gaming",
+      "nodeId": "line",
+      "actor": { "sceneId": "scene6", "hotspotId": "innkeeper" },
+      "text": "Pena je vonku a pípa drží. Herňu som odomkol. Choď sa tam hrať na detektíva; za ten smrad by normálny človek chcel príplatok.",
+      "textSha256": "56e49d36552c8fddaa906c712033dce61f8095ef5fdb1076603806ece193f493",
+      "audio": "speech/e32d2923-5eeb-4a1b-b4dc-c0f66a58462a/audio.wav",
+      "audioSha256": "79713f90c78e0fd16cbf408f4f0ae2a26ae8f1d49dadab42d6274b7ac8d4d5cd",
+      "duration": 9.36,
+      "rms": 3764.5056088327033,
+      "peak": 23459,
+      "lipSync": "speech/5f2bbf7b-7008-4016-a19c-3513541e1dc2/track.lipsync.json",
+      "lipSyncSha256": "900fb08100c2599986b05e74faa914e829d245bacf60254695065fa87aa9f642",
+      "subtitles": {
+        "text": "Pena je vonku a pípa drží. Herňu som odomkol. Choď sa tam hrať na detektíva; za ten smrad by normálny človek chcel príplatok.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 1.9785365853658536,
+            "text": "Pena je vonku a pípa drží."
+          },
+          {
+            "start": 1.9785365853658536,
+            "end": 7.609756097560975,
+            "text": "Herňu som odomkol. Choď sa tam hrať na detektíva; za ten smrad by normálny"
+          },
+          {
+            "start": 7.609756097560975,
+            "end": 9.36,
+            "text": "človek chcel príplatok."
+          }
+        ]
+      },
+      "record": "speech/e32d2923-5eeb-4a1b-b4dc-c0f66a58462a/record.json",
+      "recordSha256": "e5b6fb97102c566f0069a3368d0aaf019a2cbcc91a691017a5ccbdacaca025b3"
+    }
+  ]
+}

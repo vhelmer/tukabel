@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "operation": "voice-design",
+  "provider": "elevenlabs",
+  "model": "eleven_ttv_v3",
+  "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Male, late forties. A beer-soaked publican with an upper-middle register shredded by a lifetime of shouting across a pub. Harsh hoarse sandpaper rasp, scratchy wheeze, coarse forward nasal resonance and strained buzzy vowels. Loud argumentative rhythmic jabs, sarcastic upward scoops, rough breath at the end of clauses and sudden indignant bursts. He is audibly half-cut but every word remains understandable; no long mumbling or random hiccup noises. A damaged loud tenor, quite unlike a booming deep bass. Colloquial Slovak. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts.",
+  "text": "Mletú kávu ti dám. Bez prúdu ju zaleješ aj studeným mliekom, len bude chrumkať. Ja ju tak nepijem; na zákazníkov mám jemnejšie jedy. Za schodmi mám drahšie haraburdy než tu. Najprv mi dotiahni maticu pípy kľúčom a vypusť tú starú penu do krígľov. Potom otvorím. Kto pomôže s hnojom, môže sa hrabať aj v majetku. Po pohrebe šampióna Ľuba mi prišla reklamácia s jeho podpisom. Buď má peklo poštu, alebo niekto ojebáva aj mŕtvych. Záznam je pod servisným krytom v herni. Pípa má prednosť, vyšetrovanie počká. Otvorené máš. Hrabať sa môžeš, zapaľovať nie. Na prázdnu herňu mám poistku iba proti výhre. Najprv dotiahni maticu pípy a vypusť ten hnus do krígľov. Potom ti otvorím herňu. Bez roboty mi budeš len zavadzať na drahších schodoch. Pena je vonku a pípa drží. Herňu som odomkol. Choď sa tam hrať na detektíva; za ten smrad by normálny človek chcel príplatok.",
+  "textSha256": "85026c1b4182457c2d3eb7e1423460a0b25b3637f8d183177b5dcc9c1cd53a54",
+  "seed": 941271488,
+  "guidanceScale": 5,
+  "outputFormat": "mp3_44100_128",
+  "previews": [
+    {
+      "audio": "preview-1.mp3",
+      "generatedVoiceId": "oos3VRpD3WwsoKNF0MKb",
+      "duration": 70.115375,
+      "audioSha256": "c4748eb47b0af9a49b8467edbb658e75e3924a29b74e7730875c3c9bb77434ee"
+    },
+    {
+      "audio": "preview-2.mp3",
+      "generatedVoiceId": "dtm0jsxD0bUlpN84JnZN",
+      "duration": 74.03375,
+      "audioSha256": "c2233d52bf52643d35c6df86adb42dcc964f338d0df344b6fd4dd12c86f520f7"
+    },
+    {
+      "audio": "preview-3.mp3",
+      "generatedVoiceId": "XaVlWoLKKHH0bB5Sth3v",
+      "duration": 65.8051875,
+      "audioSha256": "c3ebbd8ece33a52d1f7594876d750f232426f5525c99d6920606f63816956804"
+    }
+  ]
+}

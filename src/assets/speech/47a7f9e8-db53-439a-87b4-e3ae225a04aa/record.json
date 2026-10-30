@@ -1,0 +1,18 @@
+{
+  "text": "Chlap v čiernom chcel hnoj na pohon automatu. Poslala som ho za Dingom po batériu. Hovno patrí na pole; ešte by mi prehral aj posledný bobek. Meno? Nemal na čele poistku.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "Jfvw40qotTOck51vIvrm",
+    "designRegistration": "speech/1a89f747-49e0-424b-9c61-6e4fc151c0c1/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 13.12,
+  "audioSha256": "ff7c0d1a9ba5a41a6e00a38e8648764a849caa4fa1b15345a0e4b2d43f36aaef"
+}

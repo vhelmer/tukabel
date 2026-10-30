@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "operation": "voice-design",
+  "provider": "elevenlabs",
+  "model": "eleven_ttv_v3",
+  "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Female, about fifty. A ferocious, commanding woman: low-mid chest voice with a metallic saw-toothed buzz, extremely coarse raspy edges and pinched nasal bite. Sharp barking starts, brutally clipped endings and sudden theatrical rises of annoyance. The unmistakable delivery of a household commander shouting over an argument, hilarious and impatient, NEVER smooth or soothing. Strong middle register, no breathy softness. Standard colloquial Slovak, aggressive staccato emphasis. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts.",
+  "text": "Choď do piče, Rudo. A zavri za sebou, nech sa mi nevrátiš prievanom. Ty nemáš v hlave seno. To by aspoň niekto zožral. Ešte raz do mňa pichni a Milan dostane zákazku na mieru. Bez metra. Nalámeme ťa. Fero, vezmi si toho kokota. Zase sa mi tu pokúša existovať! Vypadni. Aj chrípka sa ma raz opýtala, či môže zostať. S tou páskou choď k rozvodu. Na tvoju hubu je jej škoda. Kolíček si daj na nos, Rudo. Aspoň na chvíľu prestaneš cítiť vlastný mozog.",
+  "textSha256": "3fe62e6ecf87448240f65106e2d9c601dbb1da2fc7145fa52bb6dc229871de07",
+  "seed": 1893437238,
+  "guidanceScale": 5,
+  "outputFormat": "mp3_44100_128",
+  "previews": [
+    {
+      "audio": "preview-1.mp3",
+      "generatedVoiceId": "l1irIuUP5mHtvmn3ALC9",
+      "duration": 32.1333125,
+      "audioSha256": "9a39089071a4fef22ca81346acae788db6c7088543077fd0476b41111dcf8a41"
+    },
+    {
+      "audio": "preview-2.mp3",
+      "generatedVoiceId": "JOHIeIQTYSeOCA3K28uo",
+      "duration": 31.2451875,
+      "audioSha256": "5a73131361b7ded8cf8e5bfb1d67a68463952ca2eec752bf614faf8115359f31"
+    },
+    {
+      "audio": "preview-3.mp3",
+      "generatedVoiceId": "R5mccoIXj0xOSNDBIXJ0",
+      "duration": 37.801875,
+      "audioSha256": "e8a749dfe9f039636e41db82727c6ec204590970127a041400065cede3025544"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "text": "Fero, vezmi si toho kokota. Zase sa mi tu pokúša existovať!",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "l1irIuUP5mHtvmn3ALC9",
+    "designRegistration": "speech/17e93d2a-1feb-43fd-a209-fe8011d6faf9/registration.json",
+    "slot": "rotating"
+  },
+  "languageCode": "sk",
+  "duration": 4.4,
+  "audioSha256": "a69c78f66d72ae6bcb4eb6c74b032e4398ca4988b69deebb4e88f4f65cb0806f"
+}

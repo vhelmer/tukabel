@@ -1,0 +1,18 @@
+{
+  "text": "Etela tu necháva tlačivá pre prípad náhleho úmrtia pri kázni. Prázdny list si vezmi z nástenky. Čítaj ho nahlas a zaspí aj dobytok; pri trvalom pobyte som stratil dvoch miništrantov.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "Dm506FEP6AkprXTsWzmW",
+    "designRegistration": "speech/2f047eb2-01cd-4bc9-99ad-daf933cb9dd4/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 12.88,
+  "audioSha256": "05473faa1f69ac4f1c2531edaee2e49c256cd47a09c32e17953569ea6567d93e"
+}

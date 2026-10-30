@@ -1,0 +1,18 @@
+{
+  "text": "JACKPOT, svätá Mária! Bránu nechávam otvorenú, nech vidím na vence. Uhni, idem tej mašine osobne rozhrešiť vnútornosti!",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "Dm506FEP6AkprXTsWzmW",
+    "designRegistration": "speech/2f047eb2-01cd-4bc9-99ad-daf933cb9dd4/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 8.8,
+  "audioSha256": "93b5aa9fc501cf2ea387b2c17b54e44bac154059aa3c7383dddcb179023578fe"
+}

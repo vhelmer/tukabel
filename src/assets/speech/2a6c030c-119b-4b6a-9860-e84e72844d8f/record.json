@@ -1,0 +1,19 @@
+{
+  "text": "Z bieleho pohrebáka trčal kábel. Chlap vravel, že je to chvost neviditeľného psa. Hodili sme mu piškótu. Zožral ju sám; psa som odvtedy prestal hľadať.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "DyIdTI8oWFiulpU3HRMH",
+    "designRegistration": "speech/8fd85477-c6ad-4b01-91eb-e0091a07b692/registration.json",
+    "slot": "rotating",
+    "designPrompt": "Adult male cartoon voice actor performing a timid little daredevil perched on top of a climbing frame, for an adult animated horror-comedy. Very high, wobbly, squeaky voice that cracks and warbles, breathless nervous giggles, then sudden overconfident squeals, in the spirit of crude adult TV cartoons. Comically deformed but intelligible Slovak, native speaker, clear consonants and every word understandable. Clean dry studio recording, no music or background."
+  },
+  "languageCode": "sk",
+  "duration": 11.6,
+  "audioSha256": "352d8bd4f7f6fa87d68492efb14d674189c29ef2a2a51590124406fd02da5cc1"
+}

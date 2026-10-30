@@ -1,0 +1,18 @@
+{
+  "text": "List pripni na skúšobnú rakvu. Nie na mňa, ja už vlastný mám. Potom si ľahni a neruš ma dýchaním.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "zWHgsvbNzrffMNY5MMeW",
+    "designRegistration": "speech/0ee076d4-99b6-4b01-9523-452a2a74d51d/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 8.48,
+  "audioSha256": "acb13f9eda8f23a304e40d92dd5c831ce1b23c0d6b6e8bea821b77e66c05c537"
+}

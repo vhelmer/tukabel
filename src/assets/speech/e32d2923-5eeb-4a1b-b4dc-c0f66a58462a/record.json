@@ -1,0 +1,18 @@
+{
+  "text": "Pena je vonku a pípa drží. Herňu som odomkol. Choď sa tam hrať na detektíva; za ten smrad by normálny človek chcel príplatok.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "oos3VRpD3WwsoKNF0MKb",
+    "designRegistration": "speech/f666ea54-844d-4e48-b87e-35e0531dbb11/registration.json",
+    "slot": "rotating"
+  },
+  "languageCode": "sk",
+  "duration": 9.36,
+  "audioSha256": "79713f90c78e0fd16cbf408f4f0ae2a26ae8f1d49dadab42d6274b7ac8d4d5cd"
+}

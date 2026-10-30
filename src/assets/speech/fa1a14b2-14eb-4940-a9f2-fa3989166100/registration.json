@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "operation": "voice-registration",
+  "provider": "elevenlabs",
+  "designManifest": "speech/315e4bb8-5be3-4abe-868a-0c54a7dfde73/design.json",
+  "designSha256": "4b801baaa720706b1e0a49827a5ef7928dc63b7e3a501cfb5ee5e44925817d7e",
+  "generatedVoiceId": "QjlCD1k8X7bEBCXezj33",
+  "previewIndex": 0,
+  "voiceId": "QjlCD1k8X7bEBCXezj33",
+  "name": "TUKABEL · Špľuch",
+  "description": "Adult male cartoon voice actor performing a bratty playground troublemaker for an adult animated horror-comedy. Exaggerated high-pitched, nasal, croaky squeal with a raspy crack, like a grown man squeezing his voice into a squeaky brat, in the spirit of crude adult TV cartoons. Cocky, impatient, snotty delivery with sudden shrieks of excitement and little snorts. Native Slovak speaker, clearly articulated Slovak words, every word understandable despite the bizarre pitch. Clean dry studio recording, no music or background."
+}

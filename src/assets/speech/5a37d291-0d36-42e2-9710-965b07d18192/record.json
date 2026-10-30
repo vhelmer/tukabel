@@ -1,0 +1,18 @@
+{
+  "text": "Ešte raz do mňa pichni a Milan dostane zákazku na mieru. Bez metra. Nalámeme ťa.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "l1irIuUP5mHtvmn3ALC9",
+    "designRegistration": "speech/17e93d2a-1feb-43fd-a209-fe8011d6faf9/registration.json",
+    "slot": "rotating"
+  },
+  "languageCode": "sk",
+  "duration": 5.84,
+  "audioSha256": "177700eea73de14f5c0ad283c63ef8ce966f93c4d3d01808893c2bbcb59ec51b"
+}

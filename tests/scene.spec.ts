@@ -586,6 +586,7 @@ storyTest(
         resuscitator: { type: 'flag', id: 'dingo-awake' },
         'tool-chest': { type: 'addItem', id: 'wrench' },
         'main-cable': { type: 'addItem', id: 'stolen-cable' },
+        'car-battery': { type: 'flag', id: 'battery-isolated' },
       };
       const wanted = propEffects[id];
       const hotspot =
@@ -777,7 +778,8 @@ storyTest(
     await choose('crypt-intro', 'investigate');
     await menuAction(page, 'Uložiť hru');
     expect((await readSaved()).flags['crypt-open']).toBe(true);
-    await interact('main-cable');
+    await interact('car-battery', 'wrench');
+    await interact('main-cable', 'rubber-gloves');
     await page.screenshot({
       path: info.outputPath('cable-taken-machine-off.png'),
     });

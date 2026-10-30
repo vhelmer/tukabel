@@ -1,0 +1,18 @@
+{
+  "text": "Za schodmi mám drahšie haraburdy než tu. Najprv mi dotiahni maticu pípy kľúčom a vypusť tú starú penu do krígľov. Potom otvorím. Kto pomôže s hnojom, môže sa hrabať aj v majetku.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "oos3VRpD3WwsoKNF0MKb",
+    "designRegistration": "speech/f666ea54-844d-4e48-b87e-35e0531dbb11/registration.json",
+    "slot": "rotating"
+  },
+  "languageCode": "sk",
+  "duration": 13.2,
+  "audioSha256": "09a8d8d8eb747b91358c799324fed97ed5e1384d0ec3ba37125e815671d7ded6"
+}

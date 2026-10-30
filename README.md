@@ -819,7 +819,9 @@ Stejné herní okno používá i **Otestovat odsud** v Dev Mode.
 - Hover zobrazí pouze název. Objekty nemají obrys ani přepínač odhalující hotspoty.
   Výchozí kreslená ruka platí v celém herním okně, včetně mapy, dialogů a menu.
   Nad aktivním předmětem ji vystřídá uchopující ruka, nad postavou animovaná pusa
-  a nad přechodem šipka; oblast otevírající mapu (`openMap`) ukazuje šipku dolů. Tichá kulisa výchozí ruku nemění. V editoru zvol typ, vlastní
+  a nad přechodem šipka; oblast otevírající mapu (`openMap`) ukazuje šipku dolů. Přechody podle
+  směru v obraze nastavují `cursorImage` na `cursors/exit-up.svg` nebo
+  `cursors/exit-down.svg` (např. krčma → mapa, kostel → cintorín nahoru). Tichá kulisa výchozí ruku nemění. V editoru zvol typ, vlastní
   `cursorImage`, klip `cursorAnimation`, velikost 16–96 px a souřadnice špičky.
   Animované kurzory používají běžný registr klipů; bez samostatného obrázku vezmou
   zdroj klipu. Snímky a source podléhají stejné kontrole rozměrů jako postavy.
@@ -877,7 +879,7 @@ ruční slot samo nemaže ani nepřepisuje.
 
 Scénář je dospělá morbidní groteska: Bonifác vysvěcuje výhernost automatů,
 Milan zkouší zákazníkům vlastní pohřby, Jolanda vede kult pojištěného vemena a
-Rudo může hlavní kabel vytáhnout rovnou i s koncovkou; tím vypne automat. **Eržika** nahradila
+Rudo považuje odpojení mínusu za odstranění špatné elektřiny. **Eržika** nahradila
 Margitu. Nemá dialogový strom: pět samostatných krátkých nadávek se střídá při
 opakovaných kliknutích, bez volby odpovědi. Pořadí drží běžné uložené příznaky.
 Kolíček je samostatný předmět na dvoře; izolačka leží pod žebříkem
@@ -928,33 +930,33 @@ zůstaly zachované. Tato revize nevolá ElevenLabs ani jinou generaci dabingu.
 Větve lze řešit v jiném pořadí. Nesprávné kombinace neodebírají zásadní
 předměty. Předmět po posledním skutečném použití z inventáře zmizí (nůžky, pečiatka,
 servisní deník, magnet na špagáte, klíč s rukavicemi po sebrání kabelu); francouzský
-klíč do té doby zůstává pro opravu pípy a otevření servisního krytu.
+klíč do té doby zůstává i pro odpojení a opětovné připojení baterie.
 
-| Hádanka              | Řešení a podmínka                                                                                                                                                                                                                                                                                                                                                                      |
-| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Přijetí případu      | Potvrď Ferovu repliku a přijmi případ. Na dvoře seber dřevěný kolíček. Přejdi do uličky a seber izolační pásku a rezavý šrot. Rohlík už v obsahu není.                                                                                                                                                                                                                                 |
-| Dežův magnet         | Dežo mění magnet za rezavý šrot z uličky; výměna spotřebuje šrot a odemkne sběrnu. Láhev ze zastávky si nech na vodu a mléko. Klikni také na koš: jednou získáš nůžky. Etely se zeptej na další obecní záležitosti, čímž odemkne kravín.                                                                                                                                               |
-| Kraví bohoslužba     | Jolanda vysvětlí odměnu za krst a nutnost krávu uspat. U kostela seber prázdny úmrtný list a naplň láhev u pumpy. Svätenú vodu použij **na kravu**, ne na Jolandu: prázdná láhev se vrátí. Krávě přečti úmrtní list; úřední nuda ji uspí a papír zůstane. Pak seber zvonec z obojku a prázdnou lahví naber mléko z vedra. I zbytečný další křest vrátí láhev.                          |
-| Dingův vnitřní budík | Dingo nebo nápis na resuscitátoru vysvětlí náplň i pedál. Karol v krčmě dá mletou kávu. Mléko + káva vytvoří studené kravučíno. Nalij je do kávového klystíru v zberni; láhev už nepotřebuješ. **Klikni na jeho pedál.** Dingo ožije a ze samostatné truhlice můžeš vzít klíč a rukavice. Magnet lze získat i teprve nyní.                                                             |
-| Zatuchlá herna       | Klíčem oprav pípu a kliknutím na pivní sklenice vypusť starou pěnu. Karol otevře hernu. Teprve uvnitř seber zlatý obal od čokolády ze země u automatu; v hospodě už neleží. Klíčem otevři servisní kryt a vyzvedni deník s reklamací po Ľubově pohřbu.                                                                                                                                 |
-| Brambora na špagátu  | Na hřišti promluv se Špľuchem o výhře a přes „Čiara v hline“ vyhraj Šuter k čiare. Po návratu klikni na Špľucha a převezmi medaili. Zkombinuj ji s nůžkami z koše: získáš provázek a plochou vysušenou bramboru. Medaile i nůžky zmizí. Nika s bramborou v inventáři vysvětlí falešný žeton.                                                                                           |
-| Falešný jackpot      | Založ kravský zvonec do ručního automatu na odpustky vedle kostela. **Klikni na kliku**: mechanické cinkání odláká tajného gamblera Bonifáce a otevře bránu hřbitova. Žádný elektrický přístroj při tom neběží.                                                                                                                                                                        |
-| Vlastní pohřeb       | Milan nebo ceník rakve vysvětlí, proč do kaplnky smí jen klient po pohřbu. Servisní deník ukaž Etele a získanou pečiatku zkombinuj s úmrtním listem. Opečiatkovaný list připevni **na zkušební rakev** na hřbitově. Na rakev použij i kolíček, kterým si Rudo zaštipne nos. **Klikni na rakev**: Milan uzná pohřeb a otevře kaplnku. List a kolíček lze připevnit v libovolném pořadí. |
-| Klíč od krypty       | Magnet + špagát vytvoří magnet na špagáte. V kaplnce jím vylov klíč pod mříží. Klíčem odemkni kryptu a dokonči Ľubovu úvodní repliku.                                                                                                                                                                                                                                                  |
-| Odhalení a volba     | Ľubo fingoval smrt kvůli dluhům a ukradl hlavní kabel pro soukromý automat na Dingově autobaterii. Před definitivní volbou ručně ulož hru, pokud chceš projít oba konce bez opakování pátrání.                                                                                                                                                                                         |
+| Hádanka              | Řešení a podmínka                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Přijetí případu      | Potvrď Ferovu repliku a přijmi případ. Na dvoře seber dřevěný kolíček. Přejdi do uličky a seber izolační pásku a rezavý šrot. Rohlík už v obsahu není.                                                                                                                                                                                                                                                                                                                              |
+| Dežův magnet         | Dežo mění magnet za rezavý šrot z uličky; výměna spotřebuje šrot a odemkne sběrnu. Láhev ze zastávky si nech na vodu a mléko. Klikni také na koš: jednou získáš nůžky. Etely se zeptej na další obecní záležitosti, čímž odemkne kravín.                                                                                                                                                                                                                                            |
+| Kraví bohoslužba     | Jolanda vysvětlí odměnu za krst a nutnost krávu uspat. U kostela seber prázdny úmrtný list a naplň láhev u pumpy. Svätenú vodu použij **na kravu**, ne na Jolandu: prázdná láhev se vrátí. Krávě přečti úmrtní list; úřední nuda ji uspí a papír zůstane. Spící kráva má trvale zavřené oči (vrstva `cow-sleeping` se snímkem z mrkání) a nemrká ani po návratu či načtení hry. Pak seber zvonec z obojku a prázdnou lahví naber mléko z vedra. I zbytečný další křest vrátí láhev. |
+| Dingův vnitřní budík | Dingo nebo nápis na resuscitátoru vysvětlí náplň i pedál. Karol v krčmě dá mletou kávu. Mléko + káva vytvoří studené kravučíno. Nalij je do kávového klystíru v zberni; láhev už nepotřebuješ. **Klikni na jeho pedál.** Dingo ožije a ze samostatné truhlice můžeš vzít klíč a rukavice. Magnet lze získat i teprve nyní.                                                                                                                                                          |
+| Zatuchlá herna       | Klíčem oprav pípu a kliknutím na pivní sklenice vypusť starou pěnu. Karol otevře hernu. Teprve uvnitř seber zlatý obal od čokolády ze země u automatu; v hospodě už neleží. Klíčem otevři servisní kryt a vyzvedni deník s reklamací po Ľubově pohřbu.                                                                                                                                                                                                                              |
+| Brambora na špagátu  | Na hřišti promluv se Špľuchem o výhře a přes „Čiara v hline“ vyhraj Šuter k čiare. Po návratu klikni na Špľucha a převezmi medaili. Zkombinuj ji s nůžkami z koše: získáš provázek a plochou vysušenou bramboru. Medaile i nůžky zmizí. Nika s bramborou v inventáři vysvětlí falešný žeton.                                                                                                                                                                                        |
+| Falešný jackpot      | Založ kravský zvonec do ručního automatu na odpustky vedle kostela. **Klikni na kliku**: mechanické cinkání odláká tajného gamblera Bonifáce a otevře bránu hřbitova. Žádný elektrický přístroj při tom neběží.                                                                                                                                                                                                                                                                     |
+| Vlastní pohřeb       | Milan nebo ceník rakve vysvětlí, proč do kaplnky smí jen klient po pohřbu. Servisní deník ukaž Etele a získanou pečiatku zkombinuj s úmrtním listem. Opečiatkovaný list připevni **na zkušební rakev** na hřbitově. Na rakev použij i kolíček, kterým si Rudo zaštipne nos. **Klikni na rakev**: Milan uzná pohřeb a otevře kaplnku. List a kolíček lze připevnit v libovolném pořadí.                                                                                              |
+| Klíč od krypty       | Magnet + špagát vytvoří magnet na špagáte. V kaplnce jím vylov klíč pod mříží. Klíčem odemkni kryptu a dokonči Ľubovu úvodní repliku.                                                                                                                                                                                                                                                                                                                                               |
+| Odhalení a volba     | Ľubo fingoval smrt kvůli dluhům a ukradl hlavní kabel pro soukromý automat na Dingově autobaterii. Před definitivní volbou ručně ulož hru, pokud chceš projít oba konce bez opakování pátrání.                                                                                                                                                                                                                                                                                      |
 
-**Obnovení proudu:** Klikni přímo na černý hlavní kabel. Rudo ho vytáhne i s
-koncovkou a automat zhasne; baterie už nemá samostatnou hádanku se svorkou.
-Sebrání kabelu znamená definitivní volbu návratu proudu. Kábel + izolačka vytvoří
+**Obnovení proudu:** Francouzským klíčem odpoj na autobaterii mínusovou svorku;
+automat zhasne. Teprve potom rukavicemi seber kabel; pod proudem jej Rudo
+odmítne vzít (kliknutí ani rukavice nic nespotřebují). Do sebrání kabelu jde
+svorka klíčem zase připojit. Sebrání kabelu znamená definitivní volbu návratu proudu. Kábel + izolačka vytvoří
 opravený kabel. Vrať se k Ferovi a použij jej na rozvodnú skriňu. Rozsvítí se dvůr,
 objeví se turnajový transparent, Fero pronese závěrečnou repliku a následuje epilog.
 
 **Jackpot:** Bramboru odstřiženou z výherní medaile obal zlatou fólií z herny.
-Podvodný žetón použij v kryptě na automat, dokud jsi nevzal kabel. Zkrat spálí
+Podvodný žetón použij v kryptě na automat, dokud je baterie připojená. Zkrat spálí
 automat i kabel, Ľubo pronese závěrečnou repliku a následuje druhý epilog.
-Po sebrání kabelu automat žeton odmítne a ponechá ho v inventáři.
-Starý příznak `battery-isolated` se už nepoužívá, ale zůstává registrovaný kvůli
-načítání dřívějších pozic; žádná větev jím není blokovaná.
+Na odpojený automat ani po sebrání kabelu se žeton nespotřebuje. Dřívější
+pozice se sebraným kabelem bez příznaku `battery-isolated` zůstávají platné.
 Uloženou pozici před volbou lze načíst i po konci; nová hra ruční slot nemaže.
 Po vložení falešného žetonu nejdřív promluví Ľubo; po vrácení opraveného
 kabelu do rozvodné skříně promluví Fero. Obě reakce jsou jednorázové dialogy
@@ -996,31 +998,26 @@ nevyžaduje návrat ke starým testovacím názvům vrstev.
 
 ### Dabing tohoto scénáře
 
-Schválená dávka 29. 10. 2026 nově namluvila **40 ze 47 hraných replik** přes
-ElevenLabs a přepočítala jejich Rhubarb lip-sync i titulky. Osm stálých hlasů
-zůstalo zachovaných. Rotační hlasy Eržiky (pět reakcí) a Karola (tři repliky)
-se obnovily přes Voice Design a uvolnily až po ověření a uložení všech dat.
-Původní generace a registrace se nepřepisují. Dežo má následně nově navržený
-vykouřený, zpomalený hlas a nové všechny čtyři hrané repliky včetně výměny šrotu;
-jejich WAV, titulky a Rhubarb data jsou přiřazené v projektu.
+Dávka 30. 10. 2026 (`d6fddbba-…`) doplnila dabing po přepisu příběhu: **všech
+75 hraných replik** má aktuální WAV, titulky a Rhubarb lip-sync. Nově vzniklo
+67 TTS; osm replik, jejichž audio stále odpovídalo textu, zůstalo beze změny
+(dostaly jen nový lip-sync). Osm stálých hlasů se nezměnilo. Pět rotačních
+postav (Eržika, Karol, Špľuch, Nika, Béla) dostalo nový Voice Design, namluvilo
+všechny své repliky a slot se po uložení uvolnil.
 
-**Zbývá sedm dětských replik**: Špľuch tři, Nika dvě a Béla dvě. ElevenLabs
-odmítlo první nový dětský Voice Design chybou HTTP 403; dávka se zastavila bez
-opakování požadavku a bez změny dětských hlasů. Příčina 403 není potvrzená;
-návrhy Eržiky a Karola ve stejném běhu prošly. Zadání pro přirozené věkové hlasy
-jsou uložená v `voice.designPrompt`: Špľuch přibližně 9–10 let, Nika 8–9 let
-a Béla 7–8 let. Runtime jejich zastaralé audio ani lip-sync nepřehraje; nabídne
-aktuální slovenské titulky. Kliknutí/tapnutí nebo Enter/mezerník je potvrdí.
-Mrkání, ostatní animace i Ferovo škrábání zůstávají funkční.
+Dětský Voice Design s přirozeným věkem ElevenLabs dříve odmítl (HTTP 403).
+Děti proto mají **stylizované dospělé kreslené hlasy**: přehnaně vysoký,
+skřehotavý nebo nosový projev ve stylu dospělých animovaných komedií, ale se
+srozumitelnou slovenštinou. Zadání jsou v `voice.designPrompt`. Model
+`eleven_v4` pro slovenštinu většinou nevrací znakové zarovnání, takže titulky
+mají označený odhad časování; tvary úst vychází ze skutečné Rhubarb analýzy.
 
-Po vyřešení zamítnutí pokračuj v uložené dávce; hotových 40 TTS se znovu neplatí:
-
-```bash
-npm run speech:regenerate -- --resume 1d9625be-7818-473f-adef-48c1c8b6b80a --retry-failed --confirm
-```
-
-Tento příkaz použij až po kontrole důvodu zamítnutí v ElevenLabs. Deník dávky
-je lokální a necommituje se; aktuální přiřazení a hotové nahrávky jsou v projektu.
+Hlášky dětí v minihře Šuter k čiare (32 replik) se namlouvaly stejnými hlasy
+před uvolněním slotu. Leží v `src/assets/minigames/suter-k-ciare/voice/`
+s `manifest.json` (text, hlas, délka, SHA-256). Postavy v minihře nejsou
+kreslené, takže lip-sync nepotřebují. Změněný text v `lines.ts` se nepřehraje
+a použije původní syntetické „blábolení“; nová nahrávka vyžaduje obnovit
+rotační hlas dítěte.
 
 [Archiv předchozího castingu](src/assets/speech/2b9d5934-d303-40ef-b875-59c2c46dbc00/casting.json)
 a [historická poslechová stránka](src/assets/speech/2b9d5934-d303-40ef-b875-59c2c46dbc00/listen.html)
@@ -1029,7 +1026,7 @@ aktuálně namluvených replik tohoto nového scénáře. Hraní nepotřebuje AP
 
 Pozadí a atmosféry zůstaly lokální. Zberňa a kravín mají zhasnuté žárovky;
 ruční klystír, odpustkový automat, pípa a houpačka nepotřebují proud.
-V kryptě napájí světelný automat jediná autobaterie; vytažením hlavního kabelu automat zhasne.
+V kryptě napájí světelný automat jediná autobaterie, jejíž odpojení neón zastaví.
 Svíčky a petrolejka fungují bez sítě. Místní ruchy se zapnou až po gestu hráče,
 menu i skrytá stránka je pozastaví.
 
@@ -1299,7 +1296,8 @@ Výhra nastaví `stone-game-won`; po návratu Špľuch při kliknutí jednou př
 medaili „Brambora na špagátu“. Prohra ani opakování partie tuto odměnu
 nevydají znovu. Nůžkami z koše se medaile rozdělí na provázek a bramboru.
 Postavy nejsou kreslené, Nika a Béla jen
-komentují v reakčním lístku. Hostitelský element nese `data-phase`
+komentují v reakčním lístku; všechny hlášky mají dabing (`voice.ts`), přehrávaný
+jeden po druhém a pozastavený při skryté stránce. Hostitelský element nese `data-phase`
 (`aim | busy | done`) pro testy. Pravidla a fyziku ověřuje
 `tests/minigame-rules.spec.ts`, celý průchod `tests/minigame.spec.ts`.
 

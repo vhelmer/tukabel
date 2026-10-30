@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "operation": "voice-registration",
+  "provider": "elevenlabs",
+  "designManifest": "speech/a1ae64de-9438-4f2c-931f-c9763a968006/design.json",
+  "designSha256": "3ba96ba9c9a1e850968d6f23ddeba8f8ee888c635c022fb008433a0cdaf5146d",
+  "generatedVoiceId": "oos3VRpD3WwsoKNF0MKb",
+  "previewIndex": 0,
+  "voiceId": "oos3VRpD3WwsoKNF0MKb",
+  "name": "TUKABEL · Karol Odmerka",
+  "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Male, late forties. A beer-soaked publican with an upper-middle register shredded by a lifetime of shouting across a pub. Harsh hoarse sandpaper rasp, scratchy wheeze, coarse forward nasal resonance and strained buzzy vowels. Loud argumentative rhythmic jabs, sarcastic upward scoops, rough breath at the end of clauses and sudden indignant bursts. He is audibly half-cut but every word remains understandable; no long mumbling or random hiccup noises. A damaged loud tenor, quite unlike a booming deep bass. Colloquial Slovak. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts."
+}

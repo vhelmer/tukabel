@@ -1,0 +1,109 @@
+{
+  "version": 1,
+  "operation": "voice-retirement-verification",
+  "provider": "elevenlabs",
+  "verifiedAt": "2026-10-30T01:12:08.639Z",
+  "projectId": "tukabel-potato-prize-3",
+  "actor": { "sceneId": "scene7", "hotspotId": "sand-girl" },
+  "voiceId": "qeIj9I3uCRmajGyrxeZc",
+  "designRegistration": "speech/366276b7-fc80-4751-99f4-8e0388f0fbf0/registration.json",
+  "registrationSha256": "e9f8fab8118aea2b382b4f6f4ce825e34485e6afbdded575e3112900f5541cf3",
+  "registration": {
+    "version": 1,
+    "operation": "voice-registration",
+    "provider": "elevenlabs",
+    "designManifest": "speech/70570ef0-0df5-48f4-a468-2a27a9163805/design.json",
+    "designSha256": "cd879c8571d5b052e2b21349343c97dbb52ea961d32c8bda04c3b7a8c1baa8f6",
+    "generatedVoiceId": "qeIj9I3uCRmajGyrxeZc",
+    "previewIndex": 0,
+    "voiceId": "qeIj9I3uCRmajGyrxeZc",
+    "name": "TUKABEL · Nika",
+    "description": "Adult female cartoon voice actress performing a bossy know-it-all playground girl for an adult animated horror-comedy. Exaggerated high, sharp, shrill and slightly squeaky nasal tone with a smug sing-song lilt and deadpan sarcastic punchlines, in the spirit of crude adult TV cartoons. Fast confident delivery. Native Slovak speaker, precise articulation, every word understandable. Clearly different from a raspy brat and a timid wobbly voice. Clean dry studio recording, no music or background."
+  },
+  "lines": [
+    {
+      "dialogueId": "girl-chat",
+      "nodeId": "tracks",
+      "actor": { "sceneId": "scene7", "hotspotId": "sand-girl" },
+      "text": "Tieto čiary sú kolesá pohrebáka. Šiel ku kostolu, tak som mu nakreslila odbočku do žihľavy. Chlap ju ignoroval. Nula bodov za spoluprácu, hajzel.",
+      "textSha256": "fd8d405c04f8eaa7f61a1b87555a6604c6ce3b13b2d6831cccde4788c2bb0be1",
+      "audio": "speech/b925cd78-da29-4b6a-9e44-ed39b347072d/audio.wav",
+      "audioSha256": "733021107f41be84fc85833ed94ab9572802c0c6c5a0c135299273213a672f29",
+      "duration": 11.28,
+      "rms": 3034.6822621934134,
+      "peak": 24301,
+      "lipSync": "speech/6457dc92-c72b-42a8-ad2a-80075c78172d/track.lipsync.json",
+      "lipSyncSha256": "62dfb69b58eb2fe746b0e839c2acea02a436c4c69584b6e8e7c4eeb4c0af4f23",
+      "subtitles": {
+        "text": "Tieto čiary sú kolesá pohrebáka. Šiel ku kostolu, tak som mu nakreslila odbočku do žihľavy. Chlap ju ignoroval. Nula bodov za spoluprácu, hajzel.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 2.524195804195804,
+            "text": "Tieto čiary sú kolesá pohrebáka."
+          },
+          {
+            "start": 2.524195804195804,
+            "end": 7.0993006993006995,
+            "text": "Šiel ku kostolu, tak som mu nakreslila odbočku do žihľavy."
+          },
+          {
+            "start": 7.0993006993006995,
+            "end": 11.28,
+            "text": "Chlap ju ignoroval. Nula bodov za spoluprácu, hajzel."
+          }
+        ]
+      },
+      "record": "speech/b925cd78-da29-4b6a-9e44-ed39b347072d/record.json",
+      "recordSha256": "0d9fb360d9848bef74dbe84b1ce20ef07b1a565fc15be63ecc5aab8ef953d1c5"
+    },
+    {
+      "dialogueId": "girl-chat",
+      "nodeId": "token",
+      "actor": { "sceneId": "scene7", "hotspotId": "sand-girl" },
+      "text": "Je vysušená a okrúhla ako žetón. Obaľ ju zlatým obalom od čokolády. Karolovi hráči ich nechávajú pri automatoch v starej herni. Len pozor: alobal sa môže zachytiť v kontaktoch. Ocko tak raz vyhral hasičov.",
+      "textSha256": "277a06bfc9a9d76a9e423dce4b0db7f054e3e4e5c79430b8e29b537a70a67140",
+      "audio": "speech/1ad49b4a-5cbb-453c-a20e-eeec9b32b5f0/audio.wav",
+      "audioSha256": "fa81ac404d5361044d80f568f4f28052d605b42c7a7444e6118721fac953efbb",
+      "duration": 15.68,
+      "rms": 3254.472085772303,
+      "peak": 27848,
+      "lipSync": "speech/d0321abb-f69f-4cbb-b1b2-30c502e0b537/track.lipsync.json",
+      "lipSyncSha256": "9a574d6d9910aa9bdc9c64ae5fc6c124f91461e3e08948d67343a987e2defd00",
+      "subtitles": {
+        "text": "Je vysušená a okrúhla ako žetón. Obaľ ju zlatým obalom od čokolády. Karolovi hráči ich nechávajú pri automatoch v starej herni. Len pozor: alobal sa môže zachytiť v kontaktoch. Ocko tak raz vyhral hasičov.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 2.496318407960199,
+            "text": "Je vysušená a okrúhla ako žetón."
+          },
+          {
+            "start": 2.496318407960199,
+            "end": 5.148656716417911,
+            "text": "Obaľ ju zlatým obalom od čokolády."
+          },
+          {
+            "start": 5.148656716417911,
+            "end": 9.751243781094526,
+            "text": "Karolovi hráči ich nechávajú pri automatoch v starej herni."
+          },
+          {
+            "start": 9.751243781094526,
+            "end": 13.495721393034824,
+            "text": "Len pozor: alobal sa môže zachytiť v kontaktoch."
+          },
+          {
+            "start": 13.495721393034824,
+            "end": 15.679999999999998,
+            "text": "Ocko tak raz vyhral hasičov."
+          }
+        ]
+      },
+      "record": "speech/1ad49b4a-5cbb-453c-a20e-eeec9b32b5f0/record.json",
+      "recordSha256": "bd54d99a643e668bc9e32fa5c8289ddeac017843c283c98c5c4f2a3069ebaa64"
+    }
+  ]
+}

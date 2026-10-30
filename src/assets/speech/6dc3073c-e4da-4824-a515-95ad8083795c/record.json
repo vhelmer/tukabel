@@ -1,0 +1,18 @@
+{
+  "text": "Bránu držím zamknutú, kradnú sa vence. Ak ideš za mŕtvymi, počkaj. Ja strážim, Pán si zapisuje dochádzku.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "Dm506FEP6AkprXTsWzmW",
+    "designRegistration": "speech/2f047eb2-01cd-4bc9-99ad-daf933cb9dd4/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 9.28,
+  "audioSha256": "24861f80729f3d4fbbcac9658fe17a1c0c5601f3837730188b124b390e6277d5"
+}

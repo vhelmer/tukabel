@@ -1,0 +1,18 @@
+{
+  "text": "Po pohrebe šampióna Ľuba mi prišla reklamácia s jeho podpisom. Buď má peklo poštu, alebo niekto ojebáva aj mŕtvych. Záznam je pod servisným krytom v herni. Pípa má prednosť, vyšetrovanie počká.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "oos3VRpD3WwsoKNF0MKb",
+    "designRegistration": "speech/f666ea54-844d-4e48-b87e-35e0531dbb11/registration.json",
+    "slot": "rotating"
+  },
+  "languageCode": "sk",
+  "duration": 14.88,
+  "audioSha256": "352611300435e274b4e5bc25edb6f75e98cbf60215d615a99542699a2d2b1f8b"
+}

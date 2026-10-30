@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "operation": "voice-registration",
+  "provider": "elevenlabs",
+  "designManifest": "speech/5d598b7b-666f-4b43-a6e1-3482d2ba940e/design.json",
+  "designSha256": "4ae533658d0c537d9af014c6f58908f6fc1836cf6449eb65451505a4edc6697f",
+  "generatedVoiceId": "DyIdTI8oWFiulpU3HRMH",
+  "previewIndex": 0,
+  "voiceId": "DyIdTI8oWFiulpU3HRMH",
+  "name": "TUKABEL · Béla",
+  "description": "Adult male cartoon voice actor performing a timid little daredevil perched on top of a climbing frame, for an adult animated horror-comedy. Very high, wobbly, squeaky voice that cracks and warbles, breathless nervous giggles, then sudden overconfident squeals, in the spirit of crude adult TV cartoons. Comically deformed but intelligible Slovak, native speaker, clear consonants and every word understandable. Clean dry studio recording, no music or background."
+}

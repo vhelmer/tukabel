@@ -1,0 +1,18 @@
+{
+  "text": "Vypadni. Aj chrípka sa ma raz opýtala, či môže zostať.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "l1irIuUP5mHtvmn3ALC9",
+    "designRegistration": "speech/17e93d2a-1feb-43fd-a209-fe8011d6faf9/registration.json",
+    "slot": "rotating"
+  },
+  "languageCode": "sk",
+  "duration": 3.84,
+  "audioSha256": "767c8fc35154cb91a79cf3c7da28e0665d21fa5dc9254c39d92eedcc37b327d1"
+}

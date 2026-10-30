@@ -1,0 +1,163 @@
+{
+  "metadata": {
+    "duration": 3.84,
+    "audioSha256": "767c8fc35154cb91a79cf3c7da28e0665d21fa5dc9254c39d92eedcc37b327d1"
+  },
+  "mouthCues": [
+    {
+      "start": 0,
+      "end": 0.04,
+      "value": "B"
+    },
+    {
+      "start": 0.04,
+      "end": 0.08,
+      "value": "G"
+    },
+    {
+      "start": 0.08,
+      "end": 0.15,
+      "value": "B"
+    },
+    {
+      "start": 0.15,
+      "end": 0.23,
+      "value": "A"
+    },
+    {
+      "start": 0.23,
+      "end": 0.41,
+      "value": "C"
+    },
+    {
+      "start": 0.41,
+      "end": 0.76,
+      "value": "B"
+    },
+    {
+      "start": 0.76,
+      "end": 0.99,
+      "value": "X"
+    },
+    {
+      "start": 0.99,
+      "end": 1.03,
+      "value": "B"
+    },
+    {
+      "start": 1.03,
+      "end": 1.14,
+      "value": "C"
+    },
+    {
+      "start": 1.14,
+      "end": 1.21,
+      "value": "B"
+    },
+    {
+      "start": 1.21,
+      "end": 1.35,
+      "value": "F"
+    },
+    {
+      "start": 1.35,
+      "end": 1.42,
+      "value": "B"
+    },
+    {
+      "start": 1.42,
+      "end": 1.63,
+      "value": "C"
+    },
+    {
+      "start": 1.63,
+      "end": 1.7,
+      "value": "B"
+    },
+    {
+      "start": 1.7,
+      "end": 1.77,
+      "value": "D"
+    },
+    {
+      "start": 1.77,
+      "end": 1.86,
+      "value": "A"
+    },
+    {
+      "start": 1.86,
+      "end": 1.98,
+      "value": "C"
+    },
+    {
+      "start": 1.98,
+      "end": 2.05,
+      "value": "B"
+    },
+    {
+      "start": 2.05,
+      "end": 2.12,
+      "value": "E"
+    },
+    {
+      "start": 2.12,
+      "end": 2.2,
+      "value": "A"
+    },
+    {
+      "start": 2.2,
+      "end": 2.35,
+      "value": "B"
+    },
+    {
+      "start": 2.35,
+      "end": 2.49,
+      "value": "C"
+    },
+    {
+      "start": 2.49,
+      "end": 2.56,
+      "value": "E"
+    },
+    {
+      "start": 2.56,
+      "end": 2.63,
+      "value": "B"
+    },
+    {
+      "start": 2.63,
+      "end": 2.98,
+      "value": "F"
+    },
+    {
+      "start": 2.98,
+      "end": 3.26,
+      "value": "B"
+    },
+    {
+      "start": 3.26,
+      "end": 3.34,
+      "value": "A"
+    },
+    {
+      "start": 3.34,
+      "end": 3.43,
+      "value": "C"
+    },
+    {
+      "start": 3.43,
+      "end": 3.64,
+      "value": "B"
+    },
+    {
+      "start": 3.64,
+      "end": 3.71,
+      "value": "C"
+    },
+    {
+      "start": 3.71,
+      "end": 3.84,
+      "value": "X"
+    }
+  ]
+}

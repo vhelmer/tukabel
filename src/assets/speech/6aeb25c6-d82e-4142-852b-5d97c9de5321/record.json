@@ -1,0 +1,18 @@
+{
+  "text": "Reklamácia deň po Ľubovom pohrebe! Buď niekto falšuje podpis, alebo mi ten zmrd falšuje cintorín. Ber pečiatku, svoj list si oraz sám. Mne už z mŕtvych ide jebnúť.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "xKlQrC6RzWnhQhiCFKBS",
+    "designRegistration": "speech/df34f616-45c6-4744-810b-48fbf2184228/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 13.28,
+  "audioSha256": "19e92602f9f7fa7f78f51caebcfe419738efd20c7f42bd0bad4f5145f823226b"
+}

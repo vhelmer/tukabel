@@ -1,0 +1,18 @@
+{
+  "text": "Tak ho teda vráť Ferovi, ty poctivý chudák. Úradne som mŕtvy; škodu na tréningu mi nevymôže ani exekútor. Ešte si od vás vypýtam veniec.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "Cs0q9bNTpnXhVCnLNXGI",
+    "designRegistration": "speech/21f9abba-7505-4707-a9f6-afdfaf7fc065/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 10.16,
+  "audioSha256": "47191f9d36449047f7b427e4761e479fef2dba17787a53dbad5b63a1df46237b"
+}

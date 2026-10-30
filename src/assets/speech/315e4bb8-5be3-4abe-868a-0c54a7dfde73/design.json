@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "operation": "voice-design",
+  "provider": "elevenlabs",
+  "model": "eleven_ttv_v3",
+  "description": "Adult male cartoon voice actor performing a bratty playground troublemaker for an adult animated horror-comedy. Exaggerated high-pitched, nasal, croaky squeal with a raspy crack, like a grown man squeezing his voice into a squeaky brat, in the spirit of crude adult TV cartoons. Cocky, impatient, snotty delivery with sudden shrieks of excitement and little snorts. Native Slovak speaker, clearly articulated Slovak words, every word understandable despite the bizarre pitch. Clean dry studio recording, no music or background.",
+  "text": "Naša medaila BRAMBORA NA ŠPAGÁTU. Prvé miesto dostane štvrté, nech si nezvyká na úspech. Zadarmo ju nedám. Pri čiare v hline ma poraz v hádzaní a je tvoja. Uzol zalepil Béla; bez nožníc skôr rozviažeš vlastné črevá. Šiel tu pohrebák ku kostolu. Vzadu mu búchala bedňa a trčal kábel. Šofér nadával ako živý, ale tvár som nevidel. Mama mi na mŕtvych dovolí čumieť až po večeri. Tu máš bramboru na špagáte. Porazil si decko, hrdina. Keď si ju zavesíš na krk, vyzeráš ako obesený obed. Ten zalepený uzol odstrihni nožnicami; špagát je kvalitnejší než celá tvoja výhra.",
+  "textSha256": "b0ed7d1ede0851ca6274d0dffb278def6411ac4eeb701076efa47ed2ff624442",
+  "seed": 2072454616,
+  "guidanceScale": 5,
+  "outputFormat": "mp3_44100_128",
+  "previews": [
+    {
+      "audio": "preview-1.mp3",
+      "generatedVoiceId": "QjlCD1k8X7bEBCXezj33",
+      "duration": 49.0084375,
+      "audioSha256": "c46d8d4fe4b92281f34c77dbdea40b4338f143891cbe718ae14d25c518ab85cc"
+    },
+    {
+      "audio": "preview-2.mp3",
+      "generatedVoiceId": "cwSjBuQi9WYQwpD9P7c5",
+      "duration": 44.28025,
+      "audioSha256": "dd9eb3a6c2766362053fc1d4ef97e1991b9e14eb3fa858affe0810924577b5e6"
+    },
+    {
+      "audio": "preview-3.mp3",
+      "generatedVoiceId": "TcaogxAYhaqAhQYLK3EU",
+      "duration": 46.1088125,
+      "audioSha256": "82bd748920d689d52c00a919e28506414f1222fb94fbbdec70650e66b631ba7f"
+    }
+  ]
+}

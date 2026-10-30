@@ -43,6 +43,7 @@ const propEffects: Record<string, Pick<Effect, 'type' | 'id'>> = {
   resuscitator: { type: 'flag', id: 'dingo-awake' },
   'tool-chest': { type: 'addItem', id: 'wrench' },
   'main-cable': { type: 'addItem', id: 'stolen-cable' },
+  'car-battery': { type: 'flag', id: 'battery-isolated' },
 };
 function hasPropEffect(hotspot: Hotspot, alias: string) {
   const wanted = propEffects[alias];
@@ -256,9 +257,14 @@ test('the authored game completes through restoration and saves both before and 
     p = solveToCrypt(content);
   const before = p.state;
   p.use('main-cable');
+  p.use('main-cable', 'rubber-gloves');
+  expect(p.state.inventory).not.toContain('stolen-cable');
+  expect(p.state.inventory).toContain('rubber-gloves');
+  p.use('car-battery', 'wrench');
+  expect(p.state.flags['battery-isolated']).toBe(true);
+  p.use('main-cable', 'rubber-gloves');
   expect(p.state.inventory).toContain('stolen-cable');
   expect(p.state.flags['cable-recovered']).toBe(true);
-  expect(p.state.flags['battery-isolated']).not.toBe(true);
   expect(p.state.inventory).not.toContain('wrench');
   expect(p.state.inventory).not.toContain('rubber-gloves');
   p.combine('stolen-cable', 'tape');
@@ -330,6 +336,29 @@ test('the cow keeps both the bottle cycle and funeral evidence through premature
   expect(p.state.inventory).toContain('empty-bottle');
   p.use('cow-bell-hook');
   expect(p.state.inventory.filter((id) => id === 'cow-bell')).toHaveLength(1);
+});
+test('the sleeping cow keeps its eyes shut and stops blinking after travel and load', async () => {
+  const content = await read(),
+    p = prepareFarm(content);
+  const farm = content.scenes.find((s) => s.id === 'scene10')!.hotspots;
+  const clip = content.animations!.find(
+    (a) => a.kind === 'blink' && a.frames.at(-2)?.includes('4e928ce3'),
+  )!;
+  const blinking = farm.find((h) => h.animation?.blink === clip.id)!;
+  const sleeping = farm.find((h) => h.image === clip.frames[3])!;
+  expect(sleeping.animation).toBeUndefined();
+  expect(sleeping.bounds).toEqual(blinking.bounds);
+  const shown = (h: Hotspot) => !h.hidden && matches(p.state, h.visibleWhen);
+  expect([shown(blinking), shown(sleeping)]).toEqual([true, false]);
+  p.use('cow', 'holy-water');
+  p.close();
+  p.use('cow', 'funeral-form');
+  expect(p.state.flags['cow-asleep']).toBe(true);
+  expect([shown(blinking), shown(sleeping)]).toEqual([false, true]);
+  p.travel('scene3');
+  p.travel('scene10');
+  p.state = deserializeSave(content, serializeSave(content, p.state));
+  expect([shown(blinking), shown(sleeping)]).toEqual([false, true]);
 });
 test('seven outdoor destinations keep fast travel separate from interior passages and wrong uses preserve supplies', async () => {
   const content = await read();
@@ -512,11 +541,11 @@ test('static actor voices stay fixed while rotating voices retain registration a
         .map(([id, voice]) => [id, voice.voiceId]),
     ),
   ).toEqual({
-    'scene4/layer2': 'ub0M3tCem0pkpU4yJ48D',
-    'scene6/innkeeper': 'WeQhSWWkQZEA8DAKeg1r',
-    'scene7/swing-boy': 'iiDZOH9TArCghKD6MfNt',
-    'scene7/sand-girl': 'wk5NuWmufYkSfjl2kJr1',
-    'scene7/climbing-boy': 'GTTXoS7HeTELz6svNEnz',
+    'scene4/layer2': 'l1irIuUP5mHtvmn3ALC9',
+    'scene6/innkeeper': 'oos3VRpD3WwsoKNF0MKb',
+    'scene7/swing-boy': 'QjlCD1k8X7bEBCXezj33',
+    'scene7/sand-girl': 'qeIj9I3uCRmajGyrxeZc',
+    'scene7/climbing-boy': 'DyIdTI8oWFiulpU3HRMH',
   });
   expect(voices).toHaveLength(13);
   expect(voices.filter(([, voice]) => voice.slot === 'static')).toHaveLength(8);
@@ -744,48 +773,49 @@ test('chocolate foil is a unique pickup inside the gaming room unlocked by repai
   expect(p.state.inventory.filter((id) => id === 'foil')).toHaveLength(1);
 });
 
-test('a direct cable pickup works without tools and an older battery flag does not block the token ending', async () => {
+test('the cable needs the battery disconnected with the wrench and gloves; reconnecting reopens the token ending', async () => {
   const content = await read();
   const crypt = content.scenes.find((scene) => scene.id === 'scene12')!;
+  const shown = (id: string) =>
+    matches(
+      p.state,
+      crypt.hotspots.find((h) => h.id === propId(content, crypt.id, id))!
+        .visibleWhen,
+    );
   const p = player(content);
-  p.state = {
+  const start: GameState = {
     ...p.state,
     sceneId: crypt.id,
     dialogue: null,
-    inventory: ['fake-token'],
+    inventory: ['fake-token', 'wrench', 'rubber-gloves'],
   };
+  p.state = start;
   p.use('main-cable');
-  expect(p.state.inventory).toEqual(['fake-token', 'stolen-cable']);
-  expect(p.state.flags['cable-recovered']).toBe(true);
-  expect(
-    matches(
-      p.state,
-      crypt.hotspots.find((h) => h.id === 'machine-off')!.visibleWhen,
-    ),
-  ).toBe(true);
-  expect(
-    matches(
-      p.state,
-      crypt.hotspots.find(
-        (h) => h.id === propId(content, crypt.id, 'main-cable'),
-      )!.visibleWhen,
-    ),
-  ).toBe(false);
-  p.use('main-cable');
-  expect(p.state.inventory.filter((id) => id === 'stolen-cable')).toHaveLength(
-    1,
-  );
+  p.use('main-cable', 'rubber-gloves');
+  expect(p.state.inventory).toEqual(start.inventory);
+  expect(p.state.flags['cable-recovered']).not.toBe(true);
+  expect(shown('machine-off')).toBe(false);
+  p.use('car-battery', 'wrench');
+  expect(p.state.flags['battery-isolated']).toBe(true);
+  expect(shown('machine-off')).toBe(true);
   p.use('crypt-machine', 'fake-token');
   expect(p.state.inventory).toContain('fake-token');
   expect(p.state.flags['ending-jackpot']).not.toBe(true);
-  p.state = {
-    ...initialState(content),
-    sceneId: crypt.id,
-    dialogue: null,
-    inventory: ['fake-token'],
-    flags: { 'battery-isolated': true },
-  };
+  p.use('car-battery', 'wrench');
+  expect(p.state.flags['battery-isolated']).toBe(false);
+  expect(shown('machine-off')).toBe(false);
   p.use('crypt-machine', 'fake-token');
   expect(p.state.dialogue?.id).toBe('lubo-ending');
   expect(p.state.flags['ending-jackpot']).toBe(true);
+
+  p.state = start;
+  p.use('car-battery', 'wrench');
+  p.use('main-cable', 'rubber-gloves');
+  expect(p.state.inventory).toEqual(['fake-token', 'stolen-cable']);
+  expect(p.state.flags['cable-recovered']).toBe(true);
+  expect(shown('machine-off')).toBe(true);
+  expect(shown('main-cable')).toBe(false);
+  p.use('crypt-machine', 'fake-token');
+  expect(p.state.inventory).toContain('fake-token');
+  expect(p.state.flags['ending-jackpot']).not.toBe(true);
 });

@@ -1,0 +1,234 @@
+{
+  "version": 1,
+  "operation": "voice-retirement-verification",
+  "provider": "elevenlabs",
+  "verifiedAt": "2026-10-30T01:09:01.271Z",
+  "projectId": "tukabel-potato-prize-3",
+  "actor": { "sceneId": "scene4", "hotspotId": "layer2" },
+  "voiceId": "l1irIuUP5mHtvmn3ALC9",
+  "designRegistration": "speech/17e93d2a-1feb-43fd-a209-fe8011d6faf9/registration.json",
+  "registrationSha256": "28194ffcd0aa0fd23b0c2c73c69dc8553fd2ddfb7455e8f316a473e40f8d8bc4",
+  "registration": {
+    "version": 1,
+    "operation": "voice-registration",
+    "provider": "elevenlabs",
+    "designManifest": "speech/34c3041d-092e-427f-90d5-4801b13dc386/design.json",
+    "designSha256": "426cc9abc139903f06941cd5ff7b1e5eecd8a465406b5d2cd45e4a893771a642",
+    "generatedVoiceId": "l1irIuUP5mHtvmn3ALC9",
+    "previewIndex": 0,
+    "voiceId": "l1irIuUP5mHtvmn3ALC9",
+    "name": "TUKABEL · Eržika",
+    "description": "Native Slovak, slovenčina, unmistakably Slovak vowels and crisp consonants. Female, about fifty. A ferocious, commanding woman: low-mid chest voice with a metallic saw-toothed buzz, extremely coarse raspy edges and pinched nasal bite. Sharp barking starts, brutally clipped endings and sudden theatrical rises of annoyance. The unmistakable delivery of a household commander shouting over an argument, hilarious and impatient, NEVER smooth or soothing. Strong middle register, no breathy softness. Standard colloquial Slovak, aggressive staccato emphasis. Extreme animated black-comedy character acting, not a civil everyday voice, not an announcer or an audiobook narrator. Preserve understandable words at a moderate pace. Dry close recording, no background, music, echo, sound effects or digital pitch-shifter artifacts."
+  },
+  "lines": [
+    {
+      "dialogueId": "erzika-bark-1",
+      "nodeId": "line",
+      "actor": { "sceneId": "scene4", "hotspotId": "layer2" },
+      "text": "Choď do piče, Rudo. A zavri za sebou, nech sa mi nevrátiš prievanom.",
+      "textSha256": "500e92284d6ed53463c517ede70e8ba2f7b8f8ec56a248c191096ff61db2ffe2",
+      "audio": "speech/42c2ac10-1d19-4833-948d-ba67f0987f14/audio.wav",
+      "audioSha256": "6235646e9713aab52fa87856a6e48399a7ad02e49b31d2371e55bb08b60cf3b4",
+      "duration": 4.48,
+      "rms": 3225.4500536688433,
+      "peak": 20768,
+      "lipSync": "speech/14aaa84b-395a-4936-8fb4-a61f4f52080a/track.lipsync.json",
+      "lipSyncSha256": "1155e35070fe27dd19f59351f1181a98a02e1935fd4beb378a5c25b42dadd53d",
+      "subtitles": {
+        "text": "Choď do piče, Rudo. A zavri za sebou, nech sa mi nevrátiš prievanom.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 4.48,
+            "text": "Choď do piče, Rudo. A zavri za sebou, nech sa mi nevrátiš prievanom."
+          }
+        ]
+      },
+      "record": "speech/42c2ac10-1d19-4833-948d-ba67f0987f14/record.json",
+      "recordSha256": "1acfa4e52758b3f37c8f9ee3ac8461e312aa2cb3b9df5b7c3ed1187483d2ce95"
+    },
+    {
+      "dialogueId": "erzika-bark-2",
+      "nodeId": "line",
+      "actor": { "sceneId": "scene4", "hotspotId": "layer2" },
+      "text": "Ty nemáš v hlave seno. To by aspoň niekto zožral.",
+      "textSha256": "e2a777ae94c3bdd78746236ce19443b11876525a935a26d378b8561d47702d9e",
+      "audio": "speech/d66746ce-4b45-4f3e-b5f2-5c0fbb7369e1/audio.wav",
+      "audioSha256": "c773e5af2d2b24f746401c547a71c6dc91c2bf4ccf7694109dbb3be1774459f9",
+      "duration": 3.6,
+      "rms": 3215.3987710650276,
+      "peak": 19476,
+      "lipSync": "speech/56ddd9f2-b4b0-49ed-b0b0-4ed4179cd2d2/track.lipsync.json",
+      "lipSyncSha256": "9a40c04cae4a49d139bd026378318e3db7751fefeac4af18ef0e09b278c550ba",
+      "subtitles": {
+        "text": "Ty nemáš v hlave seno. To by aspoň niekto zožral.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 3.6,
+            "text": "Ty nemáš v hlave seno. To by aspoň niekto zožral."
+          }
+        ]
+      },
+      "record": "speech/d66746ce-4b45-4f3e-b5f2-5c0fbb7369e1/record.json",
+      "recordSha256": "919b04b1a30af199a7432a7399013869709a0589e1bcd4977b548003d45a5346"
+    },
+    {
+      "dialogueId": "erzika-bark-3",
+      "nodeId": "line",
+      "actor": { "sceneId": "scene4", "hotspotId": "layer2" },
+      "text": "Ešte raz do mňa pichni a Milan dostane zákazku na mieru. Bez metra. Nalámeme ťa.",
+      "textSha256": "75e94f7b2110f5ec5a5447837ebe3e00a521c15f4c095175b43135ab0e948186",
+      "audio": "speech/5a37d291-0d36-42e2-9710-965b07d18192/audio.wav",
+      "audioSha256": "177700eea73de14f5c0ad283c63ef8ce966f93c4d3d01808893c2bbcb59ec51b",
+      "duration": 5.84,
+      "rms": 3304.7673525759164,
+      "peak": 20722,
+      "lipSync": "speech/1ac525fb-e26b-4d08-8a12-8fcd98166855/track.lipsync.json",
+      "lipSyncSha256": "653b3c6f33b799755ee5a4f0651b695c5ab0487fcb964acab085315f8b53ce11",
+      "subtitles": {
+        "text": "Ešte raz do mňa pichni a Milan dostane zákazku na mieru. Bez metra. Nalámeme ťa.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 4.139746835443037,
+            "text": "Ešte raz do mňa pichni a Milan dostane zákazku na mieru."
+          },
+          {
+            "start": 4.139746835443037,
+            "end": 5.839999999999999,
+            "text": "Bez metra. Nalámeme ťa."
+          }
+        ]
+      },
+      "record": "speech/5a37d291-0d36-42e2-9710-965b07d18192/record.json",
+      "recordSha256": "2b888f395a3ad0afd1d56fab3abaab3106ed1c949c107199ca6df8e0658d98cf"
+    },
+    {
+      "dialogueId": "erzika-bark-4",
+      "nodeId": "line",
+      "actor": { "sceneId": "scene4", "hotspotId": "layer2" },
+      "text": "Fero, vezmi si toho kokota. Zase sa mi tu pokúša existovať!",
+      "textSha256": "c88aa128087d03748c7db9104163b67294e9bc5ddbf24ae4e764c548334b72b9",
+      "audio": "speech/a4893417-eac2-48e5-b6f9-09d126271080/audio.wav",
+      "audioSha256": "a69c78f66d72ae6bcb4eb6c74b032e4398ca4988b69deebb4e88f4f65cb0806f",
+      "duration": 4.4,
+      "rms": 3118.4321195994594,
+      "peak": 19289,
+      "lipSync": "speech/091b10e0-7f11-4293-89b1-8b6047a7ba80/track.lipsync.json",
+      "lipSyncSha256": "d0f4a256a73622673638c5aa3b7ea73aa16663d1aa92108f2883b472719f0095",
+      "subtitles": {
+        "text": "Fero, vezmi si toho kokota. Zase sa mi tu pokúša existovať!",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 2.048275862068966,
+            "text": "Fero, vezmi si toho kokota."
+          },
+          {
+            "start": 2.048275862068966,
+            "end": 4.4,
+            "text": "Zase sa mi tu pokúša existovať!"
+          }
+        ]
+      },
+      "record": "speech/a4893417-eac2-48e5-b6f9-09d126271080/record.json",
+      "recordSha256": "e4bdeb1ad1acc82829b4ee7fa60844f3a863f77d087a617a6e6752f0aa6bd47e"
+    },
+    {
+      "dialogueId": "erzika-bark-5",
+      "nodeId": "line",
+      "actor": { "sceneId": "scene4", "hotspotId": "layer2" },
+      "text": "Vypadni. Aj chrípka sa ma raz opýtala, či môže zostať.",
+      "textSha256": "d16c33fe4cdd8979221fa43c198200c28abb19faac6595cf8a86925659decfcf",
+      "audio": "speech/4e8b3fa5-ca7c-44a4-b1ef-2d6192ff4bf8/audio.wav",
+      "audioSha256": "767c8fc35154cb91a79cf3c7da28e0665d21fa5dc9254c39d92eedcc37b327d1",
+      "duration": 3.84,
+      "rms": 2881.013659507107,
+      "peak": 23103,
+      "lipSync": "speech/2c098b16-b71f-422f-afba-4399c91b9660/track.lipsync.json",
+      "lipSyncSha256": "48f0dec7826182b5eb4a4e0d38f41e0b1fd65fca0f032ee9419e32d8d2a59fb2",
+      "subtitles": {
+        "text": "Vypadni. Aj chrípka sa ma raz opýtala, či môže zostať.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 3.84,
+            "text": "Vypadni. Aj chrípka sa ma raz opýtala, či môže zostať."
+          }
+        ]
+      },
+      "record": "speech/4e8b3fa5-ca7c-44a4-b1ef-2d6192ff4bf8/record.json",
+      "recordSha256": "e8d70cc37a519bd1f090954a3d7a5fd9e16e60294f16bdbf7e8eda0ee39d428d"
+    },
+    {
+      "dialogueId": "erzika-refuses-tape",
+      "nodeId": "line",
+      "actor": { "sceneId": "scene4", "hotspotId": "layer2" },
+      "text": "S tou páskou choď k rozvodu. Na tvoju hubu je jej škoda.",
+      "textSha256": "0e17071bdc2fb2b3d95340347dbf6f61305ab3b0c5b05a8451d2d8a451f225d3",
+      "audio": "speech/ae359f8e-f747-4169-bdc9-1990cb99677b/audio.wav",
+      "audioSha256": "9df155ddfbe51dc04b87c3108de0dc4cf60104aa9ca1ec3fec089abb370a9b75",
+      "duration": 3.92,
+      "rms": 3346.2629446061833,
+      "peak": 18203,
+      "lipSync": "speech/4e15ff86-385c-47f5-83c8-5cf6cfbd26b0/track.lipsync.json",
+      "lipSyncSha256": "e88237dda4a9db478b054ca543b69f4dedfbe1d98579315d2254541f12222299",
+      "subtitles": {
+        "text": "S tou páskou choď k rozvodu. Na tvoju hubu je jej škoda.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 1.9956363636363634,
+            "text": "S tou páskou choď k rozvodu."
+          },
+          {
+            "start": 1.9956363636363634,
+            "end": 3.92,
+            "text": "Na tvoju hubu je jej škoda."
+          }
+        ]
+      },
+      "record": "speech/ae359f8e-f747-4169-bdc9-1990cb99677b/record.json",
+      "recordSha256": "8c4e963fe0f4c91d7de4615ec5b32392f7e1ef5af36f97a8c5e386802dec14b1"
+    },
+    {
+      "dialogueId": "erzika-refuses-peg",
+      "nodeId": "line",
+      "actor": { "sceneId": "scene4", "hotspotId": "layer2" },
+      "text": "Kolíček si daj na nos, Rudo. Aspoň na chvíľu prestaneš cítiť vlastný mozog.",
+      "textSha256": "3f18b20e5d02466d8e408b8f0d74a6a5947ada7dc243ce5215154d5a7621dd08",
+      "audio": "speech/a588f1ac-f47c-4e06-b01b-ebc45bd72033/audio.wav",
+      "audioSha256": "d6cd472138b392701050723b212a35cb7af9e95856f7606f9247a6256ea0c1af",
+      "duration": 4.8,
+      "rms": 2906.3121572852256,
+      "peak": 21886,
+      "lipSync": "speech/ee4d46f9-577a-4029-bcde-c37b973b9cd0/track.lipsync.json",
+      "lipSyncSha256": "5c73aaa2973d200bb6629afaaccd047314ee4037f68f8d1d3e27185a27305721",
+      "subtitles": {
+        "text": "Kolíček si daj na nos, Rudo. Aspoň na chvíľu prestaneš cítiť vlastný mozog.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 1.8162162162162163,
+            "text": "Kolíček si daj na nos, Rudo."
+          },
+          {
+            "start": 1.8162162162162163,
+            "end": 4.8,
+            "text": "Aspoň na chvíľu prestaneš cítiť vlastný mozog."
+          }
+        ]
+      },
+      "record": "speech/a588f1ac-f47c-4e06-b01b-ebc45bd72033/record.json",
+      "recordSha256": "34a33014826b7eed0ed3fe0271dc2a4a32a85527d2acc155ae91bc7dff6f1e65"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "operation": "voice-registration",
+  "provider": "elevenlabs",
+  "designManifest": "speech/70570ef0-0df5-48f4-a468-2a27a9163805/design.json",
+  "designSha256": "cd879c8571d5b052e2b21349343c97dbb52ea961d32c8bda04c3b7a8c1baa8f6",
+  "generatedVoiceId": "qeIj9I3uCRmajGyrxeZc",
+  "previewIndex": 0,
+  "voiceId": "qeIj9I3uCRmajGyrxeZc",
+  "name": "TUKABEL · Nika",
+  "description": "Adult female cartoon voice actress performing a bossy know-it-all playground girl for an adult animated horror-comedy. Exaggerated high, sharp, shrill and slightly squeaky nasal tone with a smug sing-song lilt and deadpan sarcastic punchlines, in the spirit of crude adult TV cartoons. Fast confident delivery. Native Slovak speaker, precise articulation, every word understandable. Clearly different from a raspy brat and a timid wobbly voice. Clean dry studio recording, no music or background."
+}

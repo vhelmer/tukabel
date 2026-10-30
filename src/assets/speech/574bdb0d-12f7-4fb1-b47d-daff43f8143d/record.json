@@ -1,0 +1,19 @@
+{
+  "text": "Za poriadny kus železa je tvoj. Nie podložku, z tej nezbohatne ani hrdza. Za Ferovým dvorom sa váľajú staré rúry. Fľaše neberiem, nie som smädný kontajner.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "OrfjtrzVNMp0DoREiFhZ",
+    "designRegistration": "speech/75ce1055-8c9a-4986-b319-be99eca6d363/registration.json",
+    "slot": "static",
+    "designPrompt": "Native Slovak male, about forty-five. An outrageous fictional small-time metal thief, permanently dazed and smoke-scorched. A very rough, gravelly low-mid voice with dry wheezy rasp, sticky nasal resonance and occasional creaking vocal fry. Sluggish stretched vowels, delayed thoughts, lazy uneven drawl, then sudden sly giggles and excited little bursts when he mentions scrap metal. Warmly ridiculous, shameless and slightly paranoid, audibly baked and exhausted from chain smoking; not a normal conversational man and not a clean announcer. Light eastern Slovak cadence, clear Slovak consonants. Keep every word intelligible and the pace suitable for short game dialogue. Natural human imperfections, no pitch shifting, no music, ambience or sound effects. Dry close studio recording."
+  },
+  "languageCode": "sk",
+  "duration": 11.52,
+  "audioSha256": "d015fe697ba51479de3f3faf6649005b4de47d8ac3b3f8922583057d6c9744d1"
+}

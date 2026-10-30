@@ -1,0 +1,528 @@
+{
+  "metadata": {
+    "duration": 13.12,
+    "audioSha256": "ff7c0d1a9ba5a41a6e00a38e8648764a849caa4fa1b15345a0e4b2d43f36aaef"
+  },
+  "mouthCues": [
+    {
+      "start": 0,
+      "end": 0.01,
+      "value": "X"
+    },
+    {
+      "start": 0.01,
+      "end": 0.1,
+      "value": "B"
+    },
+    {
+      "start": 0.1,
+      "end": 0.17,
+      "value": "G"
+    },
+    {
+      "start": 0.17,
+      "end": 0.24,
+      "value": "D"
+    },
+    {
+      "start": 0.24,
+      "end": 0.36,
+      "value": "A"
+    },
+    {
+      "start": 0.36,
+      "end": 0.48,
+      "value": "G"
+    },
+    {
+      "start": 0.48,
+      "end": 0.76,
+      "value": "B"
+    },
+    {
+      "start": 0.76,
+      "end": 0.83,
+      "value": "C"
+    },
+    {
+      "start": 0.83,
+      "end": 0.93,
+      "value": "D"
+    },
+    {
+      "start": 0.93,
+      "end": 0.97,
+      "value": "C"
+    },
+    {
+      "start": 0.97,
+      "end": 1.05,
+      "value": "A"
+    },
+    {
+      "start": 1.05,
+      "end": 1.29,
+      "value": "B"
+    },
+    {
+      "start": 1.29,
+      "end": 1.36,
+      "value": "C"
+    },
+    {
+      "start": 1.36,
+      "end": 1.43,
+      "value": "H"
+    },
+    {
+      "start": 1.43,
+      "end": 1.57,
+      "value": "B"
+    },
+    {
+      "start": 1.57,
+      "end": 1.64,
+      "value": "C"
+    },
+    {
+      "start": 1.64,
+      "end": 1.71,
+      "value": "E"
+    },
+    {
+      "start": 1.71,
+      "end": 1.78,
+      "value": "B"
+    },
+    {
+      "start": 1.78,
+      "end": 1.85,
+      "value": "C"
+    },
+    {
+      "start": 1.85,
+      "end": 1.93,
+      "value": "A"
+    },
+    {
+      "start": 1.93,
+      "end": 2.08,
+      "value": "C"
+    },
+    {
+      "start": 2.08,
+      "end": 2.15,
+      "value": "G"
+    },
+    {
+      "start": 2.15,
+      "end": 2.43,
+      "value": "B"
+    },
+    {
+      "start": 2.43,
+      "end": 2.5,
+      "value": "E"
+    },
+    {
+      "start": 2.5,
+      "end": 2.57,
+      "value": "C"
+    },
+    {
+      "start": 2.57,
+      "end": 2.64,
+      "value": "B"
+    },
+    {
+      "start": 2.64,
+      "end": 2.72,
+      "value": "A"
+    },
+    {
+      "start": 2.72,
+      "end": 3.08,
+      "value": "F"
+    },
+    {
+      "start": 3.08,
+      "end": 3.5,
+      "value": "X"
+    },
+    {
+      "start": 3.5,
+      "end": 3.63,
+      "value": "F"
+    },
+    {
+      "start": 3.63,
+      "end": 3.7,
+      "value": "G"
+    },
+    {
+      "start": 3.7,
+      "end": 3.77,
+      "value": "F"
+    },
+    {
+      "start": 3.77,
+      "end": 3.98,
+      "value": "D"
+    },
+    {
+      "start": 3.98,
+      "end": 4.12,
+      "value": "B"
+    },
+    {
+      "start": 4.12,
+      "end": 4.28,
+      "value": "A"
+    },
+    {
+      "start": 4.28,
+      "end": 4.35,
+      "value": "B"
+    },
+    {
+      "start": 4.35,
+      "end": 4.41,
+      "value": "C"
+    },
+    {
+      "start": 4.41,
+      "end": 4.49,
+      "value": "A"
+    },
+    {
+      "start": 4.49,
+      "end": 4.59,
+      "value": "B"
+    },
+    {
+      "start": 4.59,
+      "end": 4.88,
+      "value": "C"
+    },
+    {
+      "start": 4.88,
+      "end": 4.93,
+      "value": "A"
+    },
+    {
+      "start": 4.93,
+      "end": 5.01,
+      "value": "B"
+    },
+    {
+      "start": 5.01,
+      "end": 5.12,
+      "value": "A"
+    },
+    {
+      "start": 5.12,
+      "end": 5.38,
+      "value": "C"
+    },
+    {
+      "start": 5.38,
+      "end": 5.52,
+      "value": "B"
+    },
+    {
+      "start": 5.52,
+      "end": 5.66,
+      "value": "F"
+    },
+    {
+      "start": 5.66,
+      "end": 5.73,
+      "value": "B"
+    },
+    {
+      "start": 5.73,
+      "end": 6.09,
+      "value": "X"
+    },
+    {
+      "start": 6.09,
+      "end": 6.13,
+      "value": "B"
+    },
+    {
+      "start": 6.13,
+      "end": 6.38,
+      "value": "E"
+    },
+    {
+      "start": 6.38,
+      "end": 6.45,
+      "value": "H"
+    },
+    {
+      "start": 6.45,
+      "end": 6.59,
+      "value": "D"
+    },
+    {
+      "start": 6.59,
+      "end": 6.73,
+      "value": "C"
+    },
+    {
+      "start": 6.73,
+      "end": 7.01,
+      "value": "B"
+    },
+    {
+      "start": 7.01,
+      "end": 7.08,
+      "value": "C"
+    },
+    {
+      "start": 7.08,
+      "end": 7.16,
+      "value": "A"
+    },
+    {
+      "start": 7.16,
+      "end": 7.45,
+      "value": "E"
+    },
+    {
+      "start": 7.45,
+      "end": 7.73,
+      "value": "C"
+    },
+    {
+      "start": 7.73,
+      "end": 7.87,
+      "value": "B"
+    },
+    {
+      "start": 7.87,
+      "end": 8.01,
+      "value": "C"
+    },
+    {
+      "start": 8.01,
+      "end": 8.29,
+      "value": "B"
+    },
+    {
+      "start": 8.29,
+      "end": 8.37,
+      "value": "A"
+    },
+    {
+      "start": 8.37,
+      "end": 8.42,
+      "value": "B"
+    },
+    {
+      "start": 8.42,
+      "end": 8.81,
+      "value": "C"
+    },
+    {
+      "start": 8.81,
+      "end": 8.88,
+      "value": "E"
+    },
+    {
+      "start": 8.88,
+      "end": 8.95,
+      "value": "C"
+    },
+    {
+      "start": 8.95,
+      "end": 9.03,
+      "value": "A"
+    },
+    {
+      "start": 9.03,
+      "end": 9.26,
+      "value": "E"
+    },
+    {
+      "start": 9.26,
+      "end": 9.33,
+      "value": "B"
+    },
+    {
+      "start": 9.33,
+      "end": 9.4,
+      "value": "H"
+    },
+    {
+      "start": 9.4,
+      "end": 9.47,
+      "value": "C"
+    },
+    {
+      "start": 9.47,
+      "end": 9.55,
+      "value": "A"
+    },
+    {
+      "start": 9.55,
+      "end": 9.65,
+      "value": "B"
+    },
+    {
+      "start": 9.65,
+      "end": 9.67,
+      "value": "A"
+    },
+    {
+      "start": 9.67,
+      "end": 9.75,
+      "value": "B"
+    },
+    {
+      "start": 9.75,
+      "end": 9.82,
+      "value": "A"
+    },
+    {
+      "start": 9.82,
+      "end": 9.96,
+      "value": "C"
+    },
+    {
+      "start": 9.96,
+      "end": 10.17,
+      "value": "B"
+    },
+    {
+      "start": 10.17,
+      "end": 10.53,
+      "value": "X"
+    },
+    {
+      "start": 10.53,
+      "end": 10.61,
+      "value": "B"
+    },
+    {
+      "start": 10.61,
+      "end": 10.69,
+      "value": "A"
+    },
+    {
+      "start": 10.69,
+      "end": 10.87,
+      "value": "C"
+    },
+    {
+      "start": 10.87,
+      "end": 10.94,
+      "value": "E"
+    },
+    {
+      "start": 10.94,
+      "end": 11.01,
+      "value": "F"
+    },
+    {
+      "start": 11.01,
+      "end": 11.08,
+      "value": "C"
+    },
+    {
+      "start": 11.08,
+      "end": 11.41,
+      "value": "X"
+    },
+    {
+      "start": 11.41,
+      "end": 11.49,
+      "value": "B"
+    },
+    {
+      "start": 11.49,
+      "end": 11.62,
+      "value": "A"
+    },
+    {
+      "start": 11.62,
+      "end": 11.7,
+      "value": "B"
+    },
+    {
+      "start": 11.7,
+      "end": 11.78,
+      "value": "A"
+    },
+    {
+      "start": 11.78,
+      "end": 11.83,
+      "value": "C"
+    },
+    {
+      "start": 11.83,
+      "end": 11.87,
+      "value": "E"
+    },
+    {
+      "start": 11.87,
+      "end": 11.95,
+      "value": "A"
+    },
+    {
+      "start": 11.95,
+      "end": 12.01,
+      "value": "C"
+    },
+    {
+      "start": 12.01,
+      "end": 12.09,
+      "value": "F"
+    },
+    {
+      "start": 12.09,
+      "end": 12.13,
+      "value": "E"
+    },
+    {
+      "start": 12.13,
+      "end": 12.2,
+      "value": "H"
+    },
+    {
+      "start": 12.2,
+      "end": 12.28,
+      "value": "A"
+    },
+    {
+      "start": 12.28,
+      "end": 12.43,
+      "value": "E"
+    },
+    {
+      "start": 12.43,
+      "end": 12.64,
+      "value": "B"
+    },
+    {
+      "start": 12.64,
+      "end": 12.78,
+      "value": "E"
+    },
+    {
+      "start": 12.78,
+      "end": 12.86,
+      "value": "A"
+    },
+    {
+      "start": 12.86,
+      "end": 12.98,
+      "value": "C"
+    },
+    {
+      "start": 12.98,
+      "end": 13.12,
+      "value": "X"
+    }
+  ]
+}

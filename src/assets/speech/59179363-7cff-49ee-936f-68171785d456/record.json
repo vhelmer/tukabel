@@ -1,0 +1,18 @@
+{
+  "text": "Ten zvuk! Môj ručný automat má prázdny držiak na zvonec. Keď zahlási jackpot, zabudnem aj na tú zamknutú bránu. Ukáž to tej bedni, synu, ja si potrebujem utrieť slinu.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "Dm506FEP6AkprXTsWzmW",
+    "designRegistration": "speech/2f047eb2-01cd-4bc9-99ad-daf933cb9dd4/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 12.32,
+  "audioSha256": "ce11b7856f5c735bf478edddb4f6fcf65d83c2acd4e82cf5ae4484d762290a1d"
+}

@@ -1,0 +1,19 @@
+{
+  "text": "Je vysušená a okrúhla ako žetón. Obaľ ju zlatým obalom od čokolády. Karolovi hráči ich nechávajú pri automatoch v starej herni. Len pozor: alobal sa môže zachytiť v kontaktoch. Ocko tak raz vyhral hasičov.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "qeIj9I3uCRmajGyrxeZc",
+    "designRegistration": "speech/366276b7-fc80-4751-99f4-8e0388f0fbf0/registration.json",
+    "slot": "rotating",
+    "designPrompt": "Adult female cartoon voice actress performing a bossy know-it-all playground girl for an adult animated horror-comedy. Exaggerated high, sharp, shrill and slightly squeaky nasal tone with a smug sing-song lilt and deadpan sarcastic punchlines, in the spirit of crude adult TV cartoons. Fast confident delivery. Native Slovak speaker, precise articulation, every word understandable. Clearly different from a raspy brat and a timid wobbly voice. Clean dry studio recording, no music or background."
+  },
+  "languageCode": "sk",
+  "duration": 15.68,
+  "audioSha256": "fa81ac404d5361044d80f568f4f28052d605b42c7a7444e6118721fac953efbb"
+}

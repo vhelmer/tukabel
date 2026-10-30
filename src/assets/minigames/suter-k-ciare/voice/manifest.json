@@ -1,0 +1,294 @@
+{
+  "provider": "elevenlabs",
+  "languageCode": "sk",
+  "lines": {
+    "draw-0": {
+      "speaker": "nika",
+      "text": "Remíza. Obaja ste rovnako nanič. Kreslím vám medailu.",
+      "file": "draw-0.wav",
+      "durationMs": 4880,
+      "voiceId": "qeIj9I3uCRmajGyrxeZc",
+      "modelId": "eleven_v4",
+      "audioSha256": "1e9dd98e923ffb2e24b036baafe2b7ef239fea446cbdd716089adbf1a640b111"
+    },
+    "intro-0": {
+      "speaker": "nika",
+      "text": "Čiaru som kreslila ja. Kto ju prehodí, do tej čiary spadne.",
+      "file": "intro-0.wav",
+      "durationMs": 4720,
+      "voiceId": "qeIj9I3uCRmajGyrxeZc",
+      "modelId": "eleven_v4",
+      "audioSha256": "d1e419011aa8cd52f589d90ad620875071771362ccc6395623a9bbba9d51f14c"
+    },
+    "intro-1": {
+      "speaker": "spluch",
+      "text": "Tri šutre. Kto bližšie k čiare, ten pohladká tehlu.",
+      "file": "intro-1.wav",
+      "durationMs": 4080,
+      "voiceId": "QjlCD1k8X7bEBCXezj33",
+      "modelId": "eleven_v4",
+      "audioSha256": "92008a0dd78186c15d0983aac999d40ed7e7c52258d702de25bc92d9f9db3d35"
+    },
+    "intro-2": {
+      "speaker": "bela",
+      "text": "Ja to rozhodujem zhora. Odtiaľto ste všetci rovnako malí.",
+      "file": "intro-2.wav",
+      "durationMs": 4400,
+      "voiceId": "DyIdTI8oWFiulpU3HRMH",
+      "modelId": "eleven_v4",
+      "audioSha256": "f08fb63683128ccd2fa5644a6aaa22980cb90cf3ce58b762441a8392e4348133"
+    },
+    "lose-0": {
+      "speaker": "spluch",
+      "text": "Choď domov. Tehla sa ti smeje.",
+      "file": "lose-0.wav",
+      "durationMs": 2720,
+      "voiceId": "QjlCD1k8X7bEBCXezj33",
+      "modelId": "eleven_v4",
+      "audioSha256": "2dd1da748ab872bcc379d6eba71490dfda8bec239356e0279c7c43afd1ee98ea"
+    },
+    "lose-1": {
+      "speaker": "bela",
+      "text": "Prehral si so Špľuchom. To sa nedá ani zhora.",
+      "file": "lose-1.wav",
+      "durationMs": 3440,
+      "voiceId": "DyIdTI8oWFiulpU3HRMH",
+      "modelId": "eleven_v4",
+      "audioSha256": "ebe1d5e091cb6a21cd857e1eb151af9dd4408b06fc23a7639f401245d951d0f4"
+    },
+    "nobody-0": {
+      "speaker": "bela",
+      "text": "Nikto netrafil. Idem radšej spadnúť z preliezačky.",
+      "file": "nobody-0.wav",
+      "durationMs": 3760,
+      "voiceId": "DyIdTI8oWFiulpU3HRMH",
+      "modelId": "eleven_v4",
+      "audioSha256": "f036a09d1df935ad7ceaa98e14a55e9f6d86fbb65975370c020bc08972c982de"
+    },
+    "opponentGood-0": {
+      "speaker": "spluch",
+      "text": "Ani som sa nesnažil. Snažím sa iba v nedeľu.",
+      "file": "opponentGood-0.wav",
+      "durationMs": 3280,
+      "voiceId": "QjlCD1k8X7bEBCXezj33",
+      "modelId": "eleven_v4",
+      "audioSha256": "d7413f0e225431d7bf1466d1a8c3241670b3ce04fa9e565f84c4eecd99a7e4bd"
+    },
+    "opponentGood-1": {
+      "speaker": "bela",
+      "text": "Hm. Špľuch vie aj niečo iné než padať.",
+      "file": "opponentGood-1.wav",
+      "durationMs": 3840,
+      "voiceId": "DyIdTI8oWFiulpU3HRMH",
+      "modelId": "eleven_v4",
+      "audioSha256": "6a80e637cf01935310e97a7dad4335496cd30b27830f1303827eae7cc2e09fe3"
+    },
+    "opponentGreat-0": {
+      "speaker": "spluch",
+      "text": "Učte sa. Tehla ma trénovala.",
+      "file": "opponentGreat-0.wav",
+      "durationMs": 2560,
+      "voiceId": "QjlCD1k8X7bEBCXezj33",
+      "modelId": "eleven_v4",
+      "audioSha256": "a7401b33962f9877eb0788e8be3dfa52ef15433017aaa35534ea3e272cfea792"
+    },
+    "opponentGreat-1": {
+      "speaker": "nika",
+      "text": "Špľuch trafil. Svet sa končí.",
+      "file": "opponentGreat-1.wav",
+      "durationMs": 3200,
+      "voiceId": "qeIj9I3uCRmajGyrxeZc",
+      "modelId": "eleven_v4",
+      "audioSha256": "761bcf19840a824b6e24a7f44a9acb34151c50b49c4b14943997ebebe5fb0f6c"
+    },
+    "opponentMeh-0": {
+      "speaker": "nika",
+      "text": "Špľuch, ty si ako hojdačka. Nehýbeš sa správnym smerom.",
+      "file": "opponentMeh-0.wav",
+      "durationMs": 4560,
+      "voiceId": "qeIj9I3uCRmajGyrxeZc",
+      "modelId": "eleven_v4",
+      "audioSha256": "b6a0da94a26ed9d200ac9d01fd6b63b1d24b4176edd87fa26b9a49fbd4cd0a06"
+    },
+    "opponentMeh-1": {
+      "speaker": "bela",
+      "text": "Hehe. Aj tehla by to hodila lepšie.",
+      "file": "opponentMeh-1.wav",
+      "durationMs": 3120,
+      "voiceId": "DyIdTI8oWFiulpU3HRMH",
+      "modelId": "eleven_v4",
+      "audioSha256": "c7a84c0b07b39fb2cb6e81bae9a8b3bed2c36fe984e7807c33c82b91ca46f8b8"
+    },
+    "opponentMeh-2": {
+      "speaker": "spluch",
+      "text": "Šmyklo sa mi! Potil som sa aj za tú bramboru!",
+      "file": "opponentMeh-2.wav",
+      "durationMs": 3680,
+      "voiceId": "QjlCD1k8X7bEBCXezj33",
+      "modelId": "eleven_v4",
+      "audioSha256": "9b5561ac74f5374a838d86f7b40dd63a03771845e84e78b3981b506d78883d92"
+    },
+    "opponentOver-0": {
+      "speaker": "spluch",
+      "text": "To bol vietor! Fúkalo od kostola!",
+      "file": "opponentOver-0.wav",
+      "durationMs": 2960,
+      "voiceId": "QjlCD1k8X7bEBCXezj33",
+      "modelId": "eleven_v4",
+      "audioSha256": "529abcbc597f2612918ea1fcf9582ab47b0a03109a498dfc2cc073c60a1cfdb6"
+    },
+    "opponentOver-1": {
+      "speaker": "nika",
+      "text": "Špľuch prehodil. Zapisujem do knihy hanby.",
+      "file": "opponentOver-1.wav",
+      "durationMs": 3840,
+      "voiceId": "qeIj9I3uCRmajGyrxeZc",
+      "modelId": "eleven_v4",
+      "audioSha256": "b0c15f4c543fdee6bf332165abb76c0c51f8b689a0e0278578888b46eee1a825"
+    },
+    "playerGood-0": {
+      "speaker": "bela",
+      "text": "Ujde to. Ako polievka z vrecka.",
+      "file": "playerGood-0.wav",
+      "durationMs": 2560,
+      "voiceId": "DyIdTI8oWFiulpU3HRMH",
+      "modelId": "eleven_v4",
+      "audioSha256": "65dbcd66bc56045b5a7d98cbf4e0376ac6b7a838d1dbe649adce77d169dc3d00"
+    },
+    "playerGood-1": {
+      "speaker": "nika",
+      "text": "Nie zlé. Na dospeláka.",
+      "file": "playerGood-1.wav",
+      "durationMs": 2320,
+      "voiceId": "qeIj9I3uCRmajGyrxeZc",
+      "modelId": "eleven_v4",
+      "audioSha256": "7572b8bab819fe505e8174054f0d530a2fe26ccfda864e3bbeae17b72677c9b8"
+    },
+    "playerGreat-0": {
+      "speaker": "nika",
+      "text": "Na milimeter! Tú čiaru si ide zarámovať.",
+      "file": "playerGreat-0.wav",
+      "durationMs": 3520,
+      "voiceId": "qeIj9I3uCRmajGyrxeZc",
+      "modelId": "eleven_v4",
+      "audioSha256": "b09ee9e3f8491b8802f7d58cf79c74723080ca3e7feef6a6d64cc81e1c567b85"
+    },
+    "playerGreat-1": {
+      "speaker": "bela",
+      "text": "Zhora to vyzerá ako zázrak. Zdola asi tiež.",
+      "file": "playerGreat-1.wav",
+      "durationMs": 4240,
+      "voiceId": "DyIdTI8oWFiulpU3HRMH",
+      "modelId": "eleven_v4",
+      "audioSha256": "d1a4367308cbc628160e3cc21d72eeb95e24fe6325deac5fa5283741c0a73eca"
+    },
+    "playerGreat-2": {
+      "speaker": "spluch",
+      "text": "To bola náhoda. Tehla to videla inak.",
+      "file": "playerGreat-2.wav",
+      "durationMs": 3440,
+      "voiceId": "QjlCD1k8X7bEBCXezj33",
+      "modelId": "eleven_v4",
+      "audioSha256": "24af7216431ce657b8a63e7d9f08bf093f21f7c11b9b2d7b728e8f301126cc64"
+    },
+    "playerMeh-0": {
+      "speaker": "nika",
+      "text": "To si hodil, alebo ti to vypadlo z vrecka?",
+      "file": "playerMeh-0.wav",
+      "durationMs": 3120,
+      "voiceId": "qeIj9I3uCRmajGyrxeZc",
+      "modelId": "eleven_v4",
+      "audioSha256": "fabded2afb4fc6efe0f15a5af96acd5e22d49f6965af34de6ae815275e0666f8"
+    },
+    "playerMeh-1": {
+      "speaker": "spluch",
+      "text": "Moja tehla hádže ďalej. A nemá ruky.",
+      "file": "playerMeh-1.wav",
+      "durationMs": 3280,
+      "voiceId": "QjlCD1k8X7bEBCXezj33",
+      "modelId": "eleven_v4",
+      "audioSha256": "1a5964581e0d3f57d611ad4fb8910d01b554e8c9c82882bd7710b821a893d8df"
+    },
+    "playerMeh-2": {
+      "speaker": "bela",
+      "text": "Zhora vidím, že si to pokazil. Aj zdola.",
+      "file": "playerMeh-2.wav",
+      "durationMs": 3600,
+      "voiceId": "DyIdTI8oWFiulpU3HRMH",
+      "modelId": "eleven_v4",
+      "audioSha256": "e6a95f95c36889af677a0a5e1a5c40cb7c4fbc67756d82f3340829554bb4707f"
+    },
+    "playerOver-0": {
+      "speaker": "nika",
+      "text": "Prehodené! Moja čiara plače.",
+      "file": "playerOver-0.wav",
+      "durationMs": 2960,
+      "voiceId": "qeIj9I3uCRmajGyrxeZc",
+      "modelId": "eleven_v4",
+      "audioSha256": "58064b866b7bdd69685f23cd34d531135e7eb35c6a11e808fc6d4ea51490efa9"
+    },
+    "playerOver-1": {
+      "speaker": "bela",
+      "text": "Až do žihľavy. Tam už ležia tri lopty a jeden dedko.",
+      "file": "playerOver-1.wav",
+      "durationMs": 4400,
+      "voiceId": "DyIdTI8oWFiulpU3HRMH",
+      "modelId": "eleven_v4",
+      "audioSha256": "c50124135576d6f04486d3a66eb041a9318e66b0004b5dda9372f05c0ac4a57c"
+    },
+    "playerOver-2": {
+      "speaker": "spluch",
+      "text": "Hahaha, rovno k pohrebákovi!",
+      "file": "playerOver-2.wav",
+      "durationMs": 2960,
+      "voiceId": "QjlCD1k8X7bEBCXezj33",
+      "modelId": "eleven_v4",
+      "audioSha256": "e904aaedb927bf3cf7c14181dcf8e96b758b8d1e0e5c5e37e0cbc02550d7865b"
+    },
+    "win-0": {
+      "speaker": "nika",
+      "text": "Vyhral si! Špľuch ide domov plakať do tehly.",
+      "file": "win-0.wav",
+      "durationMs": 3760,
+      "voiceId": "qeIj9I3uCRmajGyrxeZc",
+      "modelId": "eleven_v4",
+      "audioSha256": "e12bec9190755bf703fd53e6e9b21683be5dcb4ff90be150c50bddabf4a3e25a"
+    },
+    "win-1": {
+      "speaker": "spluch",
+      "text": "Však som ti dal vyhrať... Tehla to potvrdí.",
+      "file": "win-1.wav",
+      "durationMs": 3440,
+      "voiceId": "QjlCD1k8X7bEBCXezj33",
+      "modelId": "eleven_v4",
+      "audioSha256": "1a25bb413917517cda48fb07ba2dfb198acdd999a0d486475ea01f6a2ab8a18f"
+    },
+    "yourTurn-0": {
+      "speaker": "spluch",
+      "text": "No, hádž. Tehla sa nudí.",
+      "file": "yourTurn-0.wav",
+      "durationMs": 2640,
+      "voiceId": "QjlCD1k8X7bEBCXezj33",
+      "modelId": "eleven_v4",
+      "audioSha256": "27e17df726f5ce1aaa0cceff3d31d56d45d3c9da29b9714948a7b05cfdb026d9"
+    },
+    "yourTurn-1": {
+      "speaker": "nika",
+      "text": "Ty si na rade. Len netraf mňa.",
+      "file": "yourTurn-1.wav",
+      "durationMs": 2640,
+      "voiceId": "qeIj9I3uCRmajGyrxeZc",
+      "modelId": "eleven_v4",
+      "audioSha256": "2765e60cb6372a54f2b75f3d8278abe4c0bfd094c98d2ad1a09ce8a2a293ffad"
+    },
+    "yourTurn-2": {
+      "speaker": "bela",
+      "text": "Hádž. Ak trafíš mňa, poistka to nekryje.",
+      "file": "yourTurn-2.wav",
+      "durationMs": 3760,
+      "voiceId": "DyIdTI8oWFiulpU3HRMH",
+      "modelId": "eleven_v4",
+      "audioSha256": "4319831023526d58af67e55ab586b0c4ab603cc66105929ad0e62616ade2b603"
+    }
+  }
+}

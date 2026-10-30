@@ -1,0 +1,99 @@
+{
+  "version": 1,
+  "operation": "voice-retirement-verification",
+  "provider": "elevenlabs",
+  "verifiedAt": "2026-10-30T01:12:58.505Z",
+  "projectId": "tukabel-potato-prize-3",
+  "actor": { "sceneId": "scene7", "hotspotId": "climbing-boy" },
+  "voiceId": "DyIdTI8oWFiulpU3HRMH",
+  "designRegistration": "speech/8fd85477-c6ad-4b01-91eb-e0091a07b692/registration.json",
+  "registrationSha256": "852ee88fcc18fafce728af00bd3faee2e1c6dfff061b0be324b18ecb6d3e27cd",
+  "registration": {
+    "version": 1,
+    "operation": "voice-registration",
+    "provider": "elevenlabs",
+    "designManifest": "speech/5d598b7b-666f-4b43-a6e1-3482d2ba940e/design.json",
+    "designSha256": "4ae533658d0c537d9af014c6f58908f6fc1836cf6449eb65451505a4edc6697f",
+    "generatedVoiceId": "DyIdTI8oWFiulpU3HRMH",
+    "previewIndex": 0,
+    "voiceId": "DyIdTI8oWFiulpU3HRMH",
+    "name": "TUKABEL · Béla",
+    "description": "Adult male cartoon voice actor performing a timid little daredevil perched on top of a climbing frame, for an adult animated horror-comedy. Very high, wobbly, squeaky voice that cracks and warbles, breathless nervous giggles, then sudden overconfident squeals, in the spirit of crude adult TV cartoons. Comically deformed but intelligible Slovak, native speaker, clear consonants and every word understandable. Clean dry studio recording, no music or background."
+  },
+  "lines": [
+    {
+      "dialogueId": "climber-chat",
+      "nodeId": "hearse",
+      "actor": { "sceneId": "scene7", "hotspotId": "climbing-boy" },
+      "text": "Z bieleho pohrebáka trčal kábel. Chlap vravel, že je to chvost neviditeľného psa. Hodili sme mu piškótu. Zožral ju sám; psa som odvtedy prestal hľadať.",
+      "textSha256": "6ab60695d45a079406c8f2c198f973902dc58ba039476c1a1ceaae97165d2e53",
+      "audio": "speech/2a6c030c-119b-4b6a-9860-e84e72844d8f/audio.wav",
+      "audioSha256": "352d8bd4f7f6fa87d68492efb14d674189c29ef2a2a51590124406fd02da5cc1",
+      "duration": 11.6,
+      "rms": 2278.1479664527797,
+      "peak": 16996,
+      "lipSync": "speech/6253dc19-13b0-41a9-9125-7aca7fab0779/track.lipsync.json",
+      "lipSyncSha256": "5d4e9c91a11b2c2580c23d94bb83d3322f92a5942d551ac521b484e4994ed986",
+      "subtitles": {
+        "text": "Z bieleho pohrebáka trčal kábel. Chlap vravel, že je to chvost neviditeľného psa. Hodili sme mu piškótu. Zožral ju sám; psa som odvtedy prestal hľadať.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 2.491275167785235,
+            "text": "Z bieleho pohrebáka trčal kábel."
+          },
+          {
+            "start": 2.491275167785235,
+            "end": 6.228187919463087,
+            "text": "Chlap vravel, že je to chvost neviditeľného psa."
+          },
+          {
+            "start": 6.228187919463087,
+            "end": 11.6,
+            "text": "Hodili sme mu piškótu. Zožral ju sám; psa som odvtedy prestal hľadať."
+          }
+        ]
+      },
+      "record": "speech/2a6c030c-119b-4b6a-9860-e84e72844d8f/record.json",
+      "recordSha256": "9f5358a129f6d540e75664c524c036e9230f69738f358b448e275e01ebecf91b"
+    },
+    {
+      "dialogueId": "climber-chat",
+      "nodeId": "map",
+      "actor": { "sceneId": "scene7", "hotspotId": "climbing-boy" },
+      "text": "Popri plote sa vrátiš na cestu k domom a krčme. Ak tam nájdeš rebrík, pošli ho sem. Hore som vyšiel ako človek, dolu už pôjdem ako poistná udalosť.",
+      "textSha256": "06507cee67e73d1d01843fe063e011a169df419e33fce106623b4c7acbf98592",
+      "audio": "speech/2e6a1ffa-8e64-4d15-8938-d77f8d64b759/audio.wav",
+      "audioSha256": "5c746adae11d16b86d2194eb41653d46edd01cf9c2c49ebd0452ee1fbc06c54a",
+      "duration": 11.92,
+      "rms": 2373.6915821288476,
+      "peak": 19162,
+      "lipSync": "speech/2353ab71-49eb-45a0-b60b-9f659ea25754/track.lipsync.json",
+      "lipSyncSha256": "ff2902a062899a71e75efd6b00b362b225187a5a0926ec1a6080a9f6dfb9fa54",
+      "subtitles": {
+        "text": "Popri plote sa vrátiš na cestu k domom a krčme. Ak tam nájdeš rebrík, pošli ho sem. Hore som vyšiel ako človek, dolu už pôjdem ako poistná udalosť.",
+        "timing": "estimated",
+        "cues": [
+          {
+            "start": 0,
+            "end": 3.8637241379310345,
+            "text": "Popri plote sa vrátiš na cestu k domom a krčme."
+          },
+          {
+            "start": 3.8637241379310345,
+            "end": 6.74096551724138,
+            "text": "Ak tam nájdeš rebrík, pošli ho sem."
+          },
+          {
+            "start": 6.74096551724138,
+            "end": 11.92,
+            "text": "Hore som vyšiel ako človek, dolu už pôjdem ako poistná udalosť."
+          }
+        ]
+      },
+      "record": "speech/2e6a1ffa-8e64-4d15-8938-d77f8d64b759/record.json",
+      "recordSha256": "d93aba47df96e54a3a087fb32b71ea704c9763a8f78aafe3bd83820abcf570c2"
+    }
+  ]
+}

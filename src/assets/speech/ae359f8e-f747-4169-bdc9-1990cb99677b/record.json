@@ -1,0 +1,18 @@
+{
+  "text": "S tou páskou choď k rozvodu. Na tvoju hubu je jej škoda.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "l1irIuUP5mHtvmn3ALC9",
+    "designRegistration": "speech/17e93d2a-1feb-43fd-a209-fe8011d6faf9/registration.json",
+    "slot": "rotating"
+  },
+  "languageCode": "sk",
+  "duration": 3.92,
+  "audioSha256": "9df155ddfbe51dc04b87c3108de0dc4cf60104aa9ca1ec3fec089abb370a9b75"
+}

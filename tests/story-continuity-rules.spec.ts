@@ -153,7 +153,7 @@ for (const reaction of [
     knowledge: undefined,
   },
 ]) {
-  test(`${reaction.speaker} speaks an immediate text reaction without consuming supplies`, async () => {
+  test(`${reaction.speaker} speaks an immediate voiced reaction without consuming supplies`, async () => {
     const content = await read();
     const before: GameState = {
       ...acceptedCase(content),
@@ -176,7 +176,7 @@ for (const reaction of [
     });
     expect(node?.speaker).toContain(reaction.speaker);
     expect(node?.text.trim().length).toBeGreaterThan(0);
-    expect(node?.speech).toBeUndefined();
+    expect(node?.speech?.text).toBe(node?.text);
     expect(node?.choices).toEqual([]);
     expect(after.message).toBe('');
     expect(after.sceneId).toBe(before.sceneId);
@@ -400,7 +400,7 @@ test('Nika and Ľubo offer item-specific topics only while the referenced object
   }
 });
 
-test('taking the cable directly preserves the restoration decision through later uses and save/load', async () => {
+test('taking the cable after disconnecting the battery preserves the restoration decision through later uses and save/load', async () => {
   const content = await read();
   const start = acceptedCase(content);
   let state: GameState = {
@@ -411,7 +411,7 @@ test('taking the cable directly preserves the restoration decision through later
   };
   const crypt = content.scenes.find((scene) => scene.id === 'scene12')!;
   const cable = crypt.hotspots.find((hotspot) =>
-    hotspot.onClick.some((rule) =>
+    (hotspot.uses?.['rubber-gloves'] ?? []).some((rule) =>
       rule.effects?.some(
         (effect) => effect.type === 'addItem' && effect.id === 'stolen-cable',
       ),
@@ -422,7 +422,13 @@ test('taking the cable directly preserves the restoration decision through later
   )!;
   state = reduceGame(content, state, {
     type: 'interact',
+    hotspotId: battery.id,
+    itemId: 'wrench',
+  });
+  state = reduceGame(content, state, {
+    type: 'interact',
     hotspotId: cable.id,
+    itemId: 'rubber-gloves',
   });
   expect(state.flags['cable-recovered']).toBe(true);
   expect(state.inventory).toContain('stolen-cable');
@@ -443,7 +449,7 @@ test('taking the cable directly preserves the restoration decision through later
     state = reduceGame(content, state, action);
     expect(state.inventory).toEqual(recovered.inventory);
     expect(state.flags).toEqual(recovered.flags);
-    expect(state.flags['battery-isolated']).not.toBe(true);
+    expect(state.flags['battery-isolated']).toBe(true);
     expect(state.flags['ending-jackpot']).not.toBe(true);
     expect(state.flags['ending-community']).not.toBe(true);
   }

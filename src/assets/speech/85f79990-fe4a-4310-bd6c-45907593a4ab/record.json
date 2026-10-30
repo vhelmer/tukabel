@@ -1,0 +1,18 @@
+{
+  "text": "Ten čierny kábel vytiahneš rovno aj s koncovkou. Automat zhasne a môžeš ho odniesť Ferovi. Ale potom už žiadna posledná hra, do riti! Rozmysli si, či chceš zachrániť turnaj, alebo si tu so mnou založiť rodinnú hrobku.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "Cs0q9bNTpnXhVCnLNXGI",
+    "designRegistration": "speech/21f9abba-7505-4707-a9f6-afdfaf7fc065/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 14.16,
+  "audioSha256": "2bdfbfb7172bdd70027dfb72edb85475dfd892e4fbe3d6ca6b545b07dc9149aa"
+}

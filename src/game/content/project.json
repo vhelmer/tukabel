@@ -734,11 +734,11 @@
               "style": 0.8,
               "speed": 1,
               "useSpeakerBoost": true,
-              "voiceId": "ub0M3tCem0pkpU4yJ48D",
-              "designRegistration": "speech/ba00d38c-e3fd-49dc-a767-cc817472a0b6/registration.json",
+              "voiceId": "l1irIuUP5mHtvmn3ALC9",
+              "designRegistration": "speech/17e93d2a-1feb-43fd-a209-fe8011d6faf9/registration.json",
               "slot": "rotating",
               "retired": true,
-              "retirementManifest": "speech/eddc6a52-c473-42e4-b975-657d68b05fdb/retirement.json"
+              "retirementManifest": "speech/929686b4-5edb-4a7d-aa31-6bb0d614e2fd/retirement.json"
             },
             "mouthShapes": {
               "A": 4,
@@ -852,6 +852,7 @@
           },
           "onClick": [{ "effects": [{ "type": "scene", "id": "scene11" }] }],
           "cursor": "exit",
+          "cursorImage": "cursors/exit-up.svg",
           "polygon": [
             { "x": 761.854, "y": 380.852 },
             { "x": 1055.644, "y": 388.243 },
@@ -1038,7 +1039,8 @@
             },
             { "effects": [{ "type": "dialogue", "id": "priest-guards-gate" }] }
           ],
-          "cursor": "exit"
+          "cursor": "exit",
+          "cursorImage": "cursors/exit-up.svg"
         },
         {
           "id": "church-door",
@@ -1209,6 +1211,7 @@
             }
           ],
           "cursor": "exit",
+          "cursorImage": "cursors/exit-down.svg",
           "polygon": [
             { "x": 125.626, "y": 788.99 },
             { "x": 1102.524, "y": 894.781 },
@@ -1399,11 +1402,11 @@
               "style": 0.8,
               "speed": 1,
               "useSpeakerBoost": true,
-              "voiceId": "WeQhSWWkQZEA8DAKeg1r",
-              "designRegistration": "speech/ee6bf383-8f32-402b-a655-27de2fdc1b74/registration.json",
+              "voiceId": "oos3VRpD3WwsoKNF0MKb",
+              "designRegistration": "speech/f666ea54-844d-4e48-b87e-35e0531dbb11/registration.json",
               "slot": "rotating",
               "retired": true,
-              "retirementManifest": "speech/85ee077f-1160-4701-a06d-cef6bdc3a0ad/retirement.json"
+              "retirementManifest": "speech/1cf90cb3-6103-4cb1-b49e-55f0518a08ec/retirement.json"
             }
           },
           "cursor": "talk",
@@ -1519,6 +1522,7 @@
           "onClick": [],
           "openMap": true,
           "cursor": "exit",
+          "cursorImage": "cursors/exit-up.svg",
           "polygon": [
             { "x": 854.286, "y": 609.897 },
             { "x": 851.292, "y": 249.379 },
@@ -1589,12 +1593,12 @@
               "style": 0.8,
               "speed": 1,
               "useSpeakerBoost": true,
-              "voiceId": "iiDZOH9TArCghKD6MfNt",
-              "designRegistration": "speech/9d24dc00-0a83-4c1e-9355-581e887151dc/registration.json",
+              "voiceId": "QjlCD1k8X7bEBCXezj33",
+              "designRegistration": "speech/fa1a14b2-14eb-4940-a9f2-fa3989166100/registration.json",
               "slot": "rotating",
+              "designPrompt": "Adult male cartoon voice actor performing a bratty playground troublemaker for an adult animated horror-comedy. Exaggerated high-pitched, nasal, croaky squeal with a raspy crack, like a grown man squeezing his voice into a squeaky brat, in the spirit of crude adult TV cartoons. Cocky, impatient, snotty delivery with sudden shrieks of excitement and little snorts. Native Slovak speaker, clearly articulated Slovak words, every word understandable despite the bizarre pitch. Clean dry studio recording, no music or background.",
               "retired": true,
-              "retirementManifest": "speech/bbefdfff-203d-40a0-b602-5f5e847ca02b/retirement.json",
-              "designPrompt": "Native Slovak child voice, a fictional boy aged nine to ten. Natural growing-child vocal anatomy, a slightly scratchy youthful middle-high register and energetic breath, never an adult baritone or digitally raised adult voice. Impatient, mischievously confident playground speech with sudden bursts of excitement, tiny hesitations and believable child rhythm. Light eastern Slovak cadence, clearly articulated Slovak consonants. Ordinary natural child pitch, no mosquito falsetto, no cartoon pitch effect. Keep every word understandable. Clean dry studio recording without background or music."
+              "retirementManifest": "speech/1ac2dbd4-4047-4647-bee7-fb95cc6e77ba/retirement.json"
             }
           },
           "cursor": "talk",
@@ -1621,12 +1625,12 @@
               "style": 0.8,
               "speed": 1,
               "useSpeakerBoost": true,
-              "voiceId": "wk5NuWmufYkSfjl2kJr1",
-              "designRegistration": "speech/ec91583d-d4de-4ffa-b468-ed16f52dc72d/registration.json",
+              "voiceId": "qeIj9I3uCRmajGyrxeZc",
+              "designRegistration": "speech/366276b7-fc80-4751-99f4-8e0388f0fbf0/registration.json",
               "slot": "rotating",
+              "designPrompt": "Adult female cartoon voice actress performing a bossy know-it-all playground girl for an adult animated horror-comedy. Exaggerated high, sharp, shrill and slightly squeaky nasal tone with a smug sing-song lilt and deadpan sarcastic punchlines, in the spirit of crude adult TV cartoons. Fast confident delivery. Native Slovak speaker, precise articulation, every word understandable. Clearly different from a raspy brat and a timid wobbly voice. Clean dry studio recording, no music or background.",
               "retired": true,
-              "retirementManifest": "speech/a01466f7-2d2f-4dd6-90d5-662df165422e/retirement.json",
-              "designPrompt": "Native Slovak child voice, a fictional girl aged eight to nine. Bright clear natural child resonance, precise youthful articulation and quick confident matter-of-fact delivery. Clever and slightly cheeky, with small expressive rises and genuine child phrasing rather than an adult actress performing a stage soprano. Light natural breath and lively but understandable pace. Distinct from a rough boy and from a shy younger boy. No shrill whistle, no falsetto, no electronic pitch shifting. Clean close dry recording without ambience or music."
+              "retirementManifest": "speech/480d5524-0caf-4f84-9bd1-4758cdfab6e5/retirement.json"
             }
           },
           "cursor": "talk",
@@ -1653,12 +1657,12 @@
               "style": 0.8,
               "speed": 1,
               "useSpeakerBoost": true,
-              "voiceId": "GTTXoS7HeTELz6svNEnz",
-              "designRegistration": "speech/4a2d83b0-cdb8-40af-939b-259cbf5812ee/registration.json",
+              "voiceId": "DyIdTI8oWFiulpU3HRMH",
+              "designRegistration": "speech/8fd85477-c6ad-4b01-91eb-e0091a07b692/registration.json",
               "slot": "rotating",
+              "designPrompt": "Adult male cartoon voice actor performing a timid little daredevil perched on top of a climbing frame, for an adult animated horror-comedy. Very high, wobbly, squeaky voice that cracks and warbles, breathless nervous giggles, then sudden overconfident squeals, in the spirit of crude adult TV cartoons. Comically deformed but intelligible Slovak, native speaker, clear consonants and every word understandable. Clean dry studio recording, no music or background.",
               "retired": true,
-              "retirementManifest": "speech/c37d455f-0054-4d64-ba46-a3b574c04c5d/retirement.json",
-              "designPrompt": "Native Slovak child voice, a fictional boy aged seven to eight. A naturally small soft youthful voice with slightly uncertain starts, quick little breaths and gentle uneven intonation. A younger boy trying very hard to sound brave, switching between quiet concentration and short confident exclamations. Natural child anatomy and comfortable pitch, not an adult nasal falsetto and not a squeaking cartoon insect. Clear intelligible Slovak words with plausible young-child pacing. Clean dry studio recording, no music or effects."
+              "retirementManifest": "speech/a6ec5b87-01d9-4801-ae45-6699ca9b7a09/retirement.json"
             }
           },
           "cursor": "talk",
@@ -1784,6 +1788,8 @@
         {
           "id": "object1",
           "label": "Schody späť do krčmy",
+          "cursor": "exit",
+          "cursorImage": "cursors/exit-up.svg",
           "bounds": {
             "x": 919.542,
             "y": 125.759,
@@ -1844,7 +1850,8 @@
               "sound": "soundtrack/elevenlabs-village-20261029/sfx-door.wav"
             }
           ],
-          "cursor": "exit"
+          "cursor": "exit",
+          "cursorImage": "cursors/exit-down.svg"
         },
         {
           "id": "key-grate",
@@ -2236,10 +2243,21 @@
           "image": "scene-art/5c0355a2-3283-468d-a386-537e341b70aa/image.png",
           "onClick": [],
           "decorative": true,
+          "visibleWhen": { "not": { "flag": "cow-asleep" } },
           "animation": {
             "blink": "codex-4e928ce3-2c0f-4338-8e50-5737e2b9ef76-blink",
             "blinkIntervalMs": [3000, 7000]
           }
+        },
+        {
+          "id": "cow-sleeping",
+          "label": "Krava spí",
+          "bounds": { "x": 622, "y": 301, "width": 191, "height": 161 },
+          "imageFit": "contain",
+          "image": "codex/4e928ce3-2c0f-4338-8e50-5737e2b9ef76/blink-04.png",
+          "onClick": [],
+          "decorative": true,
+          "visibleWhen": { "flag": "cow-asleep" }
         },
         {
           "id": "layer2",
@@ -2516,7 +2534,8 @@
             "height": 179.077
           },
           "onClick": [{ "effects": [{ "type": "scene", "id": "scene4" }] }],
-          "cursor": "exit"
+          "cursor": "exit",
+          "cursorImage": "cursors/exit-down.svg"
         },
         {
           "id": "ladder",
@@ -2645,7 +2664,8 @@
           "label": "Späť do kaplnky",
           "bounds": { "x": 1392.692, "y": 12.393, "width": 210, "height": 460 },
           "onClick": [{ "effects": [{ "type": "scene", "id": "scene2" }] }],
-          "cursor": "exit"
+          "cursor": "exit",
+          "cursorImage": "cursors/exit-up.svg"
         },
         {
           "id": "machine-off",
@@ -2654,7 +2674,14 @@
           "onClick": [],
           "decorative": true,
           "image": "story/dark-machine.svg",
-          "visibleWhen": { "flag": "cable-recovered" }
+          "visibleWhen": {
+            "not": {
+              "all": [
+                { "not": { "flag": "battery-isolated" } },
+                { "not": { "flag": "cable-recovered" } }
+              ]
+            }
+          }
         },
         {
           "id": "crypt-machine",
@@ -2666,6 +2693,10 @@
               "message": "Bez hlavného kábla to už nezapojím. Túto skriňu na moje peniaze som konečne vyradil z prevádzky."
             },
             {
+              "when": { "flag": "battery-isolated" },
+              "message": "Zhasol. Bez batérie je to konečne iba skriňa na cudzie peniaze."
+            },
+            {
               "message": "Automat beží z autobatérie. Na čele ZARUČENÁ VÝHRA; záruka sa už odlupuje."
             }
           ],
@@ -2674,6 +2705,10 @@
               {
                 "when": { "flag": "cable-recovered" },
                 "message": "Kábel som odniesol. Ten žetón tu už nezahrá, iba by som ho stratil v diere. Rozhodol som sa vrátiť prúd osade."
+              },
+              {
+                "when": { "flag": "battery-isolated" },
+                "message": "Automat je odpojený. Kým je kábel na mieste, môžem svorku kľúčom vrátiť. Alebo ho konečne bezpečne odniesť."
               },
               {
                 "when": { "not": { "flag": "cable-recovered" } },
@@ -2715,9 +2750,36 @@
               "message": "Bez čierneho kábla batéria automat neutiahne. Ľubovi zostal aspoň drahý podstavec pod sklamanie."
             },
             {
-              "message": "Dingova autobatéria živí iba Ľubov automat. Čierny kábel môžem vytiahnuť rovno aj s koncovkou. Ľubo potom bude musieť parazitovať na niekom živom."
+              "when": { "flag": "battery-isolated" },
+              "message": "Mínusová svorka visí dole. Automat spí a kábel je bez prúdu. Teraz ho môžem vytiahnuť v rukaviciach."
+            },
+            {
+              "message": "Dingova autobatéria živí iba Ľubov automat. Na mínusovej svorke vidím maticu. Bez kľúča by som tu skúšal elektrinu jazykom."
             }
-          ]
+          ],
+          "uses": {
+            "wrench": [
+              {
+                "when": { "flag": "cable-recovered" },
+                "message": "Svorka je dole a kábel mám v rukách. Kľúč si odložím, kým si niečo neodmontujem z hlavy."
+              },
+              {
+                "when": { "not": { "flag": "battery-isolated" } },
+                "message": "Povolil som maticu a mínusová svorka odskočila. Automat zhasol a Ľubovi zomrel jediný platiaci kamarát. Kábel teraz vytiahnem v rukaviciach.",
+                "effects": [
+                  { "type": "flag", "id": "battery-isolated", "value": true }
+                ],
+                "sound": "soundtrack/elevenlabs-village-20261029/sfx-tools.wav"
+              },
+              {
+                "message": "Svorku som vrátil. Automat sa znova rozblikal a ZARUČENÁ VÝHRA ožila. Ľubo by ma objal, keby nebol úradne mŕtvy.",
+                "effects": [
+                  { "type": "flag", "id": "battery-isolated", "value": false }
+                ],
+                "sound": "soundtrack/elevenlabs-village-20261029/sfx-tools.wav"
+              }
+            ]
+          }
         },
         {
           "id": "object3",
@@ -2743,14 +2805,11 @@
           ],
           "onClick": [
             {
-              "message": "Vytiahol som kábel aj s koncovkou. Automat zhasol a Ľubovi zomrel jediný platiaci kamarát. Poškodený koniec oblepím páskou a vrátim do Ferovej rozvodnej skrine.",
-              "effects": [
-                { "type": "flag", "id": "cable-recovered", "value": true },
-                { "type": "addItem", "id": "stolen-cable" },
-                { "type": "removeItem", "id": "wrench" },
-                { "type": "removeItem", "id": "rubber-gloves" }
-              ],
-              "sound": "soundtrack/elevenlabs-village-20261029/sfx-tools.wav"
+              "when": { "flag": "battery-isolated" },
+              "message": "Batéria je odpojená. Kábel vytiahnem v rukaviciach, nech sa neporežem o rozstrapkané opláštenie."
+            },
+            {
+              "message": "Hlavný kábel osady. Vedie z batérie priamo do automatu; pod prúdom ho ťahať nebudem. Najprv kľúčom povolím svorku na batérii."
             }
           ],
           "visibleWhen": {
@@ -2762,7 +2821,11 @@
           "uses": {
             "rubber-gloves": [
               {
-                "message": "Vytiahol som kábel aj s koncovkou. Automat zhasol a Ľubovi zomrel jediný platiaci kamarát. Poškodený koniec oblepím páskou a vrátim do Ferovej rozvodnej skrine.",
+                "when": { "not": { "flag": "battery-isolated" } },
+                "message": "V rukaviciach sa cítim odvážne, ale kábel je stále pod prúdom. Najprv kľúčom odpojím batériu."
+              },
+              {
+                "message": "Vytiahol som kábel aj s koncovkou. Poškodený koniec oblepím páskou a vrátim do Ferovej rozvodnej skrine. Automat už nezapojí nikto.",
                 "effects": [
                   { "type": "flag", "id": "cable-recovered", "value": true },
                   { "type": "addItem", "id": "stolen-cable" },
@@ -3008,7 +3071,7 @@
                 }
               ]
             },
-            "lipSync": "speech/b496ec92-bf0f-4ce7-8b73-05c4c8fdf9dc/track.lipsync.json"
+            "lipSync": "speech/967cd834-f252-45df-9fc2-3ac1803a1195/track.lipsync.json"
           },
           "subtitle": "Rudo, niekto vytrhol hlavný kábel: osada potme a majstrovstvá v automatoch v piči! Nájdi ho, máš štartovné zadarmo; nevyšetruj zásuvku jazykom, minule nám tri dni koktal rozhlas."
         }
@@ -3066,7 +3129,33 @@
             },
             { "id": "leave", "text": "Idem vyšetrovať cudzí majetok." }
           ],
-          "subtitle": "Vytrhol hlavný kábel medzi prívodom a skriňou. Keď ho nájdeš, oblep poškodený koniec izolačkou a vráť ho sem. Nesnaž sa ho nahradiť jazykom, už nemám druhého vyšetrovateľa."
+          "subtitle": "Vytrhol hlavný kábel medzi prívodom a skriňou. Keď ho nájdeš, oblep poškodený koniec izolačkou a vráť ho sem. Nesnaž sa ho nahradiť jazykom, už nemám druhého vyšetrovateľa.",
+          "speech": {
+            "audio": "speech/a8085c4d-fada-4452-b310-8005aedfa2d5/audio.wav",
+            "text": "Vytrhol hlavný kábel medzi prívodom a skriňou. Keď ho nájdeš, oblep poškodený koniec izolačkou a vráť ho sem. Nesnaž sa ho nahradiť jazykom, už nemám druhého vyšetrovateľa.",
+            "subtitles": {
+              "text": "Vytrhol hlavný kábel medzi prívodom a skriňou. Keď ho nájdeš, oblep poškodený koniec izolačkou a vráť ho sem. Nesnaž sa ho nahradiť jazykom, už nemám druhého vyšetrovateľa.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 3.3336470588235296,
+                  "text": "Vytrhol hlavný kábel medzi prívodom a skriňou."
+                },
+                {
+                  "start": 3.3336470588235296,
+                  "end": 7.826823529411765,
+                  "text": "Keď ho nájdeš, oblep poškodený koniec izolačkou a vráť ho sem."
+                },
+                {
+                  "start": 7.826823529411765,
+                  "end": 12.32,
+                  "text": "Nesnaž sa ho nahradiť jazykom, už nemám druhého vyšetrovateľa."
+                }
+              ]
+            },
+            "lipSync": "speech/503e5e06-8b2c-431d-aae5-658329c527d3/track.lipsync.json"
+          }
         },
         {
           "id": "suspects",
@@ -3091,7 +3180,43 @@
             },
             { "id": "leave", "text": "Idem vyšetrovať cudzí majetok." }
           ],
-          "subtitle": "Dežo berie všetko, čo cinká. Pýtaj sa aj na zastávke a v krčme. Včera pochovali minuloročného šampióna Ľuba Šťastného; dnes nám niekto pochoval celý turnaj. Veľmi výkonný týždeň, do riti."
+          "subtitle": "Dežo berie všetko, čo cinká. Pýtaj sa aj na zastávke a v krčme. Včera pochovali minuloročného šampióna Ľuba Šťastného; dnes nám niekto pochoval celý turnaj. Veľmi výkonný týždeň, do riti.",
+          "speech": {
+            "audio": "speech/418bea46-b22e-41d9-9a1c-0905e3658b61/audio.wav",
+            "text": "Dežo berie všetko, čo cinká. Pýtaj sa aj na zastávke a v krčme. Včera pochovali minuloročného šampióna Ľuba Šťastného; dnes nám niekto pochoval celý turnaj. Veľmi výkonný týždeň, do riti.",
+            "subtitles": {
+              "text": "Dežo berie všetko, čo cinká. Pýtaj sa aj na zastávke a v krčme. Včera pochovali minuloročného šampióna Ľuba Šťastného; dnes nám niekto pochoval celý turnaj. Veľmi výkonný týždeň, do riti.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 2.1175956284153004,
+                  "text": "Dežo berie všetko, čo cinká."
+                },
+                {
+                  "start": 2.1175956284153004,
+                  "end": 4.688961748633879,
+                  "text": "Pýtaj sa aj na zastávke a v krčme."
+                },
+                {
+                  "start": 4.688961748633879,
+                  "end": 8.772896174863387,
+                  "text": "Včera pochovali minuloročného šampióna Ľuba Šťastného;"
+                },
+                {
+                  "start": 8.772896174863387,
+                  "end": 11.571147540983606,
+                  "text": "dnes nám niekto pochoval celý turnaj."
+                },
+                {
+                  "start": 11.571147540983606,
+                  "end": 13.84,
+                  "text": "Veľmi výkonný týždeň, do riti."
+                }
+              ]
+            },
+            "lipSync": "speech/d1bc68d2-5406-49b2-b251-a4c01f66c25c/track.lipsync.json"
+          }
         },
         {
           "id": "reward",
@@ -3136,7 +3261,7 @@
                 { "start": 9.046050420168067, "end": 9.28, "text": "ty." }
               ]
             },
-            "lipSync": "speech/2aa48c59-5624-403d-983f-6fab5b45c87a/track.lipsync.json"
+            "lipSync": "speech/53f27d06-0536-4b79-b49d-3fe474ce1899/track.lipsync.json"
           },
           "subtitle": "Zadarmo, prisahám na tú skriňu bez prúdu. Keď prehráš, môžeš si odniesť stoličku; aj tak má tri nohy a hrá lepšie než ty."
         }
@@ -3230,7 +3355,38 @@
             },
             { "id": "leave", "text": "Dobre. Ruky preč od mojich gombíkov." }
           ],
-          "subtitle": "Dingovi do zberne. Privarené veci nosím aj so stenou, nech sa nepoškodí tovar. Dingo tam teraz chrčí pod vrakmi; neviem, či má opicu, alebo už výkupnú cenu."
+          "subtitle": "Dingovi do zberne. Privarené veci nosím aj so stenou, nech sa nepoškodí tovar. Dingo tam teraz chrčí pod vrakmi; neviem, či má opicu, alebo už výkupnú cenu.",
+          "speech": {
+            "audio": "speech/585e7ab8-09b7-4aca-a0de-a259c7e4ddd7/audio.wav",
+            "text": "Dingovi do zberne. Privarené veci nosím aj so stenou, nech sa nepoškodí tovar. Dingo tam teraz chrčí pod vrakmi; neviem, či má opicu, alebo už výkupnú cenu.",
+            "subtitles": {
+              "text": "Dingovi do zberne. Privarené veci nosím aj so stenou, nech sa nepoškodí tovar. Dingo tam teraz chrčí pod vrakmi; neviem, či má opicu, alebo už výkupnú cenu.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 3.7688888888888887,
+                  "text": "Dingovi do zberne. Privarené veci nosím aj so stenou,"
+                },
+                {
+                  "start": 3.7688888888888887,
+                  "end": 5.475555555555555,
+                  "text": "nech sa nepoškodí tovar."
+                },
+                {
+                  "start": 5.475555555555555,
+                  "end": 9.315555555555555,
+                  "text": "Dingo tam teraz chrčí pod vrakmi; neviem, či má opicu,"
+                },
+                {
+                  "start": 9.315555555555555,
+                  "end": 10.879999999999999,
+                  "text": "alebo už výkupnú cenu."
+                }
+              ]
+            },
+            "lipSync": "speech/1c103d6c-42e3-4d93-90a0-f01627c9b417/track.lipsync.json"
+          }
         },
         {
           "id": "deposit",
@@ -3273,7 +3429,38 @@
             },
             { "id": "leave", "text": "Dobre. Ruky preč od mojich gombíkov." }
           ],
-          "subtitle": "Za poriadny kus železa je tvoj. Nie podložku, z tej nezbohatne ani hrdza. Za Ferovým dvorom sa váľajú staré rúry. Fľaše neberiem, nie som smädný kontajner."
+          "subtitle": "Za poriadny kus železa je tvoj. Nie podložku, z tej nezbohatne ani hrdza. Za Ferovým dvorom sa váľajú staré rúry. Fľaše neberiem, nie som smädný kontajner.",
+          "speech": {
+            "audio": "speech/574bdb0d-12f7-4fb1-b47d-daff43f8143d/audio.wav",
+            "text": "Za poriadny kus železa je tvoj. Nie podložku, z tej nezbohatne ani hrdza. Za Ferovým dvorom sa váľajú staré rúry. Fľaše neberiem, nie som smädný kontajner.",
+            "subtitles": {
+              "text": "Za poriadny kus železa je tvoj. Nie podložku, z tej nezbohatne ani hrdza. Za Ferovým dvorom sa váľajú staré rúry. Fľaše neberiem, nie som smädný kontajner.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 2.349473684210526,
+                  "text": "Za poriadny kus železa je tvoj."
+                },
+                {
+                  "start": 2.349473684210526,
+                  "end": 5.456842105263158,
+                  "text": "Nie podložku, z tej nezbohatne ani hrdza."
+                },
+                {
+                  "start": 5.456842105263158,
+                  "end": 8.41263157894737,
+                  "text": "Za Ferovým dvorom sa váľajú staré rúry."
+                },
+                {
+                  "start": 8.41263157894737,
+                  "end": 11.52,
+                  "text": "Fľaše neberiem, nie som smädný kontajner."
+                }
+              ]
+            },
+            "lipSync": "speech/769b5a1c-8203-4979-bbf3-0b152f3b19e3/track.lipsync.json"
+          }
         },
         {
           "id": "hearse",
@@ -3316,7 +3503,38 @@
             },
             { "id": "leave", "text": "Dobre. Ruky preč od mojich gombíkov." }
           ],
-          "subtitle": "Biely pohrebák išiel ku kostolu. Vzadu sa mu ťahal hrubý kábel. Šoférovi som nevidel do ksichtu, žral bagetu. Chcel som puklice, ale nechcel som rušiť pozostalých."
+          "subtitle": "Biely pohrebák išiel ku kostolu. Vzadu sa mu ťahal hrubý kábel. Šoférovi som nevidel do ksichtu, žral bagetu. Chcel som puklice, ale nechcel som rušiť pozostalých.",
+          "speech": {
+            "audio": "speech/cc462301-015e-4406-a1db-ffa2f0893a23/audio.wav",
+            "text": "Biely pohrebák išiel ku kostolu. Vzadu sa mu ťahal hrubý kábel. Šoférovi som nevidel do ksichtu, žral bagetu. Chcel som puklice, ale nechcel som rušiť pozostalých.",
+            "subtitles": {
+              "text": "Biely pohrebák išiel ku kostolu. Vzadu sa mu ťahal hrubý kábel. Šoférovi som nevidel do ksichtu, žral bagetu. Chcel som puklice, ale nechcel som rušiť pozostalých.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 2.368,
+                  "text": "Biely pohrebák išiel ku kostolu."
+                },
+                {
+                  "start": 2.368,
+                  "end": 4.587999999999999,
+                  "text": "Vzadu sa mu ťahal hrubý kábel."
+                },
+                {
+                  "start": 4.587999999999999,
+                  "end": 7.917999999999999,
+                  "text": "Šoférovi som nevidel do ksichtu, žral bagetu."
+                },
+                {
+                  "start": 7.917999999999999,
+                  "end": 11.84,
+                  "text": "Chcel som puklice, ale nechcel som rušiť pozostalých."
+                }
+              ]
+            },
+            "lipSync": "speech/4f5a0a07-a921-4fbc-9b8c-bd93031b672c/track.lipsync.json"
+          }
         },
         {
           "id": "magnet",
@@ -3359,7 +3577,33 @@
             },
             { "id": "leave", "text": "Dobre. Ruky preč od mojich gombíkov." }
           ],
-          "subtitle": "Týmto magnetom. Prilepím ho a hneď viem, či sa oplatí kradnúť. Meď neberie; tú musím okradnúť osobne. Mám ešte jeden, ak by si chcel začať od podlahy."
+          "subtitle": "Týmto magnetom. Prilepím ho a hneď viem, či sa oplatí kradnúť. Meď neberie; tú musím okradnúť osobne. Mám ešte jeden, ak by si chcel začať od podlahy.",
+          "speech": {
+            "audio": "speech/bdabbe63-56c8-4af2-9e8c-c2c612da433d/audio.wav",
+            "text": "Týmto magnetom. Prilepím ho a hneď viem, či sa oplatí kradnúť. Meď neberie; tú musím okradnúť osobne. Mám ešte jeden, ak by si chcel začať od podlahy.",
+            "subtitles": {
+              "text": "Týmto magnetom. Prilepím ho a hneď viem, či sa oplatí kradnúť. Meď neberie; tú musím okradnúť osobne. Mám ešte jeden, ak by si chcel začať od podlahy.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 4.591351351351352,
+                  "text": "Týmto magnetom. Prilepím ho a hneď viem, či sa oplatí kradnúť."
+                },
+                {
+                  "start": 4.591351351351352,
+                  "end": 7.405405405405406,
+                  "text": "Meď neberie; tú musím okradnúť osobne."
+                },
+                {
+                  "start": 7.405405405405406,
+                  "end": 10.96,
+                  "text": "Mám ešte jeden, ak by si chcel začať od podlahy."
+                }
+              ]
+            },
+            "lipSync": "speech/0f6766cc-3ed7-4bfa-9f69-6b0921ce048f/track.lipsync.json"
+          }
         }
       ]
     },
@@ -3393,7 +3637,7 @@
                 }
               ]
             },
-            "lipSync": "speech/a768b178-7986-4ed2-82e9-8cf7c6a6af24/track.lipsync.json"
+            "lipSync": "speech/d50048b3-4f89-425c-83d2-29f32e1bb6d6/track.lipsync.json"
           },
           "subtitle": "To je kus železa! Ber magnet, rúru nesiem Dingovi do zberne. Ak sa niekto pýta, našiel som ju ešte živú."
         }
@@ -3453,7 +3697,34 @@
             },
             { "id": "leave", "text": "Odchádzam bez potvrdenia, dráma!" }
           ],
-          "subtitle": "Jolanda žiadala poistku pre kravu proti peklu. Poslala som ju na krst, odvtedy mi sem posiela kraviny. Zanes jej do kravína vodu od pumpy pri kostole, možno mi konečne prestane písať."
+          "subtitle": "Jolanda žiadala poistku pre kravu proti peklu. Poslala som ju na krst, odvtedy mi sem posiela kraviny. Zanes jej do kravína vodu od pumpy pri kostole, možno mi konečne prestane písať.",
+          "speech": {
+            "audio": "speech/a38009f9-67e5-42ef-be14-064f40df8584/audio.wav",
+            "text": "Jolanda žiadala poistku pre kravu proti peklu. Poslala som ju na krst, odvtedy mi sem posiela kraviny. Zanes jej do kravína vodu od pumpy pri kostole, možno mi konečne prestane písať.",
+            "subtitles": {
+              "text": "Jolanda žiadala poistku pre kravu proti peklu. Poslala som ju na krst, odvtedy mi sem posiela kraviny. Zanes jej do kravína vodu od pumpy pri kostole, možno mi konečne prestane písať.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 3.4755555555555557,
+                  "text": "Jolanda žiadala poistku pre kravu proti peklu."
+                },
+                {
+                  "start": 3.4755555555555557,
+                  "end": 7.631111111111112,
+                  "text": "Poslala som ju na krst, odvtedy mi sem posiela kraviny."
+                },
+                {
+                  "start": 7.631111111111112,
+                  "end": 13.146666666666668,
+                  "text": "Zanes jej do kravína vodu od pumpy pri kostole, možno mi konečne prestane"
+                },
+                { "start": 13.146666666666668, "end": 13.6, "text": "písať." }
+              ]
+            },
+            "lipSync": "speech/8628a278-db91-456c-82ef-78efd2739f14/track.lipsync.json"
+          }
         },
         {
           "id": "stamp",
@@ -3479,7 +3750,38 @@
             },
             { "id": "leave", "text": "Odchádzam bez potvrdenia, dráma!" }
           ],
-          "subtitle": "Bez pečiatky môžeš zdochnúť aj trikrát, stále si živý. Ja ju nepožičiam každému chujovi. V Ľubovom spise mi nesedia dátumy; prines servisný denník z herne a za pomoc ti orazím aj vlastný pohreb."
+          "subtitle": "Bez pečiatky môžeš zdochnúť aj trikrát, stále si živý. Ja ju nepožičiam každému chujovi. V Ľubovom spise mi nesedia dátumy; prines servisný denník z herne a za pomoc ti orazím aj vlastný pohreb.",
+          "speech": {
+            "audio": "speech/3ae310fa-5699-47cf-9942-f0d229d0cbd1/audio.wav",
+            "text": "Bez pečiatky môžeš zdochnúť aj trikrát, stále si živý. Ja ju nepožičiam každému chujovi. V Ľubovom spise mi nesedia dátumy; prines servisný denník z herne a za pomoc ti orazím aj vlastný pohreb.",
+            "subtitles": {
+              "text": "Bez pečiatky môžeš zdochnúť aj trikrát, stále si živý. Ja ju nepožičiam každému chujovi. V Ľubovom spise mi nesedia dátumy; prines servisný denník z herne a za pomoc ti orazím aj vlastný pohreb.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 4.500942408376963,
+                  "text": "Bez pečiatky môžeš zdochnúť aj trikrát, stále si živý."
+                },
+                {
+                  "start": 4.500942408376963,
+                  "end": 7.251518324607329,
+                  "text": "Ja ju nepožičiam každému chujovi."
+                },
+                {
+                  "start": 7.251518324607329,
+                  "end": 13.586178010471205,
+                  "text": "V Ľubovom spise mi nesedia dátumy; prines servisný denník z herne a za pomoc"
+                },
+                {
+                  "start": 13.586178010471205,
+                  "end": 15.92,
+                  "text": "ti orazím aj vlastný pohreb."
+                }
+              ]
+            },
+            "lipSync": "speech/9bfc45c6-47da-4ae1-939a-f8ceb9498f91/track.lipsync.json"
+          }
         },
         {
           "id": "hearse",
@@ -3505,7 +3807,33 @@
             },
             { "id": "leave", "text": "Odchádzam bez potvrdenia, dráma!" }
           ],
-          "subtitle": "Ľuba Šťastného, šampióna v automatoch. Tri kópie úmrtného listu a ani jedna splatená faktúra. Papierovo je mŕtvy; ja jeho telo nevážim, na to nemám kolónku."
+          "subtitle": "Ľuba Šťastného, šampióna v automatoch. Tri kópie úmrtného listu a ani jedna splatená faktúra. Papierovo je mŕtvy; ja jeho telo nevážim, na to nemám kolónku.",
+          "speech": {
+            "audio": "speech/cd7b3f57-a6a0-4598-8102-31638377267d/audio.wav",
+            "text": "Ľuba Šťastného, šampióna v automatoch. Tri kópie úmrtného listu a ani jedna splatená faktúra. Papierovo je mŕtvy; ja jeho telo nevážim, na to nemám kolónku.",
+            "subtitles": {
+              "text": "Ľuba Šťastného, šampióna v automatoch. Tri kópie úmrtného listu a ani jedna splatená faktúra. Papierovo je mŕtvy; ja jeho telo nevážim, na to nemám kolónku.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 3.336103896103896,
+                  "text": "Ľuba Šťastného, šampióna v automatoch."
+                },
+                {
+                  "start": 3.336103896103896,
+                  "end": 8.076883116883117,
+                  "text": "Tri kópie úmrtného listu a ani jedna splatená faktúra."
+                },
+                {
+                  "start": 8.076883116883117,
+                  "end": 13.52,
+                  "text": "Papierovo je mŕtvy; ja jeho telo nevážim, na to nemám kolónku."
+                }
+              ]
+            },
+            "lipSync": "speech/2a6dffa1-d503-4d33-afab-8d3c8bcf288f/track.lipsync.json"
+          }
         }
       ]
     },
@@ -3520,7 +3848,38 @@
           "actor": { "sceneId": "scene1", "hotspotId": "layer1" },
           "text": "Reklamácia deň po Ľubovom pohrebe! Buď niekto falšuje podpis, alebo mi ten zmrd falšuje cintorín. Ber pečiatku, svoj list si oraz sám. Mne už z mŕtvych ide jebnúť.",
           "choices": [],
-          "subtitle": "Reklamácia deň po Ľubovom pohrebe! Buď niekto falšuje podpis, alebo mi ten zmrd falšuje cintorín. Ber pečiatku, svoj list si oraz sám. Mne už z mŕtvych ide jebnúť."
+          "subtitle": "Reklamácia deň po Ľubovom pohrebe! Buď niekto falšuje podpis, alebo mi ten zmrd falšuje cintorín. Ber pečiatku, svoj list si oraz sám. Mne už z mŕtvych ide jebnúť.",
+          "speech": {
+            "audio": "speech/6aeb25c6-d82e-4142-852b-5d97c9de5321/audio.wav",
+            "text": "Reklamácia deň po Ľubovom pohrebe! Buď niekto falšuje podpis, alebo mi ten zmrd falšuje cintorín. Ber pečiatku, svoj list si oraz sám. Mne už z mŕtvych ide jebnúť.",
+            "subtitles": {
+              "text": "Reklamácia deň po Ľubovom pohrebe! Buď niekto falšuje podpis, alebo mi ten zmrd falšuje cintorín. Ber pečiatku, svoj list si oraz sám. Mne už z mŕtvych ide jebnúť.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 2.822,
+                  "text": "Reklamácia deň po Ľubovom pohrebe!"
+                },
+                {
+                  "start": 2.822,
+                  "end": 7.968,
+                  "text": "Buď niekto falšuje podpis, alebo mi ten zmrd falšuje cintorín."
+                },
+                {
+                  "start": 7.968,
+                  "end": 10.956,
+                  "text": "Ber pečiatku, svoj list si oraz sám."
+                },
+                {
+                  "start": 10.956,
+                  "end": 13.28,
+                  "text": "Mne už z mŕtvych ide jebnúť."
+                }
+              ]
+            },
+            "lipSync": "speech/6ff95d98-89ca-4d35-a8db-698747e1766e/track.lipsync.json"
+          }
         }
       ]
     },
@@ -3628,7 +3987,7 @@
                 }
               ]
             },
-            "lipSync": "speech/2800632d-6aea-40ba-887c-95f4d907eb5f/track.lipsync.json"
+            "lipSync": "speech/865c1a3a-b613-41ef-a0fc-e86b665938a2/track.lipsync.json"
           },
           "subtitle": "Pumpa naľavo dáva svätenú vodu, naber si do fľaše. Dal som požehnať celý vodovod; v spovednici odvtedy necítiť hriech, iba chlór."
         },
@@ -3669,7 +4028,43 @@
             },
             { "id": "leave", "text": "Amen, idem skúsiť inú prevádzku." }
           ],
-          "subtitle": "Kradnú sa vence, tak bránu zamykám a kľúč nosím na krku. Odbehnem iba na jackpot. Ten môj ručný automat už ani necinkne. Vysvätil som tri sedmičky, ale výhru si Pán nechal, lakomý kokot."
+          "subtitle": "Kradnú sa vence, tak bránu zamykám a kľúč nosím na krku. Odbehnem iba na jackpot. Ten môj ručný automat už ani necinkne. Vysvätil som tri sedmičky, ale výhru si Pán nechal, lakomý kokot.",
+          "speech": {
+            "audio": "speech/04fc1529-c660-4e20-a70c-10bc1681b20a/audio.wav",
+            "text": "Kradnú sa vence, tak bránu zamykám a kľúč nosím na krku. Odbehnem iba na jackpot. Ten môj ručný automat už ani necinkne. Vysvätil som tri sedmičky, ale výhru si Pán nechal, lakomý kokot.",
+            "subtitles": {
+              "text": "Kradnú sa vence, tak bránu zamykám a kľúč nosím na krku. Odbehnem iba na jackpot. Ten môj ručný automat už ani necinkne. Vysvätil som tri sedmičky, ale výhru si Pán nechal, lakomý kokot.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 4.381538461538462,
+                  "text": "Kradnú sa vence, tak bránu zamykám a kľúč nosím na krku."
+                },
+                {
+                  "start": 4.381538461538462,
+                  "end": 6.259340659340659,
+                  "text": "Odbehnem iba na jackpot."
+                },
+                {
+                  "start": 6.259340659340659,
+                  "end": 9.232527472527472,
+                  "text": "Ten môj ručný automat už ani necinkne."
+                },
+                {
+                  "start": 9.232527472527472,
+                  "end": 13.222857142857142,
+                  "text": "Vysvätil som tri sedmičky, ale výhru si Pán nechal,"
+                },
+                {
+                  "start": 13.222857142857142,
+                  "end": 14.24,
+                  "text": "lakomý kokot."
+                }
+              ]
+            },
+            "lipSync": "speech/3dc1ad31-453c-4045-9ec6-03b6455da15a/track.lipsync.json"
+          }
         },
         {
           "id": "paper",
@@ -3708,7 +4103,38 @@
             },
             { "id": "leave", "text": "Amen, idem skúsiť inú prevádzku." }
           ],
-          "subtitle": "Etela tu necháva tlačivá pre prípad náhleho úmrtia pri kázni. Prázdny list si vezmi z nástenky. Čítaj ho nahlas a zaspí aj dobytok; pri trvalom pobyte som stratil dvoch miništrantov."
+          "subtitle": "Etela tu necháva tlačivá pre prípad náhleho úmrtia pri kázni. Prázdny list si vezmi z nástenky. Čítaj ho nahlas a zaspí aj dobytok; pri trvalom pobyte som stratil dvoch miništrantov.",
+          "speech": {
+            "audio": "speech/18283733-35dc-4e4a-a70d-7f7ddd5c2123/audio.wav",
+            "text": "Etela tu necháva tlačivá pre prípad náhleho úmrtia pri kázni. Prázdny list si vezmi z nástenky. Čítaj ho nahlas a zaspí aj dobytok; pri trvalom pobyte som stratil dvoch miništrantov.",
+            "subtitles": {
+              "text": "Etela tu necháva tlačivá pre prípad náhleho úmrtia pri kázni. Prázdny list si vezmi z nástenky. Čítaj ho nahlas a zaspí aj dobytok; pri trvalom pobyte som stratil dvoch miništrantov.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 4.38927374301676,
+                  "text": "Etela tu necháva tlačivá pre prípad náhleho úmrtia pri kázni."
+                },
+                {
+                  "start": 4.38927374301676,
+                  "end": 6.763798882681565,
+                  "text": "Prázdny list si vezmi z nástenky."
+                },
+                {
+                  "start": 6.763798882681565,
+                  "end": 11.944581005586592,
+                  "text": "Čítaj ho nahlas a zaspí aj dobytok; pri trvalom pobyte som stratil dvoch"
+                },
+                {
+                  "start": 11.944581005586592,
+                  "end": 12.879999999999999,
+                  "text": "miništrantov."
+                }
+              ]
+            },
+            "lipSync": "speech/226a2d60-87e1-4723-a738-70da53751a67/track.lipsync.json"
+          }
         },
         {
           "id": "cemetery-open",
@@ -3747,7 +4173,28 @@
             },
             { "id": "leave", "text": "Amen, idem skúsiť inú prevádzku." }
           ],
-          "subtitle": "Choď, synu. Brána je otvorená, ja tu ešte overím tento zvuk. Ak by sa ťa pýtal biskup, skúmam akustiku spásy."
+          "subtitle": "Choď, synu. Brána je otvorená, ja tu ešte overím tento zvuk. Ak by sa ťa pýtal biskup, skúmam akustiku spásy.",
+          "speech": {
+            "audio": "speech/cb1d28a0-fde7-4e2a-bfc8-252234e1fabc/audio.wav",
+            "text": "Choď, synu. Brána je otvorená, ja tu ešte overím tento zvuk. Ak by sa ťa pýtal biskup, skúmam akustiku spásy.",
+            "subtitles": {
+              "text": "Choď, synu. Brána je otvorená, ja tu ešte overím tento zvuk. Ak by sa ťa pýtal biskup, skúmam akustiku spásy.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 5.066666666666666,
+                  "text": "Choď, synu. Brána je otvorená, ja tu ešte overím tento zvuk."
+                },
+                {
+                  "start": 5.066666666666666,
+                  "end": 9.12,
+                  "text": "Ak by sa ťa pýtal biskup, skúmam akustiku spásy."
+                }
+              ]
+            },
+            "lipSync": "speech/6e030900-b333-45d7-8d7c-31463c56df9e/track.lipsync.json"
+          }
         }
       ]
     },
@@ -3762,7 +4209,28 @@
           "actor": { "sceneId": "scene3", "hotspotId": "priest" },
           "text": "JACKPOT, svätá Mária! Bránu nechávam otvorenú, nech vidím na vence. Uhni, idem tej mašine osobne rozhrešiť vnútornosti!",
           "choices": [],
-          "subtitle": "JACKPOT, svätá Mária! Bránu nechávam otvorenú, nech vidím na vence. Uhni, idem tej mašine osobne rozhrešiť vnútornosti!"
+          "subtitle": "JACKPOT, svätá Mária! Bránu nechávam otvorenú, nech vidím na vence. Uhni, idem tej mašine osobne rozhrešiť vnútornosti!",
+          "speech": {
+            "audio": "speech/652e65a1-bfd2-474b-b7aa-b877d5f94701/audio.wav",
+            "text": "JACKPOT, svätá Mária! Bránu nechávam otvorenú, nech vidím na vence. Uhni, idem tej mašine osobne rozhrešiť vnútornosti!",
+            "subtitles": {
+              "text": "JACKPOT, svätá Mária! Bránu nechávam otvorenú, nech vidím na vence. Uhni, idem tej mašine osobne rozhrešiť vnútornosti!",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 4.996610169491525,
+                  "text": "JACKPOT, svätá Mária! Bránu nechávam otvorenú, nech vidím na vence."
+                },
+                {
+                  "start": 4.996610169491525,
+                  "end": 8.8,
+                  "text": "Uhni, idem tej mašine osobne rozhrešiť vnútornosti!"
+                }
+              ]
+            },
+            "lipSync": "speech/52afbd85-72d5-4abd-946e-eba923bcd02e/track.lipsync.json"
+          }
         }
       ]
     },
@@ -3830,7 +4298,43 @@
             },
             { "id": "leave", "text": "Dýcham vám tu zbytočne, idem." }
           ],
-          "subtitle": "Do kaplnky púšťam iba klientov po uznanom pohrebe. Na skúšku stačí úmrtný list na rakve a žiadne známky života. Tebe to kazí nos: pri dýchaní sa hýbe. Zaštipni ho a ľahni si. Pochovávam aj na počkanie, ak mi pritom neutečieš."
+          "subtitle": "Do kaplnky púšťam iba klientov po uznanom pohrebe. Na skúšku stačí úmrtný list na rakve a žiadne známky života. Tebe to kazí nos: pri dýchaní sa hýbe. Zaštipni ho a ľahni si. Pochovávam aj na počkanie, ak mi pritom neutečieš.",
+          "speech": {
+            "audio": "speech/b1dd75f7-6c92-41f8-bfbf-5711d7d95bca/audio.wav",
+            "text": "Do kaplnky púšťam iba klientov po uznanom pohrebe. Na skúšku stačí úmrtný list na rakve a žiadne známky života. Tebe to kazí nos: pri dýchaní sa hýbe. Zaštipni ho a ľahni si. Pochovávam aj na počkanie, ak mi pritom neutečieš.",
+            "subtitles": {
+              "text": "Do kaplnky púšťam iba klientov po uznanom pohrebe. Na skúšku stačí úmrtný list na rakve a žiadne známky života. Tebe to kazí nos: pri dýchaní sa hýbe. Zaštipni ho a ľahni si. Pochovávam aj na počkanie, ak mi pritom neutečieš.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 4.108597285067873,
+                  "text": "Do kaplnky púšťam iba klientov po uznanom pohrebe."
+                },
+                {
+                  "start": 4.108597285067873,
+                  "end": 9.038914027149321,
+                  "text": "Na skúšku stačí úmrtný list na rakve a žiadne známky života."
+                },
+                {
+                  "start": 9.038914027149321,
+                  "end": 12.161447963800905,
+                  "text": "Tebe to kazí nos: pri dýchaní sa hýbe."
+                },
+                {
+                  "start": 12.161447963800905,
+                  "end": 16.270045248868776,
+                  "text": "Zaštipni ho a ľahni si. Pochovávam aj na počkanie,"
+                },
+                {
+                  "start": 16.270045248868776,
+                  "end": 18.159999999999997,
+                  "text": "ak mi pritom neutečieš."
+                }
+              ]
+            },
+            "lipSync": "speech/93e7a269-62c4-488e-8cd2-3c6964d0cd35/track.lipsync.json"
+          }
         },
         {
           "id": "lubo",
@@ -3861,7 +4365,33 @@
             },
             { "id": "leave", "text": "Dýcham vám tu zbytočne, idem." }
           ],
-          "subtitle": "Ľuba Šťastného. Veko mal pribité, kontrolu obsahu si nepriplatil. Z truhly kvapkala horčica a pri kaplnke ostali ryhy po ťažkej bedni. Smútok má dnes kurva zvláštne kolieska."
+          "subtitle": "Ľuba Šťastného. Veko mal pribité, kontrolu obsahu si nepriplatil. Z truhly kvapkala horčica a pri kaplnke ostali ryhy po ťažkej bedni. Smútok má dnes kurva zvláštne kolieska.",
+          "speech": {
+            "audio": "speech/ec810daa-a6e5-432a-868b-06787656b3cc/audio.wav",
+            "text": "Ľuba Šťastného. Veko mal pribité, kontrolu obsahu si nepriplatil. Z truhly kvapkala horčica a pri kaplnke ostali ryhy po ťažkej bedni. Smútok má dnes kurva zvláštne kolieska.",
+            "subtitles": {
+              "text": "Ľuba Šťastného. Veko mal pribité, kontrolu obsahu si nepriplatil. Z truhly kvapkala horčica a pri kaplnke ostali ryhy po ťažkej bedni. Smútok má dnes kurva zvláštne kolieska.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 5.744186046511628,
+                  "text": "Ľuba Šťastného. Veko mal pribité, kontrolu obsahu si nepriplatil."
+                },
+                {
+                  "start": 5.744186046511628,
+                  "end": 11.753488372093024,
+                  "text": "Z truhly kvapkala horčica a pri kaplnke ostali ryhy po ťažkej bedni."
+                },
+                {
+                  "start": 11.753488372093024,
+                  "end": 15.2,
+                  "text": "Smútok má dnes kurva zvláštne kolieska."
+                }
+              ]
+            },
+            "lipSync": "speech/988e54dd-4b24-462b-99ef-a274362cb907/track.lipsync.json"
+          }
         },
         {
           "id": "key",
@@ -3892,7 +4422,33 @@
             },
             { "id": "leave", "text": "Dýcham vám tu zbytočne, idem." }
           ],
-          "subtitle": "Zamknutá krypta. Kľúč mi spadol pod mrežu v kaplnke. Je železný a má ucho, tak ho skús niečím vytiahnuť. Rukou tam nelez; včera mi ju niečo pohladilo a ešte mi dlží peniaze."
+          "subtitle": "Zamknutá krypta. Kľúč mi spadol pod mrežu v kaplnke. Je železný a má ucho, tak ho skús niečím vytiahnuť. Rukou tam nelez; včera mi ju niečo pohladilo a ešte mi dlží peniaze.",
+          "speech": {
+            "audio": "speech/1b866de2-3469-48ad-bff5-22abd6b08531/audio.wav",
+            "text": "Zamknutá krypta. Kľúč mi spadol pod mrežu v kaplnke. Je železný a má ucho, tak ho skús niečím vytiahnuť. Rukou tam nelez; včera mi ju niečo pohladilo a ešte mi dlží peniaze.",
+            "subtitles": {
+              "text": "Zamknutá krypta. Kľúč mi spadol pod mrežu v kaplnke. Je železný a má ucho, tak ho skús niečím vytiahnuť. Rukou tam nelez; včera mi ju niečo pohladilo a ešte mi dlží peniaze.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 4.208654970760233,
+                  "text": "Zamknutá krypta. Kľúč mi spadol pod mrežu v kaplnke."
+                },
+                {
+                  "start": 4.208654970760233,
+                  "end": 8.336374269005848,
+                  "text": "Je železný a má ucho, tak ho skús niečím vytiahnuť."
+                },
+                {
+                  "start": 8.336374269005848,
+                  "end": 13.84,
+                  "text": "Rukou tam nelez; včera mi ju niečo pohladilo a ešte mi dlží peniaze."
+                }
+              ]
+            },
+            "lipSync": "speech/05e99728-1674-458a-828d-bb0136a64a0c/track.lipsync.json"
+          }
         },
         {
           "id": "chapel-open",
@@ -3923,7 +4479,28 @@
             },
             { "id": "leave", "text": "Dýcham vám tu zbytočne, idem." }
           ],
-          "subtitle": "Kaplnku máš otvorenú aj na spiatočnú. Ale nečakaj zľavu, keď si to rozmyslíš so životom."
+          "subtitle": "Kaplnku máš otvorenú aj na spiatočnú. Ale nečakaj zľavu, keď si to rozmyslíš so životom.",
+          "speech": {
+            "audio": "speech/df01b3c5-dd33-49f5-bd2a-cb3a3ce69348/audio.wav",
+            "text": "Kaplnku máš otvorenú aj na spiatočnú. Ale nečakaj zľavu, keď si to rozmyslíš so životom.",
+            "subtitles": {
+              "text": "Kaplnku máš otvorenú aj na spiatočnú. Ale nečakaj zľavu, keď si to rozmyslíš so životom.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 2.9259770114942527,
+                  "text": "Kaplnku máš otvorenú aj na spiatočnú."
+                },
+                {
+                  "start": 2.9259770114942527,
+                  "end": 6.88,
+                  "text": "Ale nečakaj zľavu, keď si to rozmyslíš so životom."
+                }
+              ]
+            },
+            "lipSync": "speech/6ecab217-8851-48ad-a23b-d681fd69cadf/track.lipsync.json"
+          }
         }
       ]
     },
@@ -3962,7 +4539,7 @@
                 }
               ]
             },
-            "lipSync": "speech/f7089bec-34be-4150-b6aa-49e0b44da8a0/track.lipsync.json"
+            "lipSync": "speech/c5e63bb2-83a5-419a-9bb5-560fbe6b1897/track.lipsync.json"
           },
           "subtitle": "Pohreb vybavený, Rudo: ani si nesmrdel, kolíček urobil svoje. Kaplnka je otvorená; keď zas ožiješ, nešliap mi po klientovi, čo býva pod prahom."
         }
@@ -4050,7 +4627,28 @@
             },
             { "id": "leave", "text": "Utekám, kým ma dáte na účet." }
           ],
-          "subtitle": "Mletú kávu ti dám. Bez prúdu ju zaleješ aj studeným mliekom, len bude chrumkať. Ja ju tak nepijem; na zákazníkov mám jemnejšie jedy."
+          "subtitle": "Mletú kávu ti dám. Bez prúdu ju zaleješ aj studeným mliekom, len bude chrumkať. Ja ju tak nepijem; na zákazníkov mám jemnejšie jedy.",
+          "speech": {
+            "audio": "speech/cf072c86-1726-4589-848a-9ffae614ef67/audio.wav",
+            "text": "Mletú kávu ti dám. Bez prúdu ju zaleješ aj studeným mliekom, len bude chrumkať. Ja ju tak nepijem; na zákazníkov mám jemnejšie jedy.",
+            "subtitles": {
+              "text": "Mletú kávu ti dám. Bez prúdu ju zaleješ aj studeným mliekom, len bude chrumkať. Ja ju tak nepijem; na zákazníkov mám jemnejšie jedy.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 4.54351145038168,
+                  "text": "Mletú kávu ti dám. Bez prúdu ju zaleješ aj studeným mliekom,"
+                },
+                {
+                  "start": 4.54351145038168,
+                  "end": 9.92,
+                  "text": "len bude chrumkať. Ja ju tak nepijem; na zákazníkov mám jemnejšie jedy."
+                }
+              ]
+            },
+            "lipSync": "speech/8f020287-feff-476d-85b0-c2f80d8c97b9/track.lipsync.json"
+          }
         },
         {
           "id": "gaming",
@@ -4090,7 +4688,33 @@
             },
             { "id": "leave", "text": "Utekám, kým ma dáte na účet." }
           ],
-          "subtitle": "Za schodmi mám drahšie haraburdy než tu. Najprv mi dotiahni maticu pípy kľúčom a vypusť tú starú penu do krígľov. Potom otvorím. Kto pomôže s hnojom, môže sa hrabať aj v majetku."
+          "subtitle": "Za schodmi mám drahšie haraburdy než tu. Najprv mi dotiahni maticu pípy kľúčom a vypusť tú starú penu do krígľov. Potom otvorím. Kto pomôže s hnojom, môže sa hrabať aj v majetku.",
+          "speech": {
+            "audio": "speech/a4a7121d-8973-4a6c-afca-a7057797be29/audio.wav",
+            "text": "Za schodmi mám drahšie haraburdy než tu. Najprv mi dotiahni maticu pípy kľúčom a vypusť tú starú penu do krígľov. Potom otvorím. Kto pomôže s hnojom, môže sa hrabať aj v majetku.",
+            "subtitles": {
+              "text": "Za schodmi mám drahšie haraburdy než tu. Najprv mi dotiahni maticu pípy kľúčom a vypusť tú starú penu do krígľov. Potom otvorím. Kto pomôže s hnojom, môže sa hrabať aj v majetku.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 3,
+                  "text": "Za schodmi mám drahšie haraburdy než tu."
+                },
+                {
+                  "start": 3,
+                  "end": 8.399999999999999,
+                  "text": "Najprv mi dotiahni maticu pípy kľúčom a vypusť tú starú penu do krígľov."
+                },
+                {
+                  "start": 8.399999999999999,
+                  "end": 13.2,
+                  "text": "Potom otvorím. Kto pomôže s hnojom, môže sa hrabať aj v majetku."
+                }
+              ]
+            },
+            "lipSync": "speech/bfc282b7-6087-47f8-9c4d-c4ef23f0ed35/track.lipsync.json"
+          }
         },
         {
           "id": "lubo",
@@ -4130,7 +4754,38 @@
             },
             { "id": "leave", "text": "Utekám, kým ma dáte na účet." }
           ],
-          "subtitle": "Po pohrebe šampióna Ľuba mi prišla reklamácia s jeho podpisom. Buď má peklo poštu, alebo niekto ojebáva aj mŕtvych. Záznam je pod servisným krytom v herni. Pípa má prednosť, vyšetrovanie počká."
+          "subtitle": "Po pohrebe šampióna Ľuba mi prišla reklamácia s jeho podpisom. Buď má peklo poštu, alebo niekto ojebáva aj mŕtvych. Záznam je pod servisným krytom v herni. Pípa má prednosť, vyšetrovanie počká.",
+          "speech": {
+            "audio": "speech/1b6e1a8d-79c8-49fd-a33f-ea2cecf7a50b/audio.wav",
+            "text": "Po pohrebe šampióna Ľuba mi prišla reklamácia s jeho podpisom. Buď má peklo poštu, alebo niekto ojebáva aj mŕtvych. Záznam je pod servisným krytom v herni. Pípa má prednosť, vyšetrovanie počká.",
+            "subtitles": {
+              "text": "Po pohrebe šampióna Ľuba mi prišla reklamácia s jeho podpisom. Buď má peklo poštu, alebo niekto ojebáva aj mŕtvych. Záznam je pod servisným krytom v herni. Pípa má prednosť, vyšetrovanie počká.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 4.855578947368421,
+                  "text": "Po pohrebe šampióna Ľuba mi prišla reklamácia s jeho podpisom."
+                },
+                {
+                  "start": 4.855578947368421,
+                  "end": 8.928,
+                  "text": "Buď má peklo poštu, alebo niekto ojebáva aj mŕtvych."
+                },
+                {
+                  "start": 8.928,
+                  "end": 11.982315789473684,
+                  "text": "Záznam je pod servisným krytom v herni."
+                },
+                {
+                  "start": 11.982315789473684,
+                  "end": 14.88,
+                  "text": "Pípa má prednosť, vyšetrovanie počká."
+                }
+              ]
+            },
+            "lipSync": "speech/15477f1e-4b08-4c97-a453-bf880c5f879c/track.lipsync.json"
+          }
         },
         {
           "id": "gaming-open",
@@ -4170,7 +4825,28 @@
             },
             { "id": "leave", "text": "Utekám, kým ma dáte na účet." }
           ],
-          "subtitle": "Otvorené máš. Hrabať sa môžeš, zapaľovať nie. Na prázdnu herňu mám poistku iba proti výhre."
+          "subtitle": "Otvorené máš. Hrabať sa môžeš, zapaľovať nie. Na prázdnu herňu mám poistku iba proti výhre.",
+          "speech": {
+            "audio": "speech/983f4968-1ef1-4fb0-a659-81ee4715395c/audio.wav",
+            "text": "Otvorené máš. Hrabať sa môžeš, zapaľovať nie. Na prázdnu herňu mám poistku iba proti výhre.",
+            "subtitles": {
+              "text": "Otvorené máš. Hrabať sa môžeš, zapaľovať nie. Na prázdnu herňu mám poistku iba proti výhre.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 3.8,
+                  "text": "Otvorené máš. Hrabať sa môžeš, zapaľovať nie."
+                },
+                {
+                  "start": 3.8,
+                  "end": 7.6,
+                  "text": "Na prázdnu herňu mám poistku iba proti výhre."
+                }
+              ]
+            },
+            "lipSync": "speech/eb5cc9c9-3139-444f-ab27-ef72c9c51171/track.lipsync.json"
+          }
         }
       ]
     },
@@ -4223,7 +4899,38 @@
               "next": "van"
             },
             { "id": "leave", "text": "Idem, pozdravuj tehlu odo mňa." }
-          ]
+          ],
+          "speech": {
+            "audio": "speech/963d094e-dd6d-42c1-9d6b-3fdc2ae033a8/audio.wav",
+            "text": "Naša medaila BRAMBORA NA ŠPAGÁTU. Prvé miesto dostane štvrté, nech si nezvyká na úspech. Zadarmo ju nedám. Pri čiare v hline ma poraz v hádzaní a je tvoja. Uzol zalepil Béla; bez nožníc skôr rozviažeš vlastné črevá.",
+            "subtitles": {
+              "text": "Naša medaila BRAMBORA NA ŠPAGÁTU. Prvé miesto dostane štvrté, nech si nezvyká na úspech. Zadarmo ju nedám. Pri čiare v hline ma poraz v hádzaní a je tvoja. Uzol zalepil Béla; bez nožníc skôr rozviažeš vlastné črevá.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 2.6026415094339623,
+                  "text": "Naša medaila BRAMBORA NA ŠPAGÁTU."
+                },
+                {
+                  "start": 2.6026415094339623,
+                  "end": 6.861509433962263,
+                  "text": "Prvé miesto dostane štvrté, nech si nezvyká na úspech."
+                },
+                {
+                  "start": 6.861509433962263,
+                  "end": 12.066792452830189,
+                  "text": "Zadarmo ju nedám. Pri čiare v hline ma poraz v hádzaní a je tvoja."
+                },
+                {
+                  "start": 12.066792452830189,
+                  "end": 16.72,
+                  "text": "Uzol zalepil Béla; bez nožníc skôr rozviažeš vlastné črevá."
+                }
+              ]
+            },
+            "lipSync": "speech/a507d34f-97d6-471a-9ef2-4606c64f1212/track.lipsync.json"
+          }
         },
         {
           "id": "van",
@@ -4247,7 +4954,38 @@
             },
             { "id": "leave", "text": "Idem, pozdravuj tehlu odo mňa." }
           ],
-          "subtitle": "Šiel tu pohrebák ku kostolu. Vzadu mu búchala bedňa a trčal kábel. Šofér nadával ako živý, ale tvár som nevidel. Mama mi na mŕtvych dovolí čumieť až po večeri."
+          "subtitle": "Šiel tu pohrebák ku kostolu. Vzadu mu búchala bedňa a trčal kábel. Šofér nadával ako živý, ale tvár som nevidel. Mama mi na mŕtvych dovolí čumieť až po večeri.",
+          "speech": {
+            "audio": "speech/79d83108-59a6-48b9-b501-b8dfa049a0d5/audio.wav",
+            "text": "Šiel tu pohrebák ku kostolu. Vzadu mu búchala bedňa a trčal kábel. Šofér nadával ako živý, ale tvár som nevidel. Mama mi na mŕtvych dovolí čumieť až po večeri.",
+            "subtitles": {
+              "text": "Šiel tu pohrebák ku kostolu. Vzadu mu búchala bedňa a trčal kábel. Šofér nadával ako živý, ale tvár som nevidel. Mama mi na mŕtvych dovolí čumieť až po večeri.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 2.1394871794871793,
+                  "text": "Šiel tu pohrebák ku kostolu."
+                },
+                {
+                  "start": 2.1394871794871793,
+                  "end": 4.966666666666667,
+                  "text": "Vzadu mu búchala bedňa a trčal kábel."
+                },
+                {
+                  "start": 4.966666666666667,
+                  "end": 8.405128205128205,
+                  "text": "Šofér nadával ako živý, ale tvár som nevidel."
+                },
+                {
+                  "start": 8.405128205128205,
+                  "end": 11.92,
+                  "text": "Mama mi na mŕtvych dovolí čumieť až po večeri."
+                }
+              ]
+            },
+            "lipSync": "speech/b0a0f42b-3fb9-4b0a-9501-7f302429610f/track.lipsync.json"
+          }
         }
       ]
     },
@@ -4287,7 +5025,33 @@
             },
             { "id": "leave", "text": "Idem do tej namaľovanej jamy." }
           ],
-          "subtitle": "Tieto čiary sú kolesá pohrebáka. Šiel ku kostolu, tak som mu nakreslila odbočku do žihľavy. Chlap ju ignoroval. Nula bodov za spoluprácu, hajzel."
+          "subtitle": "Tieto čiary sú kolesá pohrebáka. Šiel ku kostolu, tak som mu nakreslila odbočku do žihľavy. Chlap ju ignoroval. Nula bodov za spoluprácu, hajzel.",
+          "speech": {
+            "audio": "speech/b925cd78-da29-4b6a-9e44-ed39b347072d/audio.wav",
+            "text": "Tieto čiary sú kolesá pohrebáka. Šiel ku kostolu, tak som mu nakreslila odbočku do žihľavy. Chlap ju ignoroval. Nula bodov za spoluprácu, hajzel.",
+            "subtitles": {
+              "text": "Tieto čiary sú kolesá pohrebáka. Šiel ku kostolu, tak som mu nakreslila odbočku do žihľavy. Chlap ju ignoroval. Nula bodov za spoluprácu, hajzel.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 2.524195804195804,
+                  "text": "Tieto čiary sú kolesá pohrebáka."
+                },
+                {
+                  "start": 2.524195804195804,
+                  "end": 7.0993006993006995,
+                  "text": "Šiel ku kostolu, tak som mu nakreslila odbočku do žihľavy."
+                },
+                {
+                  "start": 7.0993006993006995,
+                  "end": 11.28,
+                  "text": "Chlap ju ignoroval. Nula bodov za spoluprácu, hajzel."
+                }
+              ]
+            },
+            "lipSync": "speech/6457dc92-c72b-42a8-ad2a-80075c78172d/track.lipsync.json"
+          }
         },
         {
           "id": "token",
@@ -4303,7 +5067,43 @@
               "when": { "item": "potato" }
             },
             { "id": "leave", "text": "Idem do tej namaľovanej jamy." }
-          ]
+          ],
+          "speech": {
+            "audio": "speech/1ad49b4a-5cbb-453c-a20e-eeec9b32b5f0/audio.wav",
+            "text": "Je vysušená a okrúhla ako žetón. Obaľ ju zlatým obalom od čokolády. Karolovi hráči ich nechávajú pri automatoch v starej herni. Len pozor: alobal sa môže zachytiť v kontaktoch. Ocko tak raz vyhral hasičov.",
+            "subtitles": {
+              "text": "Je vysušená a okrúhla ako žetón. Obaľ ju zlatým obalom od čokolády. Karolovi hráči ich nechávajú pri automatoch v starej herni. Len pozor: alobal sa môže zachytiť v kontaktoch. Ocko tak raz vyhral hasičov.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 2.496318407960199,
+                  "text": "Je vysušená a okrúhla ako žetón."
+                },
+                {
+                  "start": 2.496318407960199,
+                  "end": 5.148656716417911,
+                  "text": "Obaľ ju zlatým obalom od čokolády."
+                },
+                {
+                  "start": 5.148656716417911,
+                  "end": 9.751243781094526,
+                  "text": "Karolovi hráči ich nechávajú pri automatoch v starej herni."
+                },
+                {
+                  "start": 9.751243781094526,
+                  "end": 13.495721393034824,
+                  "text": "Len pozor: alobal sa môže zachytiť v kontaktoch."
+                },
+                {
+                  "start": 13.495721393034824,
+                  "end": 15.679999999999998,
+                  "text": "Ocko tak raz vyhral hasičov."
+                }
+              ]
+            },
+            "lipSync": "speech/d0321abb-f69f-4cbb-b1b2-30c502e0b537/track.lipsync.json"
+          }
         }
       ]
     },
@@ -4349,7 +5149,33 @@
             },
             { "id": "leave", "text": "Keď spadneš, povedz, že si skočil." }
           ],
-          "subtitle": "Z bieleho pohrebáka trčal kábel. Chlap vravel, že je to chvost neviditeľného psa. Hodili sme mu piškótu. Zožral ju sám; psa som odvtedy prestal hľadať."
+          "subtitle": "Z bieleho pohrebáka trčal kábel. Chlap vravel, že je to chvost neviditeľného psa. Hodili sme mu piškótu. Zožral ju sám; psa som odvtedy prestal hľadať.",
+          "speech": {
+            "audio": "speech/2a6c030c-119b-4b6a-9860-e84e72844d8f/audio.wav",
+            "text": "Z bieleho pohrebáka trčal kábel. Chlap vravel, že je to chvost neviditeľného psa. Hodili sme mu piškótu. Zožral ju sám; psa som odvtedy prestal hľadať.",
+            "subtitles": {
+              "text": "Z bieleho pohrebáka trčal kábel. Chlap vravel, že je to chvost neviditeľného psa. Hodili sme mu piškótu. Zožral ju sám; psa som odvtedy prestal hľadať.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 2.491275167785235,
+                  "text": "Z bieleho pohrebáka trčal kábel."
+                },
+                {
+                  "start": 2.491275167785235,
+                  "end": 6.228187919463087,
+                  "text": "Chlap vravel, že je to chvost neviditeľného psa."
+                },
+                {
+                  "start": 6.228187919463087,
+                  "end": 11.6,
+                  "text": "Hodili sme mu piškótu. Zožral ju sám; psa som odvtedy prestal hľadať."
+                }
+              ]
+            },
+            "lipSync": "speech/6253dc19-13b0-41a9-9125-7aca7fab0779/track.lipsync.json"
+          }
         },
         {
           "id": "map",
@@ -4369,7 +5195,33 @@
             },
             { "id": "leave", "text": "Keď spadneš, povedz, že si skočil." }
           ],
-          "subtitle": "Popri plote sa vrátiš na cestu k domom a krčme. Ak tam nájdeš rebrík, pošli ho sem. Hore som vyšiel ako človek, dolu už pôjdem ako poistná udalosť."
+          "subtitle": "Popri plote sa vrátiš na cestu k domom a krčme. Ak tam nájdeš rebrík, pošli ho sem. Hore som vyšiel ako človek, dolu už pôjdem ako poistná udalosť.",
+          "speech": {
+            "audio": "speech/2e6a1ffa-8e64-4d15-8938-d77f8d64b759/audio.wav",
+            "text": "Popri plote sa vrátiš na cestu k domom a krčme. Ak tam nájdeš rebrík, pošli ho sem. Hore som vyšiel ako človek, dolu už pôjdem ako poistná udalosť.",
+            "subtitles": {
+              "text": "Popri plote sa vrátiš na cestu k domom a krčme. Ak tam nájdeš rebrík, pošli ho sem. Hore som vyšiel ako človek, dolu už pôjdem ako poistná udalosť.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 3.8637241379310345,
+                  "text": "Popri plote sa vrátiš na cestu k domom a krčme."
+                },
+                {
+                  "start": 3.8637241379310345,
+                  "end": 6.74096551724138,
+                  "text": "Ak tam nájdeš rebrík, pošli ho sem."
+                },
+                {
+                  "start": 6.74096551724138,
+                  "end": 11.92,
+                  "text": "Hore som vyšiel ako človek, dolu už pôjdem ako poistná udalosť."
+                }
+              ]
+            },
+            "lipSync": "speech/2353ab71-49eb-45a0-b60b-9f659ea25754/track.lipsync.json"
+          }
         }
       ]
     },
@@ -4435,7 +5287,33 @@
             },
             { "id": "leave", "text": "Ležte, živého vás predám drahšie." }
           ],
-          "subtitle": "Studenú kávu z mlieka a mletej nalej do lievika a šliapni na pedál. Klystír na ručný pohon; žalúdok mi už vypovedal zmluvu. Potom vstanem z popruhu a pustím ťa k truhlici s náradím."
+          "subtitle": "Studenú kávu z mlieka a mletej nalej do lievika a šliapni na pedál. Klystír na ručný pohon; žalúdok mi už vypovedal zmluvu. Potom vstanem z popruhu a pustím ťa k truhlici s náradím.",
+          "speech": {
+            "audio": "speech/f5903c3b-1db4-46b0-8ce0-b6fec81bfed5/audio.wav",
+            "text": "Studenú kávu z mlieka a mletej nalej do lievika a šliapni na pedál. Klystír na ručný pohon; žalúdok mi už vypovedal zmluvu. Potom vstanem z popruhu a pustím ťa k truhlici s náradím.",
+            "subtitles": {
+              "text": "Studenú kávu z mlieka a mletej nalej do lievika a šliapni na pedál. Klystír na ručný pohon; žalúdok mi už vypovedal zmluvu. Potom vstanem z popruhu a pustím ťa k truhlici s náradím.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 5.36,
+                  "text": "Studenú kávu z mlieka a mletej nalej do lievika a šliapni na pedál."
+                },
+                {
+                  "start": 5.36,
+                  "end": 9.760000000000002,
+                  "text": "Klystír na ručný pohon; žalúdok mi už vypovedal zmluvu."
+                },
+                {
+                  "start": 9.760000000000002,
+                  "end": 14.32,
+                  "text": "Potom vstanem z popruhu a pustím ťa k truhlici s náradím."
+                }
+              ]
+            },
+            "lipSync": "speech/ff6d09fa-3c68-4322-a29d-fd66eeb123c7/track.lipsync.json"
+          }
         },
         {
           "id": "copper",
@@ -4465,7 +5343,39 @@
             },
             { "id": "leave", "text": "Ležte, živého vás predám drahšie." }
           ],
-          "subtitle": "Kábel som nekupoval. Chlap z bieleho pohrebáka si požičal poslednú nabitú autobatériu, vraj na svetlo k pozostalým. Ako zálohu nechal úmrtný list. Mŕtvemu už predsa nemôžu pribudnúť dlhy. Čo?"
+          "subtitle": "Kábel som nekupoval. Chlap z bieleho pohrebáka si požičal poslednú nabitú autobatériu, vraj na svetlo k pozostalým. Ako zálohu nechal úmrtný list. Mŕtvemu už predsa nemôžu pribudnúť dlhy. Čo?",
+          "speech": {
+            "audio": "speech/5e2c6f93-8636-4cf8-9b8f-d7a7babe4bb9/audio.wav",
+            "text": "Kábel som nekupoval. Chlap z bieleho pohrebáka si požičal poslednú nabitú autobatériu, vraj na svetlo k pozostalým. Ako zálohu nechal úmrtný list. Mŕtvemu už predsa nemôžu pribudnúť dlhy. Čo?",
+            "subtitles": {
+              "text": "Kábel som nekupoval. Chlap z bieleho pohrebáka si požičal poslednú nabitú autobatériu, vraj na svetlo k pozostalým. Ako zálohu nechal úmrtný list. Mŕtvemu už predsa nemôžu pribudnúť dlhy. Čo?",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 5.68385026737968,
+                  "text": "Kábel som nekupoval. Chlap z bieleho pohrebáka si požičal poslednú nabitú"
+                },
+                {
+                  "start": 5.68385026737968,
+                  "end": 8.876149732620322,
+                  "text": "autobatériu, vraj na svetlo k pozostalým."
+                },
+                {
+                  "start": 8.876149732620322,
+                  "end": 11.21197860962567,
+                  "text": "Ako zálohu nechal úmrtný list."
+                },
+                {
+                  "start": 11.21197860962567,
+                  "end": 14.326417112299467,
+                  "text": "Mŕtvemu už predsa nemôžu pribudnúť dlhy."
+                },
+                { "start": 14.326417112299467, "end": 14.56, "text": "Čo?" }
+              ]
+            },
+            "lipSync": "speech/542a619a-f6f3-49ab-9295-adaff9eb40ca/track.lipsync.json"
+          }
         },
         {
           "id": "work",
@@ -4495,7 +5405,33 @@
             },
             { "id": "leave", "text": "Ležte, živého vás predám drahšie." }
           ],
-          "subtitle": "Repasujem smrť na záložný motor. Ten pedálový klystír som si zostrojil, keď mi žalúdok vypovedal zmluvu. Ja sa bez elektriny vynájdem; iní tu ani nezgegnú bez predlžovačky."
+          "subtitle": "Repasujem smrť na záložný motor. Ten pedálový klystír som si zostrojil, keď mi žalúdok vypovedal zmluvu. Ja sa bez elektriny vynájdem; iní tu ani nezgegnú bez predlžovačky.",
+          "speech": {
+            "audio": "speech/284ec9a9-16e1-4f41-9376-f4fdca761099/audio.wav",
+            "text": "Repasujem smrť na záložný motor. Ten pedálový klystír som si zostrojil, keď mi žalúdok vypovedal zmluvu. Ja sa bez elektriny vynájdem; iní tu ani nezgegnú bez predlžovačky.",
+            "subtitles": {
+              "text": "Repasujem smrť na záložný motor. Ten pedálový klystír som si zostrojil, keď mi žalúdok vypovedal zmluvu. Ja sa bez elektriny vynájdem; iní tu ani nezgegnú bez predlžovačky.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 2.424470588235294,
+                  "text": "Repasujem smrť na záložný motor."
+                },
+                {
+                  "start": 2.424470588235294,
+                  "end": 7.803764705882353,
+                  "text": "Ten pedálový klystír som si zostrojil, keď mi žalúdok vypovedal zmluvu."
+                },
+                {
+                  "start": 7.803764705882353,
+                  "end": 12.879999999999999,
+                  "text": "Ja sa bez elektriny vynájdem; iní tu ani nezgegnú bez predlžovačky."
+                }
+              ]
+            },
+            "lipSync": "speech/f4ad80b4-7321-459c-b5d9-27260c4ffa71/track.lipsync.json"
+          }
         }
       ]
     },
@@ -4534,7 +5470,7 @@
                 }
               ]
             },
-            "lipSync": "speech/e16b902f-8c56-43d6-8784-e29c4095bfcf/track.lipsync.json"
+            "lipSync": "speech/e9ea5a7c-b5c3-4dad-806a-049d54a30267/track.lipsync.json"
           },
           "subtitle": "Do riti, espresso až za očami, sláva ručnému klystíru! Už sa postavím: kľúč a rukavice si vyber z truhlice, ja musím prepočítať, ktoré orgány sa vrátili."
         }
@@ -4612,7 +5548,34 @@
             },
             { "id": "leave", "text": "Sláva vemenu, unikám!" }
           ],
-          "subtitle": "Poisťovňa chce pokrstenú kravu, svine. Prines na ňu svätenú vodu a môžeš si vziať mlieko aj starý zvonec. Potom ju uspi úradným čítaním; pri dojení kope a z obojka ma už raz poslala do piče."
+          "subtitle": "Poisťovňa chce pokrstenú kravu, svine. Prines na ňu svätenú vodu a môžeš si vziať mlieko aj starý zvonec. Potom ju uspi úradným čítaním; pri dojení kope a z obojka ma už raz poslala do piče.",
+          "speech": {
+            "audio": "speech/55946c9a-d371-410a-9a9b-148f81bd1e88/audio.wav",
+            "text": "Poisťovňa chce pokrstenú kravu, svine. Prines na ňu svätenú vodu a môžeš si vziať mlieko aj starý zvonec. Potom ju uspi úradným čítaním; pri dojení kope a z obojka ma už raz poslala do piče.",
+            "subtitles": {
+              "text": "Poisťovňa chce pokrstenú kravu, svine. Prines na ňu svätenú vodu a môžeš si vziať mlieko aj starý zvonec. Potom ju uspi úradným čítaním; pri dojení kope a z obojka ma už raz poslala do piče.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 3.2188235294117646,
+                  "text": "Poisťovňa chce pokrstenú kravu, svine."
+                },
+                {
+                  "start": 3.2188235294117646,
+                  "end": 8.809411764705882,
+                  "text": "Prines na ňu svätenú vodu a môžeš si vziať mlieko aj starý zvonec."
+                },
+                {
+                  "start": 8.809411764705882,
+                  "end": 15.416470588235294,
+                  "text": "Potom ju uspi úradným čítaním; pri dojení kope a z obojka ma už raz poslala do"
+                },
+                { "start": 15.416470588235294, "end": 15.84, "text": "piče." }
+              ]
+            },
+            "lipSync": "speech/c1ca039c-f505-44ec-a5c2-9095bf58d588/track.lipsync.json"
+          }
         },
         {
           "id": "battery",
@@ -4647,7 +5610,38 @@
             },
             { "id": "leave", "text": "Sláva vemenu, unikám!" }
           ],
-          "subtitle": "Chlap v čiernom chcel hnoj na pohon automatu. Poslala som ho za Dingom po batériu. Hovno patrí na pole; ešte by mi prehral aj posledný bobek. Meno? Nemal na čele poistku."
+          "subtitle": "Chlap v čiernom chcel hnoj na pohon automatu. Poslala som ho za Dingom po batériu. Hovno patrí na pole; ešte by mi prehral aj posledný bobek. Meno? Nemal na čele poistku.",
+          "speech": {
+            "audio": "speech/47a7f9e8-db53-439a-87b4-e3ae225a04aa/audio.wav",
+            "text": "Chlap v čiernom chcel hnoj na pohon automatu. Poslala som ho za Dingom po batériu. Hovno patrí na pole; ešte by mi prehral aj posledný bobek. Meno? Nemal na čele poistku.",
+            "subtitles": {
+              "text": "Chlap v čiernom chcel hnoj na pohon automatu. Poslala som ho za Dingom po batériu. Hovno patrí na pole; ešte by mi prehral aj posledný bobek. Meno? Nemal na čele poistku.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 3.535329341317365,
+                  "text": "Chlap v čiernom chcel hnoj na pohon automatu."
+                },
+                {
+                  "start": 3.535329341317365,
+                  "end": 6.363592814371257,
+                  "text": "Poslala som ho za Dingom po batériu."
+                },
+                {
+                  "start": 6.363592814371257,
+                  "end": 10.920239520958084,
+                  "text": "Hovno patrí na pole; ešte by mi prehral aj posledný bobek."
+                },
+                {
+                  "start": 10.920239520958084,
+                  "end": 13.12,
+                  "text": "Meno? Nemal na čele poistku."
+                }
+              ]
+            },
+            "lipSync": "speech/4e4eb6ee-b90e-45a2-8e26-abd16092108d/track.lipsync.json"
+          }
         },
         {
           "id": "pig",
@@ -4701,7 +5695,7 @@
                 }
               ]
             },
-            "lipSync": "speech/0fe85f77-36a2-4d64-ae83-52ccf19479d9/track.lipsync.json"
+            "lipSync": "speech/e996715d-c22f-44e3-b7f5-2d2b03eb1d45/track.lipsync.json"
           },
           "subtitle": "To je náš veľkňaz poistnej udalosti. Zožral zmluvu, klienta aj výluky; kým negrgne, nikomu neuznáme nič."
         },
@@ -4738,7 +5732,34 @@
             },
             { "id": "leave", "text": "Sláva vemenu, unikám!" }
           ],
-          "subtitle": "Mlieko aj starý zvonec si nechaj. Pri tej krave buď opatrný, kope aj po pokrstení. Poisťovňa mi ešte ani raz neposlala kvet."
+          "subtitle": "Mlieko aj starý zvonec si nechaj. Pri tej krave buď opatrný, kope aj po pokrstení. Poisťovňa mi ešte ani raz neposlala kvet.",
+          "speech": {
+            "audio": "speech/039b3147-41ca-4c0d-a395-693db45f5f49/audio.wav",
+            "text": "Mlieko aj starý zvonec si nechaj. Pri tej krave buď opatrný, kope aj po pokrstení. Poisťovňa mi ešte ani raz neposlala kvet.",
+            "subtitles": {
+              "text": "Mlieko aj starý zvonec si nechaj. Pri tej krave buď opatrný, kope aj po pokrstení. Poisťovňa mi ešte ani raz neposlala kvet.",
+              "timing": "alignment",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 2.64,
+                  "text": "Mlieko aj starý zvonec si nechaj."
+                },
+                {
+                  "start": 3.12,
+                  "end": 6.56,
+                  "text": "Pri tej krave buď opatrný, kope aj po pokrstení."
+                },
+                {
+                  "start": 7.12,
+                  "end": 10.4,
+                  "text": "Poisťovňa mi ešte ani raz neposlala kvet."
+                }
+              ]
+            },
+            "alignment": "speech/039b3147-41ca-4c0d-a395-693db45f5f49/alignment.json",
+            "lipSync": "speech/7d462b66-27c1-4917-8711-d499347b37ca/track.lipsync.json"
+          }
         }
       ]
     },
@@ -4753,7 +5774,43 @@
           "actor": { "sceneId": "scene10", "hotspotId": "layer1" },
           "text": "Krava je pokrstená, poisťovňa môže ísť do riti! Mlieko aj starý zvonec sú tvoje. Ešte ju uspi úradným čítaním; v kostole visí tlačivo, z ktorého zaspí aj pečiatka. Prázdnu fľašu si nechaj na mlieko.",
           "choices": [],
-          "subtitle": "Krava je pokrstená, poisťovňa môže ísť do riti! Mlieko aj starý zvonec sú tvoje. Ešte ju uspi úradným čítaním; v kostole visí tlačivo, z ktorého zaspí aj pečiatka. Prázdnu fľašu si nechaj na mlieko."
+          "subtitle": "Krava je pokrstená, poisťovňa môže ísť do riti! Mlieko aj starý zvonec sú tvoje. Ešte ju uspi úradným čítaním; v kostole visí tlačivo, z ktorého zaspí aj pečiatka. Prázdnu fľašu si nechaj na mlieko.",
+          "speech": {
+            "audio": "speech/5b5575ba-ad10-4f3d-9f5d-10320ea5469f/audio.wav",
+            "text": "Krava je pokrstená, poisťovňa môže ísť do riti! Mlieko aj starý zvonec sú tvoje. Ešte ju uspi úradným čítaním; v kostole visí tlačivo, z ktorého zaspí aj pečiatka. Prázdnu fľašu si nechaj na mlieko.",
+            "subtitles": {
+              "text": "Krava je pokrstená, poisťovňa môže ísť do riti! Mlieko aj starý zvonec sú tvoje. Ešte ju uspi úradným čítaním; v kostole visí tlačivo, z ktorého zaspí aj pečiatka. Prázdnu fľašu si nechaj na mlieko.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 3.8956701030927827,
+                  "text": "Krava je pokrstená, poisťovňa môže ísť do riti!"
+                },
+                {
+                  "start": 3.8956701030927827,
+                  "end": 6.5480412371134005,
+                  "text": "Mlieko aj starý zvonec sú tvoje."
+                },
+                {
+                  "start": 6.5480412371134005,
+                  "end": 10.94103092783505,
+                  "text": "Ešte ju uspi úradným čítaním; v kostole visí tlačivo,"
+                },
+                {
+                  "start": 10.94103092783505,
+                  "end": 13.26185567010309,
+                  "text": "z ktorého zaspí aj pečiatka."
+                },
+                {
+                  "start": 13.26185567010309,
+                  "end": 16.08,
+                  "text": "Prázdnu fľašu si nechaj na mlieko."
+                }
+              ]
+            },
+            "lipSync": "speech/39716ef1-46d1-484d-b626-344d74e5d483/track.lipsync.json"
+          }
         }
       ]
     },
@@ -4835,7 +5892,38 @@
             },
             { "id": "leave", "text": "Idem sa rozhodnúť bez mozgu." }
           ],
-          "subtitle": "Živému mi už nepožičali ani na truhlu. Pohreb som vybavil bez kontroly obsahu a šoféroval sám. Automat má zdroj z karavanu; batéria aj váš hrubý kábel mu stačia. Šampión musí trénovať. Osada nech si svieti faktúrami."
+          "subtitle": "Živému mi už nepožičali ani na truhlu. Pohreb som vybavil bez kontroly obsahu a šoféroval sám. Automat má zdroj z karavanu; batéria aj váš hrubý kábel mu stačia. Šampión musí trénovať. Osada nech si svieti faktúrami.",
+          "speech": {
+            "audio": "speech/40f9c4c6-e0f9-4abb-b141-7bb19a7ba52c/audio.wav",
+            "text": "Živému mi už nepožičali ani na truhlu. Pohreb som vybavil bez kontroly obsahu a šoféroval sám. Automat má zdroj z karavanu; batéria aj váš hrubý kábel mu stačia. Šampión musí trénovať. Osada nech si svieti faktúrami.",
+            "subtitles": {
+              "text": "Živému mi už nepožičali ani na truhlu. Pohreb som vybavil bez kontroly obsahu a šoféroval sám. Automat má zdroj z karavanu; batéria aj váš hrubý kábel mu stačia. Šampión musí trénovať. Osada nech si svieti faktúrami.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 2.6831924882629106,
+                  "text": "Živému mi už nepožičali ani na truhlu."
+                },
+                {
+                  "start": 2.6831924882629106,
+                  "end": 6.5667605633802815,
+                  "text": "Pohreb som vybavil bez kontroly obsahu a šoféroval sám."
+                },
+                {
+                  "start": 6.5667605633802815,
+                  "end": 11.227042253521127,
+                  "text": "Automat má zdroj z karavanu; batéria aj váš hrubý kábel mu stačia."
+                },
+                {
+                  "start": 11.227042253521127,
+                  "end": 15.04,
+                  "text": "Šampión musí trénovať. Osada nech si svieti faktúrami."
+                }
+              ]
+            },
+            "lipSync": "speech/1b550915-0322-4dd3-9363-14fbd4ebaada/track.lipsync.json"
+          }
         },
         {
           "id": "power",
@@ -4872,7 +5960,39 @@
               "when": { "flag": "cable-recovered" }
             },
             { "id": "leave", "text": "Idem sa rozhodnúť bez mozgu." }
-          ]
+          ],
+          "speech": {
+            "audio": "speech/85f79990-fe4a-4310-bd6c-45907593a4ab/audio.wav",
+            "text": "Ten čierny kábel vytiahneš rovno aj s koncovkou. Automat zhasne a môžeš ho odniesť Ferovi. Ale potom už žiadna posledná hra, do riti! Rozmysli si, či chceš zachrániť turnaj, alebo si tu so mnou založiť rodinnú hrobku.",
+            "subtitles": {
+              "text": "Ten čierny kábel vytiahneš rovno aj s koncovkou. Automat zhasne a môžeš ho odniesť Ferovi. Ale potom už žiadna posledná hra, do riti! Rozmysli si, či chceš zachrániť turnaj, alebo si tu so mnou založiť rodinnú hrobku.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 3.190985915492958,
+                  "text": "Ten čierny kábel vytiahneš rovno aj s koncovkou."
+                },
+                {
+                  "start": 3.190985915492958,
+                  "end": 5.916619718309859,
+                  "text": "Automat zhasne a môžeš ho odniesť Ferovi."
+                },
+                {
+                  "start": 5.916619718309859,
+                  "end": 8.708732394366198,
+                  "text": "Ale potom už žiadna posledná hra, do riti!"
+                },
+                {
+                  "start": 8.708732394366198,
+                  "end": 13.694647887323944,
+                  "text": "Rozmysli si, či chceš zachrániť turnaj, alebo si tu so mnou založiť rodinnú"
+                },
+                { "start": 13.694647887323944, "end": 14.16, "text": "hrobku." }
+              ]
+            },
+            "lipSync": "speech/cf51ea69-6a11-4b2a-960f-4b68b76321cc/track.lipsync.json"
+          }
         },
         {
           "id": "bribe",
@@ -4909,7 +6029,38 @@
               "when": { "flag": "cable-recovered" }
             },
             { "id": "leave", "text": "Idem sa rozhodnúť bez mozgu." }
-          ]
+          ],
+          "speech": {
+            "audio": "speech/e06fce9f-9441-43a0-8d02-6e77b4f22184/audio.wav",
+            "text": "Pozlátená brambora! To je investícia podľa môjho gusta. Stav ju sem, ak máš gule. Keď začne dymiť alobal, netrhaj kábel, kazíš mi atmosféru. Reklamácie beriem len od mŕtvych.",
+            "subtitles": {
+              "text": "Pozlátená brambora! To je investícia podľa môjho gusta. Stav ju sem, ak máš gule. Keď začne dymiť alobal, netrhaj kábel, kazíš mi atmosféru. Reklamácie beriem len od mŕtvych.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 4.065497076023392,
+                  "text": "Pozlátená brambora! To je investícia podľa môjho gusta."
+                },
+                {
+                  "start": 4.065497076023392,
+                  "end": 5.913450292397661,
+                  "text": "Stav ju sem, ak máš gule."
+                },
+                {
+                  "start": 5.913450292397661,
+                  "end": 10.200701754385964,
+                  "text": "Keď začne dymiť alobal, netrhaj kábel, kazíš mi atmosféru."
+                },
+                {
+                  "start": 10.200701754385964,
+                  "end": 12.639999999999999,
+                  "text": "Reklamácie beriem len od mŕtvych."
+                }
+              ]
+            },
+            "lipSync": "speech/5b053a43-17b6-4065-b857-f43bce8fdba8/track.lipsync.json"
+          }
         },
         {
           "id": "cable-taken",
@@ -4947,7 +6098,33 @@
             },
             { "id": "leave", "text": "Idem sa rozhodnúť bez mozgu." }
           ],
-          "subtitle": "Tak ho teda vráť Ferovi, ty poctivý chudák. Úradne som mŕtvy; škodu na tréningu mi nevymôže ani exekútor. Ešte si od vás vypýtam veniec."
+          "subtitle": "Tak ho teda vráť Ferovi, ty poctivý chudák. Úradne som mŕtvy; škodu na tréningu mi nevymôže ani exekútor. Ešte si od vás vypýtam veniec.",
+          "speech": {
+            "audio": "speech/558667f1-f029-4f6a-9778-b9771dc6e0c7/audio.wav",
+            "text": "Tak ho teda vráť Ferovi, ty poctivý chudák. Úradne som mŕtvy; škodu na tréningu mi nevymôže ani exekútor. Ešte si od vás vypýtam veniec.",
+            "subtitles": {
+              "text": "Tak ho teda vráť Ferovi, ty poctivý chudák. Úradne som mŕtvy; škodu na tréningu mi nevymôže ani exekútor. Ešte si od vás vypýtam veniec.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 3.2602985074626867,
+                  "text": "Tak ho teda vráť Ferovi, ty poctivý chudák."
+                },
+                {
+                  "start": 3.2602985074626867,
+                  "end": 7.885373134328359,
+                  "text": "Úradne som mŕtvy; škodu na tréningu mi nevymôže ani exekútor."
+                },
+                {
+                  "start": 7.885373134328359,
+                  "end": 10.16,
+                  "text": "Ešte si od vás vypýtam veniec."
+                }
+              ]
+            },
+            "lipSync": "speech/f1a6b000-3f22-47e8-a4a7-b7553cf071e0/track.lipsync.json"
+          }
         }
       ]
     },
@@ -4992,7 +6169,7 @@
                 }
               ]
             },
-            "lipSync": "speech/a0b0c0c9-2fea-4612-b1d4-3d3408f2213f/track.lipsync.json"
+            "lipSync": "speech/f93c2296-bb9d-4310-9797-6aaf8bc9bdca/track.lipsync.json"
           },
           "subtitle": "Kuk, Rudo, pohreb som fingoval kvôli dlhom a hlavný kábel som šlohol pre tento automat na Dingovej batérii! Osada nech sedí potme, ja som majster živých aj zdochnutých."
         }
@@ -5010,7 +6187,7 @@
           "text": "Choď do piče, Rudo. A zavri za sebou, nech sa mi nevrátiš prievanom.",
           "choices": [],
           "speech": {
-            "audio": "speech/10118a70-b088-4781-9f76-cedf2ea9be2f/audio.wav",
+            "audio": "speech/42c2ac10-1d19-4833-948d-ba67f0987f14/audio.wav",
             "text": "Choď do piče, Rudo. A zavri za sebou, nech sa mi nevrátiš prievanom.",
             "subtitles": {
               "text": "Choď do piče, Rudo. A zavri za sebou, nech sa mi nevrátiš prievanom.",
@@ -5023,7 +6200,7 @@
                 }
               ]
             },
-            "lipSync": "speech/36377bf9-3467-4e09-accf-f714fe7f136f/track.lipsync.json"
+            "lipSync": "speech/14aaa84b-395a-4936-8fb4-a61f4f52080a/track.lipsync.json"
           }
         }
       ]
@@ -5040,7 +6217,7 @@
           "text": "Ty nemáš v hlave seno. To by aspoň niekto zožral.",
           "choices": [],
           "speech": {
-            "audio": "speech/7e3bf1d0-e045-4f86-8d0f-339b8ca4a6e0/audio.wav",
+            "audio": "speech/d66746ce-4b45-4f3e-b5f2-5c0fbb7369e1/audio.wav",
             "text": "Ty nemáš v hlave seno. To by aspoň niekto zožral.",
             "subtitles": {
               "text": "Ty nemáš v hlave seno. To by aspoň niekto zožral.",
@@ -5048,12 +6225,12 @@
               "cues": [
                 {
                   "start": 0,
-                  "end": 3.5199999999999996,
+                  "end": 3.6,
                   "text": "Ty nemáš v hlave seno. To by aspoň niekto zožral."
                 }
               ]
             },
-            "lipSync": "speech/dc7965b9-773c-424b-b222-51cbc12d9b60/track.lipsync.json"
+            "lipSync": "speech/56ddd9f2-b4b0-49ed-b0b0-4ed4179cd2d2/track.lipsync.json"
           }
         }
       ]
@@ -5070,7 +6247,7 @@
           "text": "Ešte raz do mňa pichni a Milan dostane zákazku na mieru. Bez metra. Nalámeme ťa.",
           "choices": [],
           "speech": {
-            "audio": "speech/3f32679e-a2f3-42b3-abaf-1fa965cacdbb/audio.wav",
+            "audio": "speech/5a37d291-0d36-42e2-9710-965b07d18192/audio.wav",
             "text": "Ešte raz do mňa pichni a Milan dostane zákazku na mieru. Bez metra. Nalámeme ťa.",
             "subtitles": {
               "text": "Ešte raz do mňa pichni a Milan dostane zákazku na mieru. Bez metra. Nalámeme ťa.",
@@ -5078,17 +6255,17 @@
               "cues": [
                 {
                   "start": 0,
-                  "end": 4.253164556962025,
+                  "end": 4.139746835443037,
                   "text": "Ešte raz do mňa pichni a Milan dostane zákazku na mieru."
                 },
                 {
-                  "start": 4.253164556962025,
-                  "end": 6,
+                  "start": 4.139746835443037,
+                  "end": 5.839999999999999,
                   "text": "Bez metra. Nalámeme ťa."
                 }
               ]
             },
-            "lipSync": "speech/566799fe-9e7a-4b11-be48-fedc10767bf5/track.lipsync.json"
+            "lipSync": "speech/1ac525fb-e26b-4d08-8a12-8fcd98166855/track.lipsync.json"
           }
         }
       ]
@@ -5105,7 +6282,7 @@
           "text": "Fero, vezmi si toho kokota. Zase sa mi tu pokúša existovať!",
           "choices": [],
           "speech": {
-            "audio": "speech/31329a6d-f7d3-457b-a0f0-cc08fd54d5d0/audio.wav",
+            "audio": "speech/a4893417-eac2-48e5-b6f9-09d126271080/audio.wav",
             "text": "Fero, vezmi si toho kokota. Zase sa mi tu pokúša existovať!",
             "subtitles": {
               "text": "Fero, vezmi si toho kokota. Zase sa mi tu pokúša existovať!",
@@ -5113,17 +6290,17 @@
               "cues": [
                 {
                   "start": 0,
-                  "end": 2.011034482758621,
+                  "end": 2.048275862068966,
                   "text": "Fero, vezmi si toho kokota."
                 },
                 {
-                  "start": 2.011034482758621,
-                  "end": 4.32,
+                  "start": 2.048275862068966,
+                  "end": 4.4,
                   "text": "Zase sa mi tu pokúša existovať!"
                 }
               ]
             },
-            "lipSync": "speech/1ee7f82f-13bb-43e3-8546-b1dd8fea4365/track.lipsync.json"
+            "lipSync": "speech/091b10e0-7f11-4293-89b1-8b6047a7ba80/track.lipsync.json"
           }
         }
       ]
@@ -5140,7 +6317,7 @@
           "text": "Vypadni. Aj chrípka sa ma raz opýtala, či môže zostať.",
           "choices": [],
           "speech": {
-            "audio": "speech/203ce561-9916-496f-86e1-f00153dc165f/audio.wav",
+            "audio": "speech/4e8b3fa5-ca7c-44a4-b1ef-2d6192ff4bf8/audio.wav",
             "text": "Vypadni. Aj chrípka sa ma raz opýtala, či môže zostať.",
             "subtitles": {
               "text": "Vypadni. Aj chrípka sa ma raz opýtala, či môže zostať.",
@@ -5148,12 +6325,12 @@
               "cues": [
                 {
                   "start": 0,
-                  "end": 3.92,
+                  "end": 3.84,
                   "text": "Vypadni. Aj chrípka sa ma raz opýtala, či môže zostať."
                 }
               ]
             },
-            "lipSync": "speech/48523bde-f5b1-4830-a56a-355bc65e1eb8/track.lipsync.json"
+            "lipSync": "speech/2c098b16-b71f-422f-afba-4399c91b9660/track.lipsync.json"
           }
         }
       ]
@@ -5169,7 +6346,23 @@
           "text": "Sklo neberiem. Železo je železo, fľašu si nechaj na svoje životné rozhodnutia.",
           "subtitle": "Sklo neberiem. Železo je železo, fľašu si nechaj na svoje životné rozhodnutia.",
           "actor": { "sceneId": "scene1", "hotspotId": "layer2" },
-          "choices": []
+          "choices": [],
+          "speech": {
+            "audio": "speech/956573e5-7d77-42fc-9a4d-2ae6b80e1b3d/audio.wav",
+            "text": "Sklo neberiem. Železo je železo, fľašu si nechaj na svoje životné rozhodnutia.",
+            "subtitles": {
+              "text": "Sklo neberiem. Železo je železo, fľašu si nechaj na svoje životné rozhodnutia.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 6.08,
+                  "text": "Sklo neberiem. Železo je železo, fľašu si nechaj na svoje životné rozhodnutia."
+                }
+              ]
+            },
+            "lipSync": "speech/1de89a10-ea4a-4c87-929d-2b190be4e8df/track.lipsync.json"
+          }
         }
       ]
     },
@@ -5184,7 +6377,28 @@
           "text": "Ani svätená voda zo skla železo nespraví. Tú si nechaj, ja už mám rezervovaný kotol.",
           "subtitle": "Ani svätená voda zo skla železo nespraví. Tú si nechaj, ja už mám rezervovaný kotol.",
           "actor": { "sceneId": "scene1", "hotspotId": "layer2" },
-          "choices": []
+          "choices": [],
+          "speech": {
+            "audio": "speech/d03fb0a9-2942-4269-8bb1-f5385b253e2d/audio.wav",
+            "text": "Ani svätená voda zo skla železo nespraví. Tú si nechaj, ja už mám rezervovaný kotol.",
+            "subtitles": {
+              "text": "Ani svätená voda zo skla železo nespraví. Tú si nechaj, ja už mám rezervovaný kotol.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 3.1219277108433734,
+                  "text": "Ani svätená voda zo skla železo nespraví."
+                },
+                {
+                  "start": 3.1219277108433734,
+                  "end": 6.32,
+                  "text": "Tú si nechaj, ja už mám rezervovaný kotol."
+                }
+              ]
+            },
+            "lipSync": "speech/3dc15f75-9580-4f32-a699-cafcfe223f25/track.lipsync.json"
+          }
         }
       ]
     },
@@ -5199,7 +6413,28 @@
           "text": "Magnet už máš. Ďalší šrot si odnes Dingovi. Charitu robím raz za život.",
           "subtitle": "Magnet už máš. Ďalší šrot si odnes Dingovi. Charitu robím raz za život.",
           "actor": { "sceneId": "scene1", "hotspotId": "layer2" },
-          "choices": []
+          "choices": [],
+          "speech": {
+            "audio": "speech/274860ea-bebc-404c-9312-9afc3a3e3d63/audio.wav",
+            "text": "Magnet už máš. Ďalší šrot si odnes Dingovi. Charitu robím raz za život.",
+            "subtitles": {
+              "text": "Magnet už máš. Ďalší šrot si odnes Dingovi. Charitu robím raz za život.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 3.489142857142857,
+                  "text": "Magnet už máš. Ďalší šrot si odnes Dingovi."
+                },
+                {
+                  "start": 3.489142857142857,
+                  "end": 5.68,
+                  "text": "Charitu robím raz za život."
+                }
+              ]
+            },
+            "lipSync": "speech/149a4d0d-0e01-4344-9828-c93a6bc6dc07/track.lipsync.json"
+          }
         }
       ]
     },
@@ -5214,7 +6449,28 @@
           "text": "S tou páskou choď k rozvodu. Na tvoju hubu je jej škoda.",
           "subtitle": "S tou páskou choď k rozvodu. Na tvoju hubu je jej škoda.",
           "actor": { "sceneId": "scene4", "hotspotId": "layer2" },
-          "choices": []
+          "choices": [],
+          "speech": {
+            "audio": "speech/ae359f8e-f747-4169-bdc9-1990cb99677b/audio.wav",
+            "text": "S tou páskou choď k rozvodu. Na tvoju hubu je jej škoda.",
+            "subtitles": {
+              "text": "S tou páskou choď k rozvodu. Na tvoju hubu je jej škoda.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 1.9956363636363634,
+                  "text": "S tou páskou choď k rozvodu."
+                },
+                {
+                  "start": 1.9956363636363634,
+                  "end": 3.92,
+                  "text": "Na tvoju hubu je jej škoda."
+                }
+              ]
+            },
+            "lipSync": "speech/4e15ff86-385c-47f5-83c8-5cf6cfbd26b0/track.lipsync.json"
+          }
         }
       ]
     },
@@ -5229,7 +6485,28 @@
           "text": "Kolíček si daj na nos, Rudo. Aspoň na chvíľu prestaneš cítiť vlastný mozog.",
           "subtitle": "Kolíček si daj na nos, Rudo. Aspoň na chvíľu prestaneš cítiť vlastný mozog.",
           "actor": { "sceneId": "scene4", "hotspotId": "layer2" },
-          "choices": []
+          "choices": [],
+          "speech": {
+            "audio": "speech/a588f1ac-f47c-4e06-b01b-ebc45bd72033/audio.wav",
+            "text": "Kolíček si daj na nos, Rudo. Aspoň na chvíľu prestaneš cítiť vlastný mozog.",
+            "subtitles": {
+              "text": "Kolíček si daj na nos, Rudo. Aspoň na chvíľu prestaneš cítiť vlastný mozog.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 1.8162162162162163,
+                  "text": "Kolíček si daj na nos, Rudo."
+                },
+                {
+                  "start": 1.8162162162162163,
+                  "end": 4.8,
+                  "text": "Aspoň na chvíľu prestaneš cítiť vlastný mozog."
+                }
+              ]
+            },
+            "lipSync": "speech/ee4d46f9-577a-4029-bcde-c37b973b9cd0/track.lipsync.json"
+          }
         }
       ]
     },
@@ -5244,7 +6521,33 @@
           "text": "Ten zvuk! Môj ručný automat má prázdny držiak na zvonec. Keď zahlási jackpot, zabudnem aj na tú zamknutú bránu. Ukáž to tej bedni, synu, ja si potrebujem utrieť slinu.",
           "subtitle": "Ten zvuk! Môj ručný automat má prázdny držiak na zvonec. Keď zahlási jackpot, zabudnem aj na tú zamknutú bránu. Ukáž to tej bedni, synu, ja si potrebujem utrieť slinu.",
           "actor": { "sceneId": "scene3", "hotspotId": "priest" },
-          "choices": []
+          "choices": [],
+          "speech": {
+            "audio": "speech/59179363-7cff-49ee-936f-68171785d456/audio.wav",
+            "text": "Ten zvuk! Môj ručný automat má prázdny držiak na zvonec. Keď zahlási jackpot, zabudnem aj na tú zamknutú bránu. Ukáž to tej bedni, synu, ja si potrebujem utrieť slinu.",
+            "subtitles": {
+              "text": "Ten zvuk! Môj ručný automat má prázdny držiak na zvonec. Keď zahlási jackpot, zabudnem aj na tú zamknutú bránu. Ukáž to tej bedni, synu, ja si potrebujem utrieť slinu.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 4.181333333333334,
+                  "text": "Ten zvuk! Môj ručný automat má prázdny držiak na zvonec."
+                },
+                {
+                  "start": 4.181333333333334,
+                  "end": 8.213333333333335,
+                  "text": "Keď zahlási jackpot, zabudnem aj na tú zamknutú bránu."
+                },
+                {
+                  "start": 8.213333333333335,
+                  "end": 12.32,
+                  "text": "Ukáž to tej bedni, synu, ja si potrebujem utrieť slinu."
+                }
+              ]
+            },
+            "lipSync": "speech/73fd7aca-464e-435d-9001-0214572909e6/track.lipsync.json"
+          }
         }
       ]
     },
@@ -5259,7 +6562,33 @@
           "text": "Bránu držím zamknutú, kradnú sa vence. Ak ideš za mŕtvymi, počkaj. Ja strážim, Pán si zapisuje dochádzku.",
           "subtitle": "Bránu držím zamknutú, kradnú sa vence. Ak ideš za mŕtvymi, počkaj. Ja strážim, Pán si zapisuje dochádzku.",
           "actor": { "sceneId": "scene3", "hotspotId": "priest" },
-          "choices": []
+          "choices": [],
+          "speech": {
+            "audio": "speech/6dc3073c-e4da-4824-a515-95ad8083795c/audio.wav",
+            "text": "Bránu držím zamknutú, kradnú sa vence. Ak ideš za mŕtvymi, počkaj. Ja strážim, Pán si zapisuje dochádzku.",
+            "subtitles": {
+              "text": "Bránu držím zamknutú, kradnú sa vence. Ak ideš za mŕtvymi, počkaj. Ja strážim, Pán si zapisuje dochádzku.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 3.423689320388349,
+                  "text": "Bránu držím zamknutú, kradnú sa vence."
+                },
+                {
+                  "start": 3.423689320388349,
+                  "end": 5.856310679611649,
+                  "text": "Ak ideš za mŕtvymi, počkaj."
+                },
+                {
+                  "start": 5.856310679611649,
+                  "end": 9.279999999999998,
+                  "text": "Ja strážim, Pán si zapisuje dochádzku."
+                }
+              ]
+            },
+            "lipSync": "speech/30746b78-9a50-4767-a7a1-ee05e4708510/track.lipsync.json"
+          }
         }
       ]
     },
@@ -5274,7 +6603,33 @@
           "text": "List pripni na skúšobnú rakvu. Nie na mňa, ja už vlastný mám. Potom si ľahni a neruš ma dýchaním.",
           "subtitle": "List pripni na skúšobnú rakvu. Nie na mňa, ja už vlastný mám. Potom si ľahni a neruš ma dýchaním.",
           "actor": { "sceneId": "scene5", "hotspotId": "layer1" },
-          "choices": []
+          "choices": [],
+          "speech": {
+            "audio": "speech/9cd6b595-e250-4ae1-877a-9aee93cf6928/audio.wav",
+            "text": "List pripni na skúšobnú rakvu. Nie na mňa, ja už vlastný mám. Potom si ľahni a neruš ma dýchaním.",
+            "subtitles": {
+              "text": "List pripni na skúšobnú rakvu. Nie na mňa, ja už vlastný mám. Potom si ľahni a neruš ma dýchaním.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 2.6778947368421053,
+                  "text": "List pripni na skúšobnú rakvu."
+                },
+                {
+                  "start": 2.6778947368421053,
+                  "end": 5.355789473684211,
+                  "text": "Nie na mňa, ja už vlastný mám."
+                },
+                {
+                  "start": 5.355789473684211,
+                  "end": 8.48,
+                  "text": "Potom si ľahni a neruš ma dýchaním."
+                }
+              ]
+            },
+            "lipSync": "speech/9d3d6c90-9441-4ce8-a77e-bd5baf01f170/track.lipsync.json"
+          }
         }
       ]
     },
@@ -5289,7 +6644,33 @@
           "text": "Do kaplnky až po uznanom pohrebe. Na skúšobnú rakvu patrí opečiatkovaný úmrtný list a do nej zákazník bez známok života. Nesťažuj sa, normálne chceme aj peniaze.",
           "subtitle": "Do kaplnky až po uznanom pohrebe. Na skúšobnú rakvu patrí opečiatkovaný úmrtný list a do nej zákazník bez známok života. Nesťažuj sa, normálne chceme aj peniaze.",
           "actor": { "sceneId": "scene5", "hotspotId": "layer1" },
-          "choices": []
+          "choices": [],
+          "speech": {
+            "audio": "speech/a4eea4d5-429f-41e5-b16e-230437de4ded/audio.wav",
+            "text": "Do kaplnky až po uznanom pohrebe. Na skúšobnú rakvu patrí opečiatkovaný úmrtný list a do nej zákazník bez známok života. Nesťažuj sa, normálne chceme aj peniaze.",
+            "subtitles": {
+              "text": "Do kaplnky až po uznanom pohrebe. Na skúšobnú rakvu patrí opečiatkovaný úmrtný list a do nej zákazník bez známok života. Nesťažuj sa, normálne chceme aj peniaze.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 2.9056603773584904,
+                  "text": "Do kaplnky až po uznanom pohrebe."
+                },
+                {
+                  "start": 2.9056603773584904,
+                  "end": 9.773584905660378,
+                  "text": "Na skúšobnú rakvu patrí opečiatkovaný úmrtný list a do nej zákazník bez známok"
+                },
+                {
+                  "start": 9.773584905660378,
+                  "end": 14,
+                  "text": "života. Nesťažuj sa, normálne chceme aj peniaze."
+                }
+              ]
+            },
+            "lipSync": "speech/da0c84cb-3702-4188-b4ed-e4a039d27af5/track.lipsync.json"
+          }
         }
       ]
     },
@@ -5304,7 +6685,28 @@
           "text": "Pohreb uznaný. Kaplnka je otvorená. Ak sa ti páčilo, u nás sa to nedá reklamovať.",
           "subtitle": "Pohreb uznaný. Kaplnka je otvorená. Ak sa ti páčilo, u nás sa to nedá reklamovať.",
           "actor": { "sceneId": "scene5", "hotspotId": "layer1" },
-          "choices": []
+          "choices": [],
+          "speech": {
+            "audio": "speech/67d93246-71ee-4e30-9f10-48f8fafded34/audio.wav",
+            "text": "Pohreb uznaný. Kaplnka je otvorená. Ak sa ti páčilo, u nás sa to nedá reklamovať.",
+            "subtitles": {
+              "text": "Pohreb uznaný. Kaplnka je otvorená. Ak sa ti páčilo, u nás sa to nedá reklamovať.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 3.29,
+                  "text": "Pohreb uznaný. Kaplnka je otvorená."
+                },
+                {
+                  "start": 3.29,
+                  "end": 7.52,
+                  "text": "Ak sa ti páčilo, u nás sa to nedá reklamovať."
+                }
+              ]
+            },
+            "lipSync": "speech/e4104882-7d7d-4716-a3c4-e58d06411a39/track.lipsync.json"
+          }
         }
       ]
     },
@@ -5319,7 +6721,28 @@
           "text": "Reklamácia života! Pri dýchaní sa ti hýbe nos. Zaštipni ho a skús to bez herectva.",
           "subtitle": "Reklamácia života! Pri dýchaní sa ti hýbe nos. Zaštipni ho a skús to bez herectva.",
           "actor": { "sceneId": "scene5", "hotspotId": "layer1" },
-          "choices": []
+          "choices": [],
+          "speech": {
+            "audio": "speech/0f41d56d-75b1-4429-8ef3-86effebbdcb8/audio.wav",
+            "text": "Reklamácia života! Pri dýchaní sa ti hýbe nos. Zaštipni ho a skús to bez herectva.",
+            "subtitles": {
+              "text": "Reklamácia života! Pri dýchaní sa ti hýbe nos. Zaštipni ho a skús to bez herectva.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 4.179753086419753,
+                  "text": "Reklamácia života! Pri dýchaní sa ti hýbe nos."
+                },
+                {
+                  "start": 4.179753086419753,
+                  "end": 7.36,
+                  "text": "Zaštipni ho a skús to bez herectva."
+                }
+              ]
+            },
+            "lipSync": "speech/fb6539c4-dc5c-4c57-bd3f-9db390aad243/track.lipsync.json"
+          }
         }
       ]
     },
@@ -5334,7 +6757,28 @@
           "text": "Najprv dotiahni maticu pípy a vypusť ten hnus do krígľov. Potom ti otvorím herňu. Bez roboty mi budeš len zavadzať na drahších schodoch.",
           "subtitle": "Najprv dotiahni maticu pípy a vypusť ten hnus do krígľov. Potom ti otvorím herňu. Bez roboty mi budeš len zavadzať na drahších schodoch.",
           "actor": { "sceneId": "scene6", "hotspotId": "innkeeper" },
-          "choices": []
+          "choices": [],
+          "speech": {
+            "audio": "speech/8fa1a123-a245-4b8f-88f0-d4a7f575a1bc/audio.wav",
+            "text": "Najprv dotiahni maticu pípy a vypusť ten hnus do krígľov. Potom ti otvorím herňu. Bez roboty mi budeš len zavadzať na drahších schodoch.",
+            "subtitles": {
+              "text": "Najprv dotiahni maticu pípy a vypusť ten hnus do krígľov. Potom ti otvorím herňu. Bez roboty mi budeš len zavadzať na drahších schodoch.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 3.9857777777777774,
+                  "text": "Najprv dotiahni maticu pípy a vypusť ten hnus do krígľov."
+                },
+                {
+                  "start": 3.9857777777777774,
+                  "end": 9.44,
+                  "text": "Potom ti otvorím herňu. Bez roboty mi budeš len zavadzať na drahších schodoch."
+                }
+              ]
+            },
+            "lipSync": "speech/0ea2729e-e9f8-4464-a3b1-f61cae042d17/track.lipsync.json"
+          }
         }
       ]
     },
@@ -5349,7 +6793,28 @@
           "text": "Do lievika, nie do huby! Potom stlač pedál. Ja už nemám trávenie, ja mám obehové čerpadlo.",
           "subtitle": "Do lievika, nie do huby! Potom stlač pedál. Ja už nemám trávenie, ja mám obehové čerpadlo.",
           "actor": { "sceneId": "scene9", "hotspotId": "layer1" },
-          "choices": []
+          "choices": [],
+          "speech": {
+            "audio": "speech/569f0d89-486c-453e-8e15-7b39e32d2c6c/audio.wav",
+            "text": "Do lievika, nie do huby! Potom stlač pedál. Ja už nemám trávenie, ja mám obehové čerpadlo.",
+            "subtitles": {
+              "text": "Do lievika, nie do huby! Potom stlač pedál. Ja už nemám trávenie, ja mám obehové čerpadlo.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 1.9847191011235956,
+                  "text": "Do lievika, nie do huby!"
+                },
+                {
+                  "start": 1.9847191011235956,
+                  "end": 7.36,
+                  "text": "Potom stlač pedál. Ja už nemám trávenie, ja mám obehové čerpadlo."
+                }
+              ]
+            },
+            "lipSync": "speech/d07ef4d1-e5d6-4a50-b081-15c95e9bb1b4/track.lipsync.json"
+          }
         }
       ]
     },
@@ -5364,7 +6829,28 @@
           "text": "Ďalšie espresso až po prepočítaní vnútorností. Pedál pusť, skôr než mi vypľuješ slezinu.",
           "subtitle": "Ďalšie espresso až po prepočítaní vnútorností. Pedál pusť, skôr než mi vypľuješ slezinu.",
           "actor": { "sceneId": "scene9", "hotspotId": "layer1" },
-          "choices": []
+          "choices": [],
+          "speech": {
+            "audio": "speech/7956f222-17cd-4b79-b6e8-5847e5a85758/audio.wav",
+            "text": "Ďalšie espresso až po prepočítaní vnútorností. Pedál pusť, skôr než mi vypľuješ slezinu.",
+            "subtitles": {
+              "text": "Ďalšie espresso až po prepočítaní vnútorností. Pedál pusť, skôr než mi vypľuješ slezinu.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 3.7222988505747123,
+                  "text": "Ďalšie espresso až po prepočítaní vnútorností."
+                },
+                {
+                  "start": 3.7222988505747123,
+                  "end": 7.039999999999999,
+                  "text": "Pedál pusť, skôr než mi vypľuješ slezinu."
+                }
+              ]
+            },
+            "lipSync": "speech/15d83c69-3df9-4312-82e7-c5452f4feb17/track.lipsync.json"
+          }
         }
       ]
     },
@@ -5379,7 +6865,28 @@
           "text": "Na kravu to lej! Za krst ti nechám mlieko aj zvonec. Ja už som poistená proti všetkému okrem teba.",
           "subtitle": "Na kravu to lej! Za krst ti nechám mlieko aj zvonec. Ja už som poistená proti všetkému okrem teba.",
           "actor": { "sceneId": "scene10", "hotspotId": "layer1" },
-          "choices": []
+          "choices": [],
+          "speech": {
+            "audio": "speech/df47f7af-ddc1-4cfa-848d-2b03b758c330/audio.wav",
+            "text": "Na kravu to lej! Za krst ti nechám mlieko aj zvonec. Ja už som poistená proti všetkému okrem teba.",
+            "subtitles": {
+              "text": "Na kravu to lej! Za krst ti nechám mlieko aj zvonec. Ja už som poistená proti všetkému okrem teba.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 4.4173195876288665,
+                  "text": "Na kravu to lej! Za krst ti nechám mlieko aj zvonec."
+                },
+                {
+                  "start": 4.4173195876288665,
+                  "end": 8.24,
+                  "text": "Ja už som poistená proti všetkému okrem teba."
+                }
+              ]
+            },
+            "lipSync": "speech/a0ba4697-decb-4367-8ddb-e805b2078646/track.lipsync.json"
+          }
         }
       ]
     },
@@ -5394,7 +6901,33 @@
           "text": "Najprv ju pokrsti svätenou vodou, inak ti zožerie aj tlačivo. Za krst ti nechám mlieko aj starý zvonec. Potom ju úradným čítaním uspi, nech nekope.",
           "subtitle": "Najprv ju pokrsti svätenou vodou, inak ti zožerie aj tlačivo. Za krst ti nechám mlieko aj starý zvonec. Potom ju úradným čítaním uspi, nech nekope.",
           "actor": { "sceneId": "scene10", "hotspotId": "layer1" },
-          "choices": []
+          "choices": [],
+          "speech": {
+            "audio": "speech/06005fda-2530-4652-ba56-6725bc5727ce/audio.wav",
+            "text": "Najprv ju pokrsti svätenou vodou, inak ti zožerie aj tlačivo. Za krst ti nechám mlieko aj starý zvonec. Potom ju úradným čítaním uspi, nech nekope.",
+            "subtitles": {
+              "text": "Najprv ju pokrsti svätenou vodou, inak ti zožerie aj tlačivo. Za krst ti nechám mlieko aj starý zvonec. Potom ju úradným čítaním uspi, nech nekope.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 5.283862068965518,
+                  "text": "Najprv ju pokrsti svätenou vodou, inak ti zožerie aj tlačivo."
+                },
+                {
+                  "start": 5.283862068965518,
+                  "end": 8.835310344827587,
+                  "text": "Za krst ti nechám mlieko aj starý zvonec."
+                },
+                {
+                  "start": 8.835310344827587,
+                  "end": 12.56,
+                  "text": "Potom ju úradným čítaním uspi, nech nekope."
+                }
+              ]
+            },
+            "lipSync": "speech/11024d5c-f905-4557-94cc-cfdefacf84c8/track.lipsync.json"
+          }
         }
       ]
     },
@@ -5409,7 +6942,33 @@
           "text": "Najprv ju pokrsti svätenou vodou, inak ti zožerie aj tlačivo. Za krst ti nechám mlieko aj starý zvonec. Potom ju úradným čítaním uspi, nech nekope.",
           "subtitle": "Najprv ju pokrsti svätenou vodou, inak ti zožerie aj tlačivo. Za krst ti nechám mlieko aj starý zvonec. Potom ju úradným čítaním uspi, nech nekope.",
           "actor": { "sceneId": "scene10", "hotspotId": "layer1" },
-          "choices": []
+          "choices": [],
+          "speech": {
+            "audio": "speech/70539f6f-9e0c-4791-8f09-d826cda1a29e/audio.wav",
+            "text": "Najprv ju pokrsti svätenou vodou, inak ti zožerie aj tlačivo. Za krst ti nechám mlieko aj starý zvonec. Potom ju úradným čítaním uspi, nech nekope.",
+            "subtitles": {
+              "text": "Najprv ju pokrsti svätenou vodou, inak ti zožerie aj tlačivo. Za krst ti nechám mlieko aj starý zvonec. Potom ju úradným čítaním uspi, nech nekope.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 5.216551724137931,
+                  "text": "Najprv ju pokrsti svätenou vodou, inak ti zožerie aj tlačivo."
+                },
+                {
+                  "start": 5.216551724137931,
+                  "end": 8.722758620689655,
+                  "text": "Za krst ti nechám mlieko aj starý zvonec."
+                },
+                {
+                  "start": 8.722758620689655,
+                  "end": 12.4,
+                  "text": "Potom ju úradným čítaním uspi, nech nekope."
+                }
+              ]
+            },
+            "lipSync": "speech/d0af721b-b58d-4943-8a71-0b227a9105d3/track.lipsync.json"
+          }
         }
       ]
     },
@@ -5424,7 +6983,33 @@
           "text": "Najprv ju pokrsti svätenou vodou, inak ti zožerie aj tlačivo. Za krst ti nechám mlieko aj starý zvonec. Potom ju úradným čítaním uspi, nech nekope.",
           "subtitle": "Najprv ju pokrsti svätenou vodou, inak ti zožerie aj tlačivo. Za krst ti nechám mlieko aj starý zvonec. Potom ju úradným čítaním uspi, nech nekope.",
           "actor": { "sceneId": "scene10", "hotspotId": "layer1" },
-          "choices": []
+          "choices": [],
+          "speech": {
+            "audio": "speech/5b490ba8-9491-4dac-a5f5-cf2f0e89a595/audio.wav",
+            "text": "Najprv ju pokrsti svätenou vodou, inak ti zožerie aj tlačivo. Za krst ti nechám mlieko aj starý zvonec. Potom ju úradným čítaním uspi, nech nekope.",
+            "subtitles": {
+              "text": "Najprv ju pokrsti svätenou vodou, inak ti zožerie aj tlačivo. Za krst ti nechám mlieko aj starý zvonec. Potom ju úradným čítaním uspi, nech nekope.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 5.250206896551724,
+                  "text": "Najprv ju pokrsti svätenou vodou, inak ti zožerie aj tlačivo."
+                },
+                {
+                  "start": 5.250206896551724,
+                  "end": 8.77903448275862,
+                  "text": "Za krst ti nechám mlieko aj starý zvonec."
+                },
+                {
+                  "start": 8.77903448275862,
+                  "end": 12.479999999999999,
+                  "text": "Potom ju úradným čítaním uspi, nech nekope."
+                }
+              ]
+            },
+            "lipSync": "speech/132bbd37-b786-4ace-93ff-7c19c4d62ee2/track.lipsync.json"
+          }
         }
       ]
     },
@@ -5439,7 +7024,33 @@
           "text": "Pena je vonku a pípa drží. Herňu som odomkol. Choď sa tam hrať na detektíva; za ten smrad by normálny človek chcel príplatok.",
           "subtitle": "Pena je vonku a pípa drží. Herňu som odomkol. Choď sa tam hrať na detektíva; za ten smrad by normálny človek chcel príplatok.",
           "actor": { "sceneId": "scene6", "hotspotId": "innkeeper" },
-          "choices": []
+          "choices": [],
+          "speech": {
+            "audio": "speech/e32d2923-5eeb-4a1b-b4dc-c0f66a58462a/audio.wav",
+            "text": "Pena je vonku a pípa drží. Herňu som odomkol. Choď sa tam hrať na detektíva; za ten smrad by normálny človek chcel príplatok.",
+            "subtitles": {
+              "text": "Pena je vonku a pípa drží. Herňu som odomkol. Choď sa tam hrať na detektíva; za ten smrad by normálny človek chcel príplatok.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 1.9785365853658536,
+                  "text": "Pena je vonku a pípa drží."
+                },
+                {
+                  "start": 1.9785365853658536,
+                  "end": 7.609756097560975,
+                  "text": "Herňu som odomkol. Choď sa tam hrať na detektíva; za ten smrad by normálny"
+                },
+                {
+                  "start": 7.609756097560975,
+                  "end": 9.36,
+                  "text": "človek chcel príplatok."
+                }
+              ]
+            },
+            "lipSync": "speech/5f2bbf7b-7008-4016-a19c-3513541e1dc2/track.lipsync.json"
+          }
         }
       ]
     },
@@ -5453,7 +7064,43 @@
           "speaker": "Špľuch",
           "actor": { "sceneId": "scene7", "hotspotId": "swing-boy" },
           "text": "Tu máš bramboru na špagáte. Porazil si decko, hrdina. Keď si ju zavesíš na krk, vyzeráš ako obesený obed. Ten zalepený uzol odstrihni nožnicami; špagát je kvalitnejší než celá tvoja výhra.",
-          "choices": []
+          "choices": [],
+          "speech": {
+            "audio": "speech/a3ddb80c-028c-465b-adcd-5219980d4207/audio.wav",
+            "text": "Tu máš bramboru na špagáte. Porazil si decko, hrdina. Keď si ju zavesíš na krk, vyzeráš ako obesený obed. Ten zalepený uzol odstrihni nožnicami; špagát je kvalitnejší než celá tvoja výhra.",
+            "subtitles": {
+              "text": "Tu máš bramboru na špagáte. Porazil si decko, hrdina. Keď si ju zavesíš na krk, vyzeráš ako obesený obed. Ten zalepený uzol odstrihni nožnicami; špagát je kvalitnejší než celá tvoja výhra.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 2.0660869565217395,
+                  "text": "Tu máš bramboru na špagáte."
+                },
+                {
+                  "start": 2.0660869565217395,
+                  "end": 3.979130434782609,
+                  "text": "Porazil si decko, hrdina."
+                },
+                {
+                  "start": 3.979130434782609,
+                  "end": 7.881739130434783,
+                  "text": "Keď si ju zavesíš na krk, vyzeráš ako obesený obed."
+                },
+                {
+                  "start": 7.881739130434783,
+                  "end": 13.62086956521739,
+                  "text": "Ten zalepený uzol odstrihni nožnicami; špagát je kvalitnejší než celá tvoja"
+                },
+                {
+                  "start": 13.62086956521739,
+                  "end": 14.079999999999998,
+                  "text": "výhra."
+                }
+              ]
+            },
+            "lipSync": "speech/07c8fcd3-ba8a-49da-9f4a-d038bebc0e9b/track.lipsync.json"
+          }
         }
       ]
     },
@@ -5467,7 +7114,28 @@
           "speaker": "Dežo Magnet",
           "actor": { "sceneId": "scene1", "hotspotId": "layer2" },
           "text": "Zemiak? Ja beriem železo, nie prílohu k poslednej večeri. Nechaj si ho, možno ťa ešte pochovajú aj s oblohou.",
-          "choices": []
+          "choices": [],
+          "speech": {
+            "audio": "speech/0c6f600f-46a8-4805-aaea-b015001322e6/audio.wav",
+            "text": "Zemiak? Ja beriem železo, nie prílohu k poslednej večeri. Nechaj si ho, možno ťa ešte pochovajú aj s oblohou.",
+            "subtitles": {
+              "text": "Zemiak? Ja beriem železo, nie prílohu k poslednej večeri. Nechaj si ho, možno ťa ešte pochovajú aj s oblohou.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 4.391111111111111,
+                  "text": "Zemiak? Ja beriem železo, nie prílohu k poslednej večeri."
+                },
+                {
+                  "start": 4.391111111111111,
+                  "end": 8.32,
+                  "text": "Nechaj si ho, možno ťa ešte pochovajú aj s oblohou."
+                }
+              ]
+            },
+            "lipSync": "speech/9939ef68-182f-4d99-bddb-7f60d0b25883/track.lipsync.json"
+          }
         }
       ]
     },
@@ -5481,7 +7149,33 @@
           "speaker": "Fero",
           "actor": { "sceneId": "scene4", "hotspotId": "layer1" },
           "text": "Svietime, do riti! Rudo, zachránil si turnaj. Štartovné máš zadarmo, ako som sľúbil. Ak prehráš aj topánky, Eržika ťa pochová bosého.",
-          "choices": []
+          "choices": [],
+          "speech": {
+            "audio": "speech/d64a29a0-1939-4dae-a55a-3709d490803c/audio.wav",
+            "text": "Svietime, do riti! Rudo, zachránil si turnaj. Štartovné máš zadarmo, ako som sľúbil. Ak prehráš aj topánky, Eržika ťa pochová bosého.",
+            "subtitles": {
+              "text": "Svietime, do riti! Rudo, zachránil si turnaj. Štartovné máš zadarmo, ako som sľúbil. Ak prehráš aj topánky, Eržika ťa pochová bosého.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 3.709923664122138,
+                  "text": "Svietime, do riti! Rudo, zachránil si turnaj."
+                },
+                {
+                  "start": 3.709923664122138,
+                  "end": 6.842748091603054,
+                  "text": "Štartovné máš zadarmo, ako som sľúbil."
+                },
+                {
+                  "start": 6.842748091603054,
+                  "end": 10.8,
+                  "text": "Ak prehráš aj topánky, Eržika ťa pochová bosého."
+                }
+              ]
+            },
+            "lipSync": "speech/8813a1b6-66b7-4dff-b5a6-ca3bde586942/track.lipsync.json"
+          }
         }
       ]
     },
@@ -5495,7 +7189,38 @@
           "speaker": "Ľubo Šťastný",
           "actor": { "sceneId": "scene12", "hotspotId": "layer1" },
           "text": "Vedel som, že si číslo, Rudo. Ale že rovno číslo na urne! Odpálil si automat, kábel aj baterku. Choď to vysvetliť Ferovi; ja si zatiaľ obnovím úmrtný list.",
-          "choices": []
+          "choices": [],
+          "speech": {
+            "audio": "speech/9fcf61c2-3ecc-4c03-a0d5-d4e74f61da46/audio.wav",
+            "text": "Vedel som, že si číslo, Rudo. Ale že rovno číslo na urne! Odpálil si automat, kábel aj baterku. Choď to vysvetliť Ferovi; ja si zatiaľ obnovím úmrtný list.",
+            "subtitles": {
+              "text": "Vedel som, že si číslo, Rudo. Ale že rovno číslo na urne! Odpálil si automat, kábel aj baterku. Choď to vysvetliť Ferovi; ja si zatiaľ obnovím úmrtný list.",
+              "timing": "estimated",
+              "cues": [
+                {
+                  "start": 0,
+                  "end": 2.1368421052631574,
+                  "text": "Vedel som, že si číslo, Rudo."
+                },
+                {
+                  "start": 2.1368421052631574,
+                  "end": 4.126315789473684,
+                  "text": "Ale že rovno číslo na urne!"
+                },
+                {
+                  "start": 4.126315789473684,
+                  "end": 6.852631578947368,
+                  "text": "Odpálil si automat, kábel aj baterku."
+                },
+                {
+                  "start": 6.852631578947368,
+                  "end": 11.2,
+                  "text": "Choď to vysvetliť Ferovi; ja si zatiaľ obnovím úmrtný list."
+                }
+              ]
+            },
+            "lipSync": "speech/33ea438d-037f-4731-80e8-5a77f363a1b7/track.lipsync.json"
+          }
         }
       ]
     }

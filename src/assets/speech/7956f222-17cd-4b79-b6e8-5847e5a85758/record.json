@@ -1,0 +1,18 @@
+{
+  "text": "Ďalšie espresso až po prepočítaní vnútorností. Pedál pusť, skôr než mi vypľuješ slezinu.",
+  "provider": "elevenlabs",
+  "voice": {
+    "modelId": "eleven_v4",
+    "stability": 0.25,
+    "similarityBoost": 0.72,
+    "style": 0.8,
+    "speed": 1,
+    "useSpeakerBoost": true,
+    "voiceId": "OAHw71DTm0tFvJJU4HGL",
+    "designRegistration": "speech/06c88758-c6d1-4d4b-aecd-6bbf0f668e0d/registration.json",
+    "slot": "static"
+  },
+  "languageCode": "sk",
+  "duration": 7.04,
+  "audioSha256": "0c3591d47c064cbbfb27b2a8a458c1a541eda140c2abcf612a8b9284d2bb67e9"
+}
