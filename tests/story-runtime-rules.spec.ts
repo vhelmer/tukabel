@@ -1,6 +1,11 @@
 import { expect, test } from '@playwright/test';
 import { readFileSync } from 'node:fs';
-import { initialState, reduceGame } from '../src/game/state';
+import {
+  initialState,
+  reduceGame,
+  getDialogueNode,
+  matches,
+} from '../src/game/state';
 import * as gameState from '../src/game/state';
 const getEnding = (...args: Parameters<typeof gameState.getEnding>) =>
   gameState.getEnding(...args);
@@ -195,3 +200,124 @@ test('original ambience and effect assets are quiet valid local PCM WAVs', () =>
     expect(Math.abs(bytes.readInt16LE(bytes.length - 2))).toBeLessThan(2);
   }
 });
+
+test('a flag and closing speech in one action defer the epilogue until the dialogue closes', () => {
+  const withSpeech: GameContent = {
+    ...content,
+    scenes: [
+      {
+        ...content.scenes[0]!,
+        hotspots: [
+          {
+            ...content.scenes[0]!.hotspots[0]!,
+            onClick: [
+              {
+                effects: [
+                  { type: 'flag', id: 'community', value: true },
+                  { type: 'dialogue', id: 'intro' },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  };
+  const pending = reduceGame(
+    withSpeech,
+    { ...initialState(withSpeech), dialogue: null },
+    {
+      type: 'interact',
+      hotspotId: 'win',
+    },
+  );
+  expect(pending.flags.community).toBe(true);
+  expect(pending.dialogue?.id).toBe('intro');
+  expect(getEnding(withSpeech, pending)).toBeUndefined();
+  const finished = reduceGame(withSpeech, pending, { type: 'closeDialogue' });
+  expect(finished.dialogue).toBeNull();
+  expect(getEnding(withSpeech, finished)?.id).toBe('community');
+  expect(reduceGame(withSpeech, finished, { type: 'closeDialogue' })).toBe(
+    finished,
+  );
+});
+
+for (const finale of [
+  {
+    sceneId: 'scene4',
+    target: 'junction-box',
+    item: 'fixed-cable',
+    dialogueId: 'fero-ending',
+    endingId: 'community',
+    flag: 'ending-community',
+    actorId: 'layer1',
+    speaker: 'Fero',
+  },
+  {
+    sceneId: 'scene12',
+    target: 'crypt-machine',
+    item: 'fake-token',
+    dialogueId: 'lubo-ending',
+    endingId: 'jackpot',
+    flag: 'ending-jackpot',
+    actorId: 'layer1',
+    speaker: 'Ľubo Šťastný',
+  },
+]) {
+  test(`${finale.speaker} speaks before the authored ${finale.endingId} epilogue and a saved pending line resumes safely`, () => {
+    const authored = JSON.parse(
+      readFileSync('src/game/content/project.json', 'utf8'),
+    ) as GameContent;
+    const pending = reduceGame(
+      authored,
+      {
+        ...initialState(authored),
+        sceneId: finale.sceneId,
+        dialogue: null,
+        inventory: [finale.item],
+      },
+      { type: 'interact', hotspotId: finale.target, itemId: finale.item },
+    );
+    expect(pending.flags[finale.flag]).toBe(true);
+    expect(pending.inventory).not.toContain(finale.item);
+    expect(pending.dialogue?.id).toBe(finale.dialogueId);
+    expect(getEnding(authored, pending)).toBeUndefined();
+    const node = getDialogueNode(authored, pending)!;
+    expect(node.speaker).toBe(finale.speaker);
+    expect(node.actor).toEqual({
+      sceneId: finale.sceneId,
+      hotspotId: finale.actorId,
+    });
+    expect(node.choices).toEqual([]);
+    expect(
+      authored.dialogues.find((d) => d.id === finale.dialogueId)?.entry,
+    ).toBe('speech');
+    const actor = authored.scenes
+      .find((s) => s.id === finale.sceneId)!
+      .hotspots.find((h) => h.id === finale.actorId)!;
+    expect(matches(pending, actor.visibleWhen)).toBe(true);
+    expect(
+      reduceGame(authored, pending, {
+        type: 'interact',
+        hotspotId: finale.target,
+        itemId: finale.item,
+      }),
+    ).toBe(pending);
+    const decoded = decodeSave(
+      JSON.stringify({ version: 1, contentId: authored.id, state: pending }),
+      authored,
+    );
+    expect(decoded.ok).toBe(true);
+    if (!decoded.ok) throw Error(decoded.message);
+    expect(getEnding(authored, decoded.value)).toBeUndefined();
+    const finished = reduceGame(authored, decoded.value, {
+      type: 'closeDialogue',
+    });
+    expect(finished.flags).toEqual(pending.flags);
+    expect(finished.inventory).toEqual(pending.inventory);
+    expect(getEnding(authored, finished)?.id).toBe(finale.endingId);
+    expect(reduceGame(authored, finished, { type: 'closeDialogue' })).toBe(
+      finished,
+    );
+  });
+}

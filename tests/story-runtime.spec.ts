@@ -1,11 +1,11 @@
 import { expect } from '@playwright/test';
 import { readFile, writeFile } from 'node:fs/promises';
 import { test, openEditor } from './editorFixture';
-import { ready, hudClick, object } from './helpers';
+import { ready, hudClick, object, menuAction } from './helpers';
 import type { GameContent } from '../src/game/types';
 import { SAVE_KEY } from '../src/game/storage';
 
-async function seed(source: string) {
+async function seed(source: string, closingSpeech = false) {
   const project = JSON.parse(await readFile(source, 'utf8')) as GameContent;
   const start = project.scenes[0]!;
   const content: GameContent = {
@@ -32,6 +32,19 @@ async function seed(source: string) {
           { id: 'hi', speaker: 'Fero', text: 'Kábel sa stratil.', choices: [] },
         ],
       },
+      {
+        id: 'closing',
+        entry: 'speech',
+        start: 'bye',
+        nodes: [
+          {
+            id: 'bye',
+            speaker: 'Fero',
+            text: 'Počkaj s urnou. Najprv ti poviem záver.',
+            choices: [],
+          },
+        ],
+      },
     ],
     scenes: project.scenes.map((s) =>
       s.id !== start.id
@@ -46,7 +59,12 @@ async function seed(source: string) {
                 bounds: { x: 450, y: 200, width: 300, height: 300 },
                 onClick: [
                   {
-                    effects: [{ type: 'flag', id: 'ending-test', value: true }],
+                    effects: [
+                      { type: 'flag', id: 'ending-test', value: true },
+                      ...(closingSpeech
+                        ? [{ type: 'dialogue' as const, id: 'closing' }]
+                        : []),
+                    ],
                   },
                 ],
               },
@@ -437,4 +455,110 @@ test('interrupting a one-shot sound releases its source and listeners without wa
         .getAttribute('src'),
     ),
   ).toContain('village.wav');
+});
+
+test('a closing line precedes the ending, survives save/load and finishes on its caption', async ({
+  page,
+  workspace,
+}) => {
+  await seed(workspace.source, true);
+  await page.goto(workspace.url);
+  await ready(page);
+  const caption = page.getByRole('button', {
+    name: 'Dokončiť repliku',
+    exact: true,
+  });
+  await expect(caption).toBeEnabled();
+  await caption.click();
+  await (await object(page, 'Zapojiť kábel')).press('Enter');
+  const speech = page.getByRole('dialog', { name: 'Rozhovor', exact: true });
+  const ending = page.getByRole('dialog', {
+    name: 'Svetlo pre dedinu',
+    exact: true,
+  });
+  await expect(speech).toContainText('Počkaj s urnou.');
+  await expect(ending).toHaveCount(0);
+  await expect(
+    page.getByRole('group', { name: 'Inventár', exact: true }),
+  ).toHaveAttribute('aria-disabled', 'true');
+  await menuAction(page, 'Uložiť hru');
+  await page.reload();
+  await ready(page);
+  await menuAction(page, 'Načítať hru');
+  await expect(speech).toContainText('Počkaj s urnou.');
+  await expect(ending).toHaveCount(0);
+  await expect(caption).toBeEnabled();
+  await caption.press('Enter');
+  await expect(speech).toHaveCount(0);
+  await expect(ending).toBeVisible();
+});
+
+test('the natural end of closing speech audio reveals the epilogue without a second choice', async ({
+  page,
+  workspace,
+}) => {
+  await seed(workspace.source, true);
+  const project = JSON.parse(
+    await readFile(workspace.source, 'utf8'),
+  ) as GameContent;
+  // Local silent PCM exercises the real audio ended event; no provider is called.
+  const rate = 22050;
+  const wav = Buffer.alloc(44 + rate * 2 * 3);
+  wav.write('RIFF', 0);
+  wav.writeUInt32LE(wav.length - 8, 4);
+  wav.write('WAVEfmt ', 8);
+  wav.writeUInt32LE(16, 16);
+  wav.writeUInt16LE(1, 20);
+  wav.writeUInt16LE(1, 22);
+  wav.writeUInt32LE(rate, 24);
+  wav.writeUInt32LE(rate * 2, 28);
+  wav.writeUInt16LE(2, 32);
+  wav.writeUInt16LE(16, 34);
+  wav.write('data', 36);
+  wav.writeUInt32LE(wav.length - 44, 40);
+  await writeFile(`${workspace.root}/src/assets/ending-closing.wav`, wav);
+  await writeFile(
+    workspace.source,
+    JSON.stringify({
+      ...project,
+      dialogues: project.dialogues.map((d) =>
+        d.id !== 'closing'
+          ? d
+          : {
+              ...d,
+              nodes: d.nodes.map((n) => ({
+                ...n,
+                speech: { audio: 'ending-closing.wav', text: n.text },
+              })),
+            },
+      ),
+    }),
+  );
+  await page.goto(workspace.url);
+  await ready(page);
+  const caption = page.getByRole('button', {
+    name: 'Dokončiť repliku',
+    exact: true,
+  });
+  await expect(caption).toBeEnabled();
+  await caption.click();
+  await (await object(page, 'Zapojiť kábel')).press('Enter');
+  const speech = page.getByRole('dialog', { name: 'Rozhovor', exact: true });
+  const ending = page.getByRole('dialog', {
+    name: 'Svetlo pre dedinu',
+    exact: true,
+  });
+  await expect(speech).toContainText('Počkaj s urnou.');
+  await expect(ending).toHaveCount(0);
+  const audio = speech.locator('audio');
+  await expect(audio).toHaveCount(1);
+  await expect
+    .poll(() => audio.evaluate((el) => (el as HTMLAudioElement).paused))
+    .toBe(false);
+  await audio.evaluate((el) => {
+    const a = el as HTMLAudioElement;
+    a.currentTime = a.duration - 0.1;
+  });
+  await expect(speech).toHaveCount(0);
+  await expect(ending).toBeVisible();
 });

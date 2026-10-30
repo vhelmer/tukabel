@@ -37,6 +37,9 @@ export function matches(state: GameState, condition?: Condition): boolean {
 }
 
 export function getEnding(content: GameContent, state: GameState) {
+  // A final action may set its ending flag and start the closing speech together.
+  // Keep the conversation playable; its normal close reveals the epilogue.
+  if (state.dialogue) return undefined;
   return content.endings?.find((ending) => matches(state, ending.when));
 }
 

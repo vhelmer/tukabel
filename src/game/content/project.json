@@ -829,7 +829,8 @@
                 "effects": [
                   { "type": "removeItem", "id": "fixed-cable" },
                   { "type": "flag", "id": "power-restored", "value": true },
-                  { "type": "flag", "id": "ending-community", "value": true }
+                  { "type": "flag", "id": "ending-community", "value": true },
+                  { "type": "dialogue", "id": "fero-ending" }
                 ]
               }
             ],
@@ -2537,8 +2538,7 @@
             }
           },
           "cursor": "talk",
-          "uses": {},
-          "visibleWhen": { "not": { "flag": "machine-burnt" } }
+          "uses": {}
         },
         {
           "id": "chapel-return",
@@ -2702,7 +2702,8 @@
                 "effects": [
                   { "type": "removeItem", "id": "fake-token" },
                   { "type": "flag", "id": "machine-burnt", "value": true },
-                  { "type": "flag", "id": "ending-jackpot", "value": true }
+                  { "type": "flag", "id": "ending-jackpot", "value": true },
+                  { "type": "dialogue", "id": "lubo-ending" }
                 ],
                 "sound": "soundtrack/elevenlabs-village-20261029/sfx-jackpot.wav"
               },
@@ -5429,6 +5430,34 @@
           "speaker": "Dežo Magnet",
           "actor": { "sceneId": "scene1", "hotspotId": "layer2" },
           "text": "Zemiak? Ja beriem železo, nie prílohu k poslednej večeri. Nechaj si ho, možno ťa ešte pochovajú aj s oblohou.",
+          "choices": []
+        }
+      ]
+    },
+    {
+      "id": "fero-ending",
+      "entry": "speech",
+      "start": "line",
+      "nodes": [
+        {
+          "id": "line",
+          "speaker": "Fero",
+          "actor": { "sceneId": "scene4", "hotspotId": "layer1" },
+          "text": "Svietime, do riti! Rudo, zachránil si turnaj. Štartovné máš zadarmo, ako som sľúbil. Ak prehráš aj topánky, Eržika ťa pochová bosého.",
+          "choices": []
+        }
+      ]
+    },
+    {
+      "id": "lubo-ending",
+      "entry": "speech",
+      "start": "line",
+      "nodes": [
+        {
+          "id": "line",
+          "speaker": "Ľubo Šťastný",
+          "actor": { "sceneId": "scene12", "hotspotId": "layer1" },
+          "text": "Vedel som, že si číslo, Rudo. Ale že rovno číslo na urne! Odpálil si automat, kábel aj baterku. Choď to vysvetliť Ferovi; ja si zatiaľ obnovím úmrtný list.",
           "choices": []
         }
       ]

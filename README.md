@@ -955,6 +955,16 @@ Zkrat spálí automat i kabel, Ľubo uteče a vyvalí se bezcenné podložky.
 Osada zůstane potmě a následuje druhý epilog. Po pouhém odpojení baterie lze
 svorku znovu připojit; žeton se při použití na vypnutý automat nespotřebuje.
 Uloženou pozici před volbou lze načíst i po konci; nová hra ruční slot nemaže.
+Po vložení falešného žetonu nejdřív promluví Ľubo; po vrácení opraveného
+kabelu do rozvodné skříně promluví Fero. Obě reakce jsou jednorázové dialogy
+`entry: "speech"` bez odpovědí (`lubo-ending`, `fero-ending`). Kliknutí/tapnutí
+na titulek, Enter/mezerník nebo konec platného audia repliku dokončí a teprve
+potom otevře připravenou finální obrazovku. Nové repliky jsou zatím textové;
+hlas a mapa úst zůstávají přiřazené původním postavám. Ľubo zůstává během své
+reakce ve scéně i po zkratu. Výsledné příznaky a spotřebování předmětu se
+provedou jednou v původní akci. Uložení během repliky zachová čekající dialog;
+starší dokončené pozice bez dialogu zobrazí finále rovnou.
+
 Konec obrazovku pomalu zčerná, zobrazí nápis **KONIEC** a pod ním krátký epilog
 z `endings[].text`; `title` slouží jako přístupný název dialogu.
 

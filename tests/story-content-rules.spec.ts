@@ -5,6 +5,7 @@ import {
   reduceGame,
   canTravel,
   getDialogueNode,
+  getEnding,
   matches,
   syncTasks,
 } from '../src/game/state';
@@ -265,6 +266,10 @@ test('the authored game completes through restoration and saves both before and 
   p.combine('stolen-cable', 'tape');
   p.travel('scene4');
   p.use('junction-box', 'fixed-cable');
+  expect(p.state.dialogue?.id).toBe('fero-ending');
+  expect(getEnding(content, p.state)).toBeUndefined();
+  p.close();
+  expect(getEnding(content, p.state)?.id).toBe('community');
   expect(p.state.flags['ending-community']).toBe(true);
   expect(p.state.flags['power-restored']).toBe(true);
   expect(p.state.flags['ending-jackpot']).not.toBe(true);
@@ -290,6 +295,10 @@ test('late scrap exchange remains solvable and a forged token causes the physica
   p.use('battery-reconnect');
   p.use('crypt-machine', 'fake-token');
   expect(p.state.flags['ending-jackpot']).toBe(true);
+  expect(p.state.dialogue?.id).toBe('lubo-ending');
+  expect(getEnding(content, p.state)).toBeUndefined();
+  p.close();
+  expect(getEnding(content, p.state)?.id).toBe('jackpot');
   expect(p.state.flags['machine-burnt']).toBe(true);
   expect(p.state.flags['power-restored']).not.toBe(true);
   expect(p.state.sceneId).toBe('scene12');

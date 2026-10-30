@@ -779,11 +779,14 @@ storyTest(
     await use('main-cable', 'rubber-gloves');
     await combine('stolen-cable', 'tape');
     await travel('scene4');
-    await use('junction-box', 'fixed-cable');
+    await interact('junction-box', 'fixed-cable');
     const community = page.getByRole('dialog', {
       name: content.endings!.find((ending) => ending.id === 'community')!.title,
       exact: true,
     });
+    await expect(community).toHaveCount(0);
+    await expect(dialogue.locator('.dialogue-speaker')).toHaveText('Fero');
+    await finishSpeech();
     await expect(community).toBeVisible();
     await page.screenshot({ path: info.outputPath('community-ending.png') });
     await click(community.getByRole('button', { name: 'Menu a uložené hry' }));
@@ -794,11 +797,16 @@ storyTest(
     await ready(page);
     await expect(community).toHaveCount(0);
     await combine('potato', 'foil');
-    await use('crypt-machine', 'fake-token');
+    await interact('crypt-machine', 'fake-token');
     const jackpot = page.getByRole('dialog', {
       name: content.endings!.find((ending) => ending.id === 'jackpot')!.title,
       exact: true,
     });
+    await expect(jackpot).toHaveCount(0);
+    await expect(dialogue.locator('.dialogue-speaker')).toHaveText(
+      'Ľubo Šťastný',
+    );
+    await finishSpeech();
     await expect(jackpot).toBeVisible();
     await page.screenshot({ path: info.outputPath('jackpot-ending.png') });
     await click(jackpot.getByRole('button', { name: 'Menu a uložené hry' }));
