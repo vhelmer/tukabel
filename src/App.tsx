@@ -28,9 +28,15 @@ export function App() {
     [gameContent],
   );
   const errors = useMemo(() => validateProject(document), [document]);
-  function preview() {
+  // A dev test start brings its own state; otherwise begin fresh in the edited scene.
+  function preview(testStart?: GameState) {
     if (errors.length) return;
     setPlayDocument(document);
+    if (testStart) {
+      setState(testStart);
+      setMode('game');
+      return;
+    }
     const start = initialState(document);
     const previewScene = document.scenes.some((scene) => scene.id === sceneId)
       ? sceneId

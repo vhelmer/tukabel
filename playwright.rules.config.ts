@@ -24,6 +24,7 @@ export default defineConfig({
     'object-mask-rules.spec.ts',
     'remote-segmentation-rules.spec.ts',
     'codex-rules.spec.ts',
+    'test-start-rules.spec.ts',
   ],
   reporter: 'list',
 });

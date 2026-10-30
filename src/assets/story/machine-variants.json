@@ -9,6 +9,6 @@
     "sourceWidth": 1672,
     "sourceHeight": 941
   },
-  "variants": ["story/dark-machine.svg", "story/burnt-machine.svg"],
+  "variants": ["story/burnt-machine.svg"],
   "method": "Exact native masked source pixels embedded in SVG; bounded SVG color transfer turns electric lights off. Damage is a local vector overlay. No external generation."
 }

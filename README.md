@@ -152,6 +152,11 @@ azg publish                 # nová verze; --activate ji rovnou zapne
    vybrané lokace, s prázdným inventářem a nenastavenými příznaky. Zápis na disk
    není potřeba. Návrat do Dev Mode zachová rozpracovaný obsah. Chybná data
    blokují test i uložení a editor zobrazí konkrétní chyby.
+   **Testovací start** spustí Game Mode rovnou ve zvolené lokaci s vybranými
+   předměty (výchozí jsou všechny), příznaky a odemčenými lokacemi, takže pozdní
+   lokace jde otestovat bez procházení celé hry. **Převzít stav z hry** zkopíruje
+   poslední herní náhled. Hromadné zapnutí příznaků vynechá koncové příznaky.
+   Výběr žije jen v paměti editoru, neukládá se do projektu ani do herní pozice.
 7. **Uložit do projektu** skutečně zapíše `src/game/content/project.json`.
    Zdroj se ukládá jako formátovaný JSON atomickým přejmenováním dočasného souboru.
    Uložení neobnovuje stránku a zachová pracovní návrh. **Zpět / Znovu** drží

@@ -357,6 +357,28 @@
   margin: 18px 0;
   background: #192d24;
 }
+.test-start-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 4px 14px;
+  margin: 10px 0 6px;
+}
+.test-start-grid label {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  font-size: 13px;
+  cursor: pointer;
+}
+.test-start-grid code,
+.test-start-grid em {
+  margin-left: 6px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.test-start-grid em {
+  color: #e8ae9b;
+}
 .flag-list {
   display: flex;
   gap: 8px;

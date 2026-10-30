@@ -23,6 +23,9 @@ import { JobTray } from './JobTray';
 import { SceneArtPanel } from './SceneArtPanel';
 import { SceneLivePreview } from './SceneLivePreview';
 import { TasksPanel } from './TasksPanel';
+import { TestStartPanel } from './TestStartPanel';
+import { defaultTestSetup, testStartState } from './testStart';
+import type { TestSetup } from './testStart';
 import { WorldMapPanel } from './WorldMapPanel';
 import type { Point } from '../game/transforms';
 import type { GraphTarget } from './LogicGraph';
@@ -36,7 +39,8 @@ type Tab =
   | 'dialogues'
   | 'tasks'
   | 'puzzles'
-  | 'graph';
+  | 'graph'
+  | 'testStart';
 const serialize = (value: GameContent) => JSON.stringify(value);
 const tabs: { id: Tab; label: string }[] = [
   { id: 'scenes', label: 'Lokace' },
@@ -47,6 +51,7 @@ const tabs: { id: Tab; label: string }[] = [
   { id: 'tasks', label: 'Úkoly' },
   { id: 'puzzles', label: 'Hádanky' },
   { id: 'graph', label: 'Mapa logiky' },
+  { id: 'testStart', label: 'Testovací start' },
 ];
 
 export default function DevWorkspace({
@@ -63,7 +68,7 @@ export default function DevWorkspace({
   onChange: (content: GameContent) => void;
   sceneId: string;
   onScene: (id: string) => void;
-  onPreview: () => void;
+  onPreview: (start?: GameState) => void;
   testState?: GameState;
 }) {
   const jobQueue = useEditorJobs(active);
@@ -82,6 +87,9 @@ export default function DevWorkspace({
     points: readonly Point[];
   }>();
   const [livePreview, setLivePreview] = useState(false);
+  const [testSetup, setTestSetup] = useState<TestSetup>(() =>
+    defaultTestSetup(document, sceneId),
+  );
   const [dialogueId, setDialogueId] = useState(document.dialogues[0]?.id ?? '');
   const [assets, setAssets] = useState<string[]>(assetIds);
   const addAssets = useCallback((ids: string[]) => {
@@ -325,7 +333,10 @@ export default function DevWorkspace({
           >
             {busy ? 'Pracuji…' : 'Uložit do projektu'}
           </button>
-          <button disabled={errors.length > 0 || !loaded} onClick={onPreview}>
+          <button
+            disabled={errors.length > 0 || !loaded}
+            onClick={() => onPreview()}
+          >
             Otestovat odsud ↗
           </button>
         </div>
@@ -761,6 +772,16 @@ export default function DevWorkspace({
             content={document}
             state={testState ?? initialState(document)}
             onNavigate={navigate}
+          />
+        )}
+        {tab === 'testStart' && (
+          <TestStartPanel
+            content={document}
+            setup={testSetup}
+            onChange={setTestSetup}
+            testState={testState}
+            disabled={errors.length > 0 || !loaded}
+            onStart={() => onPreview(testStartState(document, testSetup))}
           />
         )}
       </fieldset>
