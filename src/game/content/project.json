@@ -2788,181 +2788,182 @@
       "label": "Prázdna fľaša",
       "description": "Na dne je posledná kvapka. Keby mala svedomie, už je vrátená.",
       "icon": "✦",
-      "image": "scene-art/87328cca-3ac8-4e49-aeb0-9e708388a762/image.png"
+      "image": "inventory/empty-bottle.png"
     },
     {
       "id": "tape",
       "label": "Izolačná páska",
       "description": "Páska z uličky za Ferovým dvorom. Izoluje a lepí; moje rozhodnutia by iba zamaskovala.",
       "icon": "✦",
-      "image": "story/tape.svg"
+      "image": "inventory/tape.png"
     },
     {
       "id": "magnet",
       "label": "Magnet",
       "description": "Ťažký magnet. Železo priťahuje, meď nie. Keby som to vedel v škole, možno by som neprepadol z desiaty.",
       "icon": "✦",
-      "image": "story/magnet.svg"
+      "image": "inventory/magnet.png"
     },
     {
       "id": "scrap-metal",
       "label": "Hrdzavý šrot",
       "description": "Ohnutá železná rúra s hrdzavým držiakom. Niekomu odpad, niekomu dôchodkové sporenie.",
       "icon": "✦",
-      "image": "story/scrap-metal.svg"
+      "image": "inventory/scrap-metal.png"
     },
     {
       "id": "string",
       "label": "Špagát",
       "description": "Pevný špagát odstrihnutý z detskej medaily. Konečne sa mi niečo nerozpadlo v rukách.",
       "icon": "✦",
-      "image": "story/string.svg"
+      "image": "inventory/string.png"
     },
     {
       "id": "holy-water",
       "label": "Svätená voda",
       "description": "Voda z pumpy pri kostole. Smrdí chlórom a právomocou. Fľaša po nej zostane celkom použiteľná.",
       "icon": "✦",
-      "image": "story/holy-water.svg"
+      "image": "inventory/holy-water.png"
     },
     {
       "id": "milk",
       "label": "Čerstvé mlieko",
       "description": "Čerstvé mlieko. Krava zaň chcela krst; v obchode by mi stačilo euro.",
       "icon": "✦",
-      "image": "story/milk.svg"
+      "image": "inventory/milk.png"
     },
     {
       "id": "coffee-grounds",
       "label": "Mletá káva",
       "description": "Mletá káva od Karola. Bez vody či mlieka sú to iba chrumkavé nervy.",
       "icon": "✦",
-      "image": "story/coffee-grounds.svg"
+      "image": "inventory/coffee-grounds.png"
     },
     {
       "id": "cold-coffee",
       "label": "Studené kravučíno",
       "description": "Studená mliečna káva. Chrumká. V krčme by tomu dali talianske meno a príplatok za utrpenie.",
       "icon": "✦",
-      "image": "story/cold-coffee.svg"
+      "image": "inventory/cold-coffee.png"
     },
     {
       "id": "cow-bell",
       "label": "Kravský zvonec",
       "description": "Starý kravský zvonec. Znie, akoby niekto vyhral celé pasienky.",
       "icon": "✦",
-      "image": "story/cow-bell.svg"
+      "image": "inventory/cow-bell.png"
     },
     {
       "id": "wrench",
       "label": "Francúzsky kľúč",
       "description": "Nastaviteľný kľúč na matice. Zmestí sa mi do ruky aj do väčšiny zlých rozhodnutí.",
       "icon": "✦",
-      "image": "story/wrench.svg"
+      "image": "inventory/wrench.png"
     },
     {
       "id": "rubber-gloves",
       "label": "Gumené rukavice",
       "description": "Hrubé gumené rukavice zo zberne. Na špinu fajn; na živý drôt sa nespolieham ani s požehnaním.",
       "icon": "✦",
-      "image": "story/rubber-gloves.svg"
+      "image": "inventory/rubber-gloves.png"
     },
     {
       "id": "foil",
       "label": "Zlatá fólia",
       "description": "Zlatý obal od čokolády nájdený pri automate v starej herni. Čokoládu niekto prehral aj s obsahom žalúdka.",
       "icon": "✦",
-      "image": "story/foil.svg"
+      "image": "inventory/foil.png"
     },
     {
       "id": "fake-token",
       "label": "Podvodný žetón",
       "description": "Vysušená zemiaková medaila v zlatom alobale. Rozmerom pripomína žetón, kvalitou dôvod na reklamáciu.",
       "icon": "✦",
-      "image": "story/potato-token.svg"
+      "image": "inventory/fake-token.png"
     },
     {
       "id": "funeral-form",
       "label": "Prázdny úmrtný list",
       "description": "Prázdny úmrtný list. Kolónok má viac než ja životných úspechov. Vydáva Etela Pečiatka.",
       "icon": "✦",
-      "image": "story/funeral-form.svg"
+      "image": "inventory/funeral-form.png"
     },
     {
       "id": "rubber-stamp",
       "label": "Etelina pečiatka",
       "description": "Etelino VYBAVENÉ. Pri živých zlyháva, pri mŕtvych sa zatiaľ nikto nesťažoval.",
       "icon": "✦",
-      "image": "story/rubber-stamp.svg"
+      "image": "inventory/rubber-stamp.png"
     },
     {
       "id": "stamped-form",
       "label": "Úmrtný list na Ruda",
       "description": "Úmrtný list na moje meno. Etela potvrdila, že som úradne prestal dýchať. Nos ešte nedostal oznámenie.",
       "icon": "✦",
-      "image": "story/stamped-form.svg"
+      "image": "inventory/stamped-form.png"
     },
     {
       "id": "machine-log",
       "label": "Servisný denník",
       "description": "Servisný záznam s Ľubovým podpisom deň po jeho pohrebe. Falšovaný podpis alebo zlý úmrtný list; obe smrdia. Etela vedie register.",
       "icon": "✦",
-      "image": "story/machine-log.svg"
+      "image": "inventory/machine-log.png"
     },
     {
       "id": "magnet-line",
       "label": "Magnet na špagáte",
       "description": "Magnet uviazaný na pevnom špagáte. Dosiahne tam, kam sa mi nezmestí ruka.",
       "icon": "✦",
-      "image": "story/magnet-line.svg"
+      "image": "inventory/magnet-line.png"
     },
     {
       "id": "crypt-key",
       "label": "Kľúč od krypty",
       "description": "Ťažký železný kľúč. Pri takýchto zuboch by som si poistil aj zámok.",
       "icon": "✦",
-      "image": "story/crypt-key.svg"
+      "image": "inventory/crypt-key.png"
     },
     {
       "id": "stolen-cable",
       "label": "Ukradnutý hlavný kábel",
       "description": "Hlavný kábel je bezpečne odpojený, ale koniec má poškodenú izoláciu. To ešte opravím.",
       "icon": "✦",
-      "image": "story/stolen-cable.svg"
+      "image": "inventory/stolen-cable.png"
     },
     {
       "id": "fixed-cable",
       "label": "Opravený hlavný kábel",
       "description": "Kábel s opravenou izoláciou. Pasuje do rozvodnej skrine na Ferovom dvore.",
       "icon": "✦",
-      "image": "story/fixed-cable.svg"
+      "image": "inventory/fixed-cable.png"
     },
     {
       "id": "clothespin",
       "label": "Drevený kolíček",
       "description": "Eržikin kolíček. Pevná pružina a dve čeľuste. Rozhryznúť ho radšej neskúsim.",
-      "icon": "II"
+      "icon": "II",
+      "image": "inventory/clothespin.png"
     },
     {
       "id": "scissors",
       "label": "Nožnice",
       "description": "Staré nožnice z koša. Ešte strihajú. Rodokmeň po predchádzajúcom majiteľovi pátrať nebudem.",
       "icon": "✂",
-      "image": "story/scissors.svg"
+      "image": "inventory/scissors.png"
     },
     {
       "id": "potato-medal",
       "label": "Brambora na špagátu",
       "description": "Detská medaila: vysušené koliesko zemiaka na pevnom špagáte. Uzol je zaliaty stvrdnutým lepidlom; prstami ho nerozviažem.",
       "icon": "✦",
-      "image": "story/potato-medal.svg"
+      "image": "inventory/potato-medal.png"
     },
     {
       "id": "potato",
       "label": "Brambora",
       "description": "Ploché vysušené koliesko zemiaka s vyrytým IV. Výživová hodnota štvrtého miesta, vôňa minulého režimu.",
       "icon": "✦",
-      "image": "story/potato.svg"
+      "image": "inventory/potato.png"
     }
   ],
   "dialogues": [
