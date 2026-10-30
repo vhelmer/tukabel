@@ -28,10 +28,9 @@ if (!bucket || !process.env.AWS_ACCESS_KEY_ID)
 const staged = JSON.parse(
   fs.readFileSync(path.join(root, '.release/remote.json'), 'utf8'),
 );
-const url = new URL(staged.url);
-const prefix = decodeURIComponent(url.pathname).replace(/^\//, '');
-if (!url.hostname.startsWith(`${bucket}.s3.`))
-  throw new Error(`${staged.url} neodpovídá bucketu ${bucket}`);
+// The --remote URL may be the bucket itself (…/tukabel/) or a CloudFront
+// domain whose origin path is /tukabel; the key layout is the same.
+const prefix = `tukabel/${staged.build}/`;
 if (!/^tukabel\/[0-9a-f]{12}\/$/.test(prefix))
   throw new Error(`Nahrávám jen do tukabel/<build>/, ne do ${prefix}`);
 

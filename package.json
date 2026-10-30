@@ -25,7 +25,8 @@
     "setup:sam3": "node scripts/setup-sam3.mjs",
     "speech:regenerate": "node scripts/regenerate-speech.mjs",
     "build:release": "npm run typecheck && node scripts/build-release.mjs --budget 5",
-    "release:upload": "node scripts/upload-release.mjs"
+    "release:upload": "node scripts/upload-release.mjs",
+    "release:cloudfront": "node scripts/setup-cloudfront.mjs"
   },
   "dependencies": {
     "pixi.js": "^8.22.0",
@@ -33,6 +34,7 @@
     "react-dom": "^19.3.1"
   },
   "devDependencies": {
+    "@aws-sdk/client-cloudfront": "^3.1160.0",
     "@aws-sdk/client-s3": "^3.1160.0",
     "@breezystack/lamejs": "^1.2.7",
     "@eslint/js": "^10.0.1",
