@@ -1808,7 +1808,7 @@
         },
         {
           "id": "layer1",
-          "label": "Nový asset",
+          "label": "Zlatý obal ",
           "bounds": { "x": 531, "y": 821, "width": 101, "height": 54 },
           "imageFit": "contain",
           "image": "scene-art/62f75918-a73c-4d0c-b4c6-eaad162a9dcf/image.png",
@@ -2091,12 +2091,6 @@
             { "x": 1672, "y": 773.605 },
             { "x": 1672, "y": 941 }
           ]
-        },
-        {
-          "id": "object1",
-          "label": "Nový objekt",
-          "bounds": { "x": 1074, "y": 625, "width": 76, "height": 17 },
-          "onClick": [{ "message": "Zatiaľ nenápadný objekt." }]
         },
         {
           "id": "object2",
