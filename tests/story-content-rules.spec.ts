@@ -300,6 +300,16 @@ test('late scrap exchange remains solvable and a forged token causes the physica
   expect(p.state.flags['ending-jackpot']).toBe(true);
   expect(p.state.dialogue?.id).toBe('lubo-ending');
   expect(getEnding(content, p.state)).toBeUndefined();
+  // The burnt machine goes dark at once while its cable stays plugged in.
+  const crypt = content.scenes.find((scene) => scene.id === 'scene12')!;
+  const shown = (alias: string) =>
+    matches(
+      p.state,
+      crypt.hotspots.find((h) => h.id === propId(content, crypt.id, alias))!
+        .visibleWhen,
+    );
+  expect(shown('machine-off')).toBe(true);
+  expect(shown('main-cable')).toBe(true);
   p.close();
   expect(getEnding(content, p.state)?.id).toBe('jackpot');
   expect(p.state.flags['machine-burnt']).toBe(true);

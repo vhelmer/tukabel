@@ -2682,7 +2682,8 @@
             "not": {
               "all": [
                 { "not": { "flag": "battery-isolated" } },
-                { "not": { "flag": "cable-recovered" } }
+                { "not": { "flag": "cable-recovered" } },
+                { "not": { "flag": "machine-burnt" } }
               ]
             }
           }
@@ -2878,12 +2879,7 @@
               "message": "Hlavný kábel osady. Vedie z batérie priamo do automatu; pod prúdom ho ťahať nebudem. Najprv kľúčom povolím svorku na batérii."
             }
           ],
-          "visibleWhen": {
-            "all": [
-              { "not": { "flag": "cable-recovered" } },
-              { "not": { "flag": "machine-burnt" } }
-            ]
-          },
+          "visibleWhen": { "not": { "flag": "cable-recovered" } },
           "uses": {
             "rubber-gloves": [
               {
