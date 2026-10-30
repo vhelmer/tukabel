@@ -1801,11 +1801,11 @@
           ]
         },
         {
-          "id": "foil-wrapper",
-          "label": "Zlatý obal od čokolády",
-          "bounds": { "x": 1000, "y": 790, "width": 140, "height": 65 },
+          "id": "layer1",
+          "label": "Nový asset",
+          "bounds": { "x": 531, "y": 821, "width": 101, "height": 54 },
           "imageFit": "contain",
-          "image": "scene-art/20f58840-c178-41e8-8a24-8a6edebb62e0/image.png",
+          "image": "scene-art/62f75918-a73c-4d0c-b4c6-eaad162a9dcf/image.png",
           "onClick": [
             {
               "message": "Zlatý obal a omrvinky pri automate. Niekto tu zajedal prehru čokoládou. Obal beriem; cukrovku nechám dedičom.",
@@ -1970,7 +1970,7 @@
       "title": "Zberňa",
       "width": 1672,
       "height": 941,
-      "background": "scene-art/a901946e-52bb-4262-ab2b-3751c601f203/image.png",
+      "background": "scene-art/04790ebd-3bf9-4540-840f-3284a0a331b8/image.png",
       "hotspots": [
         {
           "id": "layer1",
@@ -2026,10 +2026,10 @@
           "id": "junk-scale",
           "label": "Váha na kov",
           "bounds": {
-            "x": 1410.139,
-            "y": 219.924,
-            "width": 210,
-            "height": 300
+            "x": 1454.336,
+            "y": 224.958,
+            "width": 117.599,
+            "height": 282.78
           },
           "onClick": [
             {
@@ -2040,7 +2040,12 @@
         {
           "id": "scrap-batteries",
           "label": "Vyčerpané batérie",
-          "bounds": { "x": 1247.49, "y": 496.553, "width": 330, "height": 220 },
+          "bounds": {
+            "x": 1300.534,
+            "y": 515.709,
+            "width": 259.496,
+            "height": 187.249
+          },
           "onClick": [
             {
               "message": "Na každej batérii je VYBITÁ. Medzi nimi čistý obdĺžnik a lístok POSLEDNÁ POŽIČANÁ. Dlžník sa podpísal krížikom; osvedčený rukopis."
@@ -2050,23 +2055,104 @@
         {
           "id": "map-exit",
           "label": "Mapa osady",
-          "bounds": { "x": 0, "y": 815.173, "width": 1672, "height": 125.827 },
+          "bounds": { "x": 0, "y": 668.189, "width": 1672, "height": 272.811 },
           "onClick": [],
           "openMap": true,
           "cursor": "exit",
           "polygon": [
             { "x": 0, "y": 941 },
-            { "x": 0, "y": 830.408 },
-            { "x": 1672, "y": 815.173 },
+            { "x": 0, "y": 668.504 },
+            { "x": 161.373, "y": 668.189 },
+            { "x": 384.468, "y": 733.515 },
+            { "x": 410.811, "y": 833.909 },
+            { "x": 574.437, "y": 864.929 },
+            { "x": 616.723, "y": 918.075 },
+            { "x": 952.221, "y": 903.748 },
+            { "x": 1013.874, "y": 829.492 },
+            { "x": 1211.782, "y": 873.411 },
+            { "x": 1378.717, "y": 796.451 },
+            { "x": 1672, "y": 773.605 },
             { "x": 1672, "y": 941 }
           ]
         },
         {
-          "id": "resuscitator",
+          "id": "object1",
+          "label": "Nový objekt",
+          "bounds": { "x": 1074, "y": 625, "width": 76, "height": 17 },
+          "onClick": [{ "message": "Zatiaľ nenápadný objekt." }]
+        },
+        {
+          "id": "object2",
+          "label": "Dingova truhlica s náradím",
+          "bounds": {
+            "x": 1018.842,
+            "y": 617.99,
+            "width": 274.2199999999999,
+            "height": 244.62199999999996
+          },
+          "polygon": [
+            { "x": 1196.565, "y": 862.612 },
+            { "x": 1023.494, "y": 826.806 },
+            { "x": 1018.842, "y": 737.708 },
+            { "x": 1065.72, "y": 705.351 },
+            { "x": 1088.475, "y": 617.99 },
+            { "x": 1293.062, "y": 636.346 },
+            { "x": 1276.049, "y": 765.116 },
+            { "x": 1261.739, "y": 769.509 },
+            { "x": 1261.945, "y": 844.067 }
+          ],
+          "onClick": [
+            {
+              "when": { "flag": "tools-taken" },
+              "message": "Truhlica je vybraná. Kľúč aj rukavice mám; zvyšok už má vlastný hnis."
+            },
+            {
+              "when": { "flag": "dingo-awake" },
+              "message": "Kľúč a rukavice beriem. Náhradnú slezinu nechám, nepoznám svoj závit.",
+              "effects": [
+                { "type": "flag", "id": "tools-taken", "value": true },
+                { "type": "addItem", "id": "wrench" },
+                { "type": "addItem", "id": "rubber-gloves" }
+              ]
+            },
+            {
+              "message": "Dingo leží na popruhu od truhlice. Nedostanem sa dnu, kým nevstane. Píla by zmenila žáner hry."
+            }
+          ],
+          "cursor": "interact"
+        },
+        {
+          "id": "object3",
           "label": "Kávový klystír na pedál",
-          "bounds": { "x": 880, "y": 540, "width": 200, "height": 160 },
-          "placeholder": true,
-          "cursor": "interact",
+          "bounds": {
+            "x": 442.848,
+            "y": 577.985,
+            "width": 526.2660000000001,
+            "height": 328.903
+          },
+          "polygon": [
+            { "x": 582.157, "y": 853.512 },
+            { "x": 442.848, "y": 833.891 },
+            { "x": 445.788, "y": 809.919 },
+            { "x": 464.605, "y": 808.388 },
+            { "x": 515.543, "y": 651.799 },
+            { "x": 558.531, "y": 624.155 },
+            { "x": 561.483, "y": 606.524 },
+            { "x": 549.963, "y": 599.524 },
+            { "x": 554.779, "y": 584.35 },
+            { "x": 615.21, "y": 577.985 },
+            { "x": 653.691, "y": 601.496 },
+            { "x": 668.931, "y": 646.438 },
+            { "x": 719.857, "y": 659.919 },
+            { "x": 740.501, "y": 746.306 },
+            { "x": 784.959, "y": 741.604 },
+            { "x": 832.346, "y": 775.843 },
+            { "x": 928.008, "y": 799.053 },
+            { "x": 969.114, "y": 839.209 },
+            { "x": 941.603, "y": 886.946 },
+            { "x": 718.617, "y": 906.888 },
+            { "x": 645.989, "y": 905.339 }
+          ],
           "onClick": [
             {
               "when": { "flag": "dingo-awake" },
@@ -2106,32 +2192,8 @@
                 ]
               }
             ]
-          }
-        },
-        {
-          "id": "tool-chest",
-          "label": "Dingova truhlica s náradím",
-          "bounds": { "x": 1110, "y": 650, "width": 210, "height": 130 },
-          "placeholder": true,
-          "cursor": "interact",
-          "onClick": [
-            {
-              "when": { "flag": "tools-taken" },
-              "message": "Truhlica je vybraná. Kľúč aj rukavice mám; zvyšok už má vlastný hnis."
-            },
-            {
-              "when": { "flag": "dingo-awake" },
-              "message": "Kľúč a rukavice beriem. Náhradnú slezinu nechám, nepoznám svoj závit.",
-              "effects": [
-                { "type": "flag", "id": "tools-taken", "value": true },
-                { "type": "addItem", "id": "wrench" },
-                { "type": "addItem", "id": "rubber-gloves" }
-              ]
-            },
-            {
-              "message": "Dingo leží na popruhu od truhlice. Nedostanem sa dnu, kým nevstane. Píla by zmenila žáner hry."
-            }
-          ]
+          },
+          "cursor": "interact"
         }
       ],
       "ambient": "ambience/village.wav",
@@ -2142,8 +2204,56 @@
       "title": "Kravín",
       "width": 1677,
       "height": 938,
-      "background": "scene-art/eca150c6-55a9-4753-bd08-a48e421cea3f/image.png",
+      "background": "scene-art/b67a35be-e96b-4f62-8fa1-3f2818c62baa/provider-restored.png",
       "hotspots": [
+        {
+          "id": "layer5",
+          "label": "Zvonec na obojku",
+          "bounds": { "x": 673, "y": 465, "width": 30, "height": 38 },
+          "imageFit": "contain",
+          "image": "scene-art/b67a35be-e96b-4f62-8fa1-3f2818c62baa/cutout.png",
+          "onClick": [
+            {
+              "when": { "flag": "cow-asleep" },
+              "message": "Zvonec som odopol potichu. Krava spí; nerád by som testoval vlastnú odolnosť voči vemenu.",
+              "effects": [
+                { "type": "flag", "id": "bell-taken", "value": true },
+                { "type": "addItem", "id": "cow-bell" }
+              ]
+            },
+            {
+              "message": "Zvonec drží na obojku. Pri prvom pohybe ruky krava kopla do plota. Skúsim, až keď zaspí."
+            }
+          ],
+          "visibleWhen": { "not": { "flag": "bell-taken" } },
+          "cursor": "interact"
+        },
+        {
+          "id": "layer4",
+          "label": "Krava mrkani",
+          "bounds": { "x": 622, "y": 301, "width": 191, "height": 161 },
+          "imageFit": "contain",
+          "image": "scene-art/5c0355a2-3283-468d-a386-537e341b70aa/image.png",
+          "onClick": [],
+          "decorative": true,
+          "animation": {
+            "blink": "codex-4e928ce3-2c0f-4338-8e50-5737e2b9ef76-blink",
+            "blinkIntervalMs": [3000, 7000]
+          }
+        },
+        {
+          "id": "layer2",
+          "label": "Prase",
+          "bounds": { "x": 908, "y": 502, "width": 139, "height": 108 },
+          "imageFit": "contain",
+          "image": "scene-art/9a9dd3bf-8714-44c3-a62a-3f9a477f3719/image.png",
+          "onClick": [],
+          "decorative": true,
+          "animation": {
+            "blink": "codex-f4a17c37-84f4-43ce-b83d-82d96b14bb1b-blink",
+            "blinkIntervalMs": [3000, 7000]
+          }
+        },
         {
           "id": "layer1",
           "label": "Jolanda",
@@ -2197,10 +2307,10 @@
           "id": "cow",
           "label": "Poistená krava",
           "bounds": {
-            "x": 543.191,
-            "y": 247.806,
-            "width": 278.236,
-            "height": 302.813
+            "x": 605.056,
+            "y": 269.842,
+            "width": 230.877,
+            "height": 194.315
           },
           "onClick": [
             {
@@ -2302,7 +2412,17 @@
                 ]
               }
             ]
-          }
+          },
+          "polygon": [
+            { "x": 625.397, "y": 296.549 },
+            { "x": 740.72, "y": 288.157 },
+            { "x": 813.953, "y": 269.842 },
+            { "x": 835.933, "y": 375.134 },
+            { "x": 787.556, "y": 457.78 },
+            { "x": 726.708, "y": 464.157 },
+            { "x": 665.43, "y": 422.729 },
+            { "x": 605.056, "y": 379.055 }
+          ]
         },
         {
           "id": "pig",
@@ -2334,11 +2454,11 @@
           ]
         },
         {
-          "id": "milking-bucket",
-          "label": "Vedro na posvätné mlieko",
-          "bounds": { "x": 1050, "y": 660, "width": 180, "height": 120 },
-          "placeholder": true,
-          "cursor": "interact",
+          "id": "layer3",
+          "label": "Vedro",
+          "bounds": { "x": 883, "y": 658, "width": 154, "height": 164 },
+          "imageFit": "contain",
+          "image": "scene-art/45cc4c7a-bc7a-4298-a421-43c20d558d83/image.png",
           "onClick": [
             {
               "when": { "flag": "cow-milked" },
@@ -2372,28 +2492,8 @@
                 "message": "Vedro je prázdne. Krava sa musí najprv prestať dívať, ako ju chceš okradnúť."
               }
             ]
-          }
-        },
-        {
-          "id": "cow-bell-hook",
-          "label": "Zvonec na obojku",
-          "bounds": { "x": 1080, "y": 350, "width": 120, "height": 95 },
-          "placeholder": true,
-          "cursor": "interact",
-          "onClick": [
-            {
-              "when": { "flag": "cow-asleep" },
-              "message": "Zvonec som odopol potichu. Krava spí; nerád by som testoval vlastnú odolnosť voči vemenu.",
-              "effects": [
-                { "type": "flag", "id": "bell-taken", "value": true },
-                { "type": "addItem", "id": "cow-bell" }
-              ]
-            },
-            {
-              "message": "Zvonec drží na obojku. Pri prvom pohybe ruky krava kopla do plota. Skúsim, až keď zaspí."
-            }
-          ],
-          "visibleWhen": { "not": { "flag": "bell-taken" } }
+          },
+          "cursor": "interact"
         }
       ],
       "ambient": "ambience/barn.wav",
@@ -2498,7 +2598,7 @@
       "title": "Krypta",
       "width": 1672,
       "height": 941,
-      "background": "scene-art/72cfbf63-8339-4f62-ad44-b7cb7e77b77e/provider-restored.png",
+      "background": "scene-art/d7b1a54c-db52-447b-a058-e3f7b985ffae/image.png",
       "hotspots": [
         {
           "id": "layer1",
@@ -2548,60 +2648,6 @@
           "cursor": "exit"
         },
         {
-          "id": "battery",
-          "label": "Autobatéria",
-          "bounds": { "x": 970, "y": 690, "width": 155, "height": 115 },
-          "onClick": [
-            {
-              "when": { "flag": "cable-recovered" },
-              "message": "Batéria je odpojená a kábel už mám. Druhýkrát ho z toho nevytiahnem, ani keby som si zaželal jackpot."
-            },
-            {
-              "message": "Autobatéria má na boku DINGO — VRÁTIŤ NABITÚ. Kŕmi iba tento automat. Na mínusovej svorke vidím maticu."
-            }
-          ],
-          "image": "story/car-battery.svg",
-          "uses": {
-            "wrench": [
-              {
-                "when": { "flag": "cable-recovered" },
-                "message": "Svorka je dole a kábel mám v rukách. Kľúč si odložím, kým si niečo neodmontujem z hlavy."
-              },
-              {
-                "when": { "not": { "flag": "battery-isolated" } },
-                "message": "Mínusová svorka je odpojená a automat zhasol. Zostala iba dobrá elektrina. Kábel môžem zobrať v rukaviciach; kým ho nevezmem, viem svorku ešte vrátiť.",
-                "effects": [
-                  { "type": "flag", "id": "battery-isolated", "value": true }
-                ],
-                "sound": "soundtrack/elevenlabs-village-20261029/sfx-tools.wav"
-              },
-              {
-                "message": "Batéria je odpojená. Teraz môžem kábel bezpečne zobrať v rukaviciach."
-              }
-            ]
-          }
-        },
-        {
-          "id": "battery-reconnect",
-          "label": "Voľná svorka",
-          "bounds": { "x": 1005, "y": 670, "width": 70, "height": 50 },
-          "onClick": [
-            {
-              "message": "Svorku som pripojil. Zase to bliká. Ešte môžem odísť s káblom alebo sa zachovať ako miestny obyvateľ.",
-              "effects": [
-                { "type": "flag", "id": "battery-isolated", "value": false }
-              ]
-            }
-          ],
-          "visibleWhen": {
-            "all": [
-              { "flag": "battery-isolated" },
-              { "not": { "flag": "cable-recovered" } }
-            ]
-          },
-          "cursor": "interact"
-        },
-        {
           "id": "machine-off",
           "label": "Odpojený automat",
           "bounds": { "x": 644, "y": 146, "width": 222, "height": 496 },
@@ -2612,59 +2658,6 @@
             "all": [
               { "flag": "battery-isolated" },
               { "not": { "flag": "machine-burnt" } }
-            ]
-          }
-        },
-        {
-          "id": "machine-glow",
-          "label": "Neón na autobatérii",
-          "bounds": { "x": 650, "y": 148, "width": 230, "height": 515 },
-          "onClick": [],
-          "decorative": true,
-          "image": "story/machine-glow.svg",
-          "visibleWhen": {
-            "all": [
-              { "not": { "flag": "battery-isolated" } },
-              { "not": { "flag": "machine-burnt" } }
-            ]
-          },
-          "animation": { "idle": "crypt-neon-loop", "idleLoop": true }
-        },
-        {
-          "id": "main-cable",
-          "label": "Ukradnutý hlavný kábel",
-          "bounds": { "x": 800, "y": 666, "width": 170, "height": 145 },
-          "onClick": [
-            {
-              "when": { "flag": "battery-isolated" },
-              "message": "Batéria je odpojená. Kábel teraz môžem vytiahnuť v rukaviciach, nech sa neporežem o opláštenie."
-            },
-            {
-              "message": "Hlavný kábel osady. Vedie z batérie priamo do automatu; nechcem ho vyťahovať pod napätím."
-            }
-          ],
-          "image": "story/cable-coil.svg",
-          "visibleWhen": {
-            "all": [
-              { "not": { "flag": "cable-recovered" } },
-              { "not": { "flag": "machine-burnt" } }
-            ]
-          },
-          "uses": {
-            "rubber-gloves": [
-              {
-                "when": { "flag": "battery-isolated" },
-                "message": "Kábel som zobral, automat už nepripojím. Dobre, prehrám až na oficiálnom turnaji. Teraz oblepiť koniec páskou a naspäť do Ferovej skrine.",
-                "effects": [
-                  { "type": "flag", "id": "cable-recovered", "value": true },
-                  { "type": "addItem", "id": "stolen-cable" },
-                  { "type": "removeItem", "id": "wrench" },
-                  { "type": "removeItem", "id": "rubber-gloves" }
-                ]
-              },
-              {
-                "message": "Pod napätím sa toho nechytím. Najprv kľúčom povoliť mínusovú svorku; Darwin si počká."
-              }
             ]
           }
         },
@@ -2714,31 +2707,113 @@
           }
         },
         {
-          "id": "burnt-machine",
-          "label": "Ohorený jackpot",
-          "bounds": { "x": 973.307, "y": 167.285, "width": 222, "height": 496 },
-          "onClick": [],
-          "decorative": true,
-          "image": "story/burnt-machine.svg",
-          "visibleWhen": { "flag": "machine-burnt" }
+          "id": "object2",
+          "label": "Autobatéria",
+          "bounds": {
+            "x": 483.694,
+            "y": 707.771,
+            "width": 285.64899999999994,
+            "height": 174.976
+          },
+          "polygon": [
+            { "x": 703.437, "y": 882.747 },
+            { "x": 483.694, "y": 844.636 },
+            { "x": 495.437, "y": 741.235 },
+            { "x": 541.529, "y": 713.519 },
+            { "x": 600.708, "y": 707.771 },
+            { "x": 736.345, "y": 726.261 },
+            { "x": 731.734, "y": 744.073 },
+            { "x": 762.9, "y": 749.797 },
+            { "x": 769.343, "y": 859.508 }
+          ],
+          "onClick": [
+            {
+              "when": { "flag": "cable-recovered" },
+              "message": "Batéria je odpojená a kábel už mám. Druhýkrát ho z toho nevytiahnem, ani keby som si zaželal jackpot."
+            },
+            {
+              "message": "Autobatéria má na boku DINGO — VRÁTIŤ NABITÚ. Kŕmi iba tento automat. Na mínusovej svorke vidím maticu."
+            }
+          ],
+          "uses": {
+            "wrench": [
+              {
+                "when": { "flag": "cable-recovered" },
+                "message": "Svorka je dole a kábel mám v rukách. Kľúč si odložím, kým si niečo neodmontujem z hlavy."
+              },
+              {
+                "when": { "not": { "flag": "battery-isolated" } },
+                "message": "Mínusová svorka je odpojená a automat zhasol. Zostala iba dobrá elektrina. Kábel môžem zobrať v rukaviciach; kým ho nevezmem, viem svorku ešte vrátiť.",
+                "effects": [
+                  { "type": "flag", "id": "battery-isolated", "value": true }
+                ],
+                "sound": "soundtrack/elevenlabs-village-20261029/sfx-tools.wav"
+              },
+              {
+                "message": "Batéria je odpojená. Teraz môžem kábel bezpečne zobrať v rukaviciach."
+              }
+            ]
+          }
         },
         {
-          "id": "jackpot-washers",
-          "label": "Vyvrhnutý šrot",
-          "bounds": { "x": 850, "y": 735, "width": 340, "height": 150 },
-          "onClick": [],
-          "decorative": true,
-          "image": "story/coins.svg",
-          "visibleWhen": { "flag": "machine-burnt" }
-        },
-        {
-          "id": "fused-cable",
-          "label": "Zatavený kábel",
-          "bounds": { "x": 800, "y": 666, "width": 170, "height": 145 },
-          "onClick": [],
-          "decorative": true,
-          "image": "story/burnt-cable.svg",
-          "visibleWhen": { "flag": "machine-burnt" }
+          "id": "object3",
+          "label": "Ukradnutý hlavný kábel",
+          "bounds": {
+            "x": 676.882,
+            "y": 499.505,
+            "width": 272.15700000000004,
+            "height": 307.82500000000005
+          },
+          "polygon": [
+            { "x": 713.559, "y": 718.952 },
+            { "x": 676.882, "y": 710.633 },
+            { "x": 691.421, "y": 664.166 },
+            { "x": 764.073, "y": 681.107 },
+            { "x": 822.611, "y": 753.021 },
+            { "x": 853.988, "y": 746.112 },
+            { "x": 906.487, "y": 716.459 },
+            { "x": 896.316, "y": 659.737 },
+            { "x": 825.769, "y": 540.218 },
+            { "x": 822.139, "y": 499.505 },
+            { "x": 853.062, "y": 502.857 },
+            { "x": 944.689, "y": 681.893 },
+            { "x": 949.039, "y": 729.062 },
+            { "x": 893.581, "y": 786.002 },
+            { "x": 826.211, "y": 807.33 },
+            { "x": 754.417, "y": 718.42 }
+          ],
+          "onClick": [
+            {
+              "when": { "flag": "battery-isolated" },
+              "message": "Batéria je odpojená. Kábel teraz môžem vytiahnuť v rukaviciach, nech sa neporežem o opláštenie."
+            },
+            {
+              "message": "Hlavný kábel osady. Vedie z batérie priamo do automatu; nechcem ho vyťahovať pod napätím."
+            }
+          ],
+          "visibleWhen": {
+            "all": [
+              { "not": { "flag": "cable-recovered" } },
+              { "not": { "flag": "machine-burnt" } }
+            ]
+          },
+          "uses": {
+            "rubber-gloves": [
+              {
+                "when": { "flag": "battery-isolated" },
+                "message": "Kábel som zobral, automat už nepripojím. Dobre, prehrám až na oficiálnom turnaji. Teraz oblepiť koniec páskou a naspäť do Ferovej skrine.",
+                "effects": [
+                  { "type": "flag", "id": "cable-recovered", "value": true },
+                  { "type": "addItem", "id": "stolen-cable" },
+                  { "type": "removeItem", "id": "wrench" },
+                  { "type": "removeItem", "id": "rubber-gloves" }
+                ]
+              },
+              {
+                "message": "Pod napätím sa toho nechytím. Najprv kľúčom povoliť mínusovú svorku; Darwin si počká."
+              }
+            ]
+          }
         }
       ],
       "ambient": "ambience/crypt.wav",
@@ -6486,6 +6561,38 @@
       "fps": 12,
       "loop": true,
       "region": { "x": 64, "y": 76, "width": 66, "height": 18 }
+    },
+    {
+      "id": "codex-f4a17c37-84f4-43ce-b83d-82d96b14bb1b-blink",
+      "source": "scene-art/9a9dd3bf-8714-44c3-a62a-3f9a477f3719/image.png",
+      "kind": "blink",
+      "label": "Přirozené mrknutí",
+      "frames": [
+        "codex/f4a17c37-84f4-43ce-b83d-82d96b14bb1b/blink-01.png",
+        "codex/f4a17c37-84f4-43ce-b83d-82d96b14bb1b/blink-02.png",
+        "codex/f4a17c37-84f4-43ce-b83d-82d96b14bb1b/blink-03.png",
+        "codex/f4a17c37-84f4-43ce-b83d-82d96b14bb1b/blink-04.png",
+        "codex/f4a17c37-84f4-43ce-b83d-82d96b14bb1b/blink-05.png"
+      ],
+      "fps": 12,
+      "loop": false,
+      "region": { "x": 45, "y": 38, "width": 63, "height": 15 }
+    },
+    {
+      "id": "codex-4e928ce3-2c0f-4338-8e50-5737e2b9ef76-blink",
+      "source": "scene-art/5c0355a2-3283-468d-a386-537e341b70aa/image.png",
+      "kind": "blink",
+      "label": "Přirozené mrknutí",
+      "frames": [
+        "codex/4e928ce3-2c0f-4338-8e50-5737e2b9ef76/blink-01.png",
+        "codex/4e928ce3-2c0f-4338-8e50-5737e2b9ef76/blink-02.png",
+        "codex/4e928ce3-2c0f-4338-8e50-5737e2b9ef76/blink-03.png",
+        "codex/4e928ce3-2c0f-4338-8e50-5737e2b9ef76/blink-04.png",
+        "codex/4e928ce3-2c0f-4338-8e50-5737e2b9ef76/blink-05.png"
+      ],
+      "fps": 12,
+      "loop": false,
+      "region": { "x": 65, "y": 69, "width": 82, "height": 13 }
     }
   ],
   "startDialogue": "fero-intro",

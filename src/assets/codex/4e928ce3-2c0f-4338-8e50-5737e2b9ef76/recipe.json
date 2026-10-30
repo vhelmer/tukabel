@@ -1,0 +1,86 @@
+{
+  "version": 1,
+  "provider": "codex-cli",
+  "model": "gpt-6.1-sol",
+  "effort": "high",
+  "context": {
+    "mode": "character",
+    "sceneId": "scene10",
+    "targetId": "layer4",
+    "source": "scene-art/5c0355a2-3283-468d-a386-537e341b70aa/image.png",
+    "label": "Krava mrkani",
+    "fingerprint": "[1677,938,{\"id\":\"layer4\",\"label\":\"Krava mrkani\",\"bounds\":{\"x\":622,\"y\":301,\"width\":191,\"height\":161},\"imageFit\":\"contain\",\"image\":\"scene-art/5c0355a2-3283-468d-a386-537e341b70aa/image.png\",\"onClick\":[],\"decorative\":true}]",
+    "placement": {
+      "bounds": {
+        "x": 622,
+        "y": 301,
+        "width": 191,
+        "height": 161
+      },
+      "imageFit": "contain"
+    },
+    "instruction": "Připrav přirozené mrknutí. Měň pouze oči, zachovej původní alfu a první i poslední snímek jako originál."
+  },
+  "prompt": "Připrav přirozené mrknutí. Měň pouze oči, zachovej původní alfu a první i poslední snímek jako originál.",
+  "task": "blink",
+  "count": 5,
+  "fps": 12,
+  "sourceSha256": "a76aea6c62876540f3eb6bedb636ec4e326c84b73a8572478c0b7472d4dc8ba5",
+  "width": 191,
+  "height": 161,
+  "result": {
+    "source": "scene-art/5c0355a2-3283-468d-a386-537e341b70aa/image.png",
+    "sourceSha256": "a76aea6c62876540f3eb6bedb636ec4e326c84b73a8572478c0b7472d4dc8ba5",
+    "clips": [
+      {
+        "id": "codex-4e928ce3-2c0f-4338-8e50-5737e2b9ef76-blink",
+        "source": "scene-art/5c0355a2-3283-468d-a386-537e341b70aa/image.png",
+        "kind": "blink",
+        "label": "Přirozené mrknutí",
+        "frames": [
+          "codex/4e928ce3-2c0f-4338-8e50-5737e2b9ef76/blink-01.png",
+          "codex/4e928ce3-2c0f-4338-8e50-5737e2b9ef76/blink-02.png",
+          "codex/4e928ce3-2c0f-4338-8e50-5737e2b9ef76/blink-03.png",
+          "codex/4e928ce3-2c0f-4338-8e50-5737e2b9ef76/blink-04.png",
+          "codex/4e928ce3-2c0f-4338-8e50-5737e2b9ef76/blink-05.png"
+        ],
+        "fps": 12,
+        "loop": false,
+        "region": {
+          "x": 65,
+          "y": 69,
+          "width": 82,
+          "height": 13
+        }
+      }
+    ],
+    "manifest": "codex/4e928ce3-2c0f-4338-8e50-5737e2b9ef76/recipe.json",
+    "notes": "Přirozené mrknutí pomocí horních a dolních víček, bez deformace očí. Pět snímků v původním rozměru 191 × 161 px; první i poslední snímek jsou pixelově totožné se zdrojem. Veškerá alfa a všechny pixely mimo dvě malé oblasti očí jsou zachovány. Ostatní části obličeje se nemění. Bez dalších omezení.",
+    "assets": [
+      "codex/4e928ce3-2c0f-4338-8e50-5737e2b9ef76/blink-01.png",
+      "codex/4e928ce3-2c0f-4338-8e50-5737e2b9ef76/blink-02.png",
+      "codex/4e928ce3-2c0f-4338-8e50-5737e2b9ef76/blink-03.png",
+      "codex/4e928ce3-2c0f-4338-8e50-5737e2b9ef76/blink-04.png",
+      "codex/4e928ce3-2c0f-4338-8e50-5737e2b9ef76/blink-05.png"
+    ]
+  },
+  "scripts": ["generate.py"],
+  "generatedManifest": {
+    "notes": "Přirozené mrknutí pomocí horních a dolních víček, bez deformace očí. Pět snímků v původním rozměru 191 × 161 px; první i poslední snímek jsou pixelově totožné se zdrojem. Veškerá alfa a všechny pixely mimo dvě malé oblasti očí jsou zachovány. Ostatní části obličeje se nemění. Bez dalších omezení.",
+    "scripts": ["generate.py"],
+    "clips": [
+      {
+        "kind": "blink",
+        "label": "Přirozené mrknutí",
+        "fps": 12,
+        "frames": [
+          "frame-01.png",
+          "frame-02.png",
+          "frame-03.png",
+          "frame-04.png",
+          "frame-05.png"
+        ]
+      }
+    ]
+  }
+}

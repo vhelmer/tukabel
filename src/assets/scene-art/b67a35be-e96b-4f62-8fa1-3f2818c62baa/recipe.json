@@ -1,0 +1,148 @@
+{
+  "version": 3,
+  "assetScale": 1,
+  "alphaCutoff": 1,
+  "extraction": {
+    "method": "openai",
+    "target": {
+      "x": 670,
+      "y": 465,
+      "width": 36,
+      "height": 38
+    },
+    "inputCrop": {
+      "left": 662,
+      "top": 457,
+      "width": 52,
+      "height": 54
+    },
+    "guideMethod": "sam3",
+    "fit": "contain",
+    "anchor": "bottom-center",
+    "provider": "extraction-returned.png",
+    "input": "extraction-input.png",
+    "guide": "extraction-guide.png",
+    "pixelExact": false
+  },
+  "preview": "preview.png",
+  "cutoutFrame": {
+    "x": 673,
+    "y": 465,
+    "width": 30,
+    "height": 38,
+    "sourceWidth": 1677,
+    "sourceHeight": 938
+  },
+  "cutoutFull": "cutout-full.png",
+  "backgrounds": {
+    "restored": "provider-restored.png",
+    "masked": "image.png"
+  },
+  "defaultBackground": "restored",
+  "source": "scene-art/eca150c6-55a9-4753-bd08-a48e421cea3f/image.png",
+  "sourceSha256": "434a642e22ce737c31d1a295d4568981fb0ebc3b5b549ad768b65b21d556bcc1",
+  "operation": "extract",
+  "selection": [
+    {
+      "x": 663,
+      "y": 461
+    },
+    {
+      "x": 712,
+      "y": 461
+    },
+    {
+      "x": 712,
+      "y": 507
+    },
+    {
+      "x": 663,
+      "y": 507
+    }
+  ],
+  "objectMask": {
+    "file": "object-mask.png",
+    "method": "sam3",
+    "refineEdges": true,
+    "detailPass": false,
+    "pixelOwnership": "alpha",
+    "matting": {
+      "method": "vitmatte",
+      "radius": 4,
+      "decontaminate": true
+    },
+    "ownershipMask": "ownership-mask.png"
+  },
+  "repairPadding": 12,
+  "repairFeather": 2,
+  "debug": {
+    "files": {
+      "original": "scene-art/b67a35be-e96b-4f62-8fa1-3f2818c62baa/source.png",
+      "objectMask": "scene-art/b67a35be-e96b-4f62-8fa1-3f2818c62baa/object-mask.png",
+      "expandedMask": "scene-art/b67a35be-e96b-4f62-8fa1-3f2818c62baa/expanded-mask.png",
+      "blendMask": "scene-art/b67a35be-e96b-4f62-8fa1-3f2818c62baa/repair-mask.png",
+      "input": "scene-art/b67a35be-e96b-4f62-8fa1-3f2818c62baa/provider-input.png",
+      "apiMask": "scene-art/b67a35be-e96b-4f62-8fa1-3f2818c62baa/provider-mask.png",
+      "roundTrip": "scene-art/b67a35be-e96b-4f62-8fa1-3f2818c62baa/round-trip.png",
+      "returned": "scene-art/b67a35be-e96b-4f62-8fa1-3f2818c62baa/provider-returned.png",
+      "restored": "scene-art/b67a35be-e96b-4f62-8fa1-3f2818c62baa/provider-restored.png",
+      "final": "scene-art/b67a35be-e96b-4f62-8fa1-3f2818c62baa/image.png",
+      "difference": "scene-art/b67a35be-e96b-4f62-8fa1-3f2818c62baa/provider-difference.png"
+    },
+    "geometry": {
+      "context": {
+        "x": 0,
+        "y": 0,
+        "width": 1677,
+        "height": 938
+      },
+      "canvas": {
+        "width": 1536,
+        "height": 1024
+      },
+      "content": {
+        "width": 1536,
+        "height": 859,
+        "left": 0,
+        "top": 82
+      },
+      "returned": {
+        "width": 1536,
+        "height": 1024
+      }
+    },
+    "metrics": {
+      "objectPixels": 970,
+      "expandedPixels": 7212,
+      "featherPixels": 368,
+      "feather": 2,
+      "padding": 12,
+      "lostObjectPixels": 0,
+      "roundTripMae": 4.941,
+      "contextMae": 5.463,
+      "seamMae": 6.115,
+      "outsideChanges": 0,
+      "boundaryMaxWeight": 0
+    },
+    "warnings": [
+      "Samotné škálování mění detaily. Porovnej kontrolní návrat bez AI s originálem.",
+      "Model změnil i chráněný kontext. Rozdíl oproti kontrolnímu návratu může vysvětlit barevný šev; color matching se nepoužívá."
+    ]
+  },
+  "pipeline": {
+    "context": "full-source-letterbox",
+    "expansion": "square-radius-native-pixels",
+    "imageResampling": "lanczos3",
+    "maskDownsampling": "conservative-pixel-footprints",
+    "feather": "inward-smoothstep-chamfer",
+    "composition": "premultiplied-interpolation-to-straight-rgba"
+  },
+  "repairMask": "repair-mask.png",
+  "prompt": "Odstraň označený zvoneček a přirozeně dokresli pozadí za ním ve stejném výtvarném stylu.",
+  "providerPrompts": {
+    "background": "Remove the selected object completely, including thin protrusions, outline strokes, contact shadows and detached remnants within the repair mask. Change only the missing background inside the repair mask and reconstruct continuous scenery and line work using adjacent untouched pixels as the color and lighting reference. Preserve the original palette, brightness, contrast, saturation, color temperature, shadows, texture, dirt and wear. Do not relight, brighten, darken, recolor, apply color grading or exposure/white-balance correction to the scene. Do not add highlights or haze. Preserve every existing detail outside the repair mask. Do not leave a duplicate or a silhouette. Preserve the reference cartoon drawing style, perspective, lighting and composition outside the edit. Preserve the image framing. No UI, text labels or watermarks. User instructions: Odstraň označený zvoneček a přirozeně dokresli pozadí za ním ve stejném výtvarném stylu.",
+    "extraction": "Extract ONLY the existing object highlighted in pink in image 2 from the unmodified image 1. This is background removal, not a redraw or enhancement. Remove all surrounding scenery and background. Return one complete isolated object on genuine transparent alpha, including holes and fine edges. Preserve the original RGB colors, brightness, luminance, contrast, saturation, exposure, white balance, color temperature, shadows and highlights of image 1. Preserve its exact identity, pose, proportions, outline, texture, dirt, stains and wear. Do not brighten or darken the subject, relight it, whiten clothing, clean stains, repaint, beautify, sharpen or normalize its colors. Do not replace shaded or dirty colors with cleaner or lighter versions. Keep subject interior colors unchanged; only change background alpha and decontaminate mixed edge pixels when necessary. Do not include the pink guide, floor, contact shadow, extra objects, text, UI, or a checkerboard. Center the complete object with at least 8% transparent margin on every side. Do not crop any part. Image 2 is a selection guide only: use image 1 as the sole color reference and never copy the pink tint."
+  },
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "low"
+}

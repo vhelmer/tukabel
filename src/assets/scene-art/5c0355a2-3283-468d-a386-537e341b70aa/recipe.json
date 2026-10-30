@@ -1,0 +1,83 @@
+{
+  "version": 3,
+  "assetScale": 1,
+  "cutoutFrame": {
+    "x": 622,
+    "y": 301,
+    "width": 191,
+    "height": 161,
+    "sourceWidth": 1677,
+    "sourceHeight": 938
+  },
+  "cutoutFull": "cutout-full.png",
+  "source": "scene-art/eca150c6-55a9-4753-bd08-a48e421cea3f/image.png",
+  "sourceSha256": "434a642e22ce737c31d1a295d4568981fb0ebc3b5b549ad768b65b21d556bcc1",
+  "operation": "cutout",
+  "selection": [
+    {
+      "x": 707.6230000000002,
+      "y": 464.807
+    },
+    {
+      "x": 678.526,
+      "y": 427.419
+    },
+    {
+      "x": 675.6550000000001,
+      "y": 390.615
+    },
+    {
+      "x": 645.7689999999999,
+      "y": 397.691
+    },
+    {
+      "x": 615.469,
+      "y": 373.884
+    },
+    {
+      "x": 630.798,
+      "y": 335.417
+    },
+    {
+      "x": 649.756,
+      "y": 283.951
+    },
+    {
+      "x": 817.315,
+      "y": 295.238
+    },
+    {
+      "x": 800.069,
+      "y": 332.401
+    },
+    {
+      "x": 826.636,
+      "y": 349.799
+    },
+    {
+      "x": 810.67,
+      "y": 399.887
+    },
+    {
+      "x": 779.661,
+      "y": 409.512
+    },
+    {
+      "x": 795.675,
+      "y": 445.685
+    },
+    {
+      "x": 775.419,
+      "y": 479.001
+    }
+  ],
+  "objectMask": {
+    "file": "object-mask.png",
+    "method": "sam3",
+    "refineEdges": true,
+    "detailPass": false,
+    "pixelOwnership": "binary"
+  },
+  "repairPadding": 0,
+  "repairFeather": 0
+}
