@@ -1,0 +1,54 @@
+{
+  "version": 3,
+  "assetScale": 1,
+  "alphaCutoff": 1,
+  "assetPlacement": {
+    "target": {
+      "x": 515,
+      "y": 821,
+      "width": 133,
+      "height": 54
+    },
+    "fit": "contain",
+    "anchor": "bottom-center",
+    "background": "unchanged",
+    "guide": "placement-guide.png",
+    "provider": "provider-returned.png"
+  },
+  "preview": "preview.png",
+  "cutoutFrame": {
+    "x": 531,
+    "y": 821,
+    "width": 101,
+    "height": 54,
+    "sourceWidth": 1672,
+    "sourceHeight": 941
+  },
+  "cutoutFull": "cutout-full.png",
+  "source": "scene-art/68c7e55d-4730-4419-876c-7c25f8eff8de/image.png",
+  "sourceSha256": "1cbb919f8d8c082e036a50c971a495a9a5e623ef235dd2fbe4590f16f8a29333",
+  "operation": "asset",
+  "selection": [
+    {
+      "x": 515.404,
+      "y": 846.058
+    },
+    {
+      "x": 602.977,
+      "y": 821.209
+    },
+    {
+      "x": 647.646,
+      "y": 842.809
+    },
+    {
+      "x": 590.864,
+      "y": 874.138
+    }
+  ],
+  "repairPadding": 0,
+  "repairFeather": 0,
+  "prompt": "Přidejme zlatý obal od čokolady na zem, zachovej kreslený styl a čokolada by měla být trochu nenapadna v našem prostředí",
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "high"
+}

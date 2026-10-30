@@ -1,0 +1,54 @@
+{
+  "version": 3,
+  "assetScale": 1,
+  "alphaCutoff": 1,
+  "assetPlacement": {
+    "target": {
+      "x": 883,
+      "y": 650,
+      "width": 154,
+      "height": 172
+    },
+    "fit": "contain",
+    "anchor": "bottom-center",
+    "background": "unchanged",
+    "guide": "placement-guide.png",
+    "provider": "provider-returned.png"
+  },
+  "preview": "preview.png",
+  "cutoutFrame": {
+    "x": 883,
+    "y": 658,
+    "width": 154,
+    "height": 164,
+    "sourceWidth": 1677,
+    "sourceHeight": 938
+  },
+  "cutoutFull": "cutout-full.png",
+  "source": "scene-art/eca150c6-55a9-4753-bd08-a48e421cea3f/image.png",
+  "sourceSha256": "434a642e22ce737c31d1a295d4568981fb0ebc3b5b549ad768b65b21d556bcc1",
+  "operation": "asset",
+  "selection": [
+    {
+      "x": 883,
+      "y": 650
+    },
+    {
+      "x": 1037,
+      "y": 650
+    },
+    {
+      "x": 1037,
+      "y": 822
+    },
+    {
+      "x": 883,
+      "y": 822
+    }
+  ],
+  "repairPadding": 0,
+  "repairFeather": 0,
+  "prompt": "Vytvoř prázdné vědro na mléko. Zachovej kreslený styl",
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "low"
+}

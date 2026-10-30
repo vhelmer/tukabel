@@ -1,0 +1,15 @@
+{
+  "version": 3,
+  "assetScale": 1,
+  "source": "scene-art/72cfbf63-8339-4f62-ad44-b7cb7e77b77e/provider-restored.png",
+  "sourceSha256": "68b33b49810214a19d9aa28a654f0188c267ef17f2a1e999e77a440e85ad383b",
+  "operation": "edit",
+  "repairPadding": 0,
+  "repairFeather": 0,
+  "prompt": "Uprav scenu tak že automat je zapojeny do autobaterie. Zachovej kreslený styl, perspektivu a světlo původní lokace.",
+  "providerPrompts": {
+    "background": "Edit only the selected area. Preserve the reference cartoon drawing style, perspective, lighting and composition outside the edit. Preserve the image framing. No UI, text labels or watermarks. User instructions: Uprav scenu tak že automat je zapojeny do autobaterie. Zachovej kreslený styl, perspektivu a světlo původní lokace."
+  },
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "high"
+}
