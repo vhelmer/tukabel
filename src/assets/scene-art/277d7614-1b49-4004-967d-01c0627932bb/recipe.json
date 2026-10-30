@@ -1,0 +1,47 @@
+{
+  "version": 3,
+  "operation": "cable-pickup-background",
+  "source": "scene-art/d7b1a54c-db52-447b-a058-e3f7b985ffae/image.png",
+  "sourceSha256": "6f165c345820a070ef1833c065d162c093a41179a45ef9b66fc2264318bdb9e2",
+  "supersedes": "scene-art/895e7500-e61d-4696-9920-601698846820",
+  "background": "background.svg",
+  "cutout": "cable.svg",
+  "bounds": {
+    "x": 662,
+    "y": 506,
+    "width": 269,
+    "height": 285
+  },
+  "machineOff": {
+    "image": "machine-off.svg",
+    "bounds": {
+      "x": 606,
+      "y": 86,
+      "width": 244,
+      "height": 421
+    }
+  },
+  "providers": [
+    {
+      "output": "provider-returned.png",
+      "model": "built-in image_gen",
+      "use": "background fill inside a 4 px band around the cable alpha and its cast shadow"
+    },
+    {
+      "output": "provider-returned-cable.png",
+      "model": "gpt-image-2.5-sunburst",
+      "quality": "medium",
+      "use": "transparent cable redraw guided by a SAM 3 mask, registered back into the scene (affine ECC + smoothed optical flow)"
+    },
+    {
+      "output": "provider-returned-crown-off.png",
+      "model": "gpt-image-2.5-sunburst",
+      "quality": "medium",
+      "use": "unlit neon crown, edit guided by the original tube centre lines; only the crown pixels are used"
+    }
+  ],
+  "cutoutMethod": "cable body and battery clip from the registered redraw; machine plug head kept from original pixels so it sits in its socket, cross-faded into the redraw between y=566 and y=580",
+  "backgroundMethod": "original outside the repair band; provider fill inside it; empty machine socket (plug hole above a recessed plate) redrawn where the plug was",
+  "machineOffMethod": "deterministic relight of the background pixels: light sources become unlit dark glass, red light spill removed, reel window not backlit; crown tubes from the guided edit",
+  "notes": "Background is the powered machine with the cable removed. Layer order: background, machine-off (when unpowered), cable. SVG embedding keeps every image local and self-contained."
+}
