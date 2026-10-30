@@ -1,0 +1,35 @@
+# Azet Games manifest (azg docs manifest). Build with `npm run build:azet`,
+# publish with `azg publish` on the VPN.
+id: tukabel
+name: 'TUKABEL: Posledný jackpot'
+sdk: 1
+entry: dist-release/index.html
+category: other
+orientation: landscape
+session: 15min-plus
+description: Komediálna point-and-click adventúra zo slovenskej osady. Niekto ukradol kábel a bez neho tu nič nefunguje. Vypátraj ho!
+howTo:
+  - Klikni alebo ťukni na postavu či predmet v scéne.
+  - Predmet z inventára potiahni na postavu, vec v scéne alebo na iný predmet.
+  - Denník ukazuje aktuálne úlohy, mapa ťa prenesie medzi lokáciami.
+  - Hru si môžeš uložiť a neskôr nahrať v menu.
+
+# The score is the play time of a finished story: faster is better.
+scoring:
+  metric: time
+  higherIsBetter: false
+  min: 1
+  max: 86400
+  minSeconds: 60
+
+levels:
+  mode: none
+  replay: true
+
+window:
+  desktop: { width: full, aspect: '16:9' }
+  mobile: { aspect: free }
+
+assets:
+  icon: azet/icon.png
+  cover: azet/cover.jpg

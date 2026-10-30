@@ -21,6 +21,7 @@ import { scenePoint } from '../game/coordinates';
 import type { ScenePicker } from '../game/hitTest';
 import { rotatedBounds } from '../game/transforms';
 import { saveGame, loadGame } from '../game/storage';
+import { platform } from '../platform';
 import { GameCanvas } from './GameCanvas';
 import { DialoguePanel } from './DialoguePanel';
 import { EndingPanel } from './EndingPanel';
@@ -117,6 +118,9 @@ export function GameWindow({
   const [hovered, setHovered] = useState<Hotspot | null>(null);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [menu, setMenu] = useState(false);
+  // The shell's pause (button or hidden tab) opens the menu, which already
+  // pauses sound, speech and input.
+  useEffect(() => platform?.onPause(() => setMenu(true)), []);
   const [journal, setJournal] = useState(false);
   const [mapOpen, setMapOpen] = useState(false);
   const mapTravelLock = useRef(false);
@@ -815,6 +819,8 @@ export function GameWindow({
               reset();
               clearUI();
             }}
+            // In the Azet shell its end screen offers the next play instead.
+            onFinish={platform ? () => platform?.finish(ending.id) : undefined}
           />
         )}
         {menu && (
@@ -848,7 +854,9 @@ export function GameWindow({
                   const result = saveGame(content, state);
                   setStorageMessage(
                     result.ok
-                      ? 'Hra je uložená v tomto prehliadači.'
+                      ? platform
+                        ? 'Hra je uložená.'
+                        : 'Hra je uložená v tomto prehliadači.'
                       : result.message,
                   );
                 }}

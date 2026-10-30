@@ -86,6 +86,29 @@ npm run release:upload       # AWS_ACCESS_KEY_ID/SECRET, AWS_BUCKET z .env.local
   S3 přes HTTP/1.1 za ~4 s. Oprávnění pro setup: `cloudfront:CreateDistribution`,
   `GetDistribution`, `ListDistributions`.
 
+### Azet Games (`azet-game.yaml`)
+
+Hra se publikuje na platformu Azet Games (VPN, `azg` CLI, `azg docs hackathon`):
+
+```sh
+npm run build:azet          # release do dist-release/ s budgetem 20 MB (bez --remote)
+azg validate && azg contract
+azg publish                 # nová verze; --activate ji rovnou zapne
+```
+
+- `src/platform.ts` se aktivuje jen v produkčním buildu uvnitř iframe shellu:
+  `game.init()`, hned `ready()`, hra se připojí až po „Hrať“ a každé další „Hrať
+  znova“ začne novou hru. Pauza shellu otevře herní menu (to už tlumí zvuk a řeč).
+- Herní origin je opaque: `localStorage` nejde, ruční pozice je v
+  `game.store.player` pod klíčem `save` (načte se jednou při startu).
+- Konec hry nabídne „Dokončiť hru“ → `game.complete()` se skóre = čas hry
+  v sekundách (`scoring.metric: time`, menší je lepší).
+- CSP herního originu pouští obrázky a zvuk jen z vlastní domény, proto Azet
+  build nepoužívá HD sadu z CloudFrontu; balíček nad 5 MB dává jen varování,
+  tvrdý limit je 20 MB. Pixi potřebuje `pixi.js/unsafe-eval` (bez `eval`).
+- SDK je ve `vendor/azet-games-sdk-<verze>.tgz`, aby `npm ci` nepotřebovalo VPN.
+  Ikona a cover jsou v `azet/`.
+
 ## Dev Mode: tvorba → test → Git
 
 1. V lokální aplikaci přepni **Dev Mode**. Editor načte aktuální zdroj a jeho revizi.
