@@ -1833,8 +1833,18 @@
       "title": "Kaplnka",
       "width": 1672,
       "height": 941,
-      "background": "imported/Ponur--ch-traj-ca-kaplnka-pln--sviec-e7b337e1.png",
+      "background": "scene-art/11d6ec4c-2034-407f-a4cb-acab6ff1e1cd/image.png",
       "hotspots": [
+        {
+          "id": "key-visible",
+          "label": "Železný kľúč v mreži",
+          "bounds": { "x": 899, "y": 635, "width": 22, "height": 48 },
+          "imageFit": "contain",
+          "image": "scene-art/b522d49d-9f16-4b6b-b448-d745c50cc51c/image.png",
+          "onClick": [],
+          "decorative": true,
+          "visibleWhen": { "not": { "flag": "key-taken" } }
+        },
         {
           "id": "cemetery-return",
           "label": "Späť na cintorín",
@@ -1852,43 +1862,6 @@
           ],
           "cursor": "exit",
           "cursorImage": "cursors/exit-down.svg"
-        },
-        {
-          "id": "key-grate",
-          "label": "Kľúč pod mrežou",
-          "bounds": { "x": 945.935, "y": 692.662, "width": 125, "height": 85 },
-          "onClick": [
-            {
-              "when": { "not": { "flag": "key-taken" } },
-              "message": "Pod úzkou mrežou sa leskne železný kľúč. Prsty tam nestrčím a na dno tiež nedočiahnem."
-            },
-            { "message": "Mreža je prázdna. Kľúč už mám alebo je v zámku." }
-          ],
-          "uses": {
-            "magnet-line": [
-              {
-                "when": { "not": { "flag": "key-taken" } },
-                "message": "Magnet chytil kľúč. Zázrak bez potreby svedkov.",
-                "effects": [
-                  { "type": "flag", "id": "key-taken", "value": true },
-                  { "type": "removeItem", "id": "magnet-line" },
-                  { "type": "addItem", "id": "crypt-key" }
-                ]
-              },
-              { "message": "Ďalší kľúč tu nie je. Ani rezervná mŕtvola." }
-            ]
-          },
-          "image": "story/grate.svg",
-          "imageFit": "stretch"
-        },
-        {
-          "id": "key-visible",
-          "label": "Železný kľúč v mreži",
-          "bounds": { "x": 985, "y": 726, "width": 49, "height": 30 },
-          "onClick": [],
-          "decorative": true,
-          "image": "story/crypt-key.svg",
-          "visibleWhen": { "not": { "flag": "key-taken" } }
         },
         {
           "id": "crypt-door",
@@ -1967,6 +1940,43 @@
               "message": "Sviečky idú na vosk. Konečne palivo, ktoré sa nedá prehrať v automate."
             }
           ]
+        },
+        {
+          "id": "key-grate",
+          "label": "Kľúč pod mrežou",
+          "bounds": {
+            "x": 834.608,
+            "y": 591.64,
+            "width": 146.73400000000004,
+            "height": 122.21100000000001
+          },
+          "polygon": [
+            { "x": 834.608, "y": 707.831 },
+            { "x": 836.889, "y": 591.64 },
+            { "x": 979.738, "y": 591.87 },
+            { "x": 981.342, "y": 713.851 }
+          ],
+          "onClick": [
+            {
+              "when": { "not": { "flag": "key-taken" } },
+              "message": "Pod úzkou mrežou sa leskne železný kľúč. Prsty tam nestrčím a na dno tiež nedočiahnem."
+            },
+            { "message": "Mreža je prázdna. Kľúč už mám alebo je v zámku." }
+          ],
+          "uses": {
+            "magnet-line": [
+              {
+                "when": { "not": { "flag": "key-taken" } },
+                "message": "Magnet chytil kľúč. Zázrak bez potreby svedkov.",
+                "effects": [
+                  { "type": "flag", "id": "key-taken", "value": true },
+                  { "type": "removeItem", "id": "magnet-line" },
+                  { "type": "addItem", "id": "crypt-key" }
+                ]
+              },
+              { "message": "Ďalší kľúč tu nie je. Ani rezervná mŕtvola." }
+            ]
+          }
         }
       ],
       "ambient": "ambience/graveyard.wav",
@@ -2786,8 +2796,8 @@
           "label": "Ukradnutý hlavný kábel",
           "bounds": { "x": 666, "y": 488, "width": 294, "height": 330 },
           "polygon": [
-            { "x": 713.559, "y": 718.952 },
-            { "x": 676.882, "y": 710.633 },
+            { "x": 725.691, "y": 695.944 },
+            { "x": 690.629, "y": 676.346 },
             { "x": 691.421, "y": 664.166 },
             { "x": 764.073, "y": 681.107 },
             { "x": 822.611, "y": 753.021 },

@@ -1,0 +1,26 @@
+{
+  "context": {
+    "mode": "character",
+    "sceneId": "scene10",
+    "targetId": "layer4",
+    "source": "scene-art/5c0355a2-3283-468d-a386-537e341b70aa/image.png",
+    "label": "Krava mrkani",
+    "fingerprint": "[1677,938,{\"id\":\"layer4\",\"label\":\"Krava mrkani\",\"bounds\":{\"x\":622,\"y\":301,\"width\":191,\"height\":161},\"imageFit\":\"contain\",\"image\":\"scene-art/5c0355a2-3283-468d-a386-537e341b70aa/image.png\",\"onClick\":[],\"decorative\":true}]",
+    "placement": {
+      "bounds": {
+        "x": 622,
+        "y": 301,
+        "width": 191,
+        "height": 161
+      },
+      "imageFit": "contain"
+    },
+    "instruction": "Připrav přirozené mrknutí. Měň pouze oči, zachovej původní alfu a první i poslední snímek jako originál."
+  },
+  "prompt": "Připrav přirozené mrknutí. Měň pouze oči, zachovej původní alfu a první i poslední snímek jako originál.",
+  "task": "blink",
+  "count": 5,
+  "fps": 12,
+  "width": 191,
+  "height": 161
+}

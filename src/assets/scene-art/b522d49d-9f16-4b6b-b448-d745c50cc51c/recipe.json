@@ -1,0 +1,49 @@
+{
+  "version": 3,
+  "assetScale": 1,
+  "cutoutFrame": {
+    "x": 899,
+    "y": 635,
+    "width": 22,
+    "height": 48,
+    "sourceWidth": 1672,
+    "sourceHeight": 941
+  },
+  "cutoutFull": "cutout-full.png",
+  "source": "scene-art/11d6ec4c-2034-407f-a4cb-acab6ff1e1cd/image.png",
+  "sourceSha256": "b783c50caab719e04b0d6c89caaec96f46d5b4d160e9340f80268d5c8e6c2252",
+  "operation": "cutout",
+  "selection": [
+    {
+      "x": 898.8870000000001,
+      "y": 685.824
+    },
+    {
+      "x": 898.659,
+      "y": 637.213
+    },
+    {
+      "x": 925.366,
+      "y": 631.62
+    },
+    {
+      "x": 930.426,
+      "y": 688.208
+    }
+  ],
+  "objectMask": {
+    "file": "object-mask.png",
+    "method": "sam3",
+    "refineEdges": true,
+    "detailPass": false,
+    "pixelOwnership": "alpha",
+    "matting": {
+      "method": "vitmatte",
+      "radius": 4,
+      "decontaminate": true
+    },
+    "ownershipMask": "ownership-mask.png"
+  },
+  "repairPadding": 0,
+  "repairFeather": 0
+}

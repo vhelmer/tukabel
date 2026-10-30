@@ -1,0 +1,33 @@
+{
+  "version": 3,
+  "assetScale": 1,
+  "source": "imported/Ponur--ch-traj-ca-kaplnka-pln--sviec-e7b337e1.png",
+  "sourceSha256": "d96572b6b27b01ffa2fde8fddff69e672f9864d168ccb677512f1e4a4d9367cd",
+  "operation": "edit",
+  "selection": [
+    {
+      "x": 838,
+      "y": 607
+    },
+    {
+      "x": 983,
+      "y": 607
+    },
+    {
+      "x": 983,
+      "y": 710
+    },
+    {
+      "x": 838,
+      "y": 710
+    }
+  ],
+  "repairPadding": 0,
+  "repairFeather": 0,
+  "prompt": "Přidej do zdi mříž s viditelným klíčem. Zachovej kreslený styl, perspektivu a světlo původní lokace.",
+  "providerPrompts": {
+    "background": "Edit only the selected area. Preserve the reference cartoon drawing style, perspective, lighting and composition outside the edit. Preserve the image framing. No UI, text labels or watermarks. User instructions: Přidej do zdi mříž s viditelným klíčem. Zachovej kreslený styl, perspektivu a světlo původní lokace."
+  },
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "high"
+}

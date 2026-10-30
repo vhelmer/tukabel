@@ -1,0 +1,26 @@
+{
+  "context": {
+    "mode": "character",
+    "sceneId": "scene10",
+    "targetId": "layer2",
+    "source": "scene-art/9a9dd3bf-8714-44c3-a62a-3f9a477f3719/image.png",
+    "label": "Nový výřez",
+    "fingerprint": "[1677,938,{\"id\":\"layer2\",\"label\":\"Nový výřez\",\"bounds\":{\"x\":908,\"y\":502,\"width\":139,\"height\":108},\"imageFit\":\"contain\",\"image\":\"scene-art/9a9dd3bf-8714-44c3-a62a-3f9a477f3719/image.png\",\"onClick\":[],\"decorative\":true}]",
+    "placement": {
+      "bounds": {
+        "x": 908,
+        "y": 502,
+        "width": 139,
+        "height": 108
+      },
+      "imageFit": "contain"
+    },
+    "instruction": "Připrav přirozené mrknutí. Měň pouze oči, zachovej původní alfu a první i poslední snímek jako originál."
+  },
+  "prompt": "Připrav přirozené mrknutí. Měň pouze oči, zachovej původní alfu a první i poslední snímek jako originál.",
+  "task": "blink",
+  "count": 5,
+  "fps": 12,
+  "width": 139,
+  "height": 108
+}

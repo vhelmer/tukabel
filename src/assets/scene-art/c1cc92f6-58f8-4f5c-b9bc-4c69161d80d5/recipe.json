@@ -1,0 +1,33 @@
+{
+  "version": 3,
+  "assetScale": 1,
+  "source": "scene-art/a901946e-52bb-4262-ab2b-3751c601f203/image.png",
+  "sourceSha256": "3ed62f81cae42ba60add0b0248d9663cc742137173449ed4eb50183815d12839",
+  "operation": "edit",
+  "selection": [
+    {
+      "x": 1022,
+      "y": 570
+    },
+    {
+      "x": 1295,
+      "y": 570
+    },
+    {
+      "x": 1295,
+      "y": 840
+    },
+    {
+      "x": 1022,
+      "y": 840
+    }
+  ],
+  "repairPadding": 0,
+  "repairFeather": 0,
+  "prompt": "Přidejme na zem truhlici s nářadím. Zachovej kreslený styl, perspektivu a světlo původní lokace.",
+  "providerPrompts": {
+    "background": "Edit only the selected area. Preserve the reference cartoon drawing style, perspective, lighting and composition outside the edit. Preserve the image framing. No UI, text labels or watermarks. User instructions: Přidejme na zem truhlici s nářadím. Zachovej kreslený styl, perspektivu a světlo původní lokace."
+  },
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "high"
+}

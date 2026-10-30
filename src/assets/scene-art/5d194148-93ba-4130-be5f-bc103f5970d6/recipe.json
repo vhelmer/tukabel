@@ -1,0 +1,33 @@
+{
+  "version": 3,
+  "assetScale": 1,
+  "source": "scene-art/c1cc92f6-58f8-4f5c-b9bc-4c69161d80d5/image.png",
+  "sourceSha256": "0e92b23ab813bb2c656fab5e366f9479508e609c5546cbed25c942b0a3b7d224",
+  "operation": "edit",
+  "selection": [
+    {
+      "x": 456,
+      "y": 599
+    },
+    {
+      "x": 1003,
+      "y": 599
+    },
+    {
+      "x": 1003,
+      "y": 941
+    },
+    {
+      "x": 456,
+      "y": 941
+    }
+  ],
+  "repairPadding": 0,
+  "repairFeather": 0,
+  "prompt": "přidej na zem asset bizarního starého kovového klystýru ovládaného nožním pedálem. Zařízení má mít rezavou kovovou nádobu, mechanickou pumpu s velkým šlapacím pedálem, gumovou hadici a kovovou koncovku.. Zachovej kreslený styl, perspektivu a světlo původní lokace.",
+  "providerPrompts": {
+    "background": "Edit only the selected area. Preserve the reference cartoon drawing style, perspective, lighting and composition outside the edit. Preserve the image framing. No UI, text labels or watermarks. User instructions: přidej na zem asset bizarního starého kovového klystýru ovládaného nožním pedálem. Zařízení má mít rezavou kovovou nádobu, mechanickou pumpu s velkým šlapacím pedálem, gumovou hadici a kovovou koncovku.. Zachovej kreslený styl, perspektivu a světlo původní lokace."
+  },
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "high"
+}
