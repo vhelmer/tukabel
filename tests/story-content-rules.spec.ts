@@ -265,9 +265,13 @@ test('the authored game completes through restoration and saves both before and 
   p.use('main-cable', 'rubber-gloves');
   expect(p.state.inventory).toContain('stolen-cable');
   expect(p.state.flags['cable-recovered']).toBe(true);
+  // The tools stay until taping commits the cable to Fero.
+  expect(p.state.inventory).toEqual(
+    expect.arrayContaining(['wrench', 'rubber-gloves']),
+  );
+  p.combine('stolen-cable', 'tape');
   expect(p.state.inventory).not.toContain('wrench');
   expect(p.state.inventory).not.toContain('rubber-gloves');
-  p.combine('stolen-cable', 'tape');
   p.travel('scene4');
   p.use('junction-box', 'fixed-cable');
   expect(p.state.dialogue?.id).toBe('fero-ending');
@@ -773,7 +777,7 @@ test('chocolate foil is a unique pickup inside the gaming room unlocked by repai
   expect(p.state.inventory.filter((id) => id === 'foil')).toHaveLength(1);
 });
 
-test('the cable needs the battery disconnected with the wrench and gloves; reconnecting reopens the token ending', async () => {
+test('the cable needs the battery disconnected with the wrench and gloves; reconnecting or returning the untaped cable reopens the token ending', async () => {
   const content = await read();
   const crypt = content.scenes.find((scene) => scene.id === 'scene12')!;
   const shown = (id: string) =>
@@ -811,11 +815,43 @@ test('the cable needs the battery disconnected with the wrench and gloves; recon
   p.state = start;
   p.use('car-battery', 'wrench');
   p.use('main-cable', 'rubber-gloves');
-  expect(p.state.inventory).toEqual(['fake-token', 'stolen-cable']);
+  expect(p.state.inventory).toEqual([...start.inventory, 'stolen-cable']);
   expect(p.state.flags['cable-recovered']).toBe(true);
   expect(shown('machine-off')).toBe(true);
   expect(shown('main-cable')).toBe(false);
   p.use('crypt-machine', 'fake-token');
   expect(p.state.inventory).toContain('fake-token');
   expect(p.state.flags['ending-jackpot']).not.toBe(true);
+
+  // Until it is taped, the cable can go back; tightening the clamp reopens the token.
+  p.use('crypt-machine', 'stolen-cable');
+  expect(p.state.flags['cable-recovered']).toBe(false);
+  expect(p.state.inventory).toEqual(start.inventory);
+  expect(shown('main-cable')).toBe(true);
+  expect(shown('machine-off')).toBe(true);
+  p.use('car-battery', 'wrench');
+  expect(p.state.flags['battery-isolated']).toBe(false);
+  expect(shown('machine-off')).toBe(false);
+  p.use('crypt-machine', 'fake-token');
+  expect(p.state.flags['ending-jackpot']).toBe(true);
+
+  // The battery accepts the returned cable too, and it can be taken again.
+  p.state = start;
+  p.use('car-battery', 'wrench');
+  p.use('main-cable', 'rubber-gloves');
+  p.use('car-battery', 'stolen-cable');
+  expect(p.state.flags['cable-recovered']).toBe(false);
+  p.use('main-cable', 'rubber-gloves');
+  expect(p.state.inventory).toContain('stolen-cable');
+
+  // Taping commits the cable to Fero; the taped cable never goes back.
+  p.state = { ...p.state, inventory: [...p.state.inventory, 'tape'] };
+  p.combine('stolen-cable', 'tape');
+  expect(p.state.inventory).toEqual(['fake-token', 'fixed-cable']);
+  for (const target of ['crypt-machine', 'car-battery']) {
+    p.use(target, 'fixed-cable');
+    expect(p.state.message).toMatch(/oblepil pre Fera/u);
+    expect(p.state.flags['cable-recovered']).toBe(true);
+    expect(p.state.inventory).toContain('fixed-cable');
+  }
 });

@@ -2694,7 +2694,7 @@
           "onClick": [
             {
               "when": { "flag": "cable-recovered" },
-              "message": "Bez hlavného kábla to už nezapojím. Túto skriňu na moje peniaze som konečne vyradil z prevádzky."
+              "message": "Bez hlavného kábla automat nebeží. Túto skriňu na moje peniaze som vyradil z prevádzky. Kým kábel neoblepím, môžem ho sem ešte vrátiť."
             },
             {
               "when": { "flag": "battery-isolated" },
@@ -2705,10 +2705,25 @@
             }
           ],
           "uses": {
+            "stolen-cable": [
+              {
+                "message": "Zastrčil som koncovku späť do automatu a svorku nasadil na batériu. Matica je ešte povolená, takže automat zatiaľ spí. Kľúčom ho prebudím.",
+                "effects": [
+                  { "type": "flag", "id": "cable-recovered", "value": false },
+                  { "type": "removeItem", "id": "stolen-cable" }
+                ],
+                "sound": "soundtrack/elevenlabs-village-20261029/sfx-tools.wav"
+              }
+            ],
+            "fixed-cable": [
+              {
+                "message": "Tento kábel som už oblepil pre Fera. Patrí do rozvodnej skrine, nie do Ľubovej kasičky."
+              }
+            ],
             "fake-token": [
               {
                 "when": { "flag": "cable-recovered" },
-                "message": "Kábel som odniesol. Ten žetón tu už nezahrá, iba by som ho stratil v diere. Rozhodol som sa vrátiť prúd osade."
+                "message": "Bez kábla automat nebeží a žetón by iba prepadol do diery. Kým kábel neoblepím, môžem ho sem ešte vrátiť."
               },
               {
                 "when": { "flag": "battery-isolated" },
@@ -2751,7 +2766,7 @@
           "onClick": [
             {
               "when": { "flag": "cable-recovered" },
-              "message": "Bez čierneho kábla batéria automat neutiahne. Ľubovi zostal aspoň drahý podstavec pod sklamanie."
+              "message": "Bez čierneho kábla batéria automat neutiahne. Ľubovi zostal aspoň drahý podstavec pod sklamanie. Kým kábel neoblepím, môžem ho ešte vrátiť na svorku."
             },
             {
               "when": { "flag": "battery-isolated" },
@@ -2762,6 +2777,21 @@
             }
           ],
           "uses": {
+            "stolen-cable": [
+              {
+                "message": "Zastrčil som koncovku späť do automatu a svorku nasadil na batériu. Matica je ešte povolená, takže automat zatiaľ spí. Kľúčom ho prebudím.",
+                "effects": [
+                  { "type": "flag", "id": "cable-recovered", "value": false },
+                  { "type": "removeItem", "id": "stolen-cable" }
+                ],
+                "sound": "soundtrack/elevenlabs-village-20261029/sfx-tools.wav"
+              }
+            ],
+            "fixed-cable": [
+              {
+                "message": "Tento kábel som už oblepil pre Fera. Patrí do rozvodnej skrine, nie do Ľubovej kasičky."
+              }
+            ],
             "wrench": [
               {
                 "when": { "flag": "cable-recovered" },
@@ -2861,12 +2891,10 @@
                 "message": "V rukaviciach sa cítim odvážne, ale kábel je stále pod prúdom. Najprv kľúčom odpojím batériu."
               },
               {
-                "message": "Vytiahol som kábel aj s koncovkou. Poškodený koniec oblepím páskou a vrátim do Ferovej rozvodnej skrine. Automat už nezapojí nikto.",
+                "message": "Vytiahol som kábel aj s koncovkou. Poškodený koniec oblepím páskou a vrátim do Ferovej rozvodnej skrine. Kým ho neoblepím, ešte si to môžem rozmyslieť.",
                 "effects": [
                   { "type": "flag", "id": "cable-recovered", "value": true },
-                  { "type": "addItem", "id": "stolen-cable" },
-                  { "type": "removeItem", "id": "wrench" },
-                  { "type": "removeItem", "id": "rubber-gloves" }
+                  { "type": "addItem", "id": "stolen-cable" }
                 ],
                 "sound": "soundtrack/elevenlabs-village-20261029/sfx-tools.wav"
               }
@@ -3025,7 +3053,7 @@
     {
       "id": "stolen-cable",
       "label": "Ukradnutý hlavný kábel",
-      "description": "Hlavný kábel je bezpečne odpojený, ale koniec má poškodenú izoláciu. To ešte opravím.",
+      "description": "Hlavný kábel je bezpečne odpojený, ale koniec má poškodenú izoláciu. To ešte opravím; dovtedy ho môžem vrátiť aj Ľubovi do automatu.",
       "icon": "✦",
       "image": "inventory/stolen-cable.png"
     },
@@ -7306,11 +7334,13 @@
       "items": ["stolen-cable", "tape"],
       "rules": [
         {
-          "message": "Poškodený koniec je zaizolovaný. Teraz ho môžem vrátiť do Ferovej rozvodnej skrine.",
+          "message": "Poškodený koniec je zaizolovaný. Teraz ho môžem vrátiť do Ferovej rozvodnej skrine. Kľúč a rukavice už nepotrebujem, odložím ich.",
           "effects": [
             { "type": "removeItem", "id": "stolen-cable" },
             { "type": "removeItem", "id": "tape" },
-            { "type": "addItem", "id": "fixed-cable" }
+            { "type": "addItem", "id": "fixed-cable" },
+            { "type": "removeItem", "id": "wrench" },
+            { "type": "removeItem", "id": "rubber-gloves" }
           ]
         }
       ]
