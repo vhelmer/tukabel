@@ -59,9 +59,10 @@ odhad velikosti zipu pro každý zkoušený preset.
 Zip zůstává samostatně hratelný; HD sada (preset 0) je jen vylepšení:
 
 ```sh
+npm run release:cloudfront   # jednou: distribuce jen pro tukabel/ (HTTP/2+3, CORS)
 node scripts/build-release.mjs --budget 5 \
-  --remote https://<bucket>.s3.<region>.amazonaws.com/tukabel/
-npm run release:upload   # AWS_ACCESS_KEY_ID/SECRET, AWS_BUCKET z .env.local
+  --remote https://d1vjfrag5gd3xw.cloudfront.net/
+npm run release:upload       # AWS_ACCESS_KEY_ID/SECRET, AWS_BUCKET z .env.local
 ```
 
 - Build uloží HD soubory pod obsahovými hashi do `.release/remote/<build>/`
@@ -76,8 +77,12 @@ npm run release:upload   # AWS_ACCESS_KEY_ID/SECRET, AWS_BUCKET z .env.local
   čtou přes `fetch` a alfa masky čtou pixely (`crossOrigin = 'anonymous'`).
 - Upload zapisuje jen pod `tukabel/<build>/` jako `public-read` s immutable
   cache, nic nemaže, existující soubory přeskočí a manifest nahraje poslední.
-  Region si zjistí z bucketu. Přímé S3 je HTTP/1.1, první scéna (~80 souborů)
-  se tak načítá zhruba 3–5 s; CloudFront s HTTP/2 by to zkrátil.
+  Region si zjistí z bucketu. Klíče jsou vždy `tukabel/<build>/`, `--remote`
+  může být bucket (`…amazonaws.com/tukabel/`) i CloudFront s origin path
+  `/tukabel` (distribuce `E1BWWY0VW2PVXA`, mimo `tukabel/` vrací 403).
+  Síťově se první scéna (~80 souborů) načte z CloudFrontu za ~1 s, z přímého
+  S3 přes HTTP/1.1 za ~4 s. Oprávnění pro setup: `cloudfront:CreateDistribution`,
+  `GetDistribution`, `ListDistributions`.
 
 ## Dev Mode: tvorba → test → Git
 
